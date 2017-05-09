@@ -11,11 +11,11 @@ Imports: assertthat,
     data.table,
     Matrix,
     R6,
-    h2oEnsemble,
     speedglm
 Suggests: doParallel,
     foreach,
     h2o,
+    h2oEnsemble,
     simcausal,
     SuperLearner,
     testthat
