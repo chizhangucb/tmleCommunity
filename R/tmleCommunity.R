@@ -334,7 +334,7 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, StratifyIn
                           verbose = TRUE) {
   if (!is.null(rndseed))  set.seed(rndseed)  # make stochastic intervention trackable
   gvars$verbose <- verbose
-  message("Running tmlenet with the following settings from tmleCom_Options(): "); str(gvars$opts)
+  message("Running tmleCommunity with the following settings from tmleCom_Options(): "); str(gvars$opts)
   
   #----------------------------------------------------------------------------------
   # INITIALIZE PARAMETERS
