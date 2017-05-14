@@ -1,16 +1,11 @@
 fitGenericDensity <- function(data, Anodes, Wnodes, gform, f_gstar, h.gstar_GenericModel = NULL, 
-                              gestimator = "speedglm__glm", lbound = 0.025, n_MCsims = 1, obs.wts = NULL, 
+                              lbound = 0.025, n_MCsims = 1, obs.wts = NULL, 
                               rndseed = NULL, verbose = TRUE) {
   
   #----------------------------------------------------------------------------------
   # INITIALIZE PARAMETERS
   #----------------------------------------------------------------------------------
   if (!is.null(rndseed))  set.seed(rndseed)  # make stochastic intervention trackable
-  if (!(gestimator %in% gvars$opts.allowedVals[["gestimator"]])) {
-    stop("gestimator must be one of: " %+% paste0(gvars$opts.allowedVals[["gestimator"]], collapse=", "))
-  } else {
-    gvars$opts$gestimator <- gestimator
-  }
   gvars$verbose <- verbose
   message("Running fitGenericDensity with the following settings from tmleCom_Options(): "); str(gvars$opts)
   
@@ -78,7 +73,7 @@ fitGenericDensity <- function(data, Anodes, Wnodes, gform, f_gstar, h.gstar_Gene
                                         outvar = As_nms_gstar,
                                         predvars = Ws.gstar_nms,
                                         subset_vars = subsets_expr,
-                                        estimator = gestimator)
+                                        estimator = getopt("gestimator"))
   # Define Intervals Under g_star to Be The Same as under g0:  
   genericmodels.gstar <- GenericModel$new(reg = regclass.gstar, DatKeepClass.g0 = OData.ObsP0)
   
