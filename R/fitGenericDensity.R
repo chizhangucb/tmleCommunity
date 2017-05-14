@@ -1,4 +1,4 @@
-fitGenericDensity <- function(data, Anodes, Wnodes, gform, f_gstar, h.gstar_GenericModel = NULL, 
+fitGenericDensity <- function(data, Anodes, Wnodes, gform = NULL, f_gstar, h.gstar_GenericModel = NULL, 
                               lbound = 0.025, n_MCsims = 1, obs.wts = NULL, 
                               rndseed = NULL, verbose = TRUE) {
   
@@ -43,7 +43,6 @@ fitGenericDensity <- function(data, Anodes, Wnodes, gform, f_gstar, h.gstar_Gene
   ## Create an R6 object that stores and manages the input data, later passed on to estimation algorithm(s)
   OData.ObsP0 <- DatKeepClass$new(Odata = data, nodes = nodes, norm.c.sVars = FALSE)
   OData.ObsP0$addObsWeights(obs.wts = obs.wts)
-  nobs <- OData.ObsP0$nobs
   
   #----------------------------------------------------------------------------------
   # Defining and estimating treatment mechanism P(A|W)
