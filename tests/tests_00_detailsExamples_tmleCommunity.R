@@ -24,9 +24,26 @@ gvars$verbose <- TRUE
 data(sampleDat_iidcontABinY)
 dat_iidcontABinY <- sampleDat_iidcontABinY$dat_iidcontABinY
 head(dat_iidcontABinY)
-psi0.Y <- mean(dat_iidcontABinY$Y)  # 0.29154
-psi0.Ygstar <- mean(dat_iidcontABinY$Y.gstar)  # 0.31627
+psi0.Y <- mean(dat_iidcontABinY$Y)  # 0.291398
+psi0.Ygstar <- mean(dat_iidcontABinY$Y.gstar)  # 0.316274
 nodes <- list(Ynode = "Y", Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), Enodes = NULL, Crossnodes = NULL)
+
+define_f.gstar <- function(shift.val, truncBD, rndseed = NULL) {
+  shift.const <- shift.val
+  trunc.const <- truncBD
+  f.gstar <- function(data, ...) {
+    print("shift.const: " %+% shift.const)
+    set.seed(rndseed)
+    A.mu <- 0.86 * data[,"W1"] + 0.41 * data[,"W2"] - 0.34 * data[,"W3"] + 0.93 * data[,"W4"]
+    untrunc.A <- rnorm(n = nrow(data), mean = A.mu + shift.const, sd = 1)
+    r.new.A <- exp(0.8 * shift.const * (untrunc.A - A.mu - shift.const / 3))
+    trunc.A <- ifelse(r.new.A > trunc.const, untrunc.A - shift.const, untrunc.A)
+    return(trunc.A)
+  }
+  return(f.gstar)
+}
+f.gstar <- define_f.gstar(shift = sampleDat_iidcontABinY$shift.val, truncBD = sampleDat_iidcontABinY$truncBD, 
+                          rndseed = sampleDat_iidcontABinY$rndseed)
 
 # ---------------------------------------------------------
 # Step 1. Create an R6 object that stores and manages the input data, later passed on to estimation algorithm(s)
@@ -57,7 +74,7 @@ m.Q.init$predict(newdata = OData)
 mean(m.Q.init$getprobA1)  # 0.29154
 
 # ---------------------------------------------------------
-# Step 3. Defining and estimating treatment mechanism P(A|E, W) under g0 or gstar
+# Step 3. Defining and estimating treatment mechanism P(A|E, W) under g0
 # ---------------------------------------------------------
 h.g0.sVars <- define_regform(NULL, Anodes.lst = nodes$Anodes, Wnodes.lst = nodes[c("Wnodes", "Enodes")])
 sA_nms_g0 <- h.g0.sVars$outvars
@@ -213,3 +230,25 @@ sapply(1:length(genericmodels.g0.A1$getPsAsW.models()), FUN = function(x) {
 # 1.0000000 0.8347299 0.8324691 0.8318014 0.8356529 0.8391936 0.8459151 0.8556383 0.8703422 0.9041029 1.0000000 1.0000000
 
 
+# ---------------------------------------------------------
+# Step 4. Defining and estimating treatment mechanism P(A|E, W) under gstar
+# ---------------------------------------------------------
+h.gstar.sVars <- h.g0.sVars
+sA_nms_gstar <- h.gstar.sVars$outvars
+regclass.gstar <- RegressionClass$new(outvar = sA_nms_gstar,
+                                      predvars = h.gstar.sVars$predvars,
+                                      subset_vars = subsets_expr,
+                                      outvar.class = OData$type.sVar[sA_nms_gstar])
+OData.gstar <- DatKeepClass$new(Odata = data, nodes = nodes, norm.c.sVars = FALSE)
+OData.gstar$make.dat.sVar(p = 1, f.g_fun = f.gstar)
+
+# -------------------------------------------------------------------------------------------
+# estimating h_g0 and h_gstar
+# -------------------------------------------------------------------------------------------
+genericmodels.g0 <- GenericModel$new(reg = regclass.g0, DatKeepClass.g0 = OData.g0)
+genericmodels.g0$fit(data = OData.g0)
+h_gN <- genericmodels.g0$predictAeqa(newdata = OData)
+
+genericmodels.gstar <- GenericModel$new(reg = regclass.gstar, DatKeepClass.g0 = OData.g0)
+genericmodels.gstar$fit(data = OData.gstar)
+h_gstar <- genericmodels.gstar$predictAeqa(newdata = OData)
