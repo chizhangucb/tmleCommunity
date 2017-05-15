@@ -115,7 +115,7 @@ calcParameters <- function(OData.ObsP0, inputYs, alpha = 0.05, tmle_g_out, tmle_
   get_CI <- function(xrow, n) {
     f_est_CI <- function(n, psi, sigma2_N) { # get CI
       z_alpha <- qnorm(1-alpha/2)
-      CI_est <- c(psi - z_alpha*sqrt(sigma2_N) / sqrt(n), psi + z_alpha*sqrt(sigma2_N) / sqrt(n))
+      CI_est <- c(psi - z_alpha * sqrt(sigma2_N / n), psi + z_alpha * sqrt(sigma2_N / n))
       return(CI_est)
     }
     psi <- xrow["estimate"];
