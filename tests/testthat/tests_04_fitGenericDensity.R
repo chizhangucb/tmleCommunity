@@ -1,9 +1,8 @@
 # ---------------------------------------------------------------------------------
 # TEST SET 4. TESTS FOR FITTING CONTINUOUS EXPOSURE A IN IID DATA
 # ---------------------------------------------------------------------------------
+# FOCUS ON using function fitGenericDensity in hbarDensityModel.R
 # Fitting continuous exposure by  binning, conditional on covariates
-# Overall exposure g0 (A) is a mixture of 4 continuous/ discrete distributions, 
-# individual exposure is normal with mu for each observation being a function of (W1, W2, W3, W4), sd = 1;
 # ---------------------------------------------------------------------------------
 library(testthat)
 gvars$verbose <- TRUE
