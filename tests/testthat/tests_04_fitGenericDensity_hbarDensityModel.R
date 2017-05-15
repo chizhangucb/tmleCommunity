@@ -9,7 +9,7 @@ library(testthat)
 gvars$verbose <- TRUE
 
 # ---------------------------------------------------------------------------------
-# Test 1. The IPTW estimator that fits continuous A density
+# Test 1. The IPTW estimator that fits onr continuous A density
 # ---------------------------------------------------------------------------------
 # A is normal with mu for each observation being a function of (W1, W2, W3, W4), sd = 1;
 data(sampleDat_iidcontABinY)
@@ -33,52 +33,21 @@ define_f.gstar <- function(shift.val, truncBD, rndseed = NULL) {
   }
   return(f.gstar)
 }
-f.gstar <- define_f.gstar(shift = sampleDat_iidcontABinY$shift.val, truncBD = sampleDat_iidcontABinY$truncBD, rndseed = sampleDat_iidcontABinY$rndseed)
+f.gstar <- define_f.gstar(shift = sampleDat_iidcontABinY$shift.val, truncBD = sampleDat_iidcontABinY$truncBD, 
+                          rndseed = sampleDat_iidcontABinY$rndseed)
 
-test.fitIPTW.density <- function(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", 
-                                 h2olearner = "h2o.glm.wrapper", h2ometalearner = "h2o.glm.wrapper", 
-                                 g.SL.library = c("SL.glm", "SL.step", "SL.glm.interaction"), data,
-                                 killh2o.atlast = TRUE) {
+test.fitGeneric.density <- function(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", 
+                                    h2olearner = "h2o.glm.wrapper", h2ometalearner = "h2o.glm.wrapper", 
+                                    g.SL.library = c("SL.glm", "SL.step", "SL.glm.interaction"), data,
+                                    killh2o.atlast = TRUE) {
   tmleCom_Options(Qestimator = Qestimator, gestimator = gestimator, bin.method = "equal.mass", maxNperBin = nrow(data),
                   h2olearner = h2olearner, h2ometalearner = h2ometalearner, g.SL.library = g.SL.library)
   
-  ## Generate DatKeepClass object
-  OData <- DatKeepClass$new(Odata = data, nodes = nodes, norm.c.sVars = FALSE)
-  OData$addYnode(YnodeVals = data[, nodes$Ynodes])
-  
-  ## g0:
-  h.g0.sVars <- define_regform(NULL, Anodes.lst = nodes$Anodes, Wnodes.lst = nodes[c("Wnodes", "Enodes")])
-  sA_nms_g0 <- h.g0.sVars$outvars
-  subsets_expr <- lapply(sA_nms_g0, function(var) {var}) 
-  regclass.g0 <- RegressionClass$new(outvar = h.g0.sVars$outvars,
-                                     predvars = h.g0.sVars$predvars,
-                                     subset_vars = subsets_expr,
-                                     outvar.class = OData$type.sVar[sA_nms_g0])
-  OData.g0 <- OData
-  
-  ## gstar
-  h.gstar.sVars <- h.g0.sVars
-  sA_nms_gstar <- h.gstar.sVars$outvars
-  regclass.gstar <- RegressionClass$new(outvar = sA_nms_gstar,
-                                        predvars = h.gstar.sVars$predvars,
-                                        subset_vars = subsets_expr,
-                                        outvar.class = OData$type.sVar[sA_nms_gstar])
-  OData.gstar <- DatKeepClass$new(Odata = data, nodes = nodes, norm.c.sVars = FALSE)
-  OData.gstar$make.dat.sVar(p = 1, f.g_fun = f.gstar)
-  
   # -------------------------------------------------------------------------------------------
-  # estimating h_g0
+  # estimating h_g0 and h_gstar without bounding
   # -------------------------------------------------------------------------------------------
-  summeas.g0 <- GenericModel$new(reg = regclass.g0, DatKeepClass.g0 = OData.g0)
-  summeas.g0$fit(data = OData.g0)
-  h_gN <- summeas.g0$predictAeqa(newdata = OData)
-  
-  # -------------------------------------------------------------------------------------------
-  # estimating h_gstar
-  # -------------------------------------------------------------------------------------------
-  summeas.gstar <- GenericModel$new(reg = regclass.gstar, DatKeepClass.g0 = OData.g0)
-  summeas.gstar$fit(data = OData.gstar)
-  h_gstar <- summeas.gstar$predictAeqa(newdata = OData)
+  h_gN <- fitGenericDensity(data, Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), f_gstar = NULL, lbound = 0)$h_gstar
+  h_gstar <- fitGenericDensity(data, Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), f_gstar = f.gstar, lbound = 0)$h_gstar
   
   # -------------------------------------------------------------------------------------------
   max(h_gN); min(h_gN); print(max(h_gN)); print(min(h_gN))
@@ -114,9 +83,9 @@ test.fitIPTW.density <- function(Qestimator = "speedglm__glm", gestimator = "spe
 ############################# 
 ## Test 1.1 speedglm__glm
 #############################
-# test.fitIPTW.density(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", data = Odata)
+# test.fitGeneric.density(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", data = Odata)
 test_that("fit iptw estimator for continuous A with speedglm", {  # psi0 = 0.3196
-  iptw_res <- test.fitIPTW.density(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", data = dat_iidcontABinY)
+  iptw_res <- test.fitGeneric.density(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", data = dat_iidcontABinY)
   expect_equal(iptw_res$iptw_untrimmed, 0.327871, tolerance = 0.001)
   expect_equal(iptw_res$iptw_trimmed, 0.327871, tolerance = 0.001)
 })
@@ -149,11 +118,11 @@ test_that("fit iptw estimator for continuous A with speedglm", {  # psi0 = 0.319
 ############################# 
 ## Test 1.2 h2o
 #############################
-# test.fitIPTW.density(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble", h2olearner = "h2o.glm.wrapper", 
-#                      data = Odata, killh2o.atlast = TRUE)
+# test.fitGeneric.density(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble", h2olearner = "h2o.glm.wrapper", 
+#                         data = Odata, killh2o.atlast = TRUE)
 test_that("fit iptw estimator for continuous A with only h2o.glm.wrapper algorithm in h2oEnsemble", {  # dat_iidcontABinY
-  iptw_res <- test.fitIPTW.density(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble", 
-                                   h2olearner = "h2o.glm.wrapper", data = dat_iidcontABinY, killh2o.atlast = TRUE)
+  iptw_res <- test.fitGeneric.density(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble", 
+                                      h2olearner = "h2o.glm.wrapper", data = dat_iidcontABinY, killh2o.atlast = TRUE)
   require(h2oEnsemble)
   expect_equal(iptw_res$iptw_untrimmed, 0.324769, tolerance = 0.001)
   expect_equal(iptw_res$iptw_trimmed, 0.324769, tolerance = 0.001)
@@ -183,11 +152,11 @@ test_that("fit iptw estimator for continuous A with only h2o.glm.wrapper algorit
 # [1] "iptw (untrimmed): 0.324769"  
 # [1] "iptw (wts trimmed by 200): 0.324769"  
 
-# test.fitIPTW.density(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble", 
-#                      h2olearner = c("h2o.glm.wrapper", "h2o.randomForest.wrapper"), data = Odata, killh2o.atlast = TRUE)
+# test.fitGeneric.density(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble", 
+#                         h2olearner = c("h2o.glm.wrapper", "h2o.randomForest.wrapper"), data = Odata, killh2o.atlast = TRUE)
 test_that("fit iptw estimator for continuous A with h2o.glm.wrapper & h2o.randomForest.wrapper algorithms in h2oEnsemble", {
-  iptw_res <- test.fitIPTW.density(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble", data = dat_iidcontABinY, 
-                                   h2olearner = c("h2o.glm.wrapper", "h2o.randomForest.wrapper"), killh2o.atlast = TRUE)
+  iptw_res <- test.fitGeneric.density(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble", data = dat_iidcontABinY, 
+                                      h2olearner = c("h2o.glm.wrapper", "h2o.randomForest.wrapper"), killh2o.atlast = TRUE)
   require(h2oEnsemble)
   expect_equal(iptw_res$iptw_untrimmed, 0.31715, tolerance = 0.01)
   expect_equal(iptw_res$iptw_trimmed, 0.31715, tolerance = 0.01)
@@ -217,11 +186,11 @@ test_that("fit iptw estimator for continuous A with h2o.glm.wrapper & h2o.random
 # [1] "iptw (untrimmed): 0.31715"  
 # [1] "iptw (wts trimmed by 200): 0.31715" 
 
-# test.fitIPTW.density(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble", data = Odata, 
-#                      h2olearner = c("h2o.glm.wrapper", "h2o.randomForest.wrapper", "h2o.gbm.wrapper"), killh2o.atlast = TRUE)
+# test.fitGeneric.density(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble", data = Odata, 
+#                         h2olearner = c("h2o.glm.wrapper", "h2o.randomForest.wrapper", "h2o.gbm.wrapper"), killh2o.atlast = TRUE)
 test_that("fit iptw estimator for continuous A with h2o.glm.wrapper, h2o.randomForest.wrapper & h2o.gbm.wrapper algorithms in h2oEnsemble", {
-  iptw_res <- test.fitIPTW.density(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble", data = dat_iidcontABinY, killh2o.atlast = TRUE, 
-                                   h2olearner = c("h2o.glm.wrapper", "h2o.randomForest.wrapper", "h2o.gbm.wrapper"))
+  iptw_res <- test.fitGeneric.density(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble", data = dat_iidcontABinY,  
+                                      killh2o.atlast = T, h2olearner = c("h2o.glm.wrapper", "h2o.randomForest.wrapper", "h2o.gbm.wrapper"))
   require(h2oEnsemble)
   expect_equal(iptw_res$iptw_untrimmed, 0.322908, tolerance = 0.01)
   expect_equal(iptw_res$iptw_trimmed, 0.322908, tolerance = 0.01)
@@ -254,22 +223,22 @@ test_that("fit iptw estimator for continuous A with h2o.glm.wrapper, h2o.randomF
 ############################# 
 ## Test 1.3 SuperLearner
 #############################
-# test.fitIPTW.density(Qestimator = "SuperLearner", gestimator = "SuperLearner",  
-#                      g.SL.library = c("SL.glm", "SL.step", "SL.glm.interaction"), data = Odata)
+# test.fitGeneric.density(Qestimator = "SuperLearner", gestimator = "SuperLearner",  
+#                         g.SL.library = c("SL.glm", "SL.step", "SL.glm.interaction"), data = Odata)
 test_that("fit iptw estimator for continuous A with SL.glm, SL.step & SL.glm.interaction algorithms in SuperLearner", {
-  iptw_res <- test.fitIPTW.density(Qestimator = "SuperLearner", gestimator = "SuperLearner", data = dat_iidcontABinY,
-                                   g.SL.library = c("SL.glm", "SL.step", "SL.glm.interaction"))
-  expect_equal(iptw_res$iptw_untrimmed, , tolerance = 0.005)
-  expect_equal(iptw_res$iptw_trimmed, , tolerance = 0.005)
+  iptw_res <- test.fitGeneric.density(Qestimator = "SuperLearner", gestimator = "SuperLearner", data = dat_iidcontABinY,
+                                      g.SL.library = c("SL.glm", "SL.step", "SL.glm.interaction"))
+  expect_equal(iptw_res$iptw_untrimmed, 0.3264449, tolerance = 0.005)
+  expect_equal(iptw_res$iptw_trimmed, 0.3264449, tolerance = 0.005)
 })
 # ------------------------------------------------------
 # Benchmark for using SuperLearner
 # ------------------------------------------------------
 # >   max(h_gN); min(h_gN)
-# [1] 0.5250904
-# [1] 0.0009693049
+# [1] 0.5401792
+# [1] 0.001040254
 # >   max(h_gstar); min(h_gstar);  
-# [1] 0.5078003  
+# [1] 0.5112411  
 # [1] 3.609393e-05  
 # >   
 # >   wts <- h_gstar / h_gN  
@@ -278,11 +247,11 @@ test_that("fit iptw estimator for continuous A with SL.glm, SL.step & SL.glm.int
 # >   
 # >   summary(h_gstar/h_gN)  
 #      Min.   1st Qu.    Median      Mean   3rd Qu.      Max.  
-#   0.02195   0.28920   0.58890   1.00200   1.18000   16.97000 
+#   0.01291   0.28630   0.59170   1.00100   1.18300   16.03000 
 # >   summary(wts)  
 #      Min.   1st Qu.    Median      Mean   3rd Qu.      Max.  
-#   0.02195   0.28920   0.58890   1.00200   1.18000   16.97000
+#   0.01291   0.28630   0.59170   1.00100   1.18300   16.03000 
 # >   (iptw <- mean(datO[,"Y"] * (wts)))  
 # [1] "true psi0: 0.3196"  
-# [1] "iptw (untrimmed): 0.326996"  
-# [1] "iptw (wts trimmed by 200): 0.326996"  
+# [1] "iptw (untrimmed): 0.3264449"  
+# [1] "iptw (wts trimmed by 200): 0.3264449"  
