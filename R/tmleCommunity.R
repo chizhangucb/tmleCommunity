@@ -161,12 +161,12 @@ get_est_sigmas <- function(estnames, obsYvals, ests_mat, QY_mat, wts_mat, fWi_ma
   h_wts <- wts_mat[, "h_wts"]
   
   # TMLE inference based on the iid IC: (** Use QY.init not QY.star)
-  iidIC_tmle <- (h_wts * (obsYvals - QY.init) + fWi - ests_mat[rownames(ests_mat) %in% "TMLE",]) * obs.wts
+  iidIC_tmle <- h_wts * (obsYvals - QY.init) + fWi - ests_mat[rownames(ests_mat) %in% "TMLE",]
   var_iid.tmle <- wtd.var(iidIC_tmle, weights = obs.wts, normwt = T)
   # var_iid.tmle <- mean((iidIC_tmle)^2)  # assume mean(iidIC_tmle) = 0
   
   # MLE inference based on the iid IC: (** Use QY.init not QY.star) *** NOT ACCURATE
-  iidIC_mle <- (h_wts * (obsYvals - QY.init) + fWi - ests_mat[rownames(ests_mat) %in% "MLE",]) * obs.wts
+  iidIC_mle <- h_wts * (obsYvals - QY.init) + fWi - ests_mat[rownames(ests_mat) %in% "MLE",]
   var_iid.mle <- wtd.var(iidIC_mle, weights = obs.wts, normwt = T)
   # var_iid.mle <- mean((iidIC_mle)^2)  # assume mean(iidIC_mle) = 0
   
