@@ -387,7 +387,7 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, StratifyIn
     if (any(!allcovRHS %in% unique(c(unlist(nodes), names(data))))) {
       ExtraDat <- as.data.frame(model.matrix(merged.form, data = data))
       data <- cbind(data, ExtraDat[, setdiff(names(ExtraDat), c(names(data), "(Intercept)")), drop = FALSE])
-      Extradat <- NULL
+      ExtraDat <- NULL
     }
   } else {
     merged.form <- NULL
