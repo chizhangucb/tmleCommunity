@@ -142,7 +142,6 @@ fit.hbars <- function(OData.ObsP0, est_params_list) {
     # verify h.g0_GenericModel is consistent with GenericModel 
     assert_that(inherits(h.g0_GenericModel, "GenericModel"))
   }
-  h_gstar_SummariesModel <- est_params_list$h_gstar_SummariesModel
   if (!is.null(h.gstar_GenericModel)) {
     message("NOTE: Predictions for P(A^*|W,E) under f_gstar will be based on the fitted model in h.gstar_GenericModel, " %+%
             "and all modeling settings will be ignored")
