@@ -344,7 +344,7 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, StratifyIn
   # INITIALIZE PARAMETERS
   #----------------------------------------------------------------------------------
   if (is.null(savetime.fit.hbars)) savetime.fit.hbars <- getopt("savetime.fit.hbars")
-  if (is.null(obs.wts)) obs.wts <- rep(1, nrow(data))
+  if (is.null(obs.wts)) obs.wts <- rep(1, nrow(data)) 
   if (!is.null(Qform) && !is.null(Ynode)) {
     Qform <- paste(Ynode, substring(Qform, first = as.numeric(gregexpr("~", Qform))))
     message("Since both Ynode and Qform are specified, the left-hand side of Qform will be ignored, with outcome being set to Ynode: " %+% Ynode)
@@ -409,6 +409,9 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, StratifyIn
     determ.Q <- rep_len(FALSE, nobs)
   } else {
     determ.Q <- (data[, YnodeDet] == 1)
+  }
+  if (length(unique(obs.wts)) > 1 && any(unlist(OData$type.sVar[Anodes]) != "binary")) {
+    warning("obs.wts are currently implemented on binary A. The results for non-binary A with weights may be unrealiable.")
   }
   
   #----------------------------------------------------------------------------------
