@@ -295,7 +295,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @param StratifyInd Optional column name or index in \code{data} of community identifier variable. If known, stratify on community level when 
 #'  estimating outcome and treatment mechanisms. If NULL, pool over all communities. 
 #' @param YnodeDet Optional column name or index in \code{data} of deterministic values of outcome Ynode, coded as (TRUE/FALSE) or (1/0). If TRUE/1, 
-#   value of Ynode is given deterministically / constant.
+#'  value of Ynode is given deterministically / constant.
 #' @param f_gstar1 Either a function or a vector or a matrix/ data frame of counterfactual exposures, dependin on the number of exposure variables.
 #'  If a matrix/ data frame, its number of rows must be either nrow(data) or 1 (constant exposure assigned to all observations), and its number of 
 #'  columns must be length(Anodes). If a vector, it must be of length nrow(data) or 1. If a function, it must return a data frame of counterfactual
