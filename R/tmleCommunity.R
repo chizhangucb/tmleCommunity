@@ -9,6 +9,7 @@
 #' @importFrom methods is
 #' @importFrom stats approx quasibinomial binomial coef glm.control glm.fit plogis predict qlogis qnorm quantile rnorm runif terms var
 #' @importFrom utils data head str
+#' @importFrom Hmisc wtd.var
 
 # ------------------------------------ define_regform ----------------------------------------- 
 # Purpose: Parse the formulae for actual covariate names in A & W
@@ -87,7 +88,7 @@ calcParameters <- function(OData.ObsP0, inputYs, alpha = 0.05, tmle_g_out, tmle_
   fWi_mat <- tmle_g_out$fWi_mat
   wts_mat <- tmle_g_out$wts_mat
   obs.wts <- tmle_g_out$obs.wts
-  ests_unwt_mat <- tmle_g_out$ests_unwt_mat
+  # ests_unwt_mat <- tmle_g_out$ests_unwt_mat
   maptoYstar <- inputYs$maptoYstar
   ab <- inputYs$ab
   
@@ -101,7 +102,7 @@ calcParameters <- function(OData.ObsP0, inputYs, alpha = 0.05, tmle_g_out, tmle_
   # get the iid IC-based asymptotic variance estimates:
   # *****************************************************
   var_mat.res <- get_est_sigmas(estnames = c("tmle", "iptw", "gcomp"), obsYvals = OData.ObsP0$noNA.Ynodevals, 
-                                ests_mat = ests_unwt_mat, QY_mat = QY_mat, wts_mat = wts_mat, fWi_mat = fWi_mat, obs.wts = obs.wts)
+                                ests_mat = ests_mat, QY_mat = QY_mat, wts_mat = wts_mat, fWi_mat = fWi_mat, obs.wts = obs.wts)
   as.var_mat <- var_mat.res$as.var_mat
   if (maptoYstar) {
     as.var_mat <- as.var_mat * (diff(ab) ^ 2)
@@ -161,20 +162,23 @@ get_est_sigmas <- function(estnames, obsYvals, ests_mat, QY_mat, wts_mat, fWi_ma
   
   # TMLE inference based on the iid IC: (** Use QY.init not QY.star)
   iidIC_tmle <- (h_wts * (obsYvals - QY.init) + fWi - ests_mat[rownames(ests_mat) %in% "TMLE",]) * obs.wts
-  var_iid.tmle <- mean((iidIC_tmle)^2)  
+  var_iid.tmle <- wtd.var(iidIC_tmle, weights = obs.wts, normwt = T)
+  # var_iid.tmle <- mean((iidIC_tmle)^2)  # assume mean(iidIC_tmle) = 0
   
   # MLE inference based on the iid IC: (** Use QY.init not QY.star) *** NOT ACCURATE
   iidIC_mle <- (h_wts * (obsYvals - QY.init) + fWi - ests_mat[rownames(ests_mat) %in% "MLE",]) * obs.wts
-  var_iid.mle <- mean((iidIC_mle)^2)
+  var_iid.mle <- wtd.var(iidIC_mle, weights = obs.wts, normwt = T)
+  # var_iid.mle <- mean((iidIC_mle)^2)  # assume mean(iidIC_mle) = 0
   
   # IPTW h (based on the mixture density clever covariate (h)):
-  iidIC_iptw_h <- (h_wts * (obsYvals) - ests_mat[rownames(ests_mat) %in% "IPTW",]) * obs.wts
-  var_iid.iptw <- mean((iidIC_iptw_h)^2)
+  iidIC_iptw <- h_wts * (obsYvals) - ests_mat[rownames(ests_mat) %in% "IPTW",]
+  var_iid.iptw <- wtd.var(iidIC_iptw, weights = obs.wts, normwt = T)
+  # var_iid.iptw <- mean((iidIC_iptw)^2)  # assume mean(iidIC_iptw) = 0
   
   as.var_mat <- matrix(0, nrow = 3, ncol = 1)
   as.var_mat[, 1] <- c(var_iid.tmle, var_iid.iptw, var_iid.mle)
   rownames(as.var_mat) <- estnames; colnames(as.var_mat) <- "Var"
-  return(list(as.var_mat = as.var_mat, IC = list(IC.tmle = iidIC_tmle, IC.iptw = iidIC_iptw_h, IC.gcomp = iidIC_mle)))
+  return(list(as.var_mat = as.var_mat, IC = list(IC.tmle = iidIC_tmle, IC.iptw = iidIC_iptw, IC.gcomp = iidIC_mle)))
 }
 
 
@@ -206,7 +210,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   #************************************************  
   IPTW <- Y
   IPTW[!determ.Q] <- Y[!determ.Q] * h_wts[!determ.Q]
-  IPTW_unwt <- mean(IPTW)
+  # IPTW_unwt <- mean(IPTW)
   IPTW <- weighted.mean(IPTW, w = obs.wts)
   
   #************************************************
@@ -226,12 +230,12 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
                                                      MC_fit_params = MC_fit_params, 
                                                      model.h.fit = model.h.fit))
   MCS_res_wt <- MCS_res$wtmean_psis_all
-  ests_unwt <- MCS_res$unwt.mean_psis_all
+  # ests_unwt <- MCS_res$unwt.mean_psis_all
   
-  ests_unwt <- c(TMLE = ests_unwt[["TMLE"]], IPTW = IPTW_unwt, MLE = ests_unwt[["MLE"]])
-  ests_unwt_mat <- matrix(0L, nrow = length(ests_unwt), ncol = 1)
-  ests_unwt_mat[, 1] <- ests_unwt
-  rownames(ests_unwt_mat) <- names(ests_unwt); colnames(ests_unwt_mat) <- "estimate"
+  # ests_unwt <- c(TMLE = ests_unwt[["TMLE"]], IPTW = IPTW_unwt, MLE = ests_unwt[["MLE"]])
+  # ests_unwt_mat <- matrix(0L, nrow = length(ests_unwt), ncol = 1)
+  # ests_unwt_mat[, 1] <- ests_unwt
+  # rownames(ests_unwt_mat) <- names(ests_unwt); colnames(ests_unwt_mat) <- "estimate"
 
   ests <- c(TMLE = MCS_res_wt[["TMLE"]], IPTW = IPTW, MLE = MCS_res_wt[["MLE"]])
   ests_mat <- matrix(0L, nrow = length(ests), ncol = 1)
@@ -269,7 +273,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
               wts_mat = wts_mat,
               fWi_mat = fWi_mat,
               QY_mat = QY_mat,
-              ests_unwt_mat = ests_unwt_mat, 
+              # ests_unwt_mat = ests_unwt_mat, 
               obs.wts = obs.wts, 
               h.g0_GenericModel = model.h.fit$genericmodels.g0,
               h.gstar_GenericModel = model.h.fit$genericmodels.gstar))
