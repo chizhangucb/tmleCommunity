@@ -304,7 +304,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @param f_gstar2 Either a function or a vector or a matrix/ data frame of counterfactual exposures, dependin on the number of exposure variables.
 #'  It has the same components and requirements as f_gstar1
 #' @param Qform Character vector of regression formula for Ynode. If not specified, the outcome variable is regressed on all covariates included in 
-#"  Anodes, Wnodes and Enodes.
+#'  Anodes, Wnodes and Enodes.
 #' @param Qbounds Upper and lower bounds on Y and predicted values for initial Q. Defaults to the range of Y, widened by 10% of the min and max values.
 #' @param alpha Used to keep predicted values for initial Q bounded away from (0,1) for logistic fluctuation.
 #' @param fluctuation Default to "logistic", it could also be "linear" (for targeting step).
