@@ -272,7 +272,7 @@ is.DatKeepClass <- function(DatKeepClass) "DatKeepClass" %in% class(DatKeepClass
 #'                                                           
 #'  For disretization of continous and categorical variables, it can automatically detect / set covariates type (binary, categor, 
 #'  contin), detect / set bin intervals, and construct bin indicators. Besides, it provides methods for generating new exposures under 
-#'  user-specific arbitrary intervention g^{star} through \code{self$make.dat.sVar}, and allows user to replace missing values with                                                 
+#'  user-specific arbitrary intervention \eqn{g^{*}} through \code{self$make.dat.sVar}, and allows user to replace missing values with                                                 
 #'  user-specific \code{gvars$misXreplace} (Default to 0). Its pointers will be passed on to \code{GenericModel} functions: using in
 #'  \code{$fit()}, \code{$predict()} and \code{$predictAeqa()}.
 #'  
@@ -287,47 +287,51 @@ is.DatKeepClass <- function(DatKeepClass) "DatKeepClass" %in% class(DatKeepClass
 #'    \item{\code{obs.wts}} - Vectopr of observation (sampling) weights (of length \code{ndat.sVar}). If NULL, assumed to be all 1. 
 #'    \item{\code{YnodeVals}} - Vector of outcome values (Ynode) in observed data
 #'    \item{\code{det.Y}} - Logical vector, where \code{YnodeVals[det.Y==TRUE]} are deterministic and set to NA. 
-#'    \item{\code{p}} - Number of Monte-Carlo simulations performed 
+#'    \item{\code{p}} - Number of Monte-Carlo simulations performed. 
 #'    \item{\code{ndat.sVar}} - Number of observations in the observed data frame.
 #' }
 #' @section Methods:
 #' \describe{
-#'   \item{\code{new(Odata, nodes, YnodeVals, det.Y, norm.c.sVars = FALSE, ..)}}{...}
-#'   \item{\code{addYnode(YnodeVals, det.Y)}}{...}
-#'   \item{\code{addObsWeights(obs.wts)}}{...}                                                        
+#'   \item{\code{new(Odata, nodes, YnodeVals, det.Y, norm.c.sVars = FALSE, ..)}}{Instantiate an new instance of \code{DatKeepClass} that is 
+#'     used for storing and manipulating the input data.}
+#'   \item{\code{addYnode(YnodeVals, det.Y)}}{Add protected Y node to private field and set to NA all determinisitc Y values for public field YnodeVals.}
+#'   \item{\code{addObsWeights(obs.wts)}}{Add observation weights to public field.}                                                        
 #'   \item{\code{evalsubst(subset_vars, subset_exprs = NULL)}}{...}
-#'   \item{\code{get.dat.sVar(rowsubset = TRUE, covars)}}{...}
-#'   \item{\code{get.outvar(rowsubset = TRUE, var)}}{...}
-#'   \item{\code{def.types.sVar(type.sVar = NULL)}}{...}
-#'   \item{\code{set.sVar.type(name.sVar, new.type)}}{...}
-#'   \item{\code{get.sVar.type(name.sVar)}}{...}
-#'   \item{\code{is.sVar.cont(name.sVar)}}{...}
-#'   \item{\code{is.sVar.cat(name.sVar)}}{...}
-#'   \item{\code{get.sVar(name.sVar)}}{...}
-#'   \item{\code{set.sVar(name.sVar, new.sVarVal)}}{...}
-#'   \item{\code{bin.nms.sVar(name.sVar, nbins)}}{...}
-#   \item{\code{pooled.bin.nm.sVar(name.sVar)}}{...}
+#'   \item{\code{get.dat.sVar(rowsubset = TRUE, covars)}}{Subsetting/returning covariate design mat for \code{\link{BinaryOutModel}} Class.}
+#'   \item{\code{get.outvar(rowsubset = TRUE, var)}}{Subsetting/returning a vector of outcome variable for \code{\link{BinaryOutModel}} Class.}
+#'   \item{\code{get.obsweights(rowsubset = TRUE)}}{Subsetting/returning a vector of observation weights for \code{\link{BinaryOutModel}} Class.}
+#'   \item{\code{def.types.sVar(type.sVar = NULL)}}{Define the type (class) of each variable (sVar) in input data: bin, cat or cont}
+#'   \item{\code{set.sVar.type(name.sVar, new.type)}}{Assign a new class type to one variable that belongs to the input data.}
+#'   \item{\code{get.sVar.type(name.sVar)}}{Get the class type of a variable.}
+#'   \item{\code{is.sVar.cont(name.sVar)}}{Check if the variable is continuous.}
+#'   \item{\code{is.sVar.cat(name.sVar)}}{Check if the variable is categorical.}
+#'   \item{\code{is.sVar.bin(name.sVar)}}{Check if the variable is binary.}
+#'   \item{\code{get.sVar(name.sVar)}}{Get a vector of the variable values.}
+#'   \item{\code{set.sVar(name.sVar, new.sVarVal)}}{Assign a vector of new values to the specific variable.}
+#'   \item{\code{bin.nms.sVar(name.sVar, nbins)}}{Define names of bin indicators for sVar.}
+#   \item{\code{pooled.bin.nm.sVar(name.sVar)}}{Define a name of pooled bin indicators for sVar.}
 #'   \item{\code{detect.sVar.intrvls(name.sVar, nbins, bin_bymass, bin_bydhist, max_nperbin)}}{...}
-#'   \item{\code{detect.cat.sVar.levels(name.sVar)}}{...}
-#'   \item{\code{get.sVar.bw(name.sVar, intervals)}}{...}
-#'   \item{\code{get.sVar.bwdiff(name.sVar, intervals)}}{...}
-#'   \item{\code{binirize.sVar(name.sVar, ...)}}{...}
-#'   \item{\code{norm.cont.sVars()}}{...}
-#'   \item{\code{fixmiss_sVar()}}{...}
-#'   \item{\code{make.dat.sVar(p = 1, f.g_fun = NULL, regform = NULL)}}{...}
+#'   \item{\code{detect.cat.sVar.levels(name.sVar)}}{Detect the unique categories in categorical sVar, returning in increasing order.}
+#'   \item{\code{get.sVar.bw(name.sVar, intervals)}}{Get the bin widths vector for the discretized continuous sVar.}
+#'   \item{\code{get.sVar.bwdiff(name.sVar, intervals)}}{Get the bin widths differences vector for the discretized continuous sVar.}
+#'   \item{\code{binirize.sVar(name.sVar, ...)}}{Create a matrix of dummy bin indicators for categorical/continuous sVar.}
+#'   \item{\code{norm.cont.sVars()}}{Normalize continuous sVars (Note that this process is memory-costly).}
+#'   \item{\code{fixmiss_sVar()}}{Replace all missing (NA) values with a default integer (Default to 0).}
+#'   \item{\code{make.dat.sVar(p = 1, f.g_fun = NULL, regform = NULL)}}{generate new exposures under user-specific arbitrary intervention 
+#'     \code{f.g_fun} and construct a data.frames that combines all covariates, replacing the old exposures with the new ones.}
 #' }
 #' @section Active Bindings:
 #' \describe{
-#'    \item{\code{names.sVar}}{...}
-#'    \item{\code{names.c.sVar}}{...}
-#'    \item{\code{ncols.sVar}}{...}
-#'    \item{\code{nobs}}{...}
-#'    \item{\code{dat.sVar}}{...}
-#'    \item{\code{dat.bin.sVar}}{...}
-#'    \item{\code{active.bin.sVar}}{}
-#'    \item{\code{emptydat.sVar}}{...}
-#'    \item{\code{emptydat.bin.sVar}}{...}
-#'    \item{\code{noNA.Ynodevals}}{...}
+#'    \item{\code{names.sVar}}{Return variable names of the input data.}
+#'    \item{\code{names.c.sVar}}{Get continuous variable names of the input data.}
+#'    \item{\code{ncols.sVar}}{Get the number of columns of the input data.}
+#'    \item{\code{nobs}}{Get the number of observations of the input data.}
+#'    \item{\code{dat.sVar}}{Get a data frame/matrix object that stores the entire dataset (including all summaries sVars).}
+#'    \item{\code{dat.bin.sVar}}{Get a stored matrix for bin indicators on currently binarized continous sVar.}
+#'    \item{\code{active.bin.sVar}}{Get name(s) of active binarized cont sVar(s), changing as fit/predict is called.}
+#'    \item{\code{emptydat.sVar}}{Wipe out dat.sVar.}
+#'    \item{\code{emptydat.bin.sVar}}{Wipe out dat.bin.sVar}
+#'    \item{\code{noNA.Ynodevals}}{Get the observed Y without any missing values.}
 #'    \item{\code{nodes}}{...}
 #'    \item{\code{type.sVar}}{}
 #' }
@@ -526,14 +530,15 @@ DatKeepClass <- R6Class(classname = "DatKeepClass",
     },    
     is.sVar.cont = function(name.sVar) { self$get.sVar.type(name.sVar) %in% gvars$sVartypes$cont },    
     is.sVar.cat = function(name.sVar) { self$get.sVar.type(name.sVar) %in% gvars$sVartypes$cat },
-    # is.sVar.bin = function(name.sVar) { self$get.sVar.type(name.sVar) %in% gvars$sVartypes$bin },
+    is.sVar.bin = function(name.sVar) { self$get.sVar.type(name.sVar) %in% gvars$sVartypes$bin },
       
     # --------------------------------------------------------------------------------------
     # Methods for directly handling one continous/categorical sVar in self$mat.sVar;
     # --------------------------------------------------------------------------------------
-    get.sVar = function(name.sVar) { self$dat.sVar[, name.sVar]
-      # x <- self$dat.sVar[, name.sVar, with=FALSE]
-      # if (is.list(x) || is.data.frame(x)) x <- x[[1]]
+    get.sVar = function(name.sVar) { # self$dat.sVar[, name.sVar]
+      x <- self$dat.sVar[, name.sVar, with=FALSE]
+      if (is.list(x) || is.data.frame(x)) x <- x[[1]]
+      return(x)
     },
     set.sVar = function(name.sVar, new.sVarVal) {
       assert_that(length(new.sVarVal)==self$nobs | length(new.sVarVal)==1)
@@ -654,7 +659,8 @@ DatKeepClass <- R6Class(classname = "DatKeepClass",
         df.sVar <- temp_dat.sVar[, c(WE.nodes, self$nodes$Anodes)]
         # need to sample A under f.g_fun (gstar or known g0)
       } else {
-        if (is.null(self$nodes$Anodes)) stop("Anode(s) were not appropriately specified and is null; can't replace observed Anode with that sampled under g_star")
+        if (is.null(self$nodes$Anodes)) 
+            stop("Anode(s) were not appropriately specified and is null; can't replace observed Anode with that sampled under g_star")
         df.sVar <- as.data.frame(matrix(nrow = (nobs * p), ncol = length(c(WE.nodes, self$nodes$Anodes))))  # pre-allocate result matx sVar
         temp_dat.sVar <- self$dat.sVar  
         WE_dat <- temp_dat.sVar[, WE.nodes]
