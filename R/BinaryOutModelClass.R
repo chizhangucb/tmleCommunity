@@ -364,13 +364,14 @@ join.Xmat = function(X_mat, sVar_melt_DT, ID) {
 #'   \item{\code{newdata(newdata, getoutvar = TRUE, ...)}}{Evaluate subset and perform correct subseting of data to construct 
 #'    X_mat, Yvals & wt_vals.}
 #'   \item{\code{define.subset.idx(data)}}{Create a logical vector which is converted from subset_expr}
-#'   \item{\code{fit(overwrite = FALSE, data, predict = FALSE, savespace = TRUE, ...)}}{fit a binary regression.}
+#'   \item{\code{fit(overwrite = FALSE, data, predict = FALSE, savespace = TRUE, ...)}}{fit a binary regression. Note that savespace is Logical.
+#'    If TRUE, wipe out all internal data when doing many stacked regressions.}
 #'   \item{\code{copy.fit(bin.out.model)}}{Take fitted BinaryOutModel object as an input and save the fit to itself.}
 #'   \item{\code{predict(newdata, savespace = TRUE, ...)}}{Predict the response P(A = 1|W = w, E = e).}
 #'   \item{\code{copy.predict(bin.out.model)}}{Tke BinaryOutModel object that contains the predictions for P(A=1|w,e) and save to itself}
 #'   \item{\code{predictAeqa(newdata, bw.j.sA_diff, savespace = TRUE, wipeProb = TRUE)}}{Predict the response P(A = a|W = w, E = e) for 
 #'    observed A, W, E. Note that wipeProb is logical argument for self$wipe.alldat. If FALSE, vectors of probA1 & probAeqa will be kept.}
-#'   \item{\code{show()}}{Print regression formula, including outcome and predictor names}
+#'   \item{\code{show()}}{Print regression formula, including outcome and predictor names.}
 #' }
 #' @section Active Bindings:
 #' \describe{
