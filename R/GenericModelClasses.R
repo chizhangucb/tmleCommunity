@@ -16,8 +16,9 @@ newsummarymodel.binary <- function(reg, ...) BinaryOutModel$new(reg = reg, ...)
 #' R6 class for defining regression models that evaluate multivariate joint conditional density P(A|W,E) (or P(A|W) if community-specific)
 #'
 #'  \code{RegressionClass} provides multiple options used when estimating a joint conditional density \code{P(A|W,E)}. Note that \code{A} 
-#'  can be multivariate, if so, hazard specification will build a factorization sequence \code{P(A|W,E)} = \code{P(A[1],...,A[j]|W,E)} = 
-#'  \code{P(A[1]|W,E)} * \code{P(A[2]|W, E, A[1])} * ... * \code{P(A[j]|W, E, A[1],...,A[j-1])}, where each of the compoenents \code{A[i]} can be 
+#'  can be multivariate, if so, hazard specification will factorize \code{P(A|W,E)} = \code{P(A[1],...,A[j]|W,E)} as a sequence
+#'  \code{P(A[1]|W,E)} * \code{P(A[2]|W, E, A[1])} * ... *               
+#'  \code{P(A[j]|W, E, A[1],...,A[j-1])}, where each of the compoenents \code{A[i]} can be 
 #'  either binary, categorical or continuous, and each of the conditional densities \code{P(A[i]|W, E, A[1],...,A[i-1])} will be controlled by 
 #'  a new instance of \code{\link{GenericModel}} class. If \code{A[i]} binary, \code{P(A[i]|W, E, A[1],...,A[i-1])} will be esimtated by a user-
 #'  specific library of candidate algorithms, including parametric estimators such as logistic model with only main terms, and data-adaptive 
