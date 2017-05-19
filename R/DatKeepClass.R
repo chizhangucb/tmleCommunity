@@ -297,10 +297,10 @@ is.DatKeepClass <- function(DatKeepClass) "DatKeepClass" %in% class(DatKeepClass
 #'   \item{\code{addYnode(YnodeVals, det.Y)}}{Add protected Y node to private field and set to NA all determinisitc Y values for public field YnodeVals.}
 #'   \item{\code{addObsWeights(obs.wts)}}{Add observation weights to public field.}                                                        
 #'   \item{\code{evalsubst(subset_vars, subset_exprs = NULL)}}{...}
-#'   \item{\code{get.dat.sVar(rowsubset = TRUE, covars)}}{Subset/return covariate design mat for \code{\link{BinaryOutModel}} Class.}
-#'   \item{\code{get.outvar(rowsubset = TRUE, var)}}{Subset/return a vector of outcome variable for \code{\link{BinaryOutModel}} Class.}
-#'   \item{\code{get.obsweights(rowsubset = TRUE)}}{Subset/return a vector of observation weights for \code{\link{BinaryOutModel}} Class.}
-#'   \item{\code{def.types.sVar(type.sVar = NULL)}}{Define the type (class) of each variable (sVar) in input data: bin, cat or cont}
+#'   \item{\code{get.dat.sVar(rowsubset = TRUE, covars)}}{Subset/return covariate design mat for \code{\link{BinaryOutModel}}}
+#'   \item{\code{get.outvar(rowsubset = TRUE, var)}}{Subset/return a vector of outcome variable for \code{\link{BinaryOutModel}}}
+#'   \item{\code{get.obsweights(rowsubset = TRUE)}}{Subset/return a vector of observation weights for \code{\link{BinaryOutModel}}}
+#'   \item{\code{def.types.sVar(type.sVar = NULL)}}{Define the class of each variable in input data: bin, cat or cont.}
 #'   \item{\code{set.sVar.type(name.sVar, new.type)}}{Assign a new class type to one variable that belongs to the input data.}
 #'   \item{\code{get.sVar.type(name.sVar)}}{Get the class type of a variable.}
 #'   \item{\code{is.sVar.cont(name.sVar)}}{Check if the variable is continuous.}
@@ -312,12 +312,12 @@ is.DatKeepClass <- function(DatKeepClass) "DatKeepClass" %in% class(DatKeepClass
 #   \item{\code{pooled.bin.nm.sVar(name.sVar)}}{Define a name of pooled bin indicators for sVar.}
 #'   \item{\code{detect.sVar.intrvls(name.sVar, nbins, bin_bymass, bin_bydhist, max_nperbin)}}{...}
 #'   \item{\code{detect.cat.sVar.levels(name.sVar)}}{Detect the unique categories in categorical sVar, returning in increasing order.}
-#'   \item{\code{get.sVar.bw(name.sVar, intervals)}}{Get a bin widths vector for the discretized continuous sVar.}
+#'   \item{\code{get.sVar.bw(name.sVar, intervals)}}{Get the bin widths vector for the discretized cont sVar.}
 #'   \item{\code{get.sVar.bwdiff(name.sVar, intervals)}}{Get the bin widths differences vector for the discretized continuous sVar.}
-#'   \item{\code{binirize.sVar(name.sVar, ...)}}{Create a matrix of dummy bin indicators for categorical/continuous sVar.}
+#'   \item{\code{binirize.sVar(name.sVar, ...)}}{Create a matrix of bin indicators for categorical/continuous sVar.}
 #'   \item{\code{norm.cont.sVars()}}{Normalize continuous sVars (Note that this process is memory-costly).}
 #'   \item{\code{fixmiss_sVar()}}{Replace all missing (NA) values with a default integer (Default to 0).}
-#'   \item{\code{make.dat.sVar(p = 1, f.g_fun = NULL, regform = NULL)}}{generate new exposures under user-specific arbitrary intervention 
+#'   \item{\code{make.dat.sVar(p = 1, f.g_fun = NULL, regform = NULL)}}{Generate new exposures under user-specific arbitrary intervention 
 #'     \code{f.g_fun} and construct a data.frames that combines all covariates, replacing the old exposures with the new ones.}
 #' }
 #' @section Active Bindings:
@@ -326,7 +326,7 @@ is.DatKeepClass <- function(DatKeepClass) "DatKeepClass" %in% class(DatKeepClass
 #'    \item{\code{names.c.sVar}}{Get continuous variable names of the input data.}
 #'    \item{\code{ncols.sVar}}{Get the number of columns of the input data.}
 #'    \item{\code{nobs}}{Get the number of observations of the input data.}
-#'    \item{\code{dat.sVar}}{Get a data frame/matrix object that stores the entire dataset (including all summaries sVars).}
+#'    \item{\code{dat.sVar}}{Get a data frame object that stores the entire dataset (including all summaries sVars).}
 #'    \item{\code{dat.bin.sVar}}{Get a stored matrix for bin indicators on currently binarized continous sVar.}
 #'    \item{\code{active.bin.sVar}}{Get name(s) of active binarized cont sVar(s), changing as fit/predict is called.}
 #'    \item{\code{emptydat.sVar}}{Wipe out dat.sVar.}
