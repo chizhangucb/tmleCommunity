@@ -60,7 +60,7 @@ newsummarymodel.binary <- function(reg, ...) BinaryOutModel$new(reg = reg, ...)
 #'                   pool_cont = getopt("poolContinVar")}}{Instantiate an new instance of \code{RegressionClass}}
 #'   \item{\code{ChangeManyToOneRegresssion(k_i, reg)}}{Clone the parent \code{RegressionClass} (\code{reg}) that include \code{length(self$outvar)} 
 #'   regressions, and reset self to a single univariate \code{k_i} regression for outcome \code{self$outvar[[k_i]]}.}
-#'   \item{\code{resetS3class()}}{...}
+#'   \item{\code{resetS3class()}}{Reset the object class to "RegressionClass" and "R6".}
 #' }
 #' @section Active Bindings:
 #' \describe{
@@ -210,14 +210,13 @@ RegressionClass <- R6Class("RegressionClass",
 #' @section Methods:
 #' \describe{
 #'   \item{\code{new(reg, ...)}}{Use \code{reg} (a \code{\link{RegressionClass}} class object) to instantiate an new object of \code{GenericModel}}
-#'   \item{\code{length}}{...}
+#'   \item{\code{length}}{Get the number of regression models (i.e., the number of exposure viarables)}
 #'   \item{\code{getPsAsW.models}}{Get all model objects (one model object per outcome var A[j])}
 #'   \item{\code{getcumprodAeqa}}{Get joint prob as a vector of the cumulative prod over j for P(A[j]=a[j]|W,E)}
-#'   \item{\code{fit(data, savespace = TRUE)}}{savespace is Logical. If TRUE, wipe out all internal data when doing many stacked regressions}
+#'   \item{\code{fit(data, savespace = TRUE)}}{...}
 #'   \item{\code{copy.fit(Generic.Model)}}{...}
 #'   \item{\code{predict(newdata, savespace = TRUE)}}{...}
-#'   \item{\code{predictAeqa(newdata, savespace = TRUE, wipeProb = TRUE, ...)}}{calculate the likelihood for observed A, W, E. Note that wipeProb is 
-#'     logical argument for \code{self$wipe.alldat}. If FALSE, vectors of probA1 & probAeqa will be kept.}
+#'   \item{\code{predictAeqa(newdata, savespace = TRUE, wipeProb = TRUE, ...)}}{...}
 #' }
 #' @section Active Bindings:
 #' \describe{
