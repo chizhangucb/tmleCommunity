@@ -297,10 +297,10 @@ is.DatKeepClass <- function(DatKeepClass) "DatKeepClass" %in% class(DatKeepClass
 #'   \item{\code{addYnode(YnodeVals, det.Y)}}{Add protected Y node to private field and set to NA all determinisitc Y values for public field YnodeVals.}
 #'   \item{\code{addObsWeights(obs.wts)}}{Add observation weights to public field.}                                                        
 #'   \item{\code{evalsubst(subset_vars, subset_exprs = NULL)}}{...}
-#'   \item{\code{get.dat.sVar(rowsubset = TRUE, covars)}}{Subset/return covariate design mat for \code{\link{BinaryOutModel}}}
-#'   \item{\code{get.outvar(rowsubset = TRUE, var)}}{Subset/return a vector of outcome variable for \code{\link{BinaryOutModel}}}
-#'   \item{\code{get.obsweights(rowsubset = TRUE)}}{Subset/return a vector of observation weights for \code{\link{BinaryOutModel}}}
-#'   \item{\code{def.types.sVar(type.sVar = NULL)}}{Define the class of each variable in input data: bin, cat or cont.}
+#'   \item{\code{get.dat.sVar(rowsubset = TRUE, covars)}}{Subset/return covariate design mat for \code{\link{BinaryOutModel}}.}
+#'   \item{\code{get.outvar(rowsubset = TRUE, var)}}{Subset/return a vector of outcome variable for \code{\link{BinaryOutModel}}.}
+#'   \item{\code{get.obsweights(rowsubset = TRUE)}}{Subset/return a vector of observation weights for \code{\link{BinaryOutModel}}.}
+#'   \item{\code{def.types.sVar(type.sVar = NULL)}}{Define each variable' class in input data: bin, cat or cont.}
 #'   \item{\code{set.sVar.type(name.sVar, new.type)}}{Assign a new class type to one variable that belongs to the input data.}
 #'   \item{\code{get.sVar.type(name.sVar)}}{Get the class type of a variable.}
 #'   \item{\code{is.sVar.cont(name.sVar)}}{Check if the variable is continuous.}
@@ -314,7 +314,7 @@ is.DatKeepClass <- function(DatKeepClass) "DatKeepClass" %in% class(DatKeepClass
 #'   \item{\code{detect.cat.sVar.levels(name.sVar)}}{Detect the unique categories in categorical sVar, returning in increasing order.}
 #'   \item{\code{get.sVar.bw(name.sVar, intervals)}}{Get the bin widths vector for the discretized cont sVar.}
 #'   \item{\code{get.sVar.bwdiff(name.sVar, intervals)}}{Get the bin widths differences vector for the discretized continuous sVar.}
-#'   \item{\code{binirize.sVar(name.sVar, ...)}}{Create a matrix of bin indicators for categorical/continuous sVar.}
+#'   \item{\code{binirize.sVar(name.sVar, ...)}}{Create a matrix of bin indicators for categorical/cont sVar.}
 #'   \item{\code{norm.cont.sVars()}}{Normalize continuous sVars (Note that this process is memory-costly).}
 #'   \item{\code{fixmiss_sVar()}}{Replace all missing (NA) values with a default integer (Default to 0).}
 #'   \item{\code{make.dat.sVar(p = 1, f.g_fun = NULL, regform = NULL)}}{Generate new exposures under user-specific arbitrary intervention 
