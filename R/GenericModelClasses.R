@@ -216,8 +216,8 @@ RegressionClass <- R6Class("RegressionClass",
 #'   \item{\code{fit(data, savespace = TRUE)}}{savespace is Logical. If TRUE, wipe out all internal data when doing many stacked regressions}
 #'   \item{\code{copy.fit(Generic.Model)}}{...}
 #'   \item{\code{predict(newdata, savespace = TRUE)}}{...}
-#'   \item{\code{predictAeqa(newdata, savespace = TRUE, wipeProb = TRUE, ...)}}{wipeProb is logical argument for \code{self$wipe.alldat}. If 
-#'     FALSE, vectors of probA1 & probAeqa will be kept.}
+#'   \item{\code{predictAeqa(newdata, savespace = TRUE, wipeProb = TRUE, ...)}}{calculate the likelihood for observed A, W, E. Note that wipeProb is 
+#'     logical argument for \code{self$wipe.alldat}. If FALSE, vectors of probA1 & probAeqa will be kept.}
 #' }
 #' @section Active Bindings:
 #' \describe{
@@ -445,7 +445,7 @@ def_regs_subset <- function(self) {
 #' }
 #' @section Methods:
 #' \describe{
-#'   \item{\code{new(reg, DataStorageClass.g0, DataStorageClass.gstar, ...)}}{...}
+#'   \item{\code{new(reg, DataStorageClass.g0, DataStorageClass.gstar, ...)}}{Instantiate an new instance of \code{ContinModel} for a univariate continuous outcome A[j]}
 #'   \item{\code{fit(data, savespace = TRUE)}}{...}
 #'   \item{\code{predict(newdata, savespace = TRUE)}}{...}
 #'   \item{\code{predictAeqa(newdata, savespace = TRUE, wipeProb = TRUE)}}{...}
@@ -585,7 +585,7 @@ ContinModel <- R6Class(classname = "ContinModel",
 #' }
 #' @section Methods:
 #' \describe{
-#'   \item{\code{new(reg, DatKeepClass.g0, ...)}}{...}
+#'   \item{\code{new(reg, DatKeepClass.g0, ...)}}{Instantiate an new instance of \code{CategorModel} for a univariate categorical outcome A[j]}
 #'   \item{\code{fit(data)}}{...}
 #'   \item{\code{predict(newdata)}}{...}
 #'   \item{\code{predictAeqa(newdata)}}{...}
