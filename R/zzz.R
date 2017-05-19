@@ -35,6 +35,8 @@ gvars$opts.allowedVals <- list(Qestimator = c("speedglm__glm", "glm__glm", "h2o_
   )
 
 #' Print Current Option Settings for \code{tmleCommunity}
+#'
+#' Print Current Option Settings for \code{tmleCommunity}
 #' @return Invisibly returns a list of \code{tmleCommunity} options.
 #' @seealso \code{\link{tmleCom_Options}}
 #' @export
