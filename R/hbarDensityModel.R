@@ -1,7 +1,34 @@
 #-----------------------------------------------------------------------------
 # Methods for fitting and predicting the IPTW (clever covariate) for covariates (A, W, E): P_{g^*}(A | W, E)/P_{g0}(A | W, E)
-# 2 ancillary functions: predict.hbars, fit.hbars
+# 3 ancillary functions: fitGenericDensity, predict.hbars, fit.hbars
 #-----------------------------------------------------------------------------
+
+#------------------------------------
+#' Define and fit the multivariate conditional density under the user-specified arbitrary intervention function.
+#'
+#' Defines and fits regression models for the conditional density \code{P(A=a|W=w)} where a are generated under the user-specified
+#' arbitrary (can be static, dynamic or stochastic) intervention function \code{f_gstar}. Note that A can be multivariate 
+#' \code{(A[1], ..., A[j])} and each of the compoenents A[i] can be either binary, categorical or continuous. See detailed description
+#' in \code{\link{RegressionClass}}.
+#' @param data \code{data.frame} with named columns, containing \code{Wnodes}, \code{Anode} and \code{Ynode}.
+#' @param Anodes Column names or indices in \code{data} of outcome variables; exposures can be either binary, categorical or continuous.
+#' @param Wndoes Column names or indices in \code{data} of baseline covariates. Factors are not currently allowed.
+#' @param gform Character vector of regression formula for estimating the conditional density of P(A | W)
+#' @param f_gstar Either a function or a vector or a matrix/ data frame of counterfactual exposures. See details in function argument 
+#'  \code{f_gstar1} in \code{\link{tmleCommunity}}.
+#' @param h.gstar_GenericModel ...
+#' @param lbound ...
+#' @param n_MCsims ...
+#' @param obs.wts ...
+#' @param rndseed ...
+#' @param verbose ...
+#' @return A named list with 3 items containing the estimation results for:
+#'  \itemize{
+#'  \item \code{h_gstar} - 
+#'  \item \code{OData.gstar} - 
+#'  \item \code{model.h.fit} - 
+#' }
+#' @export
 fitGenericDensity <- function(data, Anodes, Wnodes, gform = NULL, f_gstar, h.gstar_GenericModel = NULL, 
                               lbound = 0.025, n_MCsims = 1, obs.wts = NULL, 
                               rndseed = NULL, verbose = TRUE) {
@@ -92,7 +119,7 @@ fitGenericDensity <- function(data, Anodes, Wnodes, gform = NULL, f_gstar, h.gst
   h_gstar <- bound(h_gstar, c(0, 1/lbound))
   
   model.h.fit <- list(genericmodels.gstar = genericmodels.gstar, lbound = lbound)
-  return(list(h_gstar = h_gstar, model.h.fit = model.h.fit, OData.gstar = OData.gstar))
+  return(list(h_gstar = h_gstar, OData.gstar = OData.gstar, model.h.fit = model.h.fit))
 }
 
 
