@@ -52,7 +52,7 @@ CalcMonteCarloEsts <- function(OData.ObsP0, OData.gstar, MC_fit_params, model.h.
 
 ## ---------------------------------------------------------------------
 #' R6 class for evaluating different plug-in estimators via for Monte-Carlo resampling where new exposures are generated 
-#' under the user-specified arbitrary intervention function \eqn{g^{*}}.
+#' under the user-specified arbitrary intervention function g*.
 #' 
 #'  \code{MonteCarloSimClass} only resamples \code{A} under the intervention function \code{g_star}, never \code{W} or \code{E}.
 #'  For each MC simulation, it firstly treats \code{model.Q.init} as the fitted models for \code{E[Y|A,W,E]}, then estimate 
