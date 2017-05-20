@@ -89,6 +89,20 @@ print_tmleCom_opts <- function() {
 #'  c("SL.glm", "SL.step", "SL.glm.interaction"). See \code{SuperLearner::listWrappers()} for more available algorithms.
 #' @return Invisibly returns a list with old option settings.
 # @seealso \code{\link{print_tmlenet_opts}}
+#' @examples
+#' tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", nbins = 20)
+#'
+#' tmleCom_Options(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble", maxNperBin = 10000,
+#'                     h2olearner = c("h2o.glm.wrapper", "h2o.randomForest.wrapper"), CVfolds = 10)
+#'
+#' tmleCom_Options(Qestimator = "SuperLearner", gestimator = "SuperLearner", maxNperBin = nrow(data),
+#'                     g.SL.library = c("SL.glm", "SL.glmnet", "SL.ridge", "SL.stepAIC"), CVfolds = 5)
+#' 
+#' tmleCom_Options(Qestimator = "SuperLearner", gestimator = "h2o__ensemble", maxNperBin = nrow(data),
+#'                     g.SL.library = c("SL.glm", "SL.glmnet", "SL.ridge", "SL.stepAIC"), CVfolds = 5,
+#'                     h2ometalearner = "h2o.deeplearning.wrapper", 
+#'                     h2olearner = c("h2o.gbm.wrapper", "h2o.randomForest.wrapper"))
+#' 
 #' @export
 tmleCom_Options <- function(Qestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble", "SuperLearner"),  
                             gestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble", "SuperLearner"),  
