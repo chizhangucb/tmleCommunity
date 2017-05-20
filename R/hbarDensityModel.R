@@ -6,7 +6,7 @@
 #------------------------------------
 #' Define and fit the multivariate conditional density under the user-specified arbitrary intervention function.
 #'
-#' Defines and fits regression models for the conditional density \code{P(A=a|W=w)} where a are generated under the user-specified
+#' Defines and fits regression models for the conditional density \code{P(A=a|W=w)} where a is generated under the user-specified
 #' arbitrary (can be static, dynamic or stochastic) intervention function \code{f_gstar}. Note that A can be multivariate 
 #' \code{(A[1], ..., A[j])} and each of the compoenents A[i] can be either binary, categorical or continuous. See detailed description
 #' in \code{\link{RegressionClass}}.
@@ -24,10 +24,12 @@
 #' @param verbose ...
 #' @return A named list with 3 items containing the estimation results for:
 #'  \itemize{
-#'  \item \code{h_gstar} - 
-#'  \item \code{OData.gstar} - 
-#'  \item \code{model.h.fit} - 
+#'  \item \code{h_gstar} - A vector of likelihood prediction for \code{P(A=a|W=w)} where a is generated under the 
+#'   user-specified intervention.
+#'  \item \code{OData.gstar} - A \code{DatKeepClassclass} object,where outcomes are generated under intervention \code{f_gstar}.
+#'  \item \code{genericmodels.gstar} - A \code{GenericModel} class object that defines and models \code{P(A=a|W=w)}.
 #' }
+#' @example tests/examples/1_fitGenericDensity_examples.R
 #' @export
 fitGenericDensity <- function(data, Anodes, Wnodes, gform = NULL, f_gstar, h.gstar_GenericModel = NULL, 
                               lbound = 0.025, n_MCsims = 1, obs.wts = NULL, 
@@ -117,9 +119,8 @@ fitGenericDensity <- function(data, Anodes, Wnodes, gform = NULL, f_gstar, h.gst
   h_gstar <- genericmodels.gstar$predictAeqa(newdata = OData.ObsP0)
   h_gstar[is.nan(h_gstar)] <- 0     # 0/0 detection
   h_gstar <- bound(h_gstar, c(0, 1/lbound))
-  
-  model.h.fit <- list(genericmodels.gstar = genericmodels.gstar, lbound = lbound)
-  return(list(h_gstar = h_gstar, OData.gstar = OData.gstar, model.h.fit = model.h.fit))
+
+  return(list(h_gstar = h_gstar, OData.gstar = OData.gstar, genericmodels.gstar = genericmodels.gstar))
 }
 
 
