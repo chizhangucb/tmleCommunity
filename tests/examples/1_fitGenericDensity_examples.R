@@ -20,10 +20,13 @@ define_f.gstar <- function(shift.val, truncBD, rndseed = NULL) {
   }
   return(f.gstar)
 }
-f.gstar <- define_f.gstar(shift = sampleDat_iidcontABinY$shift.val, truncBD = sampleDat_iidcontABinY$truncBD, 
+f.gstar <- define_f.gstar(shift = sampleDat_iidcontABinY$shift.val, 
+                          truncBD = sampleDat_iidcontABinY$truncBD, 
                           rndseed = sampleDat_iidcontABinY$rndseed)
 
 ### Run
 tmleCom_Options(maxNperBin = nrow(dat_iidcontABinY))
-h_gN <- fitGenericDensity(data, Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), f_gstar = NULL, lbound = 0)$h_gstar
-h_gstar <- fitGenericDensity(data, Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), f_gstar = f.gstar, lbound = 0)$h_gstar
+h_gN <- fitGenericDensity(data, Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), 
+                          f_gstar = NULL, lbound = 0)$h_gstar
+h_gstar <- fitGenericDensity(data, Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), 
+                             f_gstar = f.gstar, lbound = 0)$h_gstar
