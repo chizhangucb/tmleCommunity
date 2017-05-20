@@ -52,7 +52,7 @@ CalcMonteCarloEsts <- function(OData.ObsP0, OData.gstar, MC_fit_params, model.h.
 
 ## ---------------------------------------------------------------------
 #' R6 class for evaluating different plug-in estimators via for Monte-Carlo resampling where new exposures are generated 
-#' under the user-specified arbitrary intervention function g^{*}.
+#' under the user-specified arbitrary intervention function \eqn{g^{*}}.
 #' 
 #'  \code{MonteCarloSimClass} only resamples \code{A} under the intervention function \code{g_star}, never \code{W} or \code{E}.
 #'  For each MC simulation, it firstly treats \code{model.Q.init} as the fitted models for \code{E[Y|A,W,E]}, then estimate 
@@ -64,24 +64,25 @@ CalcMonteCarloEsts <- function(OData.ObsP0, OData.gstar, MC_fit_params, model.h.
 #' @keywords R6 class
 #' @details
 #' \itemize{
-#' \item{\code{OData.ObsP0}} - .
-#' \item{\code{OData.gstar}} - .
-#' \item{\code{model.Q.init}} - .
-#' \item{\code{model.Q.star.cov}} - .
-#' \item{\code{model.Q.star.int}} - .
-#' \item{\code{QY.init}} - .
-#' \item{\code{QY.star.cov}} - .
-#' \item{\code{QY.star.int}} - .
+#' \item{\code{OData.ObsP0}} - A \code{DatKeepClass} class object, where exposures are generated under observed exposure mechanism g0.
+#' \item{\code{OData.gstar}} - A \code{DatKeepClass} class object, where new exposures are generated under user-specified 
+#'  intervention \eqn{g^{*}}.
+#' \item{\code{model.Q.init}} - A fitted model for \code{E[Y|A,W,E]}.
+#' \item{\code{model.Q.star.cov}} - A targeting model for covariate-based unweighted TMLE.
+#' \item{\code{model.Q.star.int}} - A targeting model for intercept-based TMLE.
+#' \item{\code{QY.init}} - Estimates of G-COMP.
+#' \item{\code{QY.star.cov}} - Estimates of covariate-based unweighted TMLE.
+#' \item{\code{QY.star.int}} - Estimates of intercept-based TMLE.
 #' \item{\code{nobs}} - Number of observations in the observed data frame.
 #' \item{\code{p}} - Number of Monte-Carlo simulations performed.
 #' }
 #' @section Methods:
 #' \describe{
-#'   \item{\code{new(OData.ObsP0, OData.gstar, ...)}}{...}
-#'   \item{\code{get.gcomp(m.Q.init)}}{...}
-#'   \item{\code{get.tmleCov(model.Q.star.cov, model.h.fit)}}{...}
-#'   \item{\code{get.tmleInt(model.Q.star.int)}}{...}
-#'   \item{\code{get.fiW()}}{...}
+#'   \item{\code{new(OData.ObsP0, OData.gstar, ...)}}{Instantiate an new instance of \code{MonteCarloSimClass}.}
+#'   \item{\code{get.gcomp(m.Q.init)}}{Predict \code{QY.init} = \eqn{E[Y_{g^*}]} based on the initial model fit \code{model.Q.init}.}
+#'   \item{\code{get.tmleCov(model.Q.star.cov, model.h.fit)}}{Update \code{QY.init} based on the targeting model \code{model.Q.star.cov}.}
+#'   \item{\code{get.tmleInt(model.Q.star.int)}}{Update \code{QY.init} based on the targeting model \code{model.Q.star.int}.}
+#'   \item{\code{get.fiW()}}{Get an estimate of fiW (hold ALL W's fixed).}
 #' }
 #' @import data.table
 #' @export
