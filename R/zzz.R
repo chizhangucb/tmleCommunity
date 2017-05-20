@@ -100,8 +100,8 @@ print_tmleCom_opts <- function() {
 #' 
 #' tmleCom_Options(Qestimator = "SuperLearner", gestimator = "h2o__ensemble", maxNperBin = nrow(data),
 #'                     g.SL.library = c("SL.glm", "SL.glmnet", "SL.ridge", "SL.stepAIC"), CVfolds = 5,
-#'                     h2ometalearner = "h2o.deeplearning.wrapper", 
-#'                     h2olearner = c("h2o.gbm.wrapper", "h2o.randomForest.wrapper"))
+#'                 h2ometalearner = "h2o.deeplearning.wrapper", 
+#'                 h2olearner = c("h2o.gbm.wrapper", "h2o.randomForest.wrapper"))
 #' 
 #' @export
 tmleCom_Options <- function(Qestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble", "SuperLearner"),  
