@@ -71,9 +71,9 @@ print_tmleCom_opts <- function() {
 #' @param maxNperBin Set the maximum number of observations in each bin when discretizing a continuous variable \code{A[j]} (applies 
 #'  directly when \code{bin.method = "equal.mass"} and indirectly when \code{bin.method = "equal.len"}, but \code{nbins = NA}).
 #' @param parfit Logical. If \code{TRUE}, perform parallel regression fits and predictions for discretized continuous variables by 
-#'  functions \code{foreach} and \code{dopar} in \code{foreach} package. Note that it requires registering a parallel backend prior 
-#'  to running \code{tmleCommunity} function, e.g., using \code{doParallel} R package and running 
-#'  \code{registerDoParallel(cores = ncores)} for \code{ncores} parallel jobs. Default to \code{FALSE}.
+#'  functions \code{foreach} and \code{dopar} in \code{foreach} package. Default to \code{FALSE}. Note that it requires registering 
+#'  a parallel backend prior to running \code{tmleCommunity} function, e.g., using \code{doParallel} R package and running 
+#'  \code{registerDoParallel(cores = ncores)} for \code{ncores} parallel jobs.
 #' @param poolContinVar Logical. If \code{TRUE}, when fitting a model for binirized continuous variable, pool bin indicators across
 #'  all bins and fit one pooled regression. Default to \code{FALSE}.
 #' @param savetime.fit.hbars Logical. If \code{TRUE}, it will skip exposure mechanism P(A|W,E) under g0 & gstar fits and predictions
@@ -86,7 +86,7 @@ print_tmleCom_opts <- function() {
 #' @param CVfolds Set the number of splits for the V-fold cross-validation step to pass to \code{\link{SuperLearner}} and 
 #'  \code{\link{h2o.ensemble}}. Default to 5.
 #' @param g.SL.library A string or character vector of prediction algorithms to pass to \code{\link{SuperLearner}}. Default to 
-#'  c("SL.glm", "SL.step", "SL.glm.interaction"). See \code{SuperLearner::listWrappers()} for more available algorithms.
+#'  c("SL.glm", "SL.step", "SL.glm.interaction"). For more available algorithms see \code{SuperLearner::listWrappers()} .
 #' @return Invisibly returns a list with old option settings.
 # @seealso \code{\link{print_tmlenet_opts}}
 #' @examples
