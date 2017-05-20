@@ -80,7 +80,10 @@ CalcMonteCarloEsts <- function(OData.ObsP0, OData.gstar, MC_fit_params, model.h.
 #' \describe{
 #'   \item{\code{new(OData.ObsP0, OData.gstar, ...)}}{Instantiate an new instance of \code{MonteCarloSimClass}.}
 #'   \item{\code{get.gcomp(m.Q.init)}}{Predict \code{QY.init} = \eqn{E[Y_{g^*}]} based on the initial model fit \code{model.Q.init}.}
-#'   \item{\code{get.tmleCov(model.Q.star.cov, model.h.fit)}}{Update \code{QY.init} based on the targeting model \code{model.Q.star.cov}.}
+#'   \item{\code{get.tmleCov(model.Q.star.cov, model.h.fit)}}{Update \code{QY.init} based on the targeting model \code{model.Q.star.cov}
+#'    and the model for clever covriate h \code{model.h.fit}.}
+#'   \item{\code{get.tmleCov(model.Q.star.cov, model.h.fit)}}{Update \code{QY.init} based on the targeting model \code{model.Q.star.cov}
+#'    and the model for clever covriate h \code{model.h.fit}.}
 #'   \item{\code{get.tmleInt(model.Q.star.int)}}{Update \code{QY.init} based on the targeting model \code{model.Q.star.int}.}
 #'   \item{\code{get.fiW()}}{Get an estimate of fiW (hold ALL W's fixed).}
 #' }
