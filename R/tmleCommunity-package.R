@@ -63,4 +63,6 @@ NULL
 #' dat_iidcontAContY <- sampleDat_iidcontAContY$dat_iidcontAContY
 #' psi0.Y <- sampleDat_iidcontAContY$psi0.Y
 #' psi0.Ygstar <- sampleDat_iidcontAContY$psi0.Ygstar
+#' sampleDat_iidcontAContY$truncBD
+#' sampleDat_iidcontAContY$shift.val
 NULL
