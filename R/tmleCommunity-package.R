@@ -59,8 +59,8 @@ NULL
 #' @usage data(sampleDat_iidcontAContY)
 #' @examples
 #'
-#'data(sampleDat_iidcontAContY)
-#'dat_iidcontAContY <- sampleDat_iidcontAContY$dat_iidcontAContY
-# psi0.Y <- sampleDat_iidcontAContY$psi0.Y
-#'psi0.Ygstar <- sampleDat_iidcontAContY$psi0.Ygstar
+#' data(sampleDat_iidcontAContY)
+#' dat_iidcontAContY <- sampleDat_iidcontAContY$dat_iidcontAContY
+#' psi0.Y <- sampleDat_iidcontAContY$psi0.Y
+#' psi0.Ygstar <- sampleDat_iidcontAContY$psi0.Ygstar
 NULL
