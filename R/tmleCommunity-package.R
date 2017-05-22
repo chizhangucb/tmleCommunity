@@ -1,4 +1,5 @@
 #' Targeted Maximum Likelihood Estimation for Community-level Data
+#' 
 #' Finishing...
 #' Finishing...
 #' Finishing...
@@ -51,10 +52,15 @@ NULL
 #'   \item{A}{continuous normal exposure that depends on unit's baseline covariate values in \code{W1}, \code{W2}, \code{W3}, \code{W4}}
 #'   \item{Y}{continuous normal  outcome that depends on unit's baseline covariate values and exposure in \code{W1}, \code{W2}, 
 #'   \code{W3}, \code{W4}, \code{A}.
-
 #' }
 #' @docType data
 #' @keywords datasets
 #' @name sampleDat_iidcontAContY
 #' @usage data(sampleDat_iidcontAContY)
+#' @examples
+#'
+#'data(sampleDat_iidcontAContY)
+#'dat_iidcontAContY <- sampleDat_iidcontAContY$dat_iidcontAContY
+# psi0.Y <- sampleDat_iidcontAContY$psi0.Y
+#'psi0.Ygstar <- sampleDat_iidcontAContY$psi0.Ygstar
 NULL
