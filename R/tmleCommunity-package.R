@@ -1,9 +1,11 @@
 #' Targeted Maximum Likelihood Estimation for Community-level Data
 #' 
 #' Finishing...
+#' 
 #' Finishing...
+#' 
 #' Finishing...
-
+#' 
 #' @section Documentation:
 #' \itemize{
 #' \item To see the package vignette use: \code{vignette("tmleCommunity_vignette", package="tmleCommunity")}
