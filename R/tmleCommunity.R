@@ -326,6 +326,141 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  size of nrow(data). Then these expsosures are used when fitting the conditional densities P(A | W, E).
 #' @param rndseed Random seed for controlling sampling A under f_gdelta1 or f_gdelta2 (reproducibility)
 #' @param verbose Flag. If TRUE, print status messages. Default to TRUE.
+#'
+#' @section IPTW estimator:
+#' **********************************************************************
+#'
+#' @section GCOMP estimator:
+#' **********************************************************************
+#'
+#' @section TMLE estimator:
+#' **********************************************************************
+#'
+#' @section Modeling \code{P(A|W)} for covariates \code{(A,W)}:
+#' **********************************************************************
+#' Non-parametric
+#'  estimation of the common \strong{unit-level} multivariate joint conditional probability model \code{P_g0(A|W)},
+#'  for unit-level summary measures \code{(sA,sW)} generated from the observed exposures and baseline covariates
+#'  \eqn{(A,W)=(A_i,W_i : i=1,...,N)} (their joint density given by \eqn{g_0(A|W)Q(W)}), is performed by first
+#'  constructing the dataset of N summary measures, \eqn{(sA_i,sW_i : i=1,...,N)}, and then fitting the usual i.i.d. MLE
+#'  for the common density \code{P_g0(A|W)} based on the pooled N sample of these summary measures.
+#'
+#'  Note that \code{A} can be multivariate and any of its components \code{A[j]} can be either binary, categorical
+#'  or continuous. The joint probability model for \code{P(A|W)} = \code{P(A[1],...,A[k]|W)} can be factorized as
+#'  \code{P(A[1]|W)} * \code{P(A[2]|W, A[1])} * ... * \code{P(A[k]|W, A[1],...,A[k-1])},
+#'  where each of these conditional probability models is fit separately, depending on the type of the outcome variable \code{A[j]}.
+#'
+#'  If \code{A[j]} is binary, the conditional probability \code{P(A[j]|W,A[1],...,A[j-1])} is evaluated via logistic regression model.
+#'  When \code{sA[j]} is continuous (or categorical), its range will be fist partitioned into \code{K} bins and the corresponding \code{K}
+#'  bin indicators (\code{B_1,...,B_K}), where each bin indicator \code{B_j} is then used as an outcome in a
+#'  separate logistic regression model with predictors given by \code{W, A[1],..., A[k-1]}.
+#'  Thus, the joint probability \code{P(A|W)} is defined by such a tree of binary logistic regressions.
+#'
+#' For simplicity, we now suppose \code{sA} is continuous and univariate and we describe here an algorithm for fitting \eqn{P_{g_0}(A|W)} 
+#'  (the algorithm for fitting \eqn{P_{g^*}(A^*|W^*)} is equivalent, except that exposure \code{A} is replaced with exposure \code{A^*}
+#'  generated under \code{f_gstar1} or \code{f_gstar2} and the predictors \code{W} from the regression formula
+#'  \code{hform.g0} are replaced with predictors \code{W^*} specified by the regression formula \code{hform.gstar}).
+#'
+#' \enumerate{
+#' \item Generate a dataset of N observed continuous summary measures (\code{A_i}:i=1,...,N) from observed ((\code{A_i},\code{W_i}):i=1,...,N).
+#'
+#' \item Divide the range of \code{sA} values into intervals S=(i_1,...,i_M,i_{M+1}) so that any observed data point
+#'    \code{sa_i} belongs to one interval in S, namely, for each possible value sa of \code{A} there is k\\in{1,...,M}, such that, 
+#'    i_k < \code{a} <= i_{k+1}. Let the mapping B(sa)\\in{1,...,M} denote a unique interval in S for a, such that, i_{B(a)} < a <= i_{B(a)+1}.
+#'    Let bw_{B(a)}:=i_{B(a)+1}-i_{B(a)} be the length of the interval (bandwidth) (i_{B(a)},i_{B(a)+1}).
+#'    Also define the binary indicators b_1,...,b_M, where b_j:=I(B(a)=j), for all j <= B(a) and b_j:=NA for all j>B(a). That is we set b_j to 
+#'    missing ones the indicator I(B(a)=j) jumps from 0 to 1. Now let \code{A} denote the random variable for the observed exposure for one unit
+#'    and denote by (B_1,...,B_M) the corresponding random indicators for \code{A} defined as B_j := I(B(\code{A}) = j) for all j <= B(\code{A}) 
+#'    and B_j:=NA for all j>B(\code{A}).
+#'
+#' \item For each j=1,...,M, fit the logistic regression model for the conditional probability P(B_j = 1 | B_{j-1}=0, W), i.e.,
+#'    at each j this is defined as the conditional probability of B_j jumping from 0 to 1 at bin j, given that B_{j-1}=0 and
+#'    each of these logistic regression models is fit only among the observations that are still at risk of having B_j=1 with B_{j-1}=0.
+#'
+#' \item Normalize the above conditional probability of B_j jumping from 0 to 1 by its corresponding interval length (bandwidth) bw_j to
+#'    obtain the discrete conditional hazards h_j(W):=P(B_j = 1 | (B_{j-1}=0, W) / bw_j, for each j.
+#'    For the summary measure \code{A}, the above conditional hazard h_j(sW) is equal to P(\code{A} \\in (i_j,i_{j+1}) | \code{A}>=i_j, sW),
+#'    i.e., this is the probability that \code{A} falls in the interval (i_j,i_{j+1}), conditional on sW and conditional on the fact that
+#'    \code{A} does not belong to any intervals before j.
+#'
+#' \item  Finally, for any given data-point \code{(a,w)}, evaluate the discretized conditional density for P(\code{A}=a|W=w) by first
+#'    evaluating the interval number k=B(a)\\in{1,...,M} for \code{a} and then computing \\prod{j=1,...,k-1}{1-h_j(W))*h_k(W)}
+#'    which is equivalent to the joint conditional probability that \code{a} belongs to the interval (i_k,i_{k+1}) and does not belong
+#'    to any of the intervals 1 to k-1, conditional on sW.
+#'  }
+#'
+#' The evaluation above utilizes a discretization of the fact that any continuous density f of random variable X can be written as f_X(x)=S_X(x)*h_X(x),
+#'  for a continuous density f of X where S_X(x):=P(X>x) is the survival function for X, h_X=P(X>x|X>=x) is the hazard function for X; as well as the fact that
+#'  the discretized survival function S_X(x) can be written as a of the hazards for s<x: S_X(x)=\\prod{s<x}h_X(x).
+#'
+#' @section Three methods for defining bin (interval) cuttoffs for a continuous one-dimenstional summary measure \code{A[j]}:
+#' **********************************************************************
+#'
+#' There are 3 alternative methods to defining the bin cutoffs S=(i_1,...,i_M,i_{M+1}) for a continuous summary measure
+#'  \code{A}. The choice of which method is used along with other discretization parameters (e.g., total number of
+#'  bins) is controlled via the tmlenet_options() function. See \code{?tmlenet_options} argument \code{bin.method} for
+#'  additional details.
+#'
+#' Approach 1 (\code{equal.len}): equal length, default.
+#'
+#' *********************
+#'
+#' The bins are defined by splitting the range of observed \code{A} (sa_1,...,sa_n) into equal length intervals.
+#'  This is the dafault discretization method, set by passing an argument \code{bin.method="equal.len"} to
+#'  \code{tmlenet_options} function prior to calling \code{tmleCommunity()}. The intervals will be defined by splitting the
+#'  range of (sa_1,...,sa_N) into \code{nbins} number of equal length intervals, where \code{nbins} is another argument
+#'  of \code{tmleCom_Options()} function. When \code{nbins=NA} (the default setting) the actual value of \code{nbins}
+#'  is computed at run time by taking the integer value (floor) of \code{n/maxNperBin},
+#'  for \code{n} - the total observed sample size and \code{maxNperBin=1000} - another argument of
+#'  \code{tmleCom_Options()} with the default value 1,000.
+#'
+#' Approach 2 (\code{equal.mass}): data-adaptive equal mass intervals.
+#'
+#' *********************
+#'
+#' The intervals are defined by splitting the range of \code{A} into non-equal length data-adaptive intervals that
+#'  ensures that each interval contains around
+#'  \code{maxNperBin} observations from (sa_j:j=1,...,N).
+#'  This interval definition approach can be selected by passing an argument \code{bin.method="equal.mass"} to
+#'  \code{tmleCom_Options()} prior to calling \code{tmleCommunity()}.
+#'  The method ensures that an approximately equal number of observations will belong to each interval, where that number
+#'  of observations for each interval
+#'  is controlled by setting \code{maxNperBin}. The default setting is \code{maxNperBin=1000} observations per interval.
+#'
+#' Approach 3 (\code{dhist}): combination of 1 & 2.
+#'
+#' *********************
+#'
+#' The data-adaptive approach dhist is a mix of Approaches 1 & 2. See Denby and Mallows "Variations on the Histogram"
+#'  (2009)). This interval definition method is selected by passing an argument \code{bin.method="dhist"} to
+#'  \code{tmleCom_Options()}  prior to calling \code{tmleCommunity()}.
+#'
+#' @return A named list with 3 items containing the estimation results for:
+#'  \itemize{
+#'  \item \code{EY_gstar1} - estimates of the mean counterfactual outcome under (stochastic) intervention function \code{f_gstar1} \eqn{(E_{g^*_1}[Y])}.
+#'  \item \code{EY_gstar2} - estimates of the mean counterfactual outcome under (stochastic) intervention function \code{f_gstar2} \eqn{(E_{g^*_2}[Y])}, 
+#'    or \code{NULL} if \code{f_gstar2} not specified.
+#'  \item \code{ATE} - additive treatment effect (\eqn{E_{g^*_1}[Y]} - \eqn{E_{g^*_2}[Y]}) under interventions \code{f_gstar1}
+#'    vs. in \code{f_gstar2}, or \code{NULL} if \code{f_gstar2} not specified.
+#' }
+#' Each list item above is itself a list containing the items:
+#'  \itemize{
+#'  \item \code{estimates} - various estimates of the target parameter (network population counterfactual mean under (stochastic) intervention).
+#'  \item \code{vars} - the asymptotic variance estimates, for \strong{TMLE}, \strong{IPTW} and \strong{GCOMP}. Notice, inference for gcomp is 
+#'    not accurate! It is based on TMLE influence curves.
+#'  \item \code{CIs} - CI estimates at \code{alpha} level, for \strong{TMLE}, \strong{IPTW} and \strong{GCOMP}.
+#'  \item \code{h.g0_GenericModel} - The model fits for P(\code{A}|\code{W, E}) under observed exposure mechanism
+#'    \code{g0}. This is an object of \code{h.g0_GenericModel} \pkg{R6} class.
+#'  \item \code{h.gstar_GenericModel} - The model fits for P(\code{A}|\code{W, E}) under intervention \code{f_gstar1}
+#'    or \code{f_gstar2}. This is an object of \code{GenericModel} \pkg{R6} class.
+#' }
+#' Currently implemented estimators are:
+#'  \itemize{
+#'  \item \code{tmle} - Either weighted regression intercept-based TMLE (\code{tmle.intercept} - the default) with weights defined by the IPTW weights
+#'    \code{h_gstar/h_gN} or covariate-based unweighted TMLE (\code{tmle.covariate}) that uses the IPTW weights as a covariate \code{h_gstar/h_gN}.  
+#'  \item \code{iptw} - Efficient IPTW based on weights h_gstar/h_gN.
+#'  \item \code{gcomp} - Parametric G-computation formula substitution estimator.
+#' }
 
 tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, StratifyInd = NULL, YnodeDet = NULL, 
                           f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995, fluctuation = "logistic",                                                     
