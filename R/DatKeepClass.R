@@ -5,6 +5,55 @@ is.integerish <- function (x) { is.integer(x) || (is.numeric(x) && all(x == as.i
 
 iqr <- function(x) { return(diff(quantile(x,c(.25, .75),na.rm=T))) }  # interquartile range
 
+## Original method code from https://github.com/cran/plm/blob/master/R/plm.R
+## Transfer a panel dataset into a fixed-effect transformed data, using individual (and time) indexes
+# If no time index, treat each observation within a unit as a time point
+# Discarding missing outcomes (by default).
+panalData.Trans <- function(yvar, xvar, data, effect="individual", model = "within", index = NULL) {
+  formula <- as.formula(yvar %+% " ~ " %+% paste(xvar, collapse=" + "))
+  # Check whether data is a pdata.frame and if not create it
+  orig_rownames <- row.names(data)
+  
+  # Create a data.frame with an index attribute that describes its individual and time dimensions
+  if (!inherits(data, "pdata.frame")) data <- plm::pdata.frame(data, index)
+  # Create a pFormula object if necessary
+  if (!inherits(formula, "pFormula")) formula <- plm::pFormula(formula)
+  
+  # eval the model.frame (Nothing to do with the trnsformation)
+  cl <- match.call()
+  mf <- match.call(expand.dots = FALSE)
+  m <- match(c("formula", "data", "subset", "na.action"), names(mf), 0)
+  mf <- mf[c(1, m)]
+  mf$drop.unused.levels <- TRUE
+  mf[[1]] <- as.name("model.frame")
+  mf$formula <- formula
+  mf$data <- data
+  # eval in parent.frame() doesn't work
+  #  data <- eval(mf, sys.frame(which = nframe))
+  data <- eval(mf, parent.frame())  # It drops the columns that are not indicated in the formula
+  
+  # preserve original row.names for data [also fancy rownames]; so functions like
+  # pmodel.response(), model.frame(), model.matrix(), residuals() return the original row.names
+  # Reason: eval(mf, parent.frame()) returns row.names as character vector containing 
+  # "row_number" with incomplete observations dropped
+  row.names(data) <- orig_rownames[as.numeric(row.names(data))]
+  # return the model.frame or estimate the model
+  if (is.na(model)){
+    attr(data, "formula") <- formula
+    return(data)
+  }
+  
+  args <- list(model = model, effect = effect)
+  
+  # extract the model.matrix and the model.response (Transformation related)
+  X <- plm::model.matrix.pFormula(formula, data, rhs = 1, model = model, effect = effect, theta = NULL)
+  if (ncol(X) == 0) stop("empty model")
+  y <- plm::pmodel.response(formula, data, model = model, effect = effect, theta = NULL)
+  newdata <- as.data.frame(cbind(y, X))
+  colnames(newdata) <- c(yvar, colnames(X))
+  return(newdata)
+}
+
 ## Original method code from https://github.com/hadley/densityvis/blob/master/R/breaks-dhist.r
 ## Modify code from https://github.com/cran/tmlenet/blob/master/R/dhist.r
 dhist <- function(x, a = 5*iqr(x), nbins=nclass.Sturges(x), rx = range(x, na.rm=TRUE), eps=.15, xlab = "x", plot = TRUE, lab.spikes=TRUE) {
