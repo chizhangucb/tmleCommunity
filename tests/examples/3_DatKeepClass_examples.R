@@ -30,7 +30,7 @@ OData$names.c.sVar  # "A"  "W3" "W4" (names of all continuous variables in input
 head(OData$dat.sVar)  # a subset data.frame of Odata that includes all variables in nodes
 nobs <- OData$nobs; nobs # 10000
 
-obsYvals <- dat_iidcontABinY[, nodes$Ynode]
+obsYvals <- dat_iidcontAContY[, nodes$Ynode]
 OData$addYnode(YnodeVals = obsYvals)  # The same as OData$addYnode(YnodeVals = obsYvals, det.Y = F)
 head(OData$YnodeVals)  # Adding public YnodeVals & setting det.Y values to NA
 head(OData$noNA.Ynodevals)  # Adding actual observed Y as protected (without NAs)
