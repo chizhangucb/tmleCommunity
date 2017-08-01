@@ -22,10 +22,6 @@
 #' }
 #'
 #' @section Reference(s):
-#'
-#' van der Laan, Mark J. and Gruber, Susan, "Targeted Minimum Loss Based Estimation of an Intervention Specific Mean Outcome" (August 2011).
-#'  U.C. Berkeley Division of Biostatistics Working Paper Series. Working Paper 290. http://biostats.bepress.com/ucbbiostat/paper290
-#' 
 #' \enumerate{
 #'   \item Muñoz, I. D. and van der Laan, M. (2012). Population intervention causal effects based on stochastic interventions. Biometrics, 
 #'         68(2):541–549.
