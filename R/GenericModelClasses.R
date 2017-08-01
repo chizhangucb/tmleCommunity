@@ -67,6 +67,20 @@ newsummarymodel.binary <- function(reg, ...) BinaryOutModel$new(reg = reg, ...)
 #'   \item{\code{S3class(newclass)}}{...}
 #'   \item{\code{get.reg}}{...}
 #' }
+#' @examples
+#' data(sampleDat_iidcontAContY)
+#' dat_iidcontAContY <- sampleDat_iidcontAContY$dat_iidcontAContY
+#' nodes <- list(Ynode = "Y", Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), Enodes = NULL, Crossnodes = NULL)
+#' tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", parfit = FALSE,
+#'                 maxNperBin = nrow(dat_iidcontAContY), poolContinVar = FALSE)
+#' # Parse the formulae for actual covariate names in A, W & E
+#' # If the formula is not specified (i.e., NULL), variable(s) input into Anodes.lst will be treated as outcome variable(s),
+#' # and all variables input into Wnodes.lst will be used as explanatory variable(s).
+#' Q.sVars <- define_regform(NULL, Anodes.lst = nodes$Ynode, Wnodes.lst = nodes[c("Anodes", "Wnodes", "Enodes")])
+#' Qreg <- RegressionClass$new(outvar = Q.sVars$outvars, predvars = Q.sVars$predvars, subset_vars = (!rep_len(FALSE, nobs)))
+#' Qreg$estimator  # "speedglm__glm"
+#' Qreg$pool_cont  # FALSE (Don't pool across all bins of a continuous exposure)
+#' Qreg$parfit     # FALSE (Don't preform parallel computing in estimation)
 #' @export
 RegressionClass <- R6Class("RegressionClass",
   class = TRUE,
