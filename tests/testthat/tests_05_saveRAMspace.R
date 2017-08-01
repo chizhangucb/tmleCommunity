@@ -8,6 +8,7 @@ gvars$verbose <- TRUE
 
 # A is normal with mu for each observation being a function of (W1, W2, W3, W4), sd = 1;
 data(sampleDat_iidcontABinY)
+dat_iidcontABinY <- sampleDat_iidcontABinY$dat_iidcontABinY
 psi0.Y <- mean(dat_iidcontABinY$Y)  # 0.29154
 psi0.Ygstar <- mean(dat_iidcontABinY$Y.gstar)  # 0.31627
 nodes <- list(Ynode = "Y", Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), Enodes = NULL, StratifyInd = NULL, YnodeDet = NULL)
