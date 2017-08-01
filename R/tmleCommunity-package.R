@@ -1,10 +1,19 @@
 #' Targeted Maximum Likelihood Estimation for Community-level Data
 #' 
-#' Finishing...
+#' Targeted Maximum Likelihood Estimation (TMLE) of marginal treatment effect of single-time point arbitrary interventions on a continuous or 
+#.  binary outcome in community-level independent data, adjusting for both community-level and individual-level baseline covariates. The package 
+#'  also provides Inverse-Probability-of-Treatment-Weighted estimate (IPTW) and Parametric G-computation estimate (GCOMP). The inferences 
+#'  (Standard errors and confidence intervals) of both TMLE and IPTW are based on the influence curve. Optional data-adaptive estimation of 
+#‘  exposure and outcome mechanisms using the SuperLearner package and h2o package (latter for a large dataset) is strongly recommended. 
 #' 
-#' Finishing...
+#' The input dataset should be made up of rows of unit-specific observations, each row i includes variables (W_i, E_i, A_i, Y_i), where W_i 
+#'  represents a vector of i’s individual-level baseline covariates, E_i represents a vector of i’s community-level baseline covariates 
+#'  (observations within the same community usually have the same values of E_i), A_i is a vector of i’s interventions (can be univariate 
+#'  or multivariate, can be binary, categorical or continuous), and Y_i is i’s outcome. For each community, individual exposure and outcome
+#'  mechanisms will be estimated, then the ATE across all the communities is calculated as a user-specific average of all community-level 
+#'  estimates (Default to size-weighted). Besides, each exposure A_i is a function of baseline covariates (W_i, E_i), and the outcome Y_i 
+#'  is a function of both baseline and exposure covariates (W_i, E_i, A_i). 
 #' 
-#' Finishing...
 #' 
 #' @section Documentation:
 #' \itemize{
@@ -12,12 +21,28 @@
 #' \item To see all available package documentation use: \code{help(package = 'tmleCommunity')}
 #' }
 #'
-#' @section Routines:
-#' The following routines will be generally invoked, in the same order as presented below.
-#' \describe{
+#' @section Reference(s):
 #'
-#' Finishing...
+#' van der Laan, Mark J. and Gruber, Susan, "Targeted Minimum Loss Based Estimation of an Intervention Specific Mean Outcome" (August 2011).
+#'  U.C. Berkeley Division of Biostatistics Working Paper Series. Working Paper 290. http://biostats.bepress.com/ucbbiostat/paper290
+#' 
+#' \enumerate{
+#'   \item Muñoz, I. D. and van der Laan, M. (2012). Population intervention causal effects based on stochastic interventions. Biometrics, 
+#'         68(2):541–549.
+#'   \item Sofrygin, O. and van der Laan, M. J. (2015). tmlenet: Targeted Maximum Likelihood Estimation for Network Data. R package version 0.1.0.
+#'   \item van der Laan, Mark J. and Gruber, Susan, "Targeted Minimum Loss Based Estimation of an Intervention Specific Mean Outcome" 
+#'         (August 2011). U.C. Berkeley Division of Biostatistics Working Paper Series. Working Paper 290. 
+#'         http://biostats.bepress.com/ucbbiostat/paper290
+#'   \item van der Laan, Mark J. and Rose, Sherri, "Targeted Learning: Causal Inference for Observational and Experimental Data" New York: 
+#'         Springer, 2011.
 #' }
+#'
+# @section Routines:
+# The following routines will be generally invoked, in the same order as presented below.
+# \describe{
+#
+# Finishing...
+# }
 #'
 #' @section Datasets:
 #' To learn more about the type of data input required by \code{\link{tmlenet}}, see the following example datasets:
