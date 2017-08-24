@@ -118,7 +118,11 @@ tmleCom_Options <- function(Qestimator = c("speedglm__glm", "glm__glm", "h2o__en
                             h2ometalearner = "h2o.glm.wrapper",
                             h2olearner = "h2o.glm.wrapper",
                             CVfolds = 5,
-                            g.SL.library = c("SL.glm", "SL.step", "SL.glm.interaction")
+                            g.SL.library = c("SL.glm", "SL.step", "SL.glm.interaction"),
+                            panel.effect = c("individual", "time", "twoways"), 
+                            panel.model = c("within", "random", "between","pooling", "ht", "fd"),
+                            panel.yvar = NULL,
+                            panel.xvar = NULL 
                            ) {
   old.opts <- gvars$opts
   Qestimator <- Qestimator[1L]
