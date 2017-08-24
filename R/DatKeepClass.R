@@ -6,10 +6,20 @@ is.integerish <- function (x) { is.integer(x) || (is.numeric(x) && all(x == as.i
 iqr <- function(x) { return(diff(quantile(x,c(.25, .75),na.rm=T))) }  # interquartile range
 
 ## Original method code from https://github.com/cran/plm/blob/master/R/plm.R
-## Transfer a panel dataset into a fixed-effect transformed data, using individual (and time) indexes
-# If no time index, treat each observation within a unit as a time point
+## https://github.com/cran/plm/blob/master/R/pFormula.R
+## Transfer a panel dataset into a fixed-effect/ random-effect transformed data, using individual (and time) indexes
 # Discarding missing outcomes (by default).
 panalData.Trans <- function(yvar, xvar, data, effect="individual", model = "within", index = NULL) {
+# Arguments:
+#    yvar     - outcome variable name (Only support univariate now)    
+#    xvar     - Explanatory variable names (Including both individual-level and community-level)
+#    data     - A data frame (will be automatically transferred to panal data frame) or a panal data frame
+#    effect   - one of "individual", "time" and "twoways", depending on which effects we are looking for
+#    model    - one of "pooling" (pooled OLS), "within" (fixed effect), "between" (group mean), "random"(random effect), 
+#               "fd" (first differences) and "ht" (Hausman–Taylor estimator).
+#    index    - A vector of two character strings which contains the names of the individual and of the time indices. 
+#               If only individual index is given, treat each observation within a unit as a time point.
+#               If no index is given, the first two columns will be automatically treated as individual and time indices, sequentially.
   formula <- as.formula(yvar %+% " ~ " %+% paste(xvar, collapse=" + "))
   # Check whether data is a pdata.frame and if not create it
   orig_rownames <- row.names(data)
@@ -46,9 +56,9 @@ panalData.Trans <- function(yvar, xvar, data, effect="individual", model = "with
   args <- list(model = model, effect = effect)
   
   # extract the model.matrix and the model.response (Transformation related)
-  X <- plm::model.matrix.pFormula(formula, data, rhs = 1, model = model, effect = effect, theta = NULL)
+  X <- plm::model.matrix.pFormula(object = formula, data, model = model, effect = effect, rhs = 1, theta = NULL)
   if (ncol(X) == 0) stop("empty model")
-  y <- plm::pmodel.response(formula, data, model = model, effect = effect, theta = NULL)
+  y <- plm::pmodel.response(object = formula, data, model = model, effect = effect, theta = NULL)
   newdata <- as.data.frame(cbind(y, X))
   colnames(newdata) <- c(yvar, colnames(X))
   return(newdata)
