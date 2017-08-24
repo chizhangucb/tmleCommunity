@@ -31,7 +31,9 @@ gvars$opts.allowedVals <- list(Qestimator = c("speedglm__glm", "glm__glm", "h2o_
                                h2ometalearner = "_character_",
                                h2olearner = "_character_",
                                CVfolds = "_positive_integer_",
-                               g.SL.library = "_character_"
+                               g.SL.library = "_character_"，
+                               panel.effect = c("individual", "time", "twoways"), 
+                               panel.model = c("within", "random", "between","pooling", "ht", "fd")
   )
 
 #' Print Current Option Settings for \code{tmleCommunity}
