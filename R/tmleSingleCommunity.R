@@ -153,10 +153,3 @@ tmleSingleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, Ynod
   class(tmleCommunity.res) <- c(class(tmleCommunity.res), "tmleCommunity")
   return(tmleCommunity.res)
 }
-© 2017 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Help
-Contact GitHub
