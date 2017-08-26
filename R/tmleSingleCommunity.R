@@ -1,3 +1,25 @@
+tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet = NULL, 
+                          communityInd = NULL,
+                          community.step = c("stratify", "panel.transform", NULL),
+                          f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995, fluctuation = "logistic",                                                     
+                          f.g0 = NULL, hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, obs.wts = NULL, 
+                          h.g0_GenericModel = NULL, h.gstar_GenericModel = NULL, savetime.fit.hbars = TRUE, 
+                          TMLE.targetStep = c("tmle.intercept", "tmle.covariate"),
+                          n_MCsims = 1, 
+                          CI_alpha = 0.05, 
+                          rndseed = NULL, 
+                          verbose = TRUE) {
+ 
+  ## Check if any unexpected inputs
+  if (!(community.step %in% c("stratify", "panel.transform", NULL))) 
+    stop("community.step argument must be one of 'stratify', 'panel.transform' or NULL")
+  if (community.step == "panel.transform") {
+    
+  }
+  
+  
+}
+
 tmleSingleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet = NULL, 
                                 f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995, fluctuation = "logistic",                                                     
                                 f.g0 = NULL, hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, obs.wts = NULL, 
