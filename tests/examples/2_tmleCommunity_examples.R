@@ -35,6 +35,8 @@ tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", maxN
 tmleCom_res <- tmleCommunity(data = dat_iidcontABinY, Ynode = "Y", Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), 
                              communityInd = NULL, community.step = NULL, f_gstar1 = f.gstar, Qform = Qform.corr, 
                              hform.g0 = gform.corr, hform.gstar = gform.corr)
+tmleCom_res_same <- tmleCommunity(data = dat_iidcontABinY, Ynode = "Y", Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), 
+                             f_gstar1 = f.gstar, Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
 tmleCom_res_Alt <- tmleSingleStep(data = dat_iidcontABinY, Ynode = "Y", Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), 
                                   f_gstar1 = f.gstar, Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
 
