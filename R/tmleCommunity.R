@@ -475,8 +475,9 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet =
                           verbose = TRUE) {
  
   ## Check if any unexpected inputs
-  if (!(community.step %in% c("stratify", "panel.transform", NULL))) 
+  if (!(community.step %in% c(NULL, "stratify", "panel.transform"))) 
     stop("community.step argument must be one of 'stratify', 'panel.transform' or NULL")
+  community.step <- community.step[1]
   if (community.step == "panel.transform") {
     transData <- panelData.Trans(yvar = getopt("panel.yvar"), xvar = getopt("panel.xvar"), data = data, 
                             effect = getopt("panel.effect"), model = getopt("panel.model"), index = communityInd)
