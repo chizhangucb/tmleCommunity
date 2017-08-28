@@ -30,15 +30,15 @@ regclass.g0$pool_cont  # FALSE (Don't pool across all bins of a continuous expos
 regclass.g0$parfit     # FALSE (Don't preform parallel computing in estimation)
 
 # Use a RegressionClass object to construct a GenericModel object
-genericmodels.g0 <- GenericModel$new(reg = regclass.g0, DatKeepClass.g0 = OData.g0)
+genericmodels.g0 <- GenericModel$new(reg = regclass.g0, DatKeepClass.g0 = OData)
 genericmodels.g0$is.fitted  # FALSE
 
 # Details regarding A1 (i.e., the first exposure)
 genericmodels.g0.A1 <- genericmodels.g0$getPsAsW.models()$`P(A|W).1` # genericmodels.g0$getPsAsW.models()[[1]]
 genericmodels.g0.A1$intrvls
 # Create a matrix of dummy bin indicators for continuous sVar 
-OData.g0$binirize.sVar(name.sVar = genericmodels.g0.A1$outvar, intervals = genericmodels.g0.A1$intrvls, 
-                       nbins = genericmodels.g0.A1$reg$nbins, bin.nms = genericmodels.g0.A1$bin_nms)  
+OData$binirize.sVar(name.sVar = genericmodels.g0.A1$outvar, intervals = genericmodels.g0.A1$intrvls, 
+                    nbins = genericmodels.g0.A1$reg$nbins, bin.nms = genericmodels.g0.A1$bin_nms)  
 bin.ind.mat <- OData$dat.bin.sVar
 colSums(bin.ind.mat, na.rm = T)
 #  A_B.1  A_B.2  A_B.3  A_B.4  A_B.5  A_B.6  A_B.7  A_B.8  A_B.9 A_B.10 A_B.11 A_B.12 
