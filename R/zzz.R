@@ -139,9 +139,9 @@ tmleCom_Options <- function(Qestimator = c("speedglm__glm", "glm__glm", "h2o__en
   if (!(bin.method %in% gvars$opts.allowedVals[["bin.method"]])) 
     stop("bin.method must be one of: " %+% paste0(gvars$opts.allowedVals[["bin.method"]], collapse=", "))
   if (!(panel.effect %in% gvars$opts.allowedVals[["panel.effect"]])) 
-    stop("bin.method must be one of: " %+% paste0(gvars$opts.allowedVals[["panel.effect"]], collapse=", "))
+    stop("panel.effect must be one of: " %+% paste0(gvars$opts.allowedVals[["panel.effect"]], collapse=", "))
   if (!(panel.model %in% gvars$opts.allowedVals[["panel.model"]])) 
-    stop("bin.method must be one of: " %+% paste0(gvars$opts.allowedVals[["panel.model"]], collapse=", "))
+    stop("panel.model must be one of: " %+% paste0(gvars$opts.allowedVals[["panel.model"]], collapse=", "))
   
   if (any(c(Qestimator, gestimator) %in% "h2o__ensemble")) {
     if (!requireNamespace("h2o") || !requireNamespace("h2oEnsemble")) 
