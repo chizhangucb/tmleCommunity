@@ -131,6 +131,8 @@ tmleCom_Options <- function(Qestimator = c("speedglm__glm", "glm__glm", "h2o__en
   gestimator <- gestimator[1L]
   # fitclass <- fitclass[1L]
   bin.method <- bin.method[1L]
+  panel.effect <- panel.effect[1L]
+  panel.model <- panel.model[1L]
 
   if (!(Qestimator %in% gvars$opts.allowedVals[["Qestimator"]])) 
     stop("Qestimator must be one of: " %+% paste0(gvars$opts.allowedVals[["Qestimator"]], collapse=", "))
