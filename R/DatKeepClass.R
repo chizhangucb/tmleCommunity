@@ -13,7 +13,7 @@ panelData.Trans <- function(yvar, xvar, data, effect="individual", model = "with
 # Arguments:
 #    yvar     - outcome variable name (Only support univariate now)    
 #    xvar     - Explanatory variable names (Including both individual-level and community-level)
-#    data     - A data frame (will be automatically transferred to panal data frame) or a panal data frame
+#    data     - A data frame (will be automatically transferred to panel data frame) or a panel data frame
 #    effect   - one of "individual", "time" and "twoways", depending on which effects we are looking for
 #    model    - one of "pooling" (pooled OLS), "within" (fixed effect), "between" (group mean), "random"(random effect), 
 #               "fd" (first differences) and "ht" (Hausman–Taylor estimator).
