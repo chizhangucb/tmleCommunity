@@ -9,7 +9,7 @@ iqr <- function(x) { return(diff(quantile(x,c(.25, .75),na.rm=T))) }  # interqua
 ## https://github.com/cran/plm/blob/master/R/pFormula.R
 ## Transfer a panel dataset into a fixed-effect/ random-effect transformed data, using individual (and time) indexes
 # Discarding missing outcomes (by default).
-panalData.Trans <- function(yvar, xvar, data, effect="individual", model = "within", index = NULL) {
+panelData.Trans <- function(yvar, xvar, data, effect="individual", model = "within", index = NULL) {
 # Arguments:
 #    yvar     - outcome variable name (Only support univariate now)    
 #    xvar     - Explanatory variable names (Including both individual-level and community-level)
