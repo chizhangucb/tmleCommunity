@@ -517,6 +517,7 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet =
                                         savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
                                         n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose)
   }
+  return(tmleCommunity.res)
 }
 
 
