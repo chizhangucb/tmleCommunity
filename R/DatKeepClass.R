@@ -604,8 +604,8 @@ DatKeepClass <- R6Class(classname = "DatKeepClass",
     # --------------------------------------------------------------------------------------
     # Methods for directly handling one continous/categorical sVar in self$mat.sVar;
     # --------------------------------------------------------------------------------------
-    get.sVar = function(name.sVar) { # self$dat.sVar[, name.sVar]
-      x <- self$dat.sVar[, name.sVar, with=FALSE]
+    get.sVar = function(name.sVar) { # self$dat.sVar[, name.sVar, with=FALSE]
+      x <- self$dat.sVar[, name.sVar]
       if (is.list(x) || is.data.frame(x)) x <- x[[1]]
       return(x)
     },
