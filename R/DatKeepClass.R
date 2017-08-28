@@ -456,7 +456,11 @@ DatKeepClass <- R6Class(classname = "DatKeepClass",
     # -----------------------------------------------------------------------------------
     addObsWeights = function(obs.wts) {
       if (any(obs.wts < 0)) { stop("Observation weights have to be non-negative") }
-      if (length(obs.wts) != self$ndat.sVar) { stop("The length of observation weights should be the same as nrow(data)") }
+      if (length(obs.wts) == 1) {
+        self$obs.wts <- rep(obs.wts, self$ndat.sVar) 
+      } else if (length(obs.wts) != self$ndat.sVar) { 
+        stop("The length of observation weights should be the same as nrow(data)") 
+      }
       self$obs.wts <- obs.wts
     },
 
