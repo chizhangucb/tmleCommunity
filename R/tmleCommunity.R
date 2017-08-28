@@ -464,7 +464,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @example tests/examples/2_tmleCommunity_examples.R
 #' @export
 tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet = NULL, communityInd = NULL,
-                          community.step = c(NULL, "stratify", "panel.transform"),
+                          community.step = c("stratify", "panel.transform"),
                           f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995, fluctuation = "logistic",                                                     
                           f.g0 = NULL, hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, obs.wts = NULL, 
                           h.g0_GenericModel = NULL, h.gstar_GenericModel = NULL, savetime.fit.hbars = TRUE, 
@@ -473,55 +473,52 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet =
                           CI_alpha = 0.05, 
                           rndseed = NULL, 
                           verbose = TRUE) {
- 
   ## Check if any unexpected inputs
   community.step <- community.step[1]
-  if (!(is.null(community.step))) {
-    if (!(community.step %in% c("stratify", "panel.transform"))) 
-      stop("community.step argument must be one of NULL, 'stratify', and 'panel.transform' ")
-  }
-  if (is.null(community.step)) {
+  if (is.null(communityInd)) {
+    community.step <- NULL
     tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, 
                                         Enodes = Enodes, YnodeDet = YnodeDet, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
                                         Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation,
                                         h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
                                         savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
-                                        n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose)     
-  } else if (community.step == "stratify") {
-    communityInd.list <- unique(data[, communityInd])
-    tmleCommunity.res <- list()
-    for (i in communityInd.list) {
-      data.perCom <- data[(data[, communityInd] == communityInd.list[i]), ]
-      tmle.res <- 
-        tmleSingleStep(data = data.perCom, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, 
-                       Enodes = Enodes, YnodeDet = YnodeDet, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
-                       Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation,
-                       h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
-                       savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
-                       n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose) 
-      if (is.null(f_gstar2)) {
-        tmleCommunity.res[[i]] <- tmle.res$EY_gstar1$estimates
-      } else { tmleCommunity.res[[i]] <- tmle.res$ATE$estimates }
-    }
-  } else if (community.step == "panel.transform") {
-    transData <- panelData.Trans(yvar = getopt("panel.yvar"), xvar = getopt("panel.xvar"), data = data, 
-                            effect = getopt("panel.effect"), model = getopt("panel.model"), index = communityInd)
-    if (!(Anodes %in% names(transData)[-1])) 
-      stop("After panel tranformation, exposure variables are eliminated (i.e., Anodes don't change within communities). You
-            may want to change a transformation method or don't do this step by setting community.step = NULL.")
-    if (sum(!(c(Wnodes, Enodes) %in% names(transData)[-1])) > 0) {
-      Wnodes <- Wnodes[Wnodes %in% names(transData)[-1]]
-      Enodes <- Enodes[Enodes %in% names(transData)[-1]]
-      warning("After panel tranformation, some of the individual-level and community-levelbaseline covariates are eliminated. 
-               The rest of them will be used in the following TMLE step.")
-    }
-    tmleCommunity.res <- tmleSingleStep(data = transData, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, 
-                                        Enodes = Enodes, YnodeDet = YnodeDet, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
-                                        Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation,
-                                        h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
-                                        savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
                                         n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose)
-  }
+  } else {
+    if (!(community.step %in% c("stratify", "panel.transform"))) 
+      stop("community.step argument must be one of 'stratify' and 'panel.transform'")
+    if (community.step == "stratify") {
+      communityInd.list <- unique(data[, communityInd])
+      tmleCommunity.res <- list()
+      for (i in communityInd.list) {
+        data.perCom <- data[(data[, communityInd] == communityInd.list[i]), ]
+        tmle.res <- tmleSingleStep(data = data.perCom, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, 
+                                   Enodes = Enodes, YnodeDet = YnodeDet, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
+                                   Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation,
+                                   h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
+                                   savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
+                                   n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose) 
+        if (is.null(f_gstar2)) { tmleCommunity.res[[i]] <- tmle.res$EY_gstar1$estimates
+        } else { tmleCommunity.res[[i]] <- tmle.res$ATE$estimates }
+      }
+    } else if (community.step == "panel.transform") {
+      transData <- panelData.Trans(yvar = getopt("panel.yvar"), xvar = getopt("panel.xvar"), data = data, 
+                                   effect = getopt("panel.effect"), model = getopt("panel.model"), index = communityInd)
+      if (!(Anodes %in% names(transData)[-1])) 
+        stop("After panel tranformation, exposure variables are eliminated (i.e., Anodes don't change within communities). You
+             may want to change a transformation method or don't do this step by setting community.step = NULL.")
+      if (sum(!(c(Wnodes, Enodes) %in% names(transData)[-1])) > 0) {
+        Wnodes <- Wnodes[Wnodes %in% names(transData)[-1]]
+        Enodes <- Enodes[Enodes %in% names(transData)[-1]]
+        warning("After panel tranformation, some of the individual-level and community-levelbaseline covariates are eliminated. 
+                The rest of them will be used in the following TMLE step.")
+      }
+      tmleCommunity.res <- tmleSingleStep(data = transData, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, 
+                                          Enodes = Enodes, YnodeDet = YnodeDet, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
+                                          Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation,
+                                          h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
+                                          savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
+                                          n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose)
+    }
   return(tmleCommunity.res)
 }
 
