@@ -534,13 +534,6 @@ tmleSingleStep <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet 
   gvars$verbose <- verbose
   message("Running tmleCommunity with the following settings from tmleCom_Options(): "); str(gvars$opts)
   
-   ## Check if any unexpected inputs
-  if (!(community.step %in% c("stratify", "panel.transform", NULL))) 
-    stop("community.step argument must be one of 'stratify', 'panel.transform' or NULL")
-  if (community.step == "panel.transform") {
-    
-  }
-  
   #----------------------------------------------------------------------------------
   # INITIALIZE PARAMETERS
   #----------------------------------------------------------------------------------
