@@ -14,21 +14,26 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet =
   if (!(community.step %in% c("stratify", "panel.transform", NULL))) 
     stop("community.step argument must be one of 'stratify', 'panel.transform' or NULL")
   if (community.step == "panel.transform") {
-    
+    transData <- panelData.Trans(yvar = Ynode, xvar = c(Anodes, Wnodes, Enodes), data = data, 
+                            effect = getopt("panel.effect"), model = getopt("panel.model"), index = communityInd)
+    tmleCommunity.res <- tmleSingleStep(data = transData, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, 
+                                        Enodes = Enodes, YnodeDet = YnodeDet, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
+                                        Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation,
+                                        h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
+                                        savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
+                                        n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose)  
   }
-  
-  
 }
 
-tmleSingleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet = NULL, 
-                                f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995, fluctuation = "logistic",                                                     
-                                f.g0 = NULL, hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, obs.wts = NULL, 
-                                h.g0_GenericModel = NULL, h.gstar_GenericModel = NULL, savetime.fit.hbars = TRUE, 
-                                TMLE.targetStep = c("tmle.intercept", "tmle.covariate"),
-                                n_MCsims = 1, 
-                                CI_alpha = 0.05, 
-                                rndseed = NULL, 
-                                verbose = TRUE) {
+tmleSingleStep <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet = NULL, 
+                           f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995, fluctuation = "logistic",                                                     
+                           f.g0 = NULL, hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, obs.wts = NULL, 
+                           h.g0_GenericModel = NULL, h.gstar_GenericModel = NULL, savetime.fit.hbars = TRUE, 
+                           TMLE.targetStep = c("tmle.intercept", "tmle.covariate"),
+                           n_MCsims = 1, 
+                           CI_alpha = 0.05, 
+                           rndseed = NULL, 
+                           verbose = TRUE) {
   if (!is.null(rndseed))  set.seed(rndseed)  # make stochastic intervention trackable
   gvars$verbose <- verbose
   message("Running tmleCommunity with the following settings from tmleCom_Options(): "); str(gvars$opts)
