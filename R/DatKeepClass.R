@@ -9,7 +9,7 @@ iqr <- function(x) { return(diff(quantile(x,c(.25, .75),na.rm=T))) }  # interqua
 ## https://github.com/cran/plm/blob/master/R/pFormula.R
 ## Transfer a panel dataset into a fixed-effect/ random-effect transformed data, using individual (and time) indexes
 # Discarding missing outcomes (by default).
-panelData.Trans <- function(yvar, xvar, data, effect="individual", model = "within", index = NULL) {
+panelData.Trans <- function(yvar, xvar, data, effect = "individual", model = "within", index = NULL, transY = TRUE) {
 # Arguments:
 #    yvar     - outcome variable name (Only support univariate now)    
 #    xvar     - Explanatory variable names (Including both individual-level and community-level)
@@ -20,6 +20,7 @@ panelData.Trans <- function(yvar, xvar, data, effect="individual", model = "with
 #    index    - A vector of two character strings which contains the names of the individual and of the time indices. 
 #               If only individual index is given, treat each observation within a unit as a time point.
 #               If no index is given, the first two columns will be automatically treated as individual and time indices, sequentially.
+#    transY   - Logical. If True, indicate the outcome variable yvar will also be tranformed. 
   formula <- as.formula(yvar %+% " ~ " %+% paste(xvar, collapse=" + "))
   # Check whether data is a pdata.frame and if not create it
   orig_rownames <- row.names(data)
@@ -56,9 +57,14 @@ panelData.Trans <- function(yvar, xvar, data, effect="individual", model = "with
   args <- list(model = model, effect = effect)
   
   # extract the model.matrix and the model.response (Transformation related)
-  X <- plm::model.matrix.pFormula(object = formula, data, model = model, effect = effect, rhs = 1, theta = NULL)
+  X <- plm:::model.matrix.pFormula(object = formula, data, model = model, effect = effect, rhs = 1, theta = NULL)
   if (ncol(X) == 0) stop("empty model")
-  y <- plm::pmodel.response(object = formula, data, model = model, effect = effect, theta = NULL)
+  if (transY) {
+    y <- plm:::pmodel.response(object = formula, data, model = model, effect = effect, theta = NULL)
+  } else {
+    y <- data[, yvar]
+  }
+  
   newdata <- as.data.frame(cbind(y, X))
   colnames(newdata) <- c(yvar, colnames(X))
   return(newdata)
