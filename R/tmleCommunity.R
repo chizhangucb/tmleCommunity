@@ -480,24 +480,13 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet =
     if (!(community.step %in% c("stratify", "panel.transform"))) 
       stop("community.step argument must be one of NULL, 'stratify', and 'panel.transform' ")
   }
-  if (community.step == "panel.transform") {
-    transData <- panelData.Trans(yvar = getopt("panel.yvar"), xvar = getopt("panel.xvar"), data = data, 
-                            effect = getopt("panel.effect"), model = getopt("panel.model"), index = communityInd)
-    if (!(Anodes %in% names(transData)[-1])) 
-      stop("After panel tranformation, exposure variables are eliminated (i.e., Anodes don't change within communities). You
-            may want to change a transformation method or don't do this step by setting community.step = NULL.")
-    if (sum(!(c(Wnodes, Enodes) %in% names(transData)[-1])) > 0) {
-      Wnodes <- Wnodes[Wnodes %in% names(transData)[-1]]
-      Enodes <- Enodes[Enodes %in% names(transData)[-1]]
-      warning("After panel tranformation, some of the individual-level and community-levelbaseline covariates are eliminated. 
-               The rest of them will be used in the following TMLE step.")
-    }
-    tmleCommunity.res <- tmleSingleStep(data = transData, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, 
+  if (is.null(community.step)) {
+    tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, 
                                         Enodes = Enodes, YnodeDet = YnodeDet, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
                                         Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation,
                                         h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
                                         savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
-                                        n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose)  
+                                        n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose)     
   } else if (community.step == "stratify") {
     communityInd.list <- unique(data[, communityInd])
     tmleCommunity.res <- list()
@@ -511,8 +500,19 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet =
                        savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
                        n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose) 
     }
-  } else if (community.step == NULL) {
-    tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, 
+  } else if (community.step == "panel.transform") {
+    transData <- panelData.Trans(yvar = getopt("panel.yvar"), xvar = getopt("panel.xvar"), data = data, 
+                            effect = getopt("panel.effect"), model = getopt("panel.model"), index = communityInd)
+    if (!(Anodes %in% names(transData)[-1])) 
+      stop("After panel tranformation, exposure variables are eliminated (i.e., Anodes don't change within communities). You
+            may want to change a transformation method or don't do this step by setting community.step = NULL.")
+    if (sum(!(c(Wnodes, Enodes) %in% names(transData)[-1])) > 0) {
+      Wnodes <- Wnodes[Wnodes %in% names(transData)[-1]]
+      Enodes <- Enodes[Enodes %in% names(transData)[-1]]
+      warning("After panel tranformation, some of the individual-level and community-levelbaseline covariates are eliminated. 
+               The rest of them will be used in the following TMLE step.")
+    }
+    tmleCommunity.res <- tmleSingleStep(data = transData, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, 
                                         Enodes = Enodes, YnodeDet = YnodeDet, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
                                         Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation,
                                         h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
