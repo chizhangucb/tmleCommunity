@@ -478,11 +478,12 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet =
   if (is.null(communityInd)) {
     community.step <- NULL
     tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, 
-                                        Enodes = Enodes, YnodeDet = YnodeDet, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
-                                        Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation,
-                                        h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
-                                        savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
-                                        n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose)
+                                      Enodes = Enodes, YnodeDet = YnodeDet, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
+                                      Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f.g0 = f.g0, 
+                                      hform.g0 = hform.g0, hform.gstar = hform.gstar, lbound = lbound, obs.wts = obs.wts, 
+                                      h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
+                                      savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
+                                      n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose)
   } else {
     if (!(community.step %in% c("stratify", "panel.transform"))) 
       stop("community.step argument must be one of 'stratify' and 'panel.transform'")
@@ -491,12 +492,13 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet =
       tmleCommunity.res <- list()
       for (i in communityInd.list) {
         data.perCom <- data[(data[, communityInd] == communityInd.list[i]), ]
-        tmle.res <- tmleSingleStep(data = data.perCom, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, 
-                                   Enodes = Enodes, YnodeDet = YnodeDet, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
-                                   Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation,
-                                   h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
-                                   savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
-                                   n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose) 
+        tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, 
+                                      Enodes = Enodes, YnodeDet = YnodeDet, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
+                                      Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f.g0 = f.g0, 
+                                      hform.g0 = hform.g0, hform.gstar = hform.gstar, lbound = lbound, obs.wts = obs.wts, 
+                                      h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
+                                      savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
+                                      n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose)
         if (is.null(f_gstar2)) { tmleCommunity.res[[i]] <- tmle.res$EY_gstar1$estimates
         } else { tmleCommunity.res[[i]] <- tmle.res$ATE$estimates }
       }
@@ -512,12 +514,13 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet =
         warning("After panel tranformation, some of the individual-level and community-levelbaseline covariates are eliminated. 
                 The rest of them will be used in the following TMLE step.")
       }
-      tmleCommunity.res <- tmleSingleStep(data = transData, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, 
-                                          Enodes = Enodes, YnodeDet = YnodeDet, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
-                                          Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation,
-                                          h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
-                                          savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
-                                          n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose)
+      tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, 
+                                      Enodes = Enodes, YnodeDet = YnodeDet, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
+                                      Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f.g0 = f.g0, 
+                                      hform.g0 = hform.g0, hform.gstar = hform.gstar, lbound = lbound, obs.wts = obs.wts, 
+                                      h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
+                                      savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
+                                      n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose)
     }
   }
   return(tmleCommunity.res)
