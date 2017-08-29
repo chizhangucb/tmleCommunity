@@ -115,11 +115,11 @@ test_that("fit TMLE estimator (binary Y) for continuous A with SuperLearner, usi
   tmleCom_Options(Qestimator = "SuperLearner", gestimator = "SuperLearner", maxNperBin = nrow(dat_iidBinABinY),
                   g.SL.library = c("SL.glm", "SL.step", "SL.glm.interaction"), nbins = 10)
   tmleCom_res <- tmleCommunity(data = dat_iidBinABinY, Ynode = "Y", Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), 
-                               f_gstar1 = 1, f_gstar2 = 0, Qform = NULL, hform.g0 = NULL, hform.gstar = NULL)
+                               f_gstar1 = 1, f_gstar2 = 0, Qform = NULL, hform.g0 = NULL, hform.gstar = NULL, rndseed = 1)
   estimates <- tmleCom_res$ATE$estimates  # psi0 = 0.348242 
-  expect_equal(estimates["tmle", ], 0.3512338, tolerance = 1e-6) 
-  expect_equal(estimates["iptw", ], 0.3507137, tolerance = 1e-6)  
-  expect_equal(estimates["gcomp", ], 0.3490567, tolerance = 1e-6) 
+  expect_equal(estimates["tmle", ], 0.3511884, tolerance = 1e-6) 
+  expect_equal(estimates["iptw", ], 0.3508307, tolerance = 1e-6)  
+  expect_equal(estimates["gcomp", ], 0.3489003, tolerance = 1e-6) 
 })
 
 
