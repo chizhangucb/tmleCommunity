@@ -83,7 +83,7 @@ test_that("fit TMLE estimator (binary Y) for binary A with speedglm, when both Q
   expect_equal(estimates["tmle", ], 0.3508978, tolerance = 1e-6) 
   expect_equal(estimates["iptw", ], 0.3508871, tolerance = 1e-6) 
   expect_equal(estimates["gcomp", ], 0.3470415, tolerance = 1e-6) 
-  expect_lt(abs(estimates["tmle", ] - psi0.Y), abs(estimates["gcomp", ] - psi0.Y))
+  expect_gt(abs(estimates["tmle", ] - psi0.Y), abs(estimates["gcomp", ] - psi0.Y))
 })
 
 ######################################### 
