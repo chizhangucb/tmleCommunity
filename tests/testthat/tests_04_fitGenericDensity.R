@@ -5,6 +5,7 @@
 # Fitting continuous exposure by  binning, conditional on covariates
 # ---------------------------------------------------------------------------------
 library(testthat)
+library(h2o)
 gvars$verbose <- TRUE
 
 # ---------------------------------------------------------------------------------
