@@ -4,6 +4,7 @@
 # Fitting continuous exposure by binning, conditional on covariates
 # ---------------------------------------------------------------------------------
 library(testthat)
+library(Hmisc)
 gvars$verbose <- TRUE
 
 # ---------------------------------------------------------------------------------
@@ -130,9 +131,9 @@ test_that("fit TMLE estimator (Binary Y) for continuous A with SuperLearner, usi
   tmleCom_res <- tmleCommunity(data = dat_iidcontABinY, Ynode = "Y", Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), 
                                f_gstar1 = f.gstar, Qform = NULL, hform.g0 = NULL, hform.gstar = NULL)
   estimates <- tmleCom_res$EY_gstar1$estimates  # psi0 = 0.316274 
-  expect_equal(estimates["tmle", ], 0.3279654, tolerance = 1e-6) 
-  expect_equal(estimates["iptw", ], 0.3266310, tolerance = 1e-6)  
-  expect_equal(estimates["gcomp", ], 0.3266310, tolerance = 1e-6) 
+  expect_equal(estimates["tmle", ], 0.3279140, tolerance = 1e-6) 
+  expect_equal(estimates["iptw", ], 0.3265718, tolerance = 1e-6)  
+  expect_equal(estimates["gcomp", ], 0.3294069, tolerance = 1e-6) 
 })
 
 
@@ -174,10 +175,10 @@ test_that("fit TMLE estimator (Binary Y) for continuous A with speedglm, when f_
 # Test 2. The TMLE/ IPTW/ GCOMP estimator for continuous Y 
 # --------------------------------------------------------------------------------- 
 data(sampleDat_iidcontAContY)
-dat_iidcontAContY <- sampleDat_iidcontAContY$dat_iidcontABinY
+dat_iidcontAContY <- sampleDat_iidcontAContY$dat_iidcontAContY
 head(dat_iidcontAContY)
-psi0.Y <- sampleDat_iidcontAContY$psi0.Y  # 0.291398
-psi0.Ygstar <- sampleDat_iidcontAContY$psi0.Ygstar  # 0.316274
+psi0.Y <- sampleDat_iidcontAContY$psi0.Y  # 3.309084
+psi0.Ygstar <- sampleDat_iidcontAContY$psi0.Ygstar  # 3.50856
 
 define_f.gstar <- function(shift.val, truncBD, rndseed = NULL) {
   shift.const <- shift.val
@@ -209,9 +210,9 @@ test_that("fit TMLE estimator (Continuous Y) for continuous A with speedglm, whe
   tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", maxNperBin = nrow(dat_iidcontAContY))
   tmleCom_res <- tmleCommunity(data = dat_iidcontAContY, Ynode = "Y", Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), 
                                f_gstar1 = f.gstar, Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
-  estimates <- tmleCom_res$EY_gstar1$estimates  # psi0 = 0.316274 
-  expect_equal(estimates["tmle", ], , tolerance = 1e-6)  
-  expect_equal(estimates["iptw", ], , tolerance = 1e-6)  
-  expect_equal(estimates["gcomp", ], , tolerance = 1e-6) 
+  estimates <- tmleCom_res$EY_gstar1$estimates  # psi0 = 3.50856 
+  expect_equal(estimates["tmle", ], 3.546627, tolerance = 1e-6)  
+  expect_equal(estimates["iptw", ], 3.578163, tolerance = 1e-6)  
+  expect_equal(estimates["gcomp", ], 3.540257, tolerance = 1e-6) 
   expect_type(tmleCom_res$EY_gstar1$h.g0_GenericModel, "environment") 
 })
