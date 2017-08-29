@@ -463,7 +463,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' }
 #' @example tests/examples/2_tmleCommunity_examples.R
 #' @export
-tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet = NULL, communityInd = NULL,
+tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, communityInd = NULL, YnodeDet = NULL, 
                           community.step = c("stratify", "panel.transform"),
                           f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995, fluctuation = "logistic",                                                     
                           f.g0 = NULL, hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, obs.wts = NULL, 
