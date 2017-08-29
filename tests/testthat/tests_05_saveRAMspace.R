@@ -11,7 +11,7 @@ data(sampleDat_iidcontABinY)
 dat_iidcontABinY <- sampleDat_iidcontABinY$dat_iidcontABinY
 psi0.Y <- mean(dat_iidcontABinY$Y)  # 0.29154
 psi0.Ygstar <- mean(dat_iidcontABinY$Y.gstar)  # 0.31627
-nodes <- list(Ynode = "Y", Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), Enodes = NULL, StratifyInd = NULL, YnodeDet = NULL)
+nodes <- list(Ynode = "Y", Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), Enodes = NULL, Crossnodes = NULL)
 
 ## Create an R6 object that stores and manages the input data, later passed on to estimation algorithm(s)
 tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", maxNperBin = nrow(dat_iidcontABinY))
@@ -40,7 +40,7 @@ test_that("saving all after fitting regression but wiping out any traces of save
   m.Q.init_savefit <- BinaryOutModel$new(reg = Qreg)$fit(overwrite = FALSE, data = OData,  savespace = FALSE)
   m.Q.init_savefit_wipePred <- m.Q.init_savefit$clone(deep = T)
   m.Q.init_savefit_wipePred$predict(newdata = OData, savespace = TRUE)
-  expect_length(m.Q.init_savefit$getY, 100000)
+  expect_length(m.Q.init_savefit$getY, 10000)
   expect_true(class(m.Q.init_savefit$getXmat) == "matrix")
   expect_true(is.null(m.Q.init_savefit_wipePred$getXmat))
 })
