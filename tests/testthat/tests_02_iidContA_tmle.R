@@ -112,11 +112,11 @@ test_that("fit TMLE estimator (Binary Y) for continuous A with h2o, using h2o.gl
                   h2olearner = c("h2o.glm.wrapper", "h2o.randomForest.wrapper"), nbins = 10)
   require(h2oEnsemble)
   tmleCom_res <- tmleCommunity(data = dat_iidcontABinY, Ynode = "Y", Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), 
-                               f_gstar1 = f.gstar, Qform = NULL, hform.g0 = NULL, hform.gstar = NULL)
+                               f_gstar1 = f.gstar, Qform = NULL, hform.g0 = NULL, hform.gstar = NULL, rndseed = 1)
   estimates <- tmleCom_res$EY_gstar1$estimates  # psi0 = 0.316274 
-  expect_equal(estimates["tmle", ], 0.3270933, tolerance = 1e-6) 
-  expect_equal(estimates["iptw", ], 0.3154016, tolerance = 1e-6)  
-  expect_equal(estimates["gcomp", ], 0.3291424, tolerance = 1e-6) 
+  expect_equal(estimates["tmle", ], 0.3270681, tolerance = 1e-6) 
+  expect_equal(estimates["iptw", ], 0.3221835, tolerance = 1e-6)  
+  expect_equal(estimates["gcomp", ], 0.3291908, tolerance = 1e-6) 
   h2o::h2o.shutdown(prompt = FALSE)
 })
 
