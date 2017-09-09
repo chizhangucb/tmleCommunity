@@ -73,7 +73,7 @@ test_that("fit TMLE estimator (Binary Y) for continuous A with speedglm, when gf
                                f_gstar1 = f.gstar, Qform = Qform.corr, hform.g0 = gform.mis, hform.gstar = gform.mis)
   estimates <- tmleCom_res$EY_gstar1$estimates  # psi0 = 0.316274 
   expect_equal(estimates["tmle", ], 0.3297466, tolerance = 1e-6) 
-  expect_equal(estimates["iptw", ], 0.3297466, tolerance = 1e-6) 
+  expect_equal(estimates["iptw", ], 0.2890796, tolerance = 1e-6) 
   expect_equal(estimates["gcomp", ], 0.3293320, tolerance = 1e-6) 
   expect_lt(abs(estimates["tmle", ] - psi0.Ygstar), abs(estimates["iptw", ] - psi0.Ygstar))
 })
@@ -99,7 +99,7 @@ test_that("fit TMLE estimator (Binary Y) for continuous A with h2o, using h2o.gl
                   h2olearner = c("h2o.glm.wrapper"), nbins = 10)
   require(h2oEnsemble)
   tmleCom_res <- tmleCommunity(data = dat_iidcontABinY, Ynode = "Y", Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), 
-                               f_gstar1 = f.gstar, Qform = NULL, hform.g0 = NULL, hform.gstar = NULL)
+                               f_gstar1 = f.gstar, Qform = NULL, hform.g0 = NULL, hform.gstar = NULL, rndseed = 1)
   estimates <- tmleCom_res$EY_gstar1$estimates  # psi0 = 0.316274 
   expect_equal(estimates["tmle", ], 0.3268742, tolerance = 1e-6) 
   expect_equal(estimates["iptw", ], 0.3247688, tolerance = 1e-6)  
@@ -115,9 +115,9 @@ test_that("fit TMLE estimator (Binary Y) for continuous A with h2o, using h2o.gl
   tmleCom_res <- tmleCommunity(data = dat_iidcontABinY, Ynode = "Y", Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), 
                                f_gstar1 = f.gstar, Qform = NULL, hform.g0 = NULL, hform.gstar = NULL, rndseed = 1)
   estimates <- tmleCom_res$EY_gstar1$estimates  # psi0 = 0.316274 
-  expect_equal(estimates["tmle", ], 0.3270681, tolerance = 1e-6) 
-  expect_equal(estimates["iptw", ], 0.3221835, tolerance = 1e-6)  
-  expect_equal(estimates["gcomp", ], 0.3291908, tolerance = 1e-6) 
+  expect_equal(estimates["tmle", ], 0.3268758, tolerance = 1e-6) 
+  expect_equal(estimates["iptw", ], 0.3247676, tolerance = 1e-6)  
+  expect_equal(estimates["gcomp", ], 0.3291675, tolerance = 1e-6) 
   h2o::h2o.shutdown(prompt = FALSE)
 })
 
@@ -129,11 +129,11 @@ test_that("fit TMLE estimator (Binary Y) for continuous A with SuperLearner, usi
   tmleCom_Options(Qestimator = "SuperLearner", gestimator = "SuperLearner", maxNperBin = nrow(dat_iidcontABinY),
                   g.SL.library = c("SL.glm", "SL.step", "SL.glm.interaction"), nbins = 10)
   tmleCom_res <- tmleCommunity(data = dat_iidcontABinY, Ynode = "Y", Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), 
-                               f_gstar1 = f.gstar, Qform = NULL, hform.g0 = NULL, hform.gstar = NULL)
+                               f_gstar1 = f.gstar, Qform = NULL, hform.g0 = NULL, hform.gstar = NULL, rndseed = 1)
   estimates <- tmleCom_res$EY_gstar1$estimates  # psi0 = 0.316274 
-  expect_equal(estimates["tmle", ], 0.3279140, tolerance = 1e-6) 
-  expect_equal(estimates["iptw", ], 0.3265718, tolerance = 1e-6)  
-  expect_equal(estimates["gcomp", ], 0.3294069, tolerance = 1e-6) 
+  expect_equal(estimates["tmle", ], 0.3279654, tolerance = 1e-6) 
+  expect_equal(estimates["iptw", ], 0.3266310, tolerance = 1e-6)  
+  expect_equal(estimates["gcomp", ], 0.3266310, tolerance = 1e-6) 
 })
 
 
