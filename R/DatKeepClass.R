@@ -419,9 +419,8 @@ DatKeepClass <- R6Class(classname = "DatKeepClass",
       ######## CAUTIONS ########
       ## Not sure if want to use data.table all the time, so decide to keep as data frame first!
       assert_that(is.data.frame(Odata))  # | is.data.table(Odata))
-      if (!is.list(nodes) || any(!(names(nodes) %in% c("Ynode", "Anodes", "Wnodes", "Enodes", "communityInd", "Crossnodes"))) ) { 
-        message("Don't recognize " %+% paste0(setdiff(names(nodes), c("Ynode", "Anodes", "Wnodes", 
-                                                                      "Enodes", "communityInd", "Crossnodes")), collapse = " and "))
+      if (!is.list(nodes) || any(!(names(nodes) %in% c("Ynode", "Anodes", "Wnodes", "Enodes", "Crossnodes"))) ) { 
+        message("Don't recognize " %+% paste0(setdiff(names(nodes), c("Ynode", "Anodes", "Wnodes", "Enodes", "Crossnodes")), collapse = " and "))
         stop("It should be a list & its names can only be one or more of Ynode, Anodes, Wnodes, Enodes, communityInd and Crossnodes.\n")
       } else { 
         self$nodes <- nodes 
