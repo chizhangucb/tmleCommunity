@@ -96,11 +96,11 @@ test_that("fit TMLE estimator (binary Y) for binary A with h2o, using h2o.glm.wr
                   h2olearner = c("h2o.glm.wrapper"), nbins = 10)
   require(h2oEnsemble)           
   tmleCom_res <- tmleCommunity(data = dat_iidBinABinY, Ynode = "Y", Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), 
-                               f_gstar1 = 1, f_gstar2 = 0, Qform = NULL, hform.g0 = NULL, hform.gstar = NULL)
+                               f_gstar1 = 1, f_gstar2 = 0, Qform = NULL, hform.g0 = NULL, hform.gstar = NULL, rndseed = 1)
   estimates <- tmleCom_res$ATE$estimates  # psi0 = 0.348242 
-  expect_equal(estimates["tmle", ], 0.3516327, tolerance = 1e-6) 
-  expect_equal(estimates["iptw", ], 0.3541630, tolerance = 1e-6)  
-  expect_equal(estimates["gcomp", ], 0.3166018, tolerance = 1e-6) 
+  expect_equal(estimates["tmle", ], 0.3516323, tolerance = 1e-6) 
+  expect_equal(estimates["iptw", ], 0.3541607, tolerance = 1e-6)  
+  expect_equal(estimates["gcomp", ], 0.3166083, tolerance = 1e-6) 
   h2o.shutdown(prompt = FALSE)
   # If Qform is NOT SPECIFIED, all available main terms in (A, W, E) will be included into predictor set
   # If hform.g0 is NOT SPECIFIED, all available main terms in (W, E) will be included into predictor set, so is hform.gstar
