@@ -561,7 +561,7 @@ tmleSingleStep <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet 
   ## Check if any unexpected inputs
   if (!(TMLE.targetStep %in% c("tmle.intercept", "tmle.covariate"))) 
     stop("TMLE.targetStep argument must be either 'tmle.intercept' or 'tmle.covariate'")
-  nodes <- list(Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, Enodes = Enodes, communityInd = communityInd, Crossnodes = NULL)
+  nodes <- list(Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, Enodes = Enodes, Crossnodes = NULL)
   for (i in unlist(nodes)) {  CheckVarNameExists(data = data, varname = i) }
   if (!CheckInputs(data, nodes, Qform, hform.g0, hform.gstar, fluctuation, Qbounds, obs.wts)) stop()
   maptoYstar <- fluctuation=="logistic"  # if TRUE, cont Y values shifted & scaled to fall b/t (0,1)
