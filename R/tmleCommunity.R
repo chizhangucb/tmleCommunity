@@ -461,7 +461,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  \item \code{iptw} - Efficient IPTW based on weights h_gstar/h_gN.
 #'  \item \code{gcomp} - Parametric G-computation formula substitution estimator.
 #' }
-#' @example tests/examples/2_tmleCommunity_examples.R
+#' @example tests/examples/3_tmleCommunity_examples.R
 #' @export
 tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, communityInd = NULL, YnodeDet = NULL, 
                           community.step = c("stratify", "panel.transform"),
