@@ -17,7 +17,7 @@ dat_iidcontABinY <- sampleDat_iidcontABinY$dat_iidcontABinY
 head(dat_iidcontABinY)
 psi0.Y <- sampleDat_iidcontABinY$psi0.Y  # 0.291398
 psi0.Ygstar <- sampleDat_iidcontABinY$psi0.Ygstar  # 0.316274
-nodes <- list(Ynode = "Y", Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), Enodes = NULL, StratifyInd = NULL, YnodeDet = NULL)
+nodes <- list(Ynode = "Y", Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), Enodes = NULL)
 
 define_f.gstar <- function(shift.val, truncBD, rndseed = NULL) {
   shift.const <- shift.val
