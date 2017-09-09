@@ -599,6 +599,8 @@ tmleSingleStep <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet 
     merged.form <- NULL
   }
   nodes <- append(nodes, list(Crossnodes = setdiff(names(data), Reduce(c, nodes))))
+  # Why to keep variables that are not indicated in the node list: when creating A^* under g.star (delta function), it's possible to use 
+  # variablas that are not used in Qform and gform. 
   
   ## Create an R6 object that stores and manages the input data, later passed on to estimation algorithm(s)
   inputYs <- CreateInputs(data[, Ynode], Qbounds, alpha, maptoYstar)
