@@ -215,4 +215,4 @@ test_that("fit TMLE estimator (Continuous Y) for continuous A with speedglm, whe
   expect_equal(estimates["iptw", ], 3.578163, tolerance = 1e-6)  
   expect_equal(estimates["gcomp", ], 3.540257, tolerance = 1e-6) 
   expect_type(tmleCom_res$EY_gstar1$h.g0_GenericModel, "environment") 
-})
+}) 
