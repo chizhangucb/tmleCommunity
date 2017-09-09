@@ -477,8 +477,8 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, communityI
   community.step <- community.step[1]
   if (is.null(communityInd)) {
     community.step <- NULL
-    tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, 
-                                      Enodes = Enodes, YnodeDet = YnodeDet, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
+    tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, Enodes = Enodes, 
+                                      YnodeDet = YnodeDet, communityInd = communityInd, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
                                       Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f.g0 = f.g0, 
                                       hform.g0 = hform.g0, hform.gstar = hform.gstar, lbound = lbound, obs.wts = obs.wts, 
                                       h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
@@ -492,8 +492,8 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, communityI
       tmleCommunity.res <- list()
       for (i in communityInd.list) {
         data.perCom <- data[(data[, communityInd] == communityInd.list[i]), ]
-        tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, 
-                                      Enodes = Enodes, YnodeDet = YnodeDet, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
+        tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, Enodes = Enodes, 
+                                      YnodeDet = YnodeDet, communityInd = communityInd, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
                                       Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f.g0 = f.g0, 
                                       hform.g0 = hform.g0, hform.gstar = hform.gstar, lbound = lbound, obs.wts = obs.wts, 
                                       h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
@@ -514,8 +514,8 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, communityI
         warning("After panel tranformation, some of the individual-level and community-levelbaseline covariates are eliminated. 
                 The rest of them will be used in the following TMLE step.")
       }
-      tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, 
-                                      Enodes = Enodes, YnodeDet = YnodeDet, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
+      tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, Enodes = Enodes, 
+                                      YnodeDet = YnodeDet, communityInd = communityInd, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
                                       Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f.g0 = f.g0, 
                                       hform.g0 = hform.g0, hform.gstar = hform.gstar, lbound = lbound, obs.wts = obs.wts, 
                                       h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
@@ -527,7 +527,7 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, communityI
 }
 
 
-tmleSingleStep <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet = NULL, 
+tmleSingleStep <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet = NULL, communityInd = NULL,
                            f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995, fluctuation = "logistic",                                                     
                            f.g0 = NULL, hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, obs.wts = NULL, 
                            h.g0_GenericModel = NULL, h.gstar_GenericModel = NULL, savetime.fit.hbars = TRUE, 
@@ -559,7 +559,7 @@ tmleSingleStep <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet 
   ## Check if any unexpected inputs
   if (!(TMLE.targetStep %in% c("tmle.intercept", "tmle.covariate"))) 
     stop("TMLE.targetStep argument must be either 'tmle.intercept' or 'tmle.covariate'")
-  nodes <- list(Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, Enodes = Enodes, Crossnodes = NULL)
+  nodes <- list(Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, Enodes = Enodes, communityInd = communityInd, Crossnodes = NULL)
   for (i in unlist(nodes)) {  CheckVarNameExists(data = data, varname = i) }
   if (!CheckInputs(data, nodes, Qform, hform.g0, hform.gstar, fluctuation, Qbounds, obs.wts)) stop()
   maptoYstar <- fluctuation=="logistic"  # if TRUE, cont Y values shifted & scaled to fall b/t (0,1)
