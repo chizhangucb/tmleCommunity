@@ -292,10 +292,12 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @param Anodes Column names or indices in \code{data} of exposure (treatment) variables; exposures can be either binary, categorical or continuous.
 #' @param Wndoes Column names or indices in \code{data} of individual-level baseline covariates. Factors are not currently allowed.
 #' @param Endoes Optional column names or indices in \code{data} of community-level baseline covariates. Factors are not currently allowed.
-#' @param StratifyInd Optional column name or index in \code{data} of community identifier variable. If known, stratify on community level when 
-#'  estimating outcome and treatment mechanisms. If NULL, pool over all communities. 
+#' @param communityInd Optional column name or index in \code{data} of community identifier variable. If known, either stratify on community level
+#'   when estimating outcome and treatment mechanisms, or perform panel transformation on data before estiamtion, depending on \code{community.step}.
 #' @param YnodeDet Optional column name or index in \code{data} of deterministic values of outcome Ynode, coded as (TRUE/FALSE) or (1/0). If TRUE/1, 
-#'  value of Ynode is given deterministically / constant.
+#'  value of Ynode is given deterministically / constant. 
+#' @param community.step Methods to deal with community-level data, either "stratify" (Default) or "panel.transform". If communityInd = NULL, then 
+#'  automatically pool over all communities.
 #' @param f_gstar1 Either a function or a vector or a matrix/ data frame of counterfactual exposures, dependin on the number of exposure variables.
 #'  If a matrix/ data frame, its number of rows must be either nrow(data) or 1 (constant exposure assigned to all observations), and its number of 
 #'  columns must be length(Anodes). If a vector, it must be of length nrow(data) or 1. If a function, it must return a data frame of counterfactual
