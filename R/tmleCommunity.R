@@ -162,17 +162,17 @@ get_est_sigmas <- function(estnames, obsYvals, ests_mat, QY_mat, wts_mat, fWi_ma
   
   # TMLE inference based on the iid IC: (** Use QY.init not QY.star)
   iidIC_tmle <- h_wts * (obsYvals - QY.init) + fWi - ests_mat[rownames(ests_mat) %in% "TMLE",]
-  var_iid.tmle <- wtd.var(iidIC_tmle, weights = obs.wts, normwt = T)
+  var_iid.tmle <- Hmisc::wtd.var(iidIC_tmle, weights = obs.wts, normwt = T)
   # var_iid.tmle <- mean((iidIC_tmle)^2)  # assume mean(iidIC_tmle) = 0
   
   # MLE inference based on the iid IC: (** Use QY.init not QY.star) *** NOT ACCURATE
   iidIC_mle <- h_wts * (obsYvals - QY.init) + fWi - ests_mat[rownames(ests_mat) %in% "MLE",]
-  var_iid.mle <- wtd.var(iidIC_mle, weights = obs.wts, normwt = T)
+  var_iid.mle <- Hmisc::wtd.var(iidIC_mle, weights = obs.wts, normwt = T)
   # var_iid.mle <- mean((iidIC_mle)^2)  # assume mean(iidIC_mle) = 0
   
   # IPTW h (based on the mixture density clever covariate (h)):
   iidIC_iptw <- h_wts * (obsYvals) - ests_mat[rownames(ests_mat) %in% "IPTW",]
-  var_iid.iptw <- wtd.var(iidIC_iptw, weights = obs.wts, normwt = T)
+  var_iid.iptw <- Hmisc::wtd.var(iidIC_iptw, weights = obs.wts, normwt = T)
   # var_iid.iptw <- mean((iidIC_iptw)^2)  # assume mean(iidIC_iptw) = 0
   
   as.var_mat <- matrix(0, nrow = 3, ncol = 1)
