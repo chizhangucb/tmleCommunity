@@ -239,7 +239,7 @@ regclass.gstar <- RegressionClass$new(outvar = sA_nms_gstar,
                                       predvars = h.gstar.sVars$predvars,
                                       subset_vars = subsets_expr,
                                       outvar.class = OData$type.sVar[sA_nms_gstar])
-OData.gstar <- DatKeepClass$new(Odata = data, nodes = nodes, norm.c.sVars = FALSE)
+OData.gstar <- DatKeepClass$new(Odata = dat_iidcontABinY, nodes = nodes, norm.c.sVars = FALSE)
 OData.gstar$make.dat.sVar(p = 1, f.g_fun = f.gstar)
 
 # -------------------------------------------------------------------------------------------
