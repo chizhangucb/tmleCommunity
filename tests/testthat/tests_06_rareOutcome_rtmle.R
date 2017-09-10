@@ -28,9 +28,9 @@ test_that("fit TMLE estimator for rare binary Y with correct weights (J=1), when
                                f_gstar1 = 1, f_gstar2 = 0, Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr,
                                obs.wts = obs.wt.J1)
   estimates <- tmleCom_res$ATE$estimates  # psi0 = 0.012662 
-  expect_equal(estimates["tmle", ], 0.01247676, tolerance = 1e-6)  
-  expect_equal(estimates["iptw", ], 0.01278644, tolerance = 1e-6)  
-  expect_equal(estimates["gcomp", ], 0.01243220, tolerance = 1e-6) 
+  expect_equal(estimates["tmle", ], 0.0124744, tolerance = 1e-6)  
+  expect_equal(estimates["iptw", ], 0.0127704, tolerance = 1e-6)  
+  expect_equal(estimates["gcomp", ], 0.0124322, tolerance = 1e-6) 
 })
 
 ## Test 1.1.2 Incorrect weights + correctly specified Qform & gform (+ tmle.intercept + equal.mass + 10 nbins)
@@ -40,8 +40,8 @@ test_that("fit TMLE estimator for rare binary Y with incorrect weights (J=1), wh
                                f_gstar1 = 1, f_gstar2 = 0, Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr,
                                obs.wts = NULL)
   estimates <- tmleCom_res$ATE$estimates  # psi0 = 0.012662 
-  expect_equal(estimates["tmle", ], 0.2466373, tolerance = 1e-6)  
-  expect_equal(estimates["iptw", ], 0.2698076, tolerance = 1e-6)  
+  expect_equal(estimates["tmle", ], 0.2466571, tolerance = 1e-6)  
+  expect_equal(estimates["iptw", ], 0.2688000, tolerance = 1e-6)  
   expect_equal(estimates["gcomp", ], 0.2244907, tolerance = 1e-6) 
 })
 
@@ -52,8 +52,8 @@ test_that("fit TMLE estimator for rare binary Y with correct weights (J=1), when
                                f_gstar1 = 1, f_gstar2 = 0, Qform = Qform.mis, hform.g0 = gform.corr, hform.gstar = gform.corr,
                                obs.wts = obs.wt.J1)
   estimates <- tmleCom_res$ATE$estimates  # psi0 = 0.012662 
-  expect_equal(estimates["tmle", ], 0.012713025, tolerance = 1e-6)  
-  expect_equal(estimates["iptw", ], 0.012786435, tolerance = 1e-6)  
+  expect_equal(estimates["tmle", ], 0.012548105, tolerance = 1e-6)  
+  expect_equal(estimates["iptw", ], 0.012770399, tolerance = 1e-6)  
   expect_equal(estimates["gcomp", ], 0.009324937, tolerance = 1e-6) 
 })
 
