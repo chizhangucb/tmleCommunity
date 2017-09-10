@@ -614,7 +614,7 @@ tmleSingleStep <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet 
   } else {
     determ.Q <- (data[, YnodeDet] == 1)
   }
-  if (length(unique(obs.wts)) > 1 && any(unlist(OData$type.sVar[Anodes]) != "binary")) {
+  if (length(unique(obs.wts)) > 1 && any(unlist(OData.ObsP0$type.sVar[Anodes]) != "binary")) {
     warning("obs.wts are currently implemented on binary A. The results for non-binary A with weights may be unrealiable.")
   }
   
