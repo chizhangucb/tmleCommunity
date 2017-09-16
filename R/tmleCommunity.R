@@ -466,7 +466,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @example tests/examples/3_tmleCommunity_examples.R
 #' @export
 tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, communityInd = NULL, YnodeDet = NULL, 
-                          community.step = c("stratify", "panel.transform"),
+                          community.step = c("community-level", "individual-level"), working.model = FALSE,
                           f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995, fluctuation = "logistic",                                                     
                           f_g0 = NULL, hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, obs.wts = NULL, 
                           h.g0_GenericModel = NULL, h.gstar_GenericModel = NULL, savetime.fit.hbars = TRUE, 
@@ -487,9 +487,9 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, communityI
                                       savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
                                       n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose)
   } else {
-    if (!(community.step %in% c("stratify", "panel.transform"))) 
-      stop("community.step argument must be one of 'stratify' and 'panel.transform'")
-    if (community.step == "stratify") {
+    if (!(community.step %in% c("community-level", "individual-level"))) 
+      stop("community.step argument must be one of 'community-level' and 'individual-level'")
+    if (community.step == "community-level") {
       communityInd.list <- unique(data[, communityInd])
       tmleCommunity.res <- list()
       for (i in communityInd.list) {
