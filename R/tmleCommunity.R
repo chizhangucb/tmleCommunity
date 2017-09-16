@@ -291,12 +291,12 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @param Anodes Column names or indices in \code{data} of exposure (treatment) variables; exposures can be either binary, categorical or continuous.
 #' @param WEndoes Column names or indices in \code{data} of individual-level (and possibly community-level) baseline covariates.
 #'   Factors are not currently allowed.
-#' @param communityInd Optional column name or index in \code{data} of community identifier variable. If known, either stratify on community level
+#' @param communityID Optional column name or index in \code{data} of community identifier variable. If known, either stratify on community level
 #'   when estimating outcome and treatment mechanisms, or perform panel transformation on data before estiamtion, depending on \code{community.step}.
 #' @param YnodeDet Optional column name or index in \code{data} of deterministic values of outcome Ynode, coded as (TRUE/FALSE) or (1/0). If TRUE/1, 
 #'  value of Ynode is given deterministically / constant. 
 #' @param community.step Methods to deal with community-level data, one of "NoCommunity" (Default), "community-level" and "individual-level". 
-#'  If communityInd = NULL, then automatically pool over all communities.
+#'  If communityID = NULL, then automatically pool over all communities.
 #' @param f_gstar1 Either a function or a vector or a matrix/ data frame of counterfactual exposures, dependin on the number of exposure variables.
 #'  If a matrix/ data frame, its number of rows must be either nrow(data) or 1 (constant exposure assigned to all observations), and its number of 
 #'  columns must be length(Anodes). If a vector, it must be of length nrow(data) or 1. If a function, it must return a data frame of counterfactual
@@ -464,7 +464,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' }
 #' @example tests/examples/3_tmleCommunity_examples.R
 #' @export
-tmleCommunity <- function(data, Ynode, Anodes, Wnodes, communityInd = NULL, YnodeDet = NULL, 
+tmleCommunity <- function(data, Ynode, Anodes, WEnodes, communityID = NULL, YnodeDet = NULL, 
                           community.step = c("NoCommunity", "community-level", "individual-level"), working.model = FALSE,
                           f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995, fluctuation = "logistic",                                                     
                           f_g0 = NULL, hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, obs.wts = NULL, 
@@ -476,19 +476,19 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, communityInd = NULL, Ynod
                           verbose = TRUE) {
   ## Check if any unexpected inputs
   
-  if (is.null(communityInd) || community.step == "NoCommunity") {
+  if (is.null(communityID) || community.step == "NoCommunity") {
     community.step <- "NoCommunity"
-    tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, 
-                                        YnodeDet = YnodeDet, communityInd = communityInd, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
+    tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, WEnodes = WEnodes, 
+                                        YnodeDet = YnodeDet, communityID = communityID, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
                                         Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f_g0 = f_g0, 
                                         hform.g0 = hform.g0, hform.gstar = hform.gstar, lbound = lbound, obs.wts = obs.wts, 
                                         h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
                                         savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
                                         n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose)
   } else if (community.step == "community-level") {
-    data <- aggregate(x = data, by=list(id = data[, "communityInd"]), mean)[, 2 : (ncol(data)+1)]
-    tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, 
-                                        YnodeDet = YnodeDet, communityInd = communityInd, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
+    data <- aggregate(x = data, by=list(id = data[, "communityID"]), mean)[, 2 : (ncol(data)+1)]
+    tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, WEnodes = WEnodes, 
+                                        YnodeDet = YnodeDet, communityID = communityID, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
                                         Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f_g0 = f_g0, 
                                         hform.g0 = hform.g0, hform.gstar = hform.gstar, lbound = lbound, obs.wts = obs.wts, 
                                         h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
@@ -496,8 +496,8 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, communityInd = NULL, Ynod
                                         n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose)  
   } else if (community.step == "individual-level") {
     if (working.model) { # if we believe our working model (i.e. if estimating under the submodel)
-      tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes,
-                                          YnodeDet = YnodeDet, communityInd = communityInd, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
+      tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, WEnodes = WEnodes, 
+                                          YnodeDet = YnodeDet, communityID = communityID, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
                                           Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f_g0 = f_g0, 
                                           hform.g0 = hform.g0, hform.gstar = hform.gstar, lbound = lbound, obs.wts = obs.wts, 
                                           h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
@@ -510,12 +510,12 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, communityInd = NULL, Ynod
       
      
       
-      communityInd.list <- unique(data[, communityInd])
+      communityID.list <- unique(data[, communityID])
       tmleCommunity.res <- list()
-      for (i in communityInd.list) {
-        data.perCom <- data[(data[, communityInd] == communityInd.list[i]), ]
-        tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, 
-                                      YnodeDet = YnodeDet, communityInd = communityInd, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
+      for (i in communityID.list) {
+        data.perCom <- data[(data[, communityID] == communityID.list[i]), ]
+        tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, WEnodes = WEnodes, 
+                                      YnodeDet = YnodeDet, communityID = communityID, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
                                       Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f_g0 = f_g0, 
                                       hform.g0 = hform.g0, hform.gstar = hform.gstar, lbound = lbound, obs.wts = obs.wts, 
                                       h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
@@ -526,7 +526,7 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, communityInd = NULL, Ynod
       }
     } else if (community.step == "panel.transform") {
       transData <- panelData.Trans(yvar = getopt("panel.yvar"), xvar = getopt("panel.xvar"), data = data, 
-                                   effect = getopt("panel.effect"), model = getopt("panel.model"), index = communityInd)
+                                   effect = getopt("panel.effect"), model = getopt("panel.model"), index = communityID)
       if (!(Anodes %in% names(transData)[-1])) 
         stop("After panel tranformation, exposure variables are eliminated (i.e., Anodes don't change within communities). You
              may want to change a transformation method or don't do this step by setting community.step = NULL.")
@@ -536,8 +536,8 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, communityInd = NULL, Ynod
         warning("After panel tranformation, some of the individual-level and community-levelbaseline covariates are eliminated. 
                 The rest of them will be used in the following TMLE step.")
       }
-      tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, Enodes = Enodes, 
-                                      YnodeDet = YnodeDet, communityInd = communityInd, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
+      tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, WEnodes = WEnodes, 
+                                      YnodeDet = YnodeDet, communityID = communityID, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
                                       Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f_g0 = f_g0, 
                                       hform.g0 = hform.g0, hform.gstar = hform.gstar, lbound = lbound, obs.wts = obs.wts, 
                                       h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
@@ -549,7 +549,7 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, communityInd = NULL, Ynod
 }
 
 
-tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communityInd = NULL, working.model = FALSE,
+tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communityID = NULL, working.model = FALSE,
                           community.step = c("NoCommunity", "community-level", "individual-level"), 
                           f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995, fluctuation = "logistic",                                                     
                           f_g0 = NULL, hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, obs.wts = NULL, 
@@ -611,7 +611,14 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
   }
   
   ## Create data based on community.step, then based on Qform, hform.g0 and hform.gstar, in case of interaction or higher-order term.
-  if (community.step == "community-level") data <- aggregate(x = data, by=list(id = data[, "communityInd"]), mean)[, 2 : (ncol(data)+1)]
+  if (community.step == "community-level") { # if running entire TMLE algorithm at cluster-level, aggregate data now
+    if (!is.null(communityID)) {
+      data <- aggregate(x = data, by=list(id = data[, "communityID"]), mean)[, 2 : (ncol(data)+1)] # Don't keep the extra ID column 
+    } else {
+      warning("Since community-level TMLE requires communityID to aggregate to the cluster-level. Lack of 'communityID' forces the 
+               algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset")
+    }
+  }
   if (!is.null(c(Qform, hform.g0, hform.gstar))) {
     allcovRHS <- unique(unlist(lapply(c(Qform, hform.g0, hform.gstar), FUN = function(x) { strsplit(deparse(as.formula(x)[[3]]), " \\+ ")[[1]] })))
     merged.form <- reformulate(allcovRHS, response = NULL)  # Reformulate a formula including all legitimate character of the RHS in 3 formulae
