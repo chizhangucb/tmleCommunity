@@ -464,91 +464,6 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' }
 #' @example tests/examples/3_tmleCommunity_examples.R
 #' @export
-tmleCommunity <- function(data, Ynode, Anodes, WEnodes, communityID = NULL, YnodeDet = NULL, 
-                          community.step = c("NoCommunity", "community-level", "individual-level"), working.model = FALSE,
-                          f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995, fluctuation = "logistic",                                                     
-                          f_g0 = NULL, hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, obs.wts = NULL, 
-                          h.g0_GenericModel = NULL, h.gstar_GenericModel = NULL, savetime.fit.hbars = TRUE, 
-                          TMLE.targetStep = c("tmle.intercept", "tmle.covariate"),
-                          n_MCsims = 1, 
-                          CI_alpha = 0.05, 
-                          rndseed = NULL, 
-                          verbose = TRUE) {
-  ## Check if any unexpected inputs
-  
-  if (is.null(communityID) || community.step == "NoCommunity") {
-    community.step <- "NoCommunity"
-    tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, WEnodes = WEnodes, 
-                                        YnodeDet = YnodeDet, communityID = communityID, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
-                                        Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f_g0 = f_g0, 
-                                        hform.g0 = hform.g0, hform.gstar = hform.gstar, lbound = lbound, obs.wts = obs.wts, 
-                                        h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
-                                        savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
-                                        n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose)
-  } else if (community.step == "community-level") {
-    data <- aggregate(x = data, by=list(id = data[, "communityID"]), mean)[, 2 : (ncol(data)+1)]
-    tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, WEnodes = WEnodes, 
-                                        YnodeDet = YnodeDet, communityID = communityID, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
-                                        Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f_g0 = f_g0, 
-                                        hform.g0 = hform.g0, hform.gstar = hform.gstar, lbound = lbound, obs.wts = obs.wts, 
-                                        h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
-                                        savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
-                                        n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose)  
-  } else if (community.step == "individual-level") {
-    if (working.model) { # if we believe our working model (i.e. if estimating under the submodel)
-      tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, WEnodes = WEnodes, 
-                                          YnodeDet = YnodeDet, communityID = communityID, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
-                                          Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f_g0 = f_g0, 
-                                          hform.g0 = hform.g0, hform.gstar = hform.gstar, lbound = lbound, obs.wts = obs.wts, 
-                                          h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
-                                          savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
-                                          n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose)
-      
-    }
-  
-  }
-      
-     
-      
-      communityID.list <- unique(data[, communityID])
-      tmleCommunity.res <- list()
-      for (i in communityID.list) {
-        data.perCom <- data[(data[, communityID] == communityID.list[i]), ]
-        tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, WEnodes = WEnodes, 
-                                      YnodeDet = YnodeDet, communityID = communityID, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
-                                      Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f_g0 = f_g0, 
-                                      hform.g0 = hform.g0, hform.gstar = hform.gstar, lbound = lbound, obs.wts = obs.wts, 
-                                      h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
-                                      savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
-                                      n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose)
-        if (is.null(f_gstar2)) { tmleCommunity.res[[i]] <- tmle.res$EY_gstar1$estimates
-        } else { tmleCommunity.res[[i]] <- tmle.res$ATE$estimates }
-      }
-    } else if (community.step == "panel.transform") {
-      transData <- panelData.Trans(yvar = getopt("panel.yvar"), xvar = getopt("panel.xvar"), data = data, 
-                                   effect = getopt("panel.effect"), model = getopt("panel.model"), index = communityID)
-      if (!(Anodes %in% names(transData)[-1])) 
-        stop("After panel tranformation, exposure variables are eliminated (i.e., Anodes don't change within communities). You
-             may want to change a transformation method or don't do this step by setting community.step = NULL.")
-      if (sum(!(c(Wnodes, Enodes) %in% names(transData)[-1])) > 0) {
-        Wnodes <- Wnodes[Wnodes %in% names(transData)[-1]]
-        Enodes <- Enodes[Enodes %in% names(transData)[-1]]
-        warning("After panel tranformation, some of the individual-level and community-levelbaseline covariates are eliminated. 
-                The rest of them will be used in the following TMLE step.")
-      }
-      tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, WEnodes = WEnodes, 
-                                      YnodeDet = YnodeDet, communityID = communityID, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
-                                      Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f_g0 = f_g0, 
-                                      hform.g0 = hform.g0, hform.gstar = hform.gstar, lbound = lbound, obs.wts = obs.wts, 
-                                      h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
-                                      savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
-                                      n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose)
-    }
-  }
-  return(tmleCommunity.res)
-}
-
-
 tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communityID = NULL, working.model = FALSE,
                           community.step = c("NoCommunity", "community-level", "individual-level"), 
                           f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995, fluctuation = "logistic",                                                     
@@ -663,6 +578,11 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
                               subset_vars = !determ.Q, 
                               estimator = getopt("Qestimator"))
   model.Q.init <- BinaryOutModel$new(reg = Qreg)$fit(overwrite = FALSE, data = OData.ObsP0, savespace = TRUE)
+  
+  if (!working.model) { # if we don't believe the working model (i.e. if estimating under the large model)
+    # aggregate initial predictions to the cluster-level
+    
+  }
   
   #----------------------------------------------------------------------------------
   # Create an list with model estimates, data & other information that is passed on to treatment estimation procedure
