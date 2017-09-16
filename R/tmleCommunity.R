@@ -199,7 +199,17 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   off <- qlogis(QY.init)  # offset
   
   if (community.step == "individual-level" && working.model == F) {
-
+    if (!is.null(communityID)) {
+      data <- aggregate(x = data, by=list(id = data[, "communityID"]), mean)[, 2 : (ncol(data)+1)] # Don't keep the extra ID column 
+      obs.wts <- rep(1, NROW(data)  # weights for aggregated data should be 1
+      OData.ObsP0 <- DatKeepClass$new(Odata = data, nodes = nodes, norm.c.sVars = FALSE)
+      OData.ObsP0$addYnode(YnodeVals = data[, Ynode])  # Already bounded Y into Ystar in the beginning step               
+      OData.ObsP0$addObsWeights(obs.wts = obs.wts)
+    } else {
+      warning("Since individual-level TMLE with no working.model requires communityID to aggregate data to the cluster-level in the estimation 
+               of treatment mechanism. Lack of 'communityID' forces the algorithm to automatically pool data over all communities and 
+               treat it as non-hierarchical dataset when fitting clever covariates.")
+    }
   }
   
   #************************************************
