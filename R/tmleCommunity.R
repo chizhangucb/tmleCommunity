@@ -198,10 +198,18 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   QY.init[!OData.ObsP0$det.Y] <- model.Q.init$predict(newdata = OData.ObsP0)$getprobA1[!OData.ObsP0$det.Y] # predictions P(Y=1) for non-DET Y
   off <- qlogis(QY.init)  # offset
   
-  if (community.step == "individual-level" && working.model == F) {
-    if (!is.null(communityID)) {
+  if (community.step == "individual-level" && working.model == F) { # if we do NOT believe our working model (i.e. estimate under the lareg model)
+    if (!is.null(communityID)) { 
+      # aggregate initial outcome predictions to the cluster-level
+      QY.init <- aggregate(x = QY.init, by=list(id = data[, "communityID"]), mean)[, 2]
+      off <- aggregate(x = off, by=list(id = data[, "communityID"]), mean)[, 2]
+      # aggregate original dataset to the cluster-level & redefine OData.ObsP0
+      Y <- aggregate(x = Y, by=list(id = data[, "communityID"]), mean)[, 2]
+      determ.Q <- rep_len(FALSE, length(Y))  # For aggregated data, YnodeDet is currently unavailable, treat all Y^c as nondeterministic
       data <- aggregate(x = data, by=list(id = data[, "communityID"]), mean)[, 2 : (ncol(data)+1)] # Don't keep the extra ID column 
-      obs.wts <- rep(1, NROW(data)  # weights for aggregated data should be 1
+      obs.wts <- rep(1, NROW(data))  # weights for aggregated data should be 1
+      est_params_list$data <- data
+      est_params_list$nodes <- nodes
       OData.ObsP0 <- DatKeepClass$new(Odata = data, nodes = nodes, norm.c.sVars = FALSE)
       OData.ObsP0$addYnode(YnodeVals = data[, Ynode])  # Already bounded Y into Ystar in the beginning step               
       OData.ObsP0$addObsWeights(obs.wts = obs.wts)
@@ -545,7 +553,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
   if (community.step == "community-level") { # if running entire TMLE algorithm at cluster-level, aggregate data now
     if (!is.null(communityID)) {
       data <- aggregate(x = data, by=list(id = data[, "communityID"]), mean)[, 2 : (ncol(data)+1)] # Don't keep the extra ID column 
-      obs.wts <- rep(1, NROW(data)  # weights for aggregated data should be 1
+      obs.wts <- rep(1, NROW(data))  # weights for aggregated data should be 1
     } else {
       warning("Since community-level TMLE requires communityID to aggregate to the cluster-level. Lack of 'communityID' forces the 
                algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset")
