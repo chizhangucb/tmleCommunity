@@ -488,7 +488,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
   # INITIALIZE PARAMETERS
   #----------------------------------------------------------------------------------
   if (is.null(savetime.fit.hbars)) savetime.fit.hbars <- getopt("savetime.fit.hbars")
-  if (is.null(obs.wts)) obs.wts <- rep(1, nrow(data)) 
+  if (is.null(obs.wts)) obs.wts <- rep(1, NROW(data)) 
   if (!is.null(Qform) && !is.null(Ynode)) {
     Qform <- paste(Ynode, substring(Qform, first = as.numeric(gregexpr("~", Qform))))
     message("Since both Ynode and Qform are specified, the left-hand side of Qform will be ignored, with outcome being set to Ynode: " %+% Ynode)
@@ -535,6 +535,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
   if (community.step == "community-level") { # if running entire TMLE algorithm at cluster-level, aggregate data now
     if (!is.null(communityID)) {
       data <- aggregate(x = data, by=list(id = data[, "communityID"]), mean)[, 2 : (ncol(data)+1)] # Don't keep the extra ID column 
+      obs.wts <- rep(1, NROW(data)  # weights for aggregated data should be 1
     } else {
       warning("Since community-level TMLE requires communityID to aggregate to the cluster-level. Lack of 'communityID' forces the 
                algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset")
