@@ -419,9 +419,9 @@ DatKeepClass <- R6Class(classname = "DatKeepClass",
       ######## CAUTIONS ########
       ## Not sure if want to use data.table all the time, so decide to keep as data frame first!
       assert_that(is.data.frame(Odata))  # | is.data.table(Odata))
-      if (!is.list(nodes) || any(!(names(nodes) %in% c("Ynode", "Anodes", "Wnodes", "Enodes", "Crossnodes"))) ) { 
-        message("Don't recognize " %+% paste0(setdiff(names(nodes), c("Ynode", "Anodes", "Wnodes", "Enodes", "Crossnodes")), collapse = " and "))
-        stop("It should be a list & its names can only be one or more of Ynode, Anodes, Wnodes, Enodes, communityInd and Crossnodes.\n")
+      if (!is.list(nodes) || any(!(names(nodes) %in% c("Ynode", "Anodes", "WEnodes", "Crossnodes"))) ) { 
+        message("Don't recognize " %+% paste0(setdiff(names(nodes), c("Ynode", "Anodes", "WEnodes", "Crossnodes")), collapse = " and "))
+        stop("It should be a list & its names can only be one or more of Ynode, Anodes, WEnodes, communityInd and Crossnodes.\n")
       } else { 
         self$nodes <- nodes 
       }
@@ -720,7 +720,7 @@ DatKeepClass <- R6Class(classname = "DatKeepClass",
       assert_that(is.count(p))
       self$p <- p
       nobs <- self$ndat.sVar
-      WE.nodes <- c(self$nodes$Wnodes, self$nodes$Enodes)
+      WE.nodes <- self$nodes$WEnodes
       # set df.sVar to observed data with necessary nodes if g.fun is.null:
       if (is.null(f.g_fun)) {
         # assigning all covariates as data.frames:
