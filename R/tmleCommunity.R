@@ -186,6 +186,8 @@ get_est_sigmas <- function(estnames, obsYvals, ests_mat, QY_mat, wts_mat, fWi_ma
 # Purpose: Estimate h_bar under g0 and g* given observed data and vector of c^Y's data is an DatKeepClass object
 #-------------------------------------------------------------------------------------------
 CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
+  community.step <- est_params_list$community.step
+  working.model <- est_params_list$working.model
   TMLE.targetStep <- est_params_list$TMLE.targetStep
   nodes <- OData.ObsP0$nodes
   Y <- OData.ObsP0$noNA.Ynodevals # actual observed & transformed Y's
@@ -579,17 +581,14 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
                               estimator = getopt("Qestimator"))
   model.Q.init <- BinaryOutModel$new(reg = Qreg)$fit(overwrite = FALSE, data = OData.ObsP0, savespace = TRUE)
   
-  if (!working.model) { # if we don't believe the working model (i.e. if estimating under the large model)
-    # aggregate initial predictions to the cluster-level
-    
-  }
-  
   #----------------------------------------------------------------------------------
   # Create an list with model estimates, data & other information that is passed on to treatment estimation procedure
   #----------------------------------------------------------------------------------
   estinfo_list <- list(
     data = data, 
     nodes = nodes,
+    community.step = community.step,
+    working.model = working.model,
     TMLE.targetStep = TMLE.targetStep,
     obs.wts = obs.wts, 
     lbound = lbound,
