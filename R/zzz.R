@@ -32,9 +32,9 @@ gvars$opts.allowedVals <- list(Qestimator = c("speedglm__glm", "glm__glm", "h2o_
                                h2olearner = "_character_",
                                CVfolds = "_positive_integer_",
                                g.SL.library = "_character_",
-                               panel.effect = c("individual", "time", "twoways"), 
-                               panel.model = c("within", "random", "between","pooling", "ht", "fd"),
-                               community.index = "_character_"
+                               # panel.effect = c("individual", "time", "twoways"), 
+                               # panel.model = c("within", "random", "between","pooling", "ht", "fd"),
+                               # community.index = "_character_"
   )
 
 #' Print Current Option Settings for \code{tmleCommunity}
@@ -119,19 +119,15 @@ tmleCom_Options <- function(Qestimator = c("speedglm__glm", "glm__glm", "h2o__en
                             h2ometalearner = "h2o.glm.wrapper",
                             h2olearner = "h2o.glm.wrapper",
                             CVfolds = 5,
-                            g.SL.library = c("SL.glm", "SL.step", "SL.glm.interaction"),
-                            panel.effect = c("individual", "time", "twoways"), 
-                            panel.model = c("within", "random", "between","pooling", "ht", "fd"),
-                            panel.yvar = NULL,
-                            panel.xvar = NULL 
+                            g.SL.library = c("SL.glm", "SL.step", "SL.glm.interaction")
                            ) {
   old.opts <- gvars$opts
   Qestimator <- Qestimator[1L]
   gestimator <- gestimator[1L]
   # fitclass <- fitclass[1L]
   bin.method <- bin.method[1L]
-  panel.effect <- panel.effect[1L]
-  panel.model <- panel.model[1L]
+  # panel.effect <- panel.effect[1L]
+  # panel.model <- panel.model[1L]
 
   if (!(Qestimator %in% gvars$opts.allowedVals[["Qestimator"]])) 
     stop("Qestimator must be one of: " %+% paste0(gvars$opts.allowedVals[["Qestimator"]], collapse=", "))
@@ -139,10 +135,6 @@ tmleCom_Options <- function(Qestimator = c("speedglm__glm", "glm__glm", "h2o__en
     stop("gestimator must be one of: " %+% paste0(gvars$opts.allowedVals[["gestimator"]], collapse=", "))
   if (!(bin.method %in% gvars$opts.allowedVals[["bin.method"]])) 
     stop("bin.method must be one of: " %+% paste0(gvars$opts.allowedVals[["bin.method"]], collapse=", "))
-  if (!(panel.effect %in% gvars$opts.allowedVals[["panel.effect"]])) 
-    stop("panel.effect must be one of: " %+% paste0(gvars$opts.allowedVals[["panel.effect"]], collapse=", "))
-  if (!(panel.model %in% gvars$opts.allowedVals[["panel.model"]])) 
-    stop("panel.model must be one of: " %+% paste0(gvars$opts.allowedVals[["panel.model"]], collapse=", "))
   
   if (any(c(Qestimator, gestimator) %in% "h2o__ensemble")) {
     if (!requireNamespace("h2o") || !requireNamespace("h2oEnsemble")) 
