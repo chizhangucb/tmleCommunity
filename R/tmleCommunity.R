@@ -198,6 +198,10 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   QY.init[!OData.ObsP0$det.Y] <- model.Q.init$predict(newdata = OData.ObsP0)$getprobA1[!OData.ObsP0$det.Y] # predictions P(Y=1) for non-DET Y
   off <- qlogis(QY.init)  # offset
   
+  if (community.step == "individual-level" && working.model == F) {
+
+  }
+  
   #************************************************
   # Fitting h_gstar / h_gN clever covariate:
   #************************************************
