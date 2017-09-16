@@ -468,7 +468,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, communityInd = NULL, YnodeDet = NULL, 
                           community.step = c("stratify", "panel.transform"),
                           f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995, fluctuation = "logistic",                                                     
-                          f.g0 = NULL, hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, obs.wts = NULL, 
+                          f_g0 = NULL, hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, obs.wts = NULL, 
                           h.g0_GenericModel = NULL, h.gstar_GenericModel = NULL, savetime.fit.hbars = TRUE, 
                           TMLE.targetStep = c("tmle.intercept", "tmle.covariate"),
                           n_MCsims = 1, 
@@ -481,7 +481,7 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, communityI
     community.step <- NULL
     tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, Enodes = Enodes, 
                                       YnodeDet = YnodeDet, communityInd = communityInd, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
-                                      Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f.g0 = f.g0, 
+                                      Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f_g0 = f_g0, 
                                       hform.g0 = hform.g0, hform.gstar = hform.gstar, lbound = lbound, obs.wts = obs.wts, 
                                       h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
                                       savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
@@ -496,7 +496,7 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, communityI
         data.perCom <- data[(data[, communityInd] == communityInd.list[i]), ]
         tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, Enodes = Enodes, 
                                       YnodeDet = YnodeDet, communityInd = communityInd, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
-                                      Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f.g0 = f.g0, 
+                                      Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f_g0 = f_g0, 
                                       hform.g0 = hform.g0, hform.gstar = hform.gstar, lbound = lbound, obs.wts = obs.wts, 
                                       h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
                                       savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
@@ -518,7 +518,7 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, communityI
       }
       tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, Enodes = Enodes, 
                                       YnodeDet = YnodeDet, communityInd = communityInd, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
-                                      Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f.g0 = f.g0, 
+                                      Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f_g0 = f_g0, 
                                       hform.g0 = hform.g0, hform.gstar = hform.gstar, lbound = lbound, obs.wts = obs.wts, 
                                       h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
                                       savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
@@ -531,7 +531,7 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, communityI
 
 tmleSingleStep <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet = NULL, communityInd = NULL,
                            f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995, fluctuation = "logistic",                                                     
-                           f.g0 = NULL, hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, obs.wts = NULL, 
+                           f_g0 = NULL, hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, obs.wts = NULL, 
                            h.g0_GenericModel = NULL, h.gstar_GenericModel = NULL, savetime.fit.hbars = TRUE, 
                            TMLE.targetStep = c("tmle.intercept", "tmle.covariate"),
                            n_MCsims = 1, 
@@ -644,7 +644,7 @@ tmleSingleStep <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet 
     merged.form = merged.form, 
     model.Q.init = model.Q.init,
     Q.sVars = Q.sVars,
-    f.g0 = f.g0,
+    f.g0 = f_g0,
     h.g0.sVars = h.g0.sVars,
     h.gstar.sVars = h.gstar.sVars,
     h.g0_GenericModel = h.g0_GenericModel,
