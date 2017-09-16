@@ -285,35 +285,34 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'
 #' Estimate the marginal treatment effect among i.i.d units using \strong{TMLE} (targeted maximum likelihood estimation). It also provide
 #' \strong{IPTW} (the inverse-probability-of-treatment or Horvitz-Thompson) and \strong{GCOMP} (parametric G-computation formula).
-#' @param data \code{data.frame} with named columns, containing \code{Wnodes}, \code{Anode}, \code{Ynode} 
-#'  and possibly \code{Enodes} and \code{communityIndex}.
+#' @param data \code{data.frame} with named columns, containing \code{WEnodes}, \code{Anode}, \code{Ynode} and possibly \code{communityIndex}.
 #' @param Ynode Column names or indices in \code{data} of outcome variable name. Outcome can be either binary or continuous. 
 #'   This can instead be specified on the left-side of the regression formula in argument \code{Qform}.
 #' @param Anodes Column names or indices in \code{data} of exposure (treatment) variables; exposures can be either binary, categorical or continuous.
-#' @param Wndoes Column names or indices in \code{data} of individual-level baseline covariates. Factors are not currently allowed.
-#' @param Endoes Optional column names or indices in \code{data} of community-level baseline covariates. Factors are not currently allowed.
+#' @param WEndoes Column names or indices in \code{data} of individual-level (and possibly community-level) baseline covariates.
+#'   Factors are not currently allowed.
 #' @param communityInd Optional column name or index in \code{data} of community identifier variable. If known, either stratify on community level
 #'   when estimating outcome and treatment mechanisms, or perform panel transformation on data before estiamtion, depending on \code{community.step}.
 #' @param YnodeDet Optional column name or index in \code{data} of deterministic values of outcome Ynode, coded as (TRUE/FALSE) or (1/0). If TRUE/1, 
 #'  value of Ynode is given deterministically / constant. 
-#' @param community.step Methods to deal with community-level data, either "stratify" (Default) or "panel.transform". If communityInd = NULL, then 
-#'  automatically pool over all communities.
+#' @param community.step Methods to deal with community-level data, one of "NoCommunity" (Default), "community-level" and "individual-level". 
+#'  If communityInd = NULL, then automatically pool over all communities.
 #' @param f_gstar1 Either a function or a vector or a matrix/ data frame of counterfactual exposures, dependin on the number of exposure variables.
 #'  If a matrix/ data frame, its number of rows must be either nrow(data) or 1 (constant exposure assigned to all observations), and its number of 
 #'  columns must be length(Anodes). If a vector, it must be of length nrow(data) or 1. If a function, it must return a data frame of counterfactual
-#'  exposures sampled based on Anodes, Wnodes (and possibly Enodes and communityIndex) passed as a named argument "data". Thus, the function must 
+#'  exposures sampled based on Anodes, WEnodes (and possibly communityIndex) passed as a named argument "data". Thus, the function must 
 #'  include "data" as one of its argument names. The interventions defined by f_gstar1 can be static, dynamic or stochastic. See Exmaples below.
 #' @param f_gstar2 Either a function or a vector or a matrix/ data frame of counterfactual exposures, dependin on the number of exposure variables.
 #'  It has the same components and requirements as f_gstar1
 #' @param Qform Character vector of regression formula for Ynode. If not specified, the outcome variable is regressed on all covariates included in 
-#'  Anodes, Wnodes and Enodes.
+#'  Anodes and WEnodes.
 #' @param Qbounds Upper and lower bounds on Y and predicted values for initial Q. Defaults to the range of Y, widened by 10\% of the min and max values.
 #' @param alpha Used to keep predicted values for initial Q bounded away from (0,1) for logistic fluctuation.
 #' @param fluctuation Default to "logistic", it could also be "linear" (for targeting step).
 #' @param f_g0 Optional function used to specify model knowledge about value of Anodes. It estimates \code{P(A | W, E)} under \code{g0} by 
 #'  sampling a large vector/ data frame of Anode (of length or number of rows \code{nrow(data)*n_MCsims}) from \code{f_g0}
 #' @param hform.g0 Character vector of regression formula for estimating the conditional density of P(A | W, E) under the observed treatment mechanism
-#'  g0. If not specified, its form will be Anodes ~ Wnodes + Enodes. If there are more than one expsosure, it fits a joint probability.
+#'  g0. If not specified, its form will be Anodes ~ WEnodes. If there are more than one expsosure, it fits a joint probability.
 #' @param hform.gstar Character vector of regression formula for estimating the conditional density P(A | W, E) under interventions f_gstar1 or f_gstar2. 
 #'  If not specified, it follows the same rule used in hform.g0. 
 #' @param lbound Value between (0,1) for truncation of predicted P(A | W, E). Default to 0.005
@@ -465,8 +464,8 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' }
 #' @example tests/examples/3_tmleCommunity_examples.R
 #' @export
-tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, communityInd = NULL, YnodeDet = NULL, 
-                          community.step = c("community-level", "individual-level"), working.model = FALSE,
+tmleCommunity <- function(data, Ynode, Anodes, Wnodes, communityInd = NULL, YnodeDet = NULL, 
+                          community.step = c("NoCommunity", "community-level", "individual-level"), working.model = FALSE,
                           f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995, fluctuation = "logistic",                                                     
                           f_g0 = NULL, hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, obs.wts = NULL, 
                           h.g0_GenericModel = NULL, h.gstar_GenericModel = NULL, savetime.fit.hbars = TRUE, 
@@ -476,25 +475,46 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, communityI
                           rndseed = NULL, 
                           verbose = TRUE) {
   ## Check if any unexpected inputs
-  community.step <- community.step[1]
-  if (is.null(communityInd)) {
-    community.step <- NULL
-    tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, Enodes = Enodes, 
-                                      YnodeDet = YnodeDet, communityInd = communityInd, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
-                                      Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f_g0 = f_g0, 
-                                      hform.g0 = hform.g0, hform.gstar = hform.gstar, lbound = lbound, obs.wts = obs.wts, 
-                                      h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
-                                      savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
-                                      n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose)
-  } else {
-    if (!(community.step %in% c("community-level", "individual-level"))) 
-      stop("community.step argument must be one of 'community-level' and 'individual-level'")
-    if (community.step == "community-level") {
+  
+  if (is.null(communityInd) || community.step == "NoCommunity") {
+    community.step <- "NoCommunity"
+    tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, 
+                                        YnodeDet = YnodeDet, communityInd = communityInd, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
+                                        Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f_g0 = f_g0, 
+                                        hform.g0 = hform.g0, hform.gstar = hform.gstar, lbound = lbound, obs.wts = obs.wts, 
+                                        h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
+                                        savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
+                                        n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose)
+  } else if (community.step == "community-level") {
+    data <- aggregate(x = data, by=list(id = data[, "communityInd"]), mean)[, 2 : (ncol(data)+1)]
+    tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, 
+                                        YnodeDet = YnodeDet, communityInd = communityInd, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
+                                        Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f_g0 = f_g0, 
+                                        hform.g0 = hform.g0, hform.gstar = hform.gstar, lbound = lbound, obs.wts = obs.wts, 
+                                        h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
+                                        savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
+                                        n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose)  
+  } else if (community.step == "individual-level") {
+    if (working.model) { # if we believe our working model (i.e. if estimating under the submodel)
+      tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes,
+                                          YnodeDet = YnodeDet, communityInd = communityInd, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
+                                          Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f_g0 = f_g0, 
+                                          hform.g0 = hform.g0, hform.gstar = hform.gstar, lbound = lbound, obs.wts = obs.wts, 
+                                          h.g0_GenericModel = h.g0_GenericModel, h.gstar_GenericModel = h.gstar_GenericModel, 
+                                          savetime.fit.hbars = savetime.fit.hbars, TMLE.targetStep = TMLE.targetStep,
+                                          n_MCsims = n_MCsims, CI_alpha = CI_alpha, rndseed = rndseed, verbose = verbose)
+      
+    }
+  
+  }
+      
+     
+      
       communityInd.list <- unique(data[, communityInd])
       tmleCommunity.res <- list()
       for (i in communityInd.list) {
         data.perCom <- data[(data[, communityInd] == communityInd.list[i]), ]
-        tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, Enodes = Enodes, 
+        tmleCommunity.res <- tmleSingleStep(data = data, Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, 
                                       YnodeDet = YnodeDet, communityInd = communityInd, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2,
                                       Qform = Qform, Qbounds = Qbounds, alpha = alpha, fluctuation = fluctuation, f_g0 = f_g0, 
                                       hform.g0 = hform.g0, hform.gstar = hform.gstar, lbound = lbound, obs.wts = obs.wts, 
@@ -529,15 +549,16 @@ tmleCommunity <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, communityI
 }
 
 
-tmleSingleStep <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet = NULL, communityInd = NULL,
-                           f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995, fluctuation = "logistic",                                                     
-                           f_g0 = NULL, hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, obs.wts = NULL, 
-                           h.g0_GenericModel = NULL, h.gstar_GenericModel = NULL, savetime.fit.hbars = TRUE, 
-                           TMLE.targetStep = c("tmle.intercept", "tmle.covariate"),
-                           n_MCsims = 1, 
-                           CI_alpha = 0.05, 
-                           rndseed = NULL, 
-                           verbose = TRUE) {
+tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communityInd = NULL, working.model = FALSE,
+                          community.step = c("NoCommunity", "community-level", "individual-level"), 
+                          f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995, fluctuation = "logistic",                                                     
+                          f_g0 = NULL, hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, obs.wts = NULL, 
+                          h.g0_GenericModel = NULL, h.gstar_GenericModel = NULL, savetime.fit.hbars = TRUE, 
+                          TMLE.targetStep = c("tmle.intercept", "tmle.covariate"),
+                          n_MCsims = 1, 
+                          CI_alpha = 0.05, 
+                          rndseed = NULL, 
+                          verbose = TRUE) {
   if (!is.null(rndseed))  set.seed(rndseed)  # make stochastic intervention trackable
   gvars$verbose <- verbose
   message("Running tmleCommunity with the following settings from tmleCom_Options(): "); str(gvars$opts)
@@ -556,12 +577,15 @@ tmleSingleStep <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet 
     Ynode <- LhsVars(Qform)[1]
     message("Setting the Ynode to: " %+% Ynode)
   }
+  community.step <- community.step[1]
   TMLE.targetStep <- TMLE.targetStep[1]
   
   ## Check if any unexpected inputs
+  if (!(community.step %in% c("NoCommunity", "community-level", "individual-level"))) 
+      stop("community.step argument must be one of 'NoCommunity', 'community-level' and 'individual-level'")
   if (!(TMLE.targetStep %in% c("tmle.intercept", "tmle.covariate"))) 
     stop("TMLE.targetStep argument must be either 'tmle.intercept' or 'tmle.covariate'")
-  nodes <- list(Ynode = Ynode, Anodes = Anodes, Wnodes = Wnodes, Enodes = Enodes)
+  nodes <- list(Ynode = Ynode, Anodes = Anodes, WEnodes = WEnodes)
   for (i in unlist(nodes)) {  CheckVarNameExists(data = data, varname = i) }
   if (!CheckInputs(data, nodes, Qform, hform.g0, hform.gstar, fluctuation, Qbounds, obs.wts)) stop()
   maptoYstar <- fluctuation=="logistic"  # if TRUE, cont Y values shifted & scaled to fall b/t (0,1)
@@ -569,10 +593,10 @@ tmleSingleStep <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet 
   #----------------------------------------------------------------------------------
   # DEFINING (OPTIONAL) REGRESSION FORMS 
   #----------------------------------------------------------------------------------
-  Q.sVars <- define_regform(as.formula(Qform), Anodes.lst = nodes$Ynode, Wnodes.lst = nodes[c("Anodes", "Wnodes", "Enodes")])
-  h.g0.sVars <- define_regform(as.formula(hform.g0), Anodes.lst = nodes$Anodes, Wnodes.lst = nodes[3:5])
+  Q.sVars <- define_regform(as.formula(Qform), Anodes.lst = nodes$Ynode, Wnodes.lst = nodes[c("Anodes", "WEnodes")])
+  h.g0.sVars <- define_regform(as.formula(hform.g0), Anodes.lst = nodes$Anodes, Wnodes.lst = nodes["WEnodes"])
   if (!is.null(hform.gstar)) {
-    h.gstar.sVars <- define_regform(as.formula(hform.gstar), Anodes.lst = nodes$Anodes, Wnodes.lst = nodes[c("Wnodes", "Enodes")])
+    h.gstar.sVars <- define_regform(as.formula(hform.gstar), Anodes.lst = nodes$Anodes, Wnodes.lst = nodes["WEnodes"])
   } else {
     h.gstar.sVars <- h.g0.sVars
   }
@@ -586,7 +610,8 @@ tmleSingleStep <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet 
     print("Derived regression hform.gstar (P(A|W,E) under g.star): "); str(h.gstar.sVars)
   }
   
-  ## Create data based on Qform, hform.g0 and hform.gstar, in case of interaction or higher-order term.
+  ## Create data based on community.step, then based on Qform, hform.g0 and hform.gstar, in case of interaction or higher-order term.
+  if (community.step == "community-level") data <- aggregate(x = data, by=list(id = data[, "communityInd"]), mean)[, 2 : (ncol(data)+1)]
   if (!is.null(c(Qform, hform.g0, hform.gstar))) {
     allcovRHS <- unique(unlist(lapply(c(Qform, hform.g0, hform.gstar), FUN = function(x) { strsplit(deparse(as.formula(x)[[3]]), " \\+ ")[[1]] })))
     merged.form <- reformulate(allcovRHS, response = NULL)  # Reformulate a formula including all legitimate character of the RHS in 3 formulae
@@ -599,8 +624,8 @@ tmleSingleStep <- function(data, Ynode, Anodes, Wnodes, Enodes = NULL, YnodeDet 
     merged.form <- NULL
   }
   nodes <- append(nodes, list(Crossnodes = setdiff(names(data), Reduce(c, nodes))))
-  # Why to keep variables that are not indicated in the node list: when creating A^* under g.star (delta function), it's possible to use 
-  # variablas that are not used in Qform and gform. 
+  # Why to keep variables that are not indicated in the node list (i.e. Crossnodes): when creating A^* under g.star (delta function), 
+  # it's possible to use variablas that are not used in Qform and gform. 
   
   ## Create an R6 object that stores and manages the input data, later passed on to estimation algorithm(s)
   inputYs <- CreateInputs(data[, Ynode], Qbounds, alpha, maptoYstar)
