@@ -210,9 +210,8 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
       Y <- aggregate(x = Y, by=list(id = data[, communityID]), mean)[, 2]
       determ.Q <- rep_len(FALSE, length(Y))  # For aggregated data, YnodeDet is currently unavailable, treat all Y^c as nondeterministic
       data <- aggregate(x = data, by=list(id = data[, communityID]), mean)[, 2 : (ncol(data)+1)] # Don't keep the extra ID column 
-      obs.wts <- rep(1, NROW(data))  # weights for aggregated data should be 1
       est_params_list$data <- data
-      est_params_list$obs.wts <- obs.wts
+      est_params_list$obs.wts <- obs.wts <- community.wts
       OData.ObsP0 <- DatKeepClass$new(Odata = data, nodes = nodes, norm.c.sVars = FALSE)
       OData.ObsP0$addYnode(YnodeVals = data[, Ynode])  # Already bounded Y into Ystar in the beginning step               
       OData.ObsP0$addObsWeights(obs.wts = obs.wts)
@@ -324,8 +323,12 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'   when estimating outcome and treatment mechanisms, or perform panel transformation on data before estiamtion, depending on \code{community.step}.
 #' @param YnodeDet Optional column name or index in \code{data} of deterministic values of outcome Ynode, coded as (TRUE/FALSE) or (1/0). If TRUE/1, 
 #'  value of Ynode is given deterministically / constant. 
-#' @param community.step Methods to deal with community-level data, one of "NoCommunity" (Default), "community-level" and "individual-level". 
+#' @param community.step Methods to deal with community-level data, one of "NoCommunity" (Default), "community_level" and "individual_level". 
 #'  If communityID = NULL, then automatically pool over all communities.
+#' @param working.model Logical
+#' @param community.wts Optional vector of community-level observation weights (of length of the number of communities). If NULL, assumed to be all 1. 
+#'  Currently only support a numeric vector and "by_size" (i.e., by setting community.wts = "by_size", treat the number of individuals within
+#'  each community as its weight, respectively).
 #' @param f_gstar1 Either a function or a vector or a matrix/ data frame of counterfactual exposures, dependin on the number of exposure variables.
 #'  If a matrix/ data frame, its number of rows must be either nrow(data) or 1 (constant exposure assigned to all observations), and its number of 
 #'  columns must be length(Anodes). If a vector, it must be of length nrow(data) or 1. If a function, it must return a data frame of counterfactual
@@ -345,7 +348,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @param hform.gstar Character vector of regression formula for estimating the conditional density P(A | W, E) under interventions f_gstar1 or f_gstar2. 
 #'  If not specified, it follows the same rule used in hform.g0. 
 #' @param lbound Value between (0,1) for truncation of predicted P(A | W, E). Default to 0.005
-#' @param obs.wts Optional vector of observation (sampling) weights (of length nrow(data)). If NULL, assumed to be all 1. 
+#' @param obs.wts Optional vector of individual-level observation (sampling) weights (of length \code{nrow(data)}). If NULL, assumed to be all 1. 
 #' @param h.g0_GenericModel Previously fitted models for P(A | W, E) under g0, one of returns of tmleCommunity.function. If known, predictions
 #'  for P(A=a | W=w, E=e) under g0 are based on the fitted models in \code{h.g0_GenericModel}.
 #' @param h.gstar_GenericModel Previously fitted models for P(A^* | W, E) under gstar, one of returns of tmleCommunity.function. If known,  
@@ -494,7 +497,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @example tests/examples/3_tmleCommunity_examples.R
 #' @export
 tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communityID = NULL, working.model = FALSE,
-                          community.step = c("NoCommunity", "community-level", "individual-level"), 
+                          community.step = c("NoCommunity", "community-level", "individual-level"), community.wts = NULL,
                           f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995, fluctuation = "logistic",                                                     
                           f_g0 = NULL, hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, obs.wts = NULL, 
                           h.g0_GenericModel = NULL, h.gstar_GenericModel = NULL, savetime.fit.hbars = TRUE, 
@@ -511,7 +514,12 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
   # INITIALIZE PARAMETERS
   #----------------------------------------------------------------------------------
   if (is.null(savetime.fit.hbars)) savetime.fit.hbars <- getopt("savetime.fit.hbars")
-  if (is.null(obs.wts)) obs.wts <- rep(1, NROW(data)) 
+  if (is.null(obs.wts)) obs.wts <- rep(1, NROW(data))
+  if (is.null(community.wts)) {
+    community.wts <- rep(1, length(unique(data[, communityID]))) 
+  } else if (community.wts == "by_size") {
+    community.wts <- as.vector(table(data[, communityID]))
+  }
   if (!is.null(Qform) && !is.null(Ynode)) {
     Qform <- paste(Ynode, substring(Qform, first = as.numeric(gregexpr("~", Qform))))
     message("Since both Ynode and Qform are specified, the left-hand side of Qform will be ignored, with outcome being set to Ynode: " %+% Ynode)
@@ -558,7 +566,8 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
   if (community.step == "community-level") { # if running entire TMLE algorithm at cluster-level, aggregate data now
     if (!is.null(communityID)) {
       data <- aggregate(x = data, by=list(id = data[, communityID]), mean)[, 2 : (ncol(data)+1)] # Don't keep the extra ID column 
-      obs.wts <- rep(1, NROW(data))  # weights for aggregated data should be 1
+      # obs.wts <- rep(1, NROW(data))  # weights for aggregated data should be 1
+      obs.wts <- community.wts
     } else {
       warning("Since community-level TMLE requires communityID to aggregate to the cluster-level. Lack of 'communityID' forces the 
                algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset")
@@ -620,6 +629,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
     working.model = working.model,
     TMLE.targetStep = TMLE.targetStep,
     obs.wts = obs.wts, 
+    community.wts = community.wts,
     lbound = lbound,
     merged.form = merged.form, 
     model.Q.init = model.Q.init,
