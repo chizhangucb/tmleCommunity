@@ -188,6 +188,7 @@ get_est_sigmas <- function(estnames, obsYvals, ests_mat, QY_mat, wts_mat, fWi_ma
 #-------------------------------------------------------------------------------------------
 CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   data <- est_params_list$data
+  communityID <- est_params_list$communityID
   community.step <- est_params_list$community.step
   working.model <- est_params_list$working.model
   TMLE.targetStep <- est_params_list$TMLE.targetStep
@@ -614,6 +615,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
   estinfo_list <- list(
     data = data, 
     nodes = nodes,
+    communityID = communityID,
     community.step = community.step,
     working.model = working.model,
     TMLE.targetStep = TMLE.targetStep,
