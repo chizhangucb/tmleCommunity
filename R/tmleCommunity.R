@@ -81,7 +81,8 @@ tmle.update <- function(TMLE.targetStep, Y, obs.wts, off, h_wts, subset, family)
 # Purpose: create output object with param ests of EY_gstar, vars and CIs for given gstar 
 # (or ATE if two tmle obj are passed) boot.var, n.boot
 #-------------------------------------------------------------------------------------------
-calcParameters <- function(OData.ObsP0, inputYs, alpha = 0.05, tmle_g_out, tmle_g2_out = NULL) {
+calcParameters <- function(inputYs, alpha = 0.05, tmle_g_out, tmle_g2_out = NULL) {
+  OData.ObsP0 <- tmle_g_out$OData.ObsP0
   nobs <- OData.ObsP0$nobs
   ests_mat <- tmle_g_out$ests_mat
   QY_mat <- tmle_g_out$QY_mat
@@ -301,7 +302,9 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
               # ests_unwt_mat = ests_unwt_mat, 
               obs.wts = obs.wts, 
               h.g0_GenericModel = model.h.fit$genericmodels.g0,
-              h.gstar_GenericModel = model.h.fit$genericmodels.gstar))
+              h.gstar_GenericModel = model.h.fit$genericmodels.gstar,
+              # OData.gstar = OData.gstar, 
+              OData.ObsP0 = OData.ObsP0))
 }
 
 
@@ -644,14 +647,13 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
   #----------------------------------------------------------------------------------
   # Create output list (estimates, as. variances, CIs)
   #----------------------------------------------------------------------------------
-  EY_gstar1 <- calcParameters(OData.ObsP0 = OData.ObsP0, inputYs = inputYs, alpha = CI_alpha, tmle_g_out = tmle_gstar1_out)
+  EY_gstar1 <- calcParameters(inputYs = inputYs, alpha = CI_alpha, tmle_g_out = tmle_gstar1_out)
   EY_gstar2 <- NULL
   ATE <- NULL	
   otherInfo2 <- NULL
   if (!is.null(f_gstar2)) {
-    EY_gstar2 <- calcParameters(OData.ObsP0 = OData.ObsP0, inputYs = inputYs, alpha = CI_alpha, tmle_g_out = tmle_gstar2_out)
-    ATE <- calcParameters(OData.ObsP0 = OData.ObsP0, inputYs = inputYs, alpha = CI_alpha, 
-                          tmle_g_out = tmle_gstar1_out, tmle_g2_out = tmle_gstar2_out)
+    EY_gstar2 <- calcParameters(inputYs = inputYs, alpha = CI_alpha, tmle_g_out = tmle_gstar2_out)
+    ATE <- calcParameters(inputYs = inputYs, alpha = CI_alpha, tmle_g_out = tmle_gstar1_out, tmle_g2_out = tmle_gstar2_out)
   }
   message("######################################################################################")
   message("Warning: inference for gcomp is not accurate! It is based on TMLE influence curves.")
