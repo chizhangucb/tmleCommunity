@@ -186,6 +186,7 @@ get_est_sigmas <- function(estnames, obsYvals, ests_mat, QY_mat, wts_mat, fWi_ma
 # Purpose: Estimate h_bar under g0 and g* given observed data and vector of c^Y's data is an DatKeepClass object
 #-------------------------------------------------------------------------------------------
 CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
+  data <- est_params_list$data
   community.step <- est_params_list$community.step
   working.model <- est_params_list$working.model
   TMLE.targetStep <- est_params_list$TMLE.targetStep
