@@ -202,14 +202,14 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
     if (!is.null(communityID)) { 
       # aggregate initial outcome predictions to the cluster-level
       QY.init <- aggregate(x = QY.init, by=list(id = data[, communityID]), mean)[, 2]
-      off <- aggregate(x = off, by=list(id = data[, communityID]), mean)[, 2]
+      off <- qlogis(QY.init)  # Recalculate offset based on aggregated initiate predictions
       # aggregate original dataset to the cluster-level & redefine OData.ObsP0
       Y <- aggregate(x = Y, by=list(id = data[, communityID]), mean)[, 2]
       determ.Q <- rep_len(FALSE, length(Y))  # For aggregated data, YnodeDet is currently unavailable, treat all Y^c as nondeterministic
       data <- aggregate(x = data, by=list(id = data[, communityID]), mean)[, 2 : (ncol(data)+1)] # Don't keep the extra ID column 
       obs.wts <- rep(1, NROW(data))  # weights for aggregated data should be 1
       est_params_list$data <- data
-      est_params_list$nodes <- nodes
+      est_params_list$obs.wts <- obs.wts
       OData.ObsP0 <- DatKeepClass$new(Odata = data, nodes = nodes, norm.c.sVars = FALSE)
       OData.ObsP0$addYnode(YnodeVals = data[, Ynode])  # Already bounded Y into Ystar in the beginning step               
       OData.ObsP0$addObsWeights(obs.wts = obs.wts)
