@@ -211,7 +211,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
       determ.Q <- rep_len(FALSE, length(Y))  # For aggregated data, YnodeDet is currently unavailable, treat all Y^c as nondeterministic
       data <- aggregate(x = data, by=list(id = data[, communityID]), mean)[, 2 : (ncol(data)+1)] # Don't keep the extra ID column 
       est_params_list$data <- data
-      est_params_list$obs.wts <- obs.wts <- community.wts
+      est_params_list$obs.wts <- obs.wts <- est_params_list$community.wts
       OData.ObsP0 <- DatKeepClass$new(Odata = data, nodes = nodes, norm.c.sVars = FALSE)
       OData.ObsP0$addYnode(YnodeVals = data[, Ynode])  # Already bounded Y into Ystar in the beginning step               
       OData.ObsP0$addObsWeights(obs.wts = obs.wts)
