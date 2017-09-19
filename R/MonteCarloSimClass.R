@@ -37,6 +37,7 @@ CalcMonteCarloEsts <- function(OData.ObsP0, OData.gstar, MC_fit_params, model.h.
     if (community.step == "individual-level" && working.model == TRUE) {
       if (!is.null(communityID)) {
         TMLE <- aggregate(x = TMLE, by=list(id = data[, communityID]), mean)[, 2]
+        MLE <- aggregate(x = GCOMP, by=list(id = data[, communityID]), mean)[, 2]
         obs.wts <- community.wts
       } else {
         warning("Since individual-level TMLE with working.model requires communityID to aggregate data to the cluster-level in the end. 
@@ -45,7 +46,7 @@ CalcMonteCarloEsts <- function(OData.ObsP0, OData.gstar, MC_fit_params, model.h.
       }
     }
     mean_psis_all <- c(TMLE = weighted.mean(TMLE, w = obs.wts), 
-                       MLE = weighted.mean(GCOMP, w = obs.wts), 
+                       MLE = weighted.mean(MLE, w = obs.wts), 
                        fiWs_list$fiW_Qinit)
     names(mean_psis_all) <- c("TMLE", "MLE", paste("fWi_init_", c(1:nobs), sep = ""))
     return(mean_psis_all)
@@ -53,7 +54,7 @@ CalcMonteCarloEsts <- function(OData.ObsP0, OData.gstar, MC_fit_params, model.h.
   psi_est_mean <- genMC.reps(1)
   return(psi_est_mean)
 }
-  
+
 
 ## ---------------------------------------------------------------------
 #' R6 class for evaluating different plug-in estimators via for Monte-Carlo resampling where new exposures are generated 
