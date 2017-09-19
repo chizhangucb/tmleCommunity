@@ -201,7 +201,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   QY.init[!OData.ObsP0$det.Y] <- model.Q.init$predict(newdata = OData.ObsP0)$getprobA1[!OData.ObsP0$det.Y] # predictions P(Y=1) for non-DET Y
   off <- qlogis(QY.init)  # offset
   
-  if (community.step == "individual-level" && working.model == F) { # if we do NOT believe our working model (i.e. estimate under the lareg model)
+  if (community.step == "individual-level" && working.model == FALSE) { # if we do NOT believe our working model (i.e. estimate under the lareg model)
     if (!is.null(communityID)) { 
       # aggregate initial outcome predictions to the cluster-level
       QY.init <- aggregate(x = QY.init, by=list(id = data[, communityID]), mean)[, 2]
@@ -237,12 +237,15 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   IPTW <- Y
   IPTW[!determ.Q] <- Y[!determ.Q] * h_wts[!determ.Q]
   # IPTW_unwt <- mean(IPTW)
-  if (community.step == "individual-level" && working.model == T) { # if we believe our working model (i.e. if estimating under the submodel)
-    IPTW <- aggregate(x = IPTW, by=list(id = data[, communityID]), mean)[, 2]
-    IPTW <- weighted.mean(IPTW, w = est_params_list$community.wts)
-  } else {
-    IPTW <- weighted.mean(IPTW, w = obs.wts)
+  if (community.step == "individual-level" && working.model == TRUE) { # if we believe our working model (i.e. if estimating under the submodel)
+    if (!is.null(communityID)) { 
+      IPTW <- aggregate(x = IPTW, by=list(id = data[, communityID]), mean)[, 2]
+      obs.wts <- est_params_list$community.wts
+    } else {
+      warning("Since individual-level TMLE with working.model requires communityID to aggregate data to the cluster-level in the end. Lack of 
+               'communityID' forces the algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset.")
   }
+  IPTW <- weighted.mean(IPTW, w = obs.wts)
   
   #************************************************
   # TMLE estimators
