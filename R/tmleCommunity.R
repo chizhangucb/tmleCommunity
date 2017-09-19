@@ -240,8 +240,9 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   if (community.step == "individual-level" && working.model == T) { # if we believe our working model (i.e. if estimating under the submodel)
     IPTW <- aggregate(x = IPTW, by=list(id = data[, communityID]), mean)[, 2]
     IPTW <- weighted.mean(IPTW, w = est_params_list$community.wts)
+  } else {
+    IPTW <- weighted.mean(IPTW, w = obs.wts)
   }
-  IPTW <- weighted.mean(IPTW, w = obs.wts)
   
   #************************************************
   # TMLE estimators
