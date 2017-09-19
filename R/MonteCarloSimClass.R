@@ -9,6 +9,7 @@
 CalcMonteCarloEsts <- function(OData.ObsP0, OData.gstar, MC_fit_params, model.h.fit) {
   TMLE.targetStep <- MC_fit_params$TMLE.targetStep
   obs.wts <- MC_fit_params$obs.wts
+  community.wts <- MC_fit_params$community.wts
   model.Q.init <- MC_fit_params$model.Q.init
   model.Q.star <- MC_fit_params$model.Q.star
   if (gvars$verbose) {
