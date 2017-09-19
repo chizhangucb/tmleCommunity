@@ -40,9 +40,8 @@ CalcMonteCarloEsts <- function(OData.ObsP0, OData.gstar, MC_fit_params, model.h.
         MLE <- aggregate(x = GCOMP, by=list(id = data[, communityID]), mean)[, 2]
         obs.wts <- community.wts
       } else {
-        warning("Since individual-level TMLE with working.model requires communityID to aggregate data to the cluster-level in the end. 
-                Lack of 'communityID' forces the algorithm to automatically pool data over all communities and treat it as non-hierarchical 
-                dataset when fitting clever covariates.")
+        warning("Since individual-level TMLE with working.model requires communityID to aggregate data to the cluster-level in the end. Lack of 
+               'communityID' forces the algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset.")
       }
     }
     mean_psis_all <- c(TMLE = weighted.mean(TMLE, w = obs.wts), 
