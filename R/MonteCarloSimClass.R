@@ -9,19 +9,15 @@
 CalcMonteCarloEsts <- function(OData.ObsP0, OData.gstar, MC_fit_params, model.h.fit) {
   TMLE.targetStep <- MC_fit_params$TMLE.targetStep
   obs.wts <- MC_fit_params$obs.wts
-  community.wts <- MC_fit_params$community.wts
   model.Q.init <- MC_fit_params$model.Q.init
   model.Q.star <- MC_fit_params$model.Q.star
-  
   if (gvars$verbose) {
     message("================================================================")
     message("Running Monte Carlo evaluation of the substitution estimators...")
     message("================================================================")
   }
-  
   evaluator <- MonteCarloSimClass$new(OData.ObsP0 = OData.ObsP0, OData.gstar = OData.gstar)
   nobs <- evaluator$nobs
-  
   genMC.reps <- function(nrep)  {
     ## G-Comp estimator 
     GCOMP <- evaluator$get.gcomp(model.Q.init) # QY.init (G-Comp estimator) - est probY based on model for Q_Y
@@ -38,17 +34,25 @@ CalcMonteCarloEsts <- function(OData.ObsP0, OData.gstar, MC_fit_params, model.h.
     ## fi_W - hold W fixed to observed values (a component of TMLE Var)
     fiWs_list <- evaluator$get.fiW()  
     # Put all estimators together and add names (defined in out_nms outside of this function):
-    unwt.mean_psis_all <- c(TMLE = mean(TMLE), MLE = mean(GCOMP))
-    wtmean_psis_all <- c(TMLE = weighted.mean(TMLE, w = obs.wts), 
-                         MLE = weighted.mean(GCOMP, w = obs.wts), 
-                         fiWs_list$fiW_Qinit)
-    names(wtmean_psis_all) <- c("TMLE", "MLE", paste("fWi_init_", c(1:nobs), sep = ""))
-    # return(wtmean_psis_all)
-    return(list(wtmean_psis_all = wtmean_psis_all, unwt.mean_psis_all = unwt.mean_psis_all))
+    if (community.step == "individual-level" && working.model == TRUE) {
+      if (!is.null(communityID)) {
+        TMLE <- aggregate(x = TMLE, by=list(id = data[, communityID]), mean)[, 2]
+        obs.wts <- community.wts
+      } else {
+        warning("Since individual-level TMLE with working.model requires communityID to aggregate data to the cluster-level in the end. 
+                Lack of 'communityID' forces the algorithm to automatically pool data over all communities and treat it as non-hierarchical 
+                dataset when fitting clever covariates.")
+      }
+    }
+    mean_psis_all <- c(TMLE = weighted.mean(TMLE, w = obs.wts), 
+                       MLE = weighted.mean(GCOMP, w = obs.wts), 
+                       fiWs_list$fiW_Qinit)
+    names(mean_psis_all) <- c("TMLE", "MLE", paste("fWi_init_", c(1:nobs), sep = ""))
+    return(mean_psis_all)
   }
   psi_est_mean <- genMC.reps(1)
   return(psi_est_mean)
-} 
+}
   
 
 ## ---------------------------------------------------------------------
