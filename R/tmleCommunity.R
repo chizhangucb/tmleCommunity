@@ -260,15 +260,8 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
                                                      OData.gstar = OData.gstar, 
                                                      MC_fit_params = MC_fit_params, 
                                                      model.h.fit = model.h.fit))
-  MCS_res_wt <- MCS_res$wtmean_psis_all
-  # ests_unwt <- MCS_res$unwt.mean_psis_all
-  
-  # ests_unwt <- c(TMLE = ests_unwt[["TMLE"]], IPTW = IPTW_unwt, MLE = ests_unwt[["MLE"]])
-  # ests_unwt_mat <- matrix(0L, nrow = length(ests_unwt), ncol = 1)
-  # ests_unwt_mat[, 1] <- ests_unwt
-  # rownames(ests_unwt_mat) <- names(ests_unwt); colnames(ests_unwt_mat) <- "estimate"
 
-  ests <- c(TMLE = MCS_res_wt[["TMLE"]], IPTW = IPTW, MLE = MCS_res_wt[["MLE"]])
+  ests <- c(TMLE = MCS_res[["TMLE"]], IPTW = IPTW, MLE = MCS_res[["MLE"]])
   ests_mat <- matrix(0L, nrow = length(ests), ncol = 1)
   ests_mat[, 1] <- ests
   rownames(ests_mat) <- names(ests); colnames(ests_mat) <- "estimate"
@@ -279,7 +272,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   
   fWi_mat <- matrix(0L, nrow = OData.ObsP0$nobs, ncol = 1)
   colnames(fWi_mat) <- c("fWi_Qinit")
-  fWi_mat[,"fWi_Qinit"] <- MCS_res_wt[agrep("fWi_init_", names(MCS_res_wt), max.distance=list(insertions=0, substitutions=0))]
+  fWi_mat[,"fWi_Qinit"] <- MCS_res[agrep("fWi_init_", names(MCS_res), max.distance=list(insertions=0, substitutions=0))]
   
   QY_mat <- matrix(0L, nrow = OData.ObsP0$nobs, ncol = 2)
   colnames(QY_mat) <- c("QY.init", "QY.star")
