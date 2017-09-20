@@ -135,7 +135,6 @@ calcParameters <- function(inputYs, alpha = 0.05, est_params_list, tmle_g_out, t
   rownames(CIs_mat) <- c("tmle", "iptw", "gcomp")
   
   EY_g.star <- list(estimates = ests_mat, 
-                    # est_unwt = ests_unwt_mat,
                     vars = (as.var_mat / nobs), 
                     CIs = CIs_mat, 
                     IC = var_mat.res$IC, 
@@ -316,11 +315,9 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
               wts_mat = wts_mat,
               fWi_mat = fWi_mat,
               QY_mat = QY_mat,
-              # ests_unwt_mat = ests_unwt_mat, 
               obs.wts = obs.wts, 
               h.g0_GenericModel = model.h.fit$genericmodels.g0,
               h.gstar_GenericModel = model.h.fit$genericmodels.gstar,
-              # OData.gstar = OData.gstar, 
               OData.ObsP0 = OData.ObsP0))
 }
 
