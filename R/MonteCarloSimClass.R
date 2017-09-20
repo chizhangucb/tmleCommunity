@@ -21,7 +21,7 @@ CalcMonteCarloEsts <- function(OData.ObsP0, OData.gstar, MC_fit_params, model.h.
   evaluator <- MonteCarloSimClass$new(OData.ObsP0 = OData.ObsP0, OData.gstar = OData.gstar)
   nobs <- evaluator$nobs
   genMC.reps <- function(nrep)  {
-    ## G-Comp estimator (i.e., MLE)
+    ## G-Comp estimator (i.e., GCOMP = MLE)
     MLE <- evaluator$get.gcomp(model.Q.init) # QY.init (G-Comp estimator) - est probY based on model for Q_Y
     ## TMLE estimator
     if (TMLE.targetStep == "tmle.covariate") {
