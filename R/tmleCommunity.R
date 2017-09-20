@@ -102,7 +102,7 @@ calcParameters <- function(inputYs, alpha = 0.05, est_params_list, tmle_g_out, t
   # get the iid IC-based asymptotic variance estimates:
   # *****************************************************
   var_mat.res <- get_est_sigmas(estnames = c("tmle", "iptw", "gcomp"), obsYvals = OData.ObsP0$noNA.Ynodevals, communiy_info = est_params_list, 
-                                obs.wts = obs.wts,ests_mat = ests_mat, QY_mat = QY_mat, wts_mat = wts_mat, fWi_mat = fWi_mat)
+                                obs.wts = obs.wts, ests_mat = ests_mat, QY_mat = QY_mat, wts_mat = wts_mat, fWi_mat = fWi_mat)
   as.var_mat <- var_mat.res$as.var_mat
   if (maptoYstar) {
     as.var_mat <- as.var_mat * (diff(ab) ^ 2)
@@ -181,7 +181,7 @@ get_est_sigmas <- function(estnames, obsYvals, communiy_info, obs.wts, ests_mat,
       iidIC_tmle <- aggregate(x = iidIC_tmle, by=list(id = data[, communityID]), mean)[, 2]
       iidIC_mle <- aggregate(x = iidIC_mle, by=list(id = data[, communityID]), mean)[, 2]
       iidIC_iptw <- aggregate(x = iidIC_iptw, by=list(id = data[, communityID]), mean)[, 2]
-      obs.wts <- est_params_list$community.wts
+      obs.wts <- communiy_info$community.wts
     } # else {
       # warning("Though individual-level TMLE with working.model assumption, iid Inference curve cannnot be aggregated to the cluster-level 
       #          since lack of 'communityID'. Thus the data is treated as non-hierarchical." )
