@@ -657,7 +657,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
     n_MCsims = n_MCsims
   ) 
   estinfo_list_g1 <- append(estinfo_list, list(f.gstar = f_gstar1))
-  if (!is.null(f_gstar2)) { estinfo_list_g2 <- append(estinfo_list, list(f.gstar = f_gstar2))}
+  if (!is.null(f_gstar2)) { estinfo_list_g2 <- append(estinfo_list, list(f.gstar = f_gstar2)) }
   
   #----------------------------------------------------------------------------------
   # Running MC evaluation for substitution TMLE estsimators
@@ -685,7 +685,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
   message("Warning: inference for gcomp is not accurate! It is based on TMLE influence curves.")
   message("######################################################################################")
   
-  tmleCommunity.res <- list(EY_gstar1 = EY_gstar1, EY_gstar2 = EY_gstar2, ATE = ATE)#, otherInfo1 = otherInfo1, otherInfo2 = otherInfo2)
+  tmleCommunity.res <- list(EY_gstar1 = EY_gstar1, EY_gstar2 = EY_gstar2, ATE = ATE)
   class(tmleCommunity.res) <- c(class(tmleCommunity.res), "tmleCommunity")
   return(tmleCommunity.res)
 }
