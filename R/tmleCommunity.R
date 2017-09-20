@@ -81,7 +81,7 @@ tmle.update <- function(TMLE.targetStep, Y, obs.wts, off, h_wts, subset, family)
 # Purpose: create output object with param ests of EY_gstar, vars and CIs for given gstar 
 # (or ATE if two tmle obj are passed) boot.var, n.boot
 #-------------------------------------------------------------------------------------------
-calcParameters <- function(inputYs, alpha = 0.05, tmle_g_out, tmle_g2_out = NULL) {
+calcParameters <- function(inputYs, alpha = 0.05, est_params_list, tmle_g_out, tmle_g2_out = NULL) {
   OData.ObsP0 <- tmle_g_out$OData.ObsP0
   nobs <- OData.ObsP0$nobs
   ests_mat <- tmle_g_out$ests_mat
@@ -89,7 +89,6 @@ calcParameters <- function(inputYs, alpha = 0.05, tmle_g_out, tmle_g2_out = NULL
   fWi_mat <- tmle_g_out$fWi_mat
   wts_mat <- tmle_g_out$wts_mat
   obs.wts <- tmle_g_out$obs.wts
-  # ests_unwt_mat <- tmle_g_out$ests_unwt_mat
   maptoYstar <- inputYs$maptoYstar
   ab <- inputYs$ab
   
@@ -102,8 +101,8 @@ calcParameters <- function(inputYs, alpha = 0.05, tmle_g_out, tmle_g2_out = NULL
   # *****************************************************
   # get the iid IC-based asymptotic variance estimates:
   # *****************************************************
-  var_mat.res <- get_est_sigmas(estnames = c("tmle", "iptw", "gcomp"), obsYvals = OData.ObsP0$noNA.Ynodevals, 
-                                ests_mat = ests_mat, QY_mat = QY_mat, wts_mat = wts_mat, fWi_mat = fWi_mat, obs.wts = obs.wts)
+  var_mat.res <- get_est_sigmas(estnames = c("tmle", "iptw", "gcomp"), obsYvals = OData.ObsP0$noNA.Ynodevals, est_params_list = est_params_list, 
+                                obs.wts = obs.wts,ests_mat = ests_mat, QY_mat = QY_mat, wts_mat = wts_mat, fWi_mat = fWi_mat)
   as.var_mat <- var_mat.res$as.var_mat
   if (maptoYstar) {
     as.var_mat <- as.var_mat * (diff(ab) ^ 2)
@@ -156,25 +155,42 @@ calcParameters <- function(inputYs, alpha = 0.05, tmle_g_out, tmle_g2_out = NULL
 # Formula source: http://biostats.bepress.com/cgi/viewcontent.cgi?article=1351&context=ucbbiostat (Page 18)
 # OR http://biostats.bepress.com/cgi/viewcontent.cgi?article=1292&context=ucbbiostat (Page 5)
 #-------------------------------------------------------------------------------------------------
-get_est_sigmas <- function(estnames, obsYvals, ests_mat, QY_mat, wts_mat, fWi_mat, obs.wts) {
+get_est_sigmas <- function(estnames, obsYvals, est_params_list, obs.wts, ests_mat, QY_mat, wts_mat, fWi_mat) {
+  community.step <- est_params_list$community.step
+  working.model <- est_params_list$working.model
+  community.wts <- est_params_list$community.wts
+  communityID <- est_params_list$communityID
+  
   fWi <- fWi_mat[, "fWi_Qinit"]
   QY.init <- QY_mat[, "QY.init"] 
   h_wts <- wts_mat[, "h_wts"]
   
   # TMLE inference based on the iid IC: (** Use QY.init not QY.star)
   iidIC_tmle <- h_wts * (obsYvals - QY.init) + fWi - ests_mat[rownames(ests_mat) %in% "TMLE",]
-  var_iid.tmle <- Hmisc::wtd.var(iidIC_tmle, weights = obs.wts, normwt = T)
   # var_iid.tmle <- mean((iidIC_tmle)^2)  # assume mean(iidIC_tmle) = 0
   
   # MLE inference based on the iid IC: (** Use QY.init not QY.star) *** NOT ACCURATE
   iidIC_mle <- h_wts * (obsYvals - QY.init) + fWi - ests_mat[rownames(ests_mat) %in% "MLE",]
-  var_iid.mle <- Hmisc::wtd.var(iidIC_mle, weights = obs.wts, normwt = T)
   # var_iid.mle <- mean((iidIC_mle)^2)  # assume mean(iidIC_mle) = 0
   
   # IPTW h (based on the mixture density clever covariate (h)):
   iidIC_iptw <- h_wts * (obsYvals) - ests_mat[rownames(ests_mat) %in% "IPTW",]
-  var_iid.iptw <- Hmisc::wtd.var(iidIC_iptw, weights = obs.wts, normwt = T)
   # var_iid.iptw <- mean((iidIC_iptw)^2)  # assume mean(iidIC_iptw) = 0
+  
+  if (community.step == "individual-level" && working.model == TRUE) { # if we believe our working model (i.e. if estimating under the submodel)
+    if (!is.null(communityID)) { 
+      iidIC_tmle <- aggregate(x = iidIC_tmle, by=list(id = data[, communityID]), mean)[, 2]
+      iidIC_mle <- aggregate(x = iidIC_mle, by=list(id = data[, communityID]), mean)[, 2]
+      iidIC_iptw <- aggregate(x = iidIC_iptw, by=list(id = data[, communityID]), mean)[, 2]
+      obs.wts <- est_params_list$community.wts
+    } else {
+      warning("Though individual-level TMLE with working.model assumption, iid Inference curve cannnot be aggregated to the cluster-level 
+               since lack of 'communityID'. Thus the data is treated as non-hierarchical." )
+    }
+  }
+  var_iid.tmle <- Hmisc::wtd.var(iidIC_tmle, weights = obs.wts, normwt = T)
+  var_iid.mle <- Hmisc::wtd.var(iidIC_mle, weights = obs.wts, normwt = T)
+  var_iid.iptw <- Hmisc::wtd.var(iidIC_iptw, weights = obs.wts, normwt = T)
   
   as.var_mat <- matrix(0, nrow = 3, ncol = 1)
   as.var_mat[, 1] <- c(var_iid.tmle, var_iid.iptw, var_iid.mle)
