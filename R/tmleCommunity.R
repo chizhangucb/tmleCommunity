@@ -680,13 +680,13 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
   #----------------------------------------------------------------------------------
   # Create output list (estimates, as. variances, CIs)
   #----------------------------------------------------------------------------------
-  EY_gstar1 <- calcParameters(inputYs = inputYs, alpha = CI_alpha, tmle_g_out = tmle_gstar1_out)
+  EY_gstar1 <- calcParameters(inputYs = inputYs, alpha = CI_alpha, est_params_list = estinfo_list, tmle_g_out = tmle_gstar1_out)
   EY_gstar2 <- NULL
   ATE <- NULL	
   otherInfo2 <- NULL
   if (!is.null(f_gstar2)) {
-    EY_gstar2 <- calcParameters(inputYs = inputYs, alpha = CI_alpha, tmle_g_out = tmle_gstar2_out)
-    ATE <- calcParameters(inputYs = inputYs, alpha = CI_alpha, tmle_g_out = tmle_gstar1_out, tmle_g2_out = tmle_gstar2_out)
+    EY_gstar2 <- calcParameters(inputYs = inputYs, alpha = CI_alpha, est_params_list = estinfo_list, tmle_g_out = tmle_gstar2_out)
+    ATE <- calcParameters(inputYs = inputYs, alpha = CI_alpha, est_params_list = estinfo_list, tmle_g_out = tmle_gstar1_out, tmle_g2_out = tmle_gstar2_out)
   }
   message("######################################################################################")
   message("Warning: inference for gcomp is not accurate! It is based on TMLE influence curves.")
