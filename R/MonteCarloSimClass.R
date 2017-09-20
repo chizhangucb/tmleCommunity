@@ -21,8 +21,8 @@ CalcMonteCarloEsts <- function(OData.ObsP0, OData.gstar, MC_fit_params, model.h.
   evaluator <- MonteCarloSimClass$new(OData.ObsP0 = OData.ObsP0, OData.gstar = OData.gstar)
   nobs <- evaluator$nobs
   genMC.reps <- function(nrep)  {
-    ## G-Comp estimator 
-    GCOMP <- evaluator$get.gcomp(model.Q.init) # QY.init (G-Comp estimator) - est probY based on model for Q_Y
+    ## G-Comp estimator (i.e., MLE)
+    MLE <- evaluator$get.gcomp(model.Q.init) # QY.init (G-Comp estimator) - est probY based on model for Q_Y
     ## TMLE estimator
     if (TMLE.targetStep == "tmle.covariate") {
       # TMLE A (adjusted by coefficient epsilon on h_bar ratio)
@@ -39,7 +39,7 @@ CalcMonteCarloEsts <- function(OData.ObsP0, OData.gstar, MC_fit_params, model.h.
     if (community.step == "individual-level" && working.model == TRUE) {
       if (!is.null(communityID)) {
         TMLE <- aggregate(x = TMLE, by=list(id = data[, communityID]), mean)[, 2]
-        MLE <- aggregate(x = GCOMP, by=list(id = data[, communityID]), mean)[, 2]
+        MLE <- aggregate(x = MLE, by=list(id = data[, communityID]), mean)[, 2]
         obs.wts <- community.wts
       } # else {
         # warning("Since individual-level TMLE with working.model requires communityID to aggregate data to the cluster-level in the end. Lack of 
