@@ -101,7 +101,7 @@ calcParameters <- function(inputYs, alpha = 0.05, est_params_list, tmle_g_out, t
   # *****************************************************
   # get the iid IC-based asymptotic variance estimates:
   # *****************************************************
-  var_mat.res <- get_est_sigmas(estnames = c("tmle", "iptw", "gcomp"), obsYvals = OData.ObsP0$noNA.Ynodevals, communiy_info = est_params_list, 
+  var_mat.res <- get_est_sigmas(estnames = c("tmle", "iptw", "gcomp"), obsYvals = OData.ObsP0$noNA.Ynodevals, est_params_list= est_params_list, 
                                 obs.wts = obs.wts, ests_mat = ests_mat, QY_mat = QY_mat, wts_mat = wts_mat, fWi_mat = fWi_mat)
   as.var_mat <- var_mat.res$as.var_mat
   if (maptoYstar) {
@@ -154,11 +154,11 @@ calcParameters <- function(inputYs, alpha = 0.05, est_params_list, tmle_g_out, t
 # Formula source: http://biostats.bepress.com/cgi/viewcontent.cgi?article=1351&context=ucbbiostat (Page 18)
 # OR http://biostats.bepress.com/cgi/viewcontent.cgi?article=1292&context=ucbbiostat (Page 5)
 #-------------------------------------------------------------------------------------------------
-get_est_sigmas <- function(estnames, obsYvals, communiy_info, obs.wts, ests_mat, QY_mat, wts_mat, fWi_mat) {
-  community.step <- communiy_info$community.step
-  working.model <- communiy_info$working.model
-  community.wts <- communiy_info$community.wts
-  communityID <- communiy_info$communityID
+get_est_sigmas <- function(estnames, obsYvals, est_params_list, obs.wts, ests_mat, QY_mat, wts_mat, fWi_mat) {
+  community.step <- est_params_list$community.step
+  working.model <- est_params_list$working.model
+  community.wts <- est_params_list$community.wts
+  communityID <- est_params_list$communityID
   
   fWi <- fWi_mat[, "fWi_Qinit"]
   QY.init <- QY_mat[, "QY.init"] 
@@ -181,7 +181,7 @@ get_est_sigmas <- function(estnames, obsYvals, communiy_info, obs.wts, ests_mat,
       iidIC_tmle <- aggregate(x = iidIC_tmle, by=list(id = data[, communityID]), mean)[, 2]
       iidIC_mle <- aggregate(x = iidIC_mle, by=list(id = data[, communityID]), mean)[, 2]
       iidIC_iptw <- aggregate(x = iidIC_iptw, by=list(id = data[, communityID]), mean)[, 2]
-      obs.wts <- communiy_info$community.wts
+      obs.wts <- est_params_list$community.wts
     } # else {
       # warning("Though individual-level TMLE with working.model assumption, iid Inference curve cannnot be aggregated to the cluster-level 
       #          since lack of 'communityID'. Thus the data is treated as non-hierarchical." )
