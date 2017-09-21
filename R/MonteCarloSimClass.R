@@ -129,7 +129,8 @@ MonteCarloSimClass <- R6Class(classname = "MonteCarloSimClass",
       OData.ObsP0 <- self$OData.ObsP0
       OData.gstar <- self$OData.gstar
       # print("getting predictions for gcomp...")
-      QY.init <- model.Q.init$predict(newdata = OData.gstar)$getprobA1
+      # predictions P(Y=1) under A^* for non-det Y in OData.ObsP0
+      QY.init <- model.Q.init$predict(newdata = OData.gstar)$getprobA1  
       QY.init[OData.ObsP0$det.Y] <- OData.ObsP0$noNA.Ynodevals[OData.ObsP0$det.Y]
       self$QY.init <- QY.init
       invisible(QY.init)
@@ -172,7 +173,7 @@ MonteCarloSimClass <- R6Class(classname = "MonteCarloSimClass",
       ID <- rep.int(c(1 : self$nobs), self$p)
       # taking average over p samples for each of n obs
       # data.table is used on fiW_Qinit for performing unit-level mean and var evaluation (n-length result)
-      fiW_Qinit <- data.table::data.table(ID = ID, fiW = self$QY.init)
+      fiW_Qinit <- data.table::data.table(ID = ID, fiW = self$QY.init)  # Use P(Y=1) under A^* for non-det Y in OData.ObsP0
       fiW_Qinit.mean <- fiW_Qinit[, lapply(.SD, mean, na.rm=TRUE), by="ID", .SDcols=c("fiW") ][["fiW"]]
       fiW_Qinit.var <- fiW_Qinit[, lapply(.SD, var, na.rm=TRUE), by="ID", .SDcols=c("fiW") ][["fiW"]]
       # If p=1, no mean or var performed and fiW_Qinit.mean = self$QY.init (Results from get.gcomp) & fiW_Qinit.var = NA
