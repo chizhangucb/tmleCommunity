@@ -602,22 +602,22 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
     }
   }
   
-  if (community.step %in% c("community_level", "individual_level", "perCommunity")) {
-    if (!is.null(c(Qform, hform.g0, hform.gstar))) {
-      allcovRHS <- unique(unlist(lapply(c(Qform, hform.g0, hform.gstar), FUN = function(x) { strsplit(deparse(as.formula(x)[[3]]), " \\+ ")[[1]] })))
-      merged.form <- reformulate(allcovRHS, response = NULL)  # Reformulate a formula including all legitimate character of the RHS in 3 formulae
-      if (any(!allcovRHS %in% unique(c(unlist(nodes), names(data))))) {
-        ExtraDat <- as.data.frame(model.matrix(merged.form, data = data))
-        data <- cbind(data, ExtraDat[, setdiff(names(ExtraDat), c(names(data), "(Intercept)")), drop = FALSE])
-        ExtraDat <- NULL
-      }
-    } else {
-      merged.form <- NULL
+  if (!is.null(c(Qform, hform.g0, hform.gstar))) {
+    allcovRHS <- unique(unlist(lapply(c(Qform, hform.g0, hform.gstar), FUN = function(x) { strsplit(deparse(as.formula(x)[[3]]), " \\+ ")[[1]] })))
+    merged.form <- reformulate(allcovRHS, response = NULL)  # Reformulate a formula including all legitimate character of the RHS in 3 formulae
+    if (any(!allcovRHS %in% unique(c(unlist(nodes), names(data))))) {
+      ExtraDat <- as.data.frame(model.matrix(merged.form, data = data))
+      data <- cbind(data, ExtraDat[, setdiff(names(ExtraDat), c(names(data), "(Intercept)")), drop = FALSE])
+      ExtraDat <- NULL
     }
-    nodes <- append(nodes, list(Crossnodes = setdiff(names(data), Reduce(c, nodes))))
-    # Why to keep variables that are not indicated in the node list (i.e. Crossnodes): when creating A^* under g.star (delta function), 
-    # it's possible to use variablas that are not used in Qform and gform. 
-    
+  } else {
+    merged.form <- NULL
+  }
+  nodes <- append(nodes, list(Crossnodes = setdiff(names(data), Reduce(c, nodes))))
+  # Why to keep variables that are not indicated in the node list (i.e. Crossnodes): when creating A^* under g.star (delta function)  
+  # it's possible to use variablas that are not used in Qform and gform. 
+  
+  if (community.step %in% c("community_level", "individual_level", "perCommunity")) {
     ## Create an R6 object that stores and manages the input data, later passed on to estimation algorithm(s)
     inputYs <- CreateInputs(data[, Ynode], Qbounds, alpha, maptoYstar)
     data[, Ynode] <- inputYs$Ystar
@@ -701,10 +701,70 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
     message("Warning: inference for gcomp is not accurate! It is based on TMLE influence curves.")
     message("######################################################################################")
   } else if (community.step == "perCommunity") {
-    communityList <- data[, communityID] 
-  }
-  
-  
+    communityList <- unique(data[, communityID])
+    for (i in 1:length(communityList)) {
+      message("###########################################################################")
+      message("Fitting TMLE on the " %+% i %+% "th community: " %+% communityList[i])
+      
+      subdata <- data[(data[, communityID] == communityList[1]), ]
+      inputYs <- CreateInputs(subdata[, Ynode], Qbounds, alpha, maptoYstar)
+      subdata[, Ynode] <- inputYs$Ystar
+      OData.ObsP0 <- DatKeepClass$new(Odata = subdata, nodes = nodes, norm.c.sVars = FALSE)
+      OData.ObsP0$addYnode(YnodeVals = inputYs$Ystar)
+      OData.ObsP0$addObsWeights(obs.wts = obs.wts)
+      nobs <- OData.ObsP0$nobs
+      if (is.null(YnodeDet)) {
+        determ.Q <- rep_len(FALSE, nobs)
+      } else {
+        determ.Q <- (data[, YnodeDet] == 1)
+      }
+      if (length(unique(obs.wts)) > 1 && any(unlist(OData.ObsP0$type.sVar[Anodes]) != "binary")) {
+        warning("obs.wts are currently implemented on binary A. The results for non-binary A with weights may be unrealiable.")
+      }
+      #----------------------------------------------------------------------------------
+      # Defining and estimating outcome mechanism E(Y|A, E, W)
+      #----------------------------------------------------------------------------------
+      if (verbose) {
+        message("================================================================")
+        message("fitting E(Y|A,W,E):= ", "P(" %+% nodes$Ynode %+% "=1 | " %+% paste(Q.sVars$predvars, collapse = ",") %+% ")")
+        message("================================================================")
+      }
+      Qreg <- RegressionClass$new(outvar = Q.sVars$outvars, 
+                                  predvars = Q.sVars$predvars, 
+                                  subset_vars = !determ.Q, 
+                                  estimator = getopt("Qestimator"))
+      model.Q.init <- BinaryOutModel$new(reg = Qreg)$fit(overwrite = FALSE, data = OData.ObsP0, savespace = TRUE)
+    
+      #----------------------------------------------------------------------------------
+      # Create an list with model estimates, data & other information that is passed on to treatment estimation procedure
+      #----------------------------------------------------------------------------------
+      estinfo_list <- list(
+        data = data, 
+        nodes = nodes,
+        communityID = communityID,
+        community.step = community.step,
+        working.model = working.model,
+        TMLE.targetStep = TMLE.targetStep,
+        obs.wts = obs.wts, 
+        community.wts = community.wts,
+        lbound = lbound,
+        merged.form = merged.form, 
+        model.Q.init = model.Q.init,
+        Q.sVars = Q.sVars,
+        f.g0 = f_g0,
+        h.g0.sVars = h.g0.sVars,
+        h.gstar.sVars = h.gstar.sVars,
+        h.g0_GenericModel = h.g0_GenericModel,
+        h.gstar_GenericModel = h.gstar_GenericModel,
+        savetime.fit.hbars = savetime.fit.hbars,
+        n_MCsims = n_MCsims
+      ) 
+      estinfo_list_g1 <- append(estinfo_list, list(f.gstar = f_gstar1))
+      if (!is.null(f_gstar2)) { estinfo_list_g2 <- append(estinfo_list, list(f.gstar = f_gstar2)) }
+      
+      
+    }
+  }  
   tmleCommunity.res <- list(EY_gstar1 = EY_gstar1, EY_gstar2 = EY_gstar2, ATE = ATE)
   class(tmleCommunity.res) <- c(class(tmleCommunity.res), "tmleCommunity")
   return(tmleCommunity.res)
