@@ -253,17 +253,18 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   IPTW <- Y
   IPTW[!determ.Q] <- Y[!determ.Q] * h_wts[!determ.Q]
   # IPTW_unwt <- mean(IPTW)
-  if (community.step == "individual-level" && working.model == TRUE) { # if we believe our working model (i.e. if estimating under the submodel)
+  if (community.step == "individual-level" && working.model == TRUE) {
     if (!is.null(communityID)) { 
       IPTW <- aggregate(x = IPTW, by=list(id = data[, communityID]), mean)[, 2]
-      obs.wts <- est_params_list$community.wts
+      IPTW <- weighted.mean(IPTW, w = est_params_list$community.wts)
     } else {
       warningMesg <-  c("Since individual-level TMLE with working.model requires communityID to aggregate data to the cluster-level in the end.",
-                       "Lack of 'communityID' forces the algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset.")
+                        "Lack of 'communityID' forces the algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset.")
       warning(warningMesg[1] %+% warningMesg[2])
     }
+  } else {
+    IPTW <- weighted.mean(IPTW, w = obs.wts)
   }
-  IPTW <- weighted.mean(IPTW, w = obs.wts)
   
   #************************************************
   # TMLE estimators
