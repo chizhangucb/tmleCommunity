@@ -554,9 +554,10 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
       stop("community.step argument must be one of 'NoCommunity', 'community-level' and 'individual-level'")
   if (!(TMLE.targetStep %in% c("tmle.intercept", "tmle.covariate"))) 
     stop("TMLE.targetStep argument must be either 'tmle.intercept' or 'tmle.covariate'")
-  if ((community.step %in% c("community-level", "individual-level")) & is.null(communityID))
+  if ((community.step %in% c("community-level", "individual-level")) & is.null(communityID)) {
     message("Lack of 'communityID' forces the algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset")
     message("In other words, we simply treat community.step = 'NoCommunity' and working.model = FALSE")
+  } 
   nodes <- list(Ynode = Ynode, Anodes = Anodes, WEnodes = WEnodes)
   for (i in unlist(nodes)) {  CheckVarNameExists(data = data, varname = i) }
   if (!CheckInputs(data, nodes, Qform, hform.g0, hform.gstar, fluctuation, Qbounds, obs.wts)) stop()
