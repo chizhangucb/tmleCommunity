@@ -217,7 +217,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   QY.init[!OData.ObsP0$det.Y] <- model.Q.init$predict(newdata = OData.ObsP0)$getprobA1[!OData.ObsP0$det.Y] # predictions P(Y=1) for non-DET Y
   off <- qlogis(QY.init)  # offset
   
-  if (community.step == "individual-level" && working.model == FALSE) { # if we do NOT believe our working model (i.e. estimate under the lareg model)
+  if (community.step == "individual_level" && working.model == FALSE) { # if we do NOT believe our working model (i.e. estimate under the lareg model)
     if (!is.null(communityID)) { 
       # aggregate initial outcome predictions to the cluster-level
       QY.init <- aggregate(x = QY.init, by=list(id = data[, communityID]), mean)[, 2]
@@ -254,7 +254,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   IPTW <- Y
   IPTW[!determ.Q] <- Y[!determ.Q] * h_wts[!determ.Q]
   # IPTW_unwt <- mean(IPTW)
-  if (community.step == "individual-level" && working.model == TRUE) {
+  if (community.step == "individual_level" && working.model == TRUE) {
     if (!is.null(communityID)) { 
       IPTW <- aggregate(x = IPTW, by=list(id = data[, communityID]), mean)[, 2]
       IPTW <- weighted.mean(IPTW, w = est_params_list$community.wts)
@@ -515,8 +515,8 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' }
 #' @example tests/examples/3_tmleCommunity_examples.R
 #' @export
-tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communityID = NULL, working.model = FALSE,
-                          community.step = c("NoCommunity", "community-level", "individual-level"), community.wts = NULL,
+tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communityID = NULL, working.model = FALSE, community.wts = NULL,
+                          community.step = c("NoCommunity", "community_level", "individual_level", "perCommunity"), 
                           f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995, fluctuation = "logistic",                                                     
                           f_g0 = NULL, hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, obs.wts = NULL, 
                           h.g0_GenericModel = NULL, h.gstar_GenericModel = NULL, savetime.fit.hbars = TRUE, 
@@ -554,11 +554,11 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
   TMLE.targetStep <- TMLE.targetStep[1]
   
   ## Check if any unexpected inputs
-  if (!(community.step %in% c("NoCommunity", "community-level", "individual-level"))) 
-      stop("community.step argument must be one of 'NoCommunity', 'community-level' and 'individual-level'")
+  if (!(community.step %in% c("NoCommunity", "community_level", "individual_level", "perCommunity"))) 
+      stop("community.step argument must be one of 'NoCommunity', 'community_level', 'individual_level' and 'perCommunity'")
   if (!(TMLE.targetStep %in% c("tmle.intercept", "tmle.covariate"))) 
     stop("TMLE.targetStep argument must be either 'tmle.intercept' or 'tmle.covariate'")
-  if ((community.step %in% c("community-level", "individual-level")) & is.null(communityID)) {
+  if ((community.step %in% c("community_level", "individual_level")) & is.null(communityID)) {
     message("Lack of 'communityID' forces the algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset")
     message("In other words, we simply treat community.step = 'NoCommunity' and working.model = FALSE")
   } 
@@ -588,7 +588,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
   }
   
   ## Create data based on community.step, then based on Qform, hform.g0 and hform.gstar, in case of interaction or higher-order term.
-  if (community.step == "community-level") { # if running entire TMLE algorithm at cluster-level, aggregate data now
+  if (community.step == "community_level") { # if running entire TMLE algorithm at cluster-level, aggregate data now
     if (!is.null(communityID)) {
       data <- aggregate(x = data, by=list(id = data[, communityID]), mean)[, 2 : (ncol(data)+1)] # Don't keep the extra ID column 
       # obs.wts <- rep(1, NROW(data))  # weights for aggregated data should be 1
