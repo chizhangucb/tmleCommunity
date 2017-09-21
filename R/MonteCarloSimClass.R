@@ -39,7 +39,7 @@ CalcMonteCarloEsts <- function(OData.ObsP0, OData.gstar, MC_fit_params, model.h.
     ## fi_W - hold W fixed to observed values (a component of TMLE Var)
     fiWs_list <- evaluator$get.fiW()  
     # Put all estimators together and add names (defined in out_nms outside of this function):
-    if (community.step == "individual-level" && working.model == TRUE) {
+    if (community.step == "individual_level" && working.model == TRUE) {
       if (!is.null(communityID)) {
         TMLE <- aggregate(x = TMLE, by=list(id = communityID), mean)[, 2]
         MLE <- aggregate(x = MLE, by=list(id = communityID), mean)[, 2]
