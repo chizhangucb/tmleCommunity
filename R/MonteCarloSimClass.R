@@ -13,6 +13,8 @@ CalcMonteCarloEsts <- function(OData.ObsP0, OData.gstar, MC_fit_params, model.h.
   community.step <- MC_fit_params$community.step
   model.Q.init <- MC_fit_params$model.Q.init
   model.Q.star <- MC_fit_params$model.Q.star
+  communityID <- OData.ObsP0$get.sVar(name.sVar = communityID)
+  
   if (gvars$verbose) {
     message("================================================================")
     message("Running Monte Carlo evaluation of the substitution estimators...")
@@ -38,13 +40,13 @@ CalcMonteCarloEsts <- function(OData.ObsP0, OData.gstar, MC_fit_params, model.h.
     # Put all estimators together and add names (defined in out_nms outside of this function):
     if (community.step == "individual-level" && working.model == TRUE) {
       if (!is.null(communityID)) {
-        TMLE <- aggregate(x = TMLE, by=list(id = data[, communityID]), mean)[, 2]
-        MLE <- aggregate(x = MLE, by=list(id = data[, communityID]), mean)[, 2]
+        TMLE <- aggregate(x = TMLE, by=list(id = communityID), mean)[, 2]
+        MLE <- aggregate(x = MLE, by=list(id = communityID), mean)[, 2]
         obs.wts <- community.wts
       } # else {
-        # warning("Since individual-level TMLE with working.model requires communityID to aggregate data to the cluster-level in the end. Lack of 
-        #        'communityID' forces the algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset.")
-        # }
+      # warning("Since individual-level TMLE with working.model requires communityID to aggregate data to the cluster-level in the end. Lack of 
+      #        'communityID' forces the algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset.")
+      # }
     }
     mean_psis_all <- c(TMLE = weighted.mean(TMLE, w = obs.wts), 
                        MLE = weighted.mean(MLE, w = obs.wts), 
