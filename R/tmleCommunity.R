@@ -228,7 +228,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
       est_params_list$data <- data
       est_params_list$obs.wts <- obs.wts <- est_params_list$community.wts
       OData.ObsP0 <- DatKeepClass$new(Odata = data, nodes = nodes, norm.c.sVars = FALSE)
-      OData.ObsP0$addYnode(YnodeVals = data[, Ynode])  # Already bounded Y into Ystar in the beginning step               
+      OData.ObsP0$addYnode(YnodeVals = data[, est_params_list$nodes$Ynode])  # Already bounded Y into Ystar in the beginning step               
       OData.ObsP0$addObsWeights(obs.wts = obs.wts)
     } else {
       warningMesg <- c("Since individual-level TMLE with no working.model requires communityID to aggregate data to the cluster-level",
