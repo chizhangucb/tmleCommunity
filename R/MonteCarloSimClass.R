@@ -13,7 +13,7 @@ CalcMonteCarloEsts <- function(OData.ObsP0, OData.gstar, MC_fit_params, model.h.
   community.step <- MC_fit_params$community.step
   model.Q.init <- MC_fit_params$model.Q.init
   model.Q.star <- MC_fit_params$model.Q.star
-  communityID <- OData.ObsP0$get.sVar(name.sVar = communityID)
+  communityID <- OData.ObsP0$get.sVar(name.sVar = MC_fit_params$communityID)
   
   if (gvars$verbose) {
     message("================================================================")
