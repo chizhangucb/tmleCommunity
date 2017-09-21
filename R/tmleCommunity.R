@@ -91,6 +91,7 @@ calcParameters <- function(inputYs, alpha = 0.05, est_params_list, tmle_g_out, t
   obs.wts <- tmle_g_out$obs.wts
   maptoYstar <- inputYs$maptoYstar
   ab <- inputYs$ab
+  est_params_list$communityID <- OData.ObsP0$get.sVar(name.sVar = est_params_list$communityID)
   
   if (!is.null(tmle_g2_out)) {
     ests_mat <- tmle_g_out$ests_mat - tmle_g2_out$ests_mat
@@ -178,9 +179,9 @@ get_est_sigmas <- function(estnames, obsYvals, est_params_list, obs.wts, ests_ma
   
   if (community.step == "individual-level" && working.model == TRUE) { # if we believe our working model (i.e. if estimating under the submodel)
     if (!is.null(communityID)) { 
-      iidIC_tmle <- aggregate(x = iidIC_tmle, by=list(id = data[, communityID]), mean)[, 2]
-      iidIC_mle <- aggregate(x = iidIC_mle, by=list(id = data[, communityID]), mean)[, 2]
-      iidIC_iptw <- aggregate(x = iidIC_iptw, by=list(id = data[, communityID]), mean)[, 2]
+      iidIC_tmle <- aggregate(x = iidIC_tmle, by=list(id = communityID]), mean)[, 2]
+      iidIC_mle <- aggregate(x = iidIC_mle, by=list(id = communityID), mean)[, 2]
+      iidIC_iptw <- aggregate(x = iidIC_iptw, by=list(id = communityID), mean)[, 2]
       obs.wts <- est_params_list$community.wts
     } # else {
       # warning("Though individual-level TMLE with working.model assumption, iid Inference curve cannnot be aggregated to the cluster-level 
