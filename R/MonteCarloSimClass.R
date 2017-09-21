@@ -11,6 +11,7 @@ CalcMonteCarloEsts <- function(OData.ObsP0, OData.gstar, MC_fit_params, model.h.
   obs.wts <- MC_fit_params$obs.wts
   community.wts <- MC_fit_params$community.wts
   community.step <- MC_fit_params$community.step
+  working.model <- MC_fit_params$working.model
   model.Q.init <- MC_fit_params$model.Q.init
   model.Q.star <- MC_fit_params$model.Q.star
   communityID <- OData.ObsP0$get.sVar(name.sVar = MC_fit_params$communityID)
