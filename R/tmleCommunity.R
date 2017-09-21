@@ -214,7 +214,8 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   model.Q.init <- est_params_list$model.Q.init
   
   QY.init <- OData.ObsP0$noNA.Ynodevals # getting all node vals, inc. deterministic  
-  QY.init[!OData.ObsP0$det.Y] <- model.Q.init$predict(newdata = OData.ObsP0)$getprobA1[!OData.ObsP0$det.Y] # predictions P(Y=1) for non-DET Y
+  # predictions P(Y=1) for non-DET Y under orignal A
+  QY.init[!OData.ObsP0$det.Y] <- model.Q.init$predict(newdata = OData.ObsP0)$getprobA1[!OData.ObsP0$det.Y] 
   off <- qlogis(QY.init)  # offset
   
   if (community.step == "individual_level" && working.model == FALSE) { # if we do NOT believe our working model (i.e. estimate under the lareg model)
@@ -762,6 +763,16 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
       estinfo_list_g1 <- append(estinfo_list, list(f.gstar = f_gstar1))
       if (!is.null(f_gstar2)) { estinfo_list_g2 <- append(estinfo_list, list(f.gstar = f_gstar2)) }
       
+      #----------------------------------------------------------------------------------
+      # Running MC evaluation for substitution TMLE estsimators
+      #----------------------------------------------------------------------------------
+      # Incl. estimate treatment mechanism f(a|E, W)) and clever covariates & targeting step
+      tmle_gstar1_out <- CalcAllEstimators(OData.ObsP0 = OData.ObsP0, est_params_list = estinfo_list_g1)
+      if (!is.null(f_gstar2)) {
+        tmle_gstar2_out <- CalcAllEstimators(OData.ObsP0 = OData.ObsP0, est_params_list = estinfo_list_g2)
+      } else {
+        tmle_gstar2_out <- NULL
+      }
       
     }
   }  
