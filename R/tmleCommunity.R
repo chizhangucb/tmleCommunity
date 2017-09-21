@@ -538,6 +538,8 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
     community.wts <- rep(1, length(unique(data[, communityID]))) 
   } else if (community.wts == "by_size") {
     community.wts <- as.vector(table(data[, communityID]))
+  } else {
+    stop("Currently only numeric values or 'by_size' is supported for community.wts")
   }
   if (!is.null(Qform) && !is.null(Ynode)) {
     Qform <- paste(Ynode, substring(Qform, first = as.numeric(gregexpr("~", Qform))))
