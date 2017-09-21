@@ -179,7 +179,7 @@ get_est_sigmas <- function(estnames, obsYvals, est_params_list, obs.wts, ests_ma
   
   if (community.step == "individual-level" && working.model == TRUE) { # if we believe our working model (i.e. if estimating under the submodel)
     if (!is.null(communityID)) { 
-      iidIC_tmle <- aggregate(x = iidIC_tmle, by=list(id = communityID]), mean)[, 2]
+      iidIC_tmle <- aggregate(x = iidIC_tmle, by=list(id = communityID), mean)[, 2]
       iidIC_mle <- aggregate(x = iidIC_mle, by=list(id = communityID), mean)[, 2]
       iidIC_iptw <- aggregate(x = iidIC_iptw, by=list(id = communityID), mean)[, 2]
       obs.wts <- est_params_list$community.wts
