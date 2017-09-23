@@ -800,7 +800,7 @@ DatKeepClass <- R6Class(classname = "DatKeepClass",
           
   private = list(
     .nodes = list(),              # names of the nodes in the data (Anode, Wnode, etc..)
-    .protected.YnodeVals = NULL,  # Actual observed values of the binary outcome (Ynode), along with deterministic vals
+    .protected.YnodeVals = NULL,  # Actual observed values of the arbitrary outcome (Ynode in [0, 1]), along with deterministic vals
     .mat.sVar = NULL,             # pointer to data frame/matrix object storing the entire dataset (including all summaries sVars)
     .active.bin.sVar = NULL,      # Name of active binarized cont sVar, changes as fit/predict is called (bin indicators are temp. stored in mat.bin.sVar)
     .mat.bin.sVar = NULL,         # Temporary storage mat for bin indicators on currently binarized continous sVar (from private$.active.bin.sVar)
