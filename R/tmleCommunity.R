@@ -707,6 +707,15 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
       message("###########################################################################")
       message("Fitting TMLE on the " %+% i %+% "th community: " %+% communityList[i])
       
+      est.communities_gstar1 <- est.communities_gstar2 <- matrix(0L, nrow = length(communityList), ncol = 3)
+      colnames(est.communities_gstar1) <- colnames(est.communities_gstar2) <- c("TMLE", "IPTW", "MLE")
+      wts.communities_gstar1 <- wts.communities_gstar2 <- matrix(0L, nrow = NROW(dats), ncol = 1)
+      colnames(wts.communities_gstar1) <- c("h_wts")
+      fWi.communities_gstar1 <- fWi.communities_gstar2 <- matrix(0L, nrow = NROW(dats), ncol = 1)
+      colnames(fWi.communities_gstar1) <- colnames(fWi.communities_gstar2) <- c("fWi_Qinit")
+      QY.communities_gstar1 <- QY.communities_gstar2 <- matrix(0L, nrow = NROW(dats), ncol = 2)
+      colnames(QY.communities_gstar1) <- colnames(QY.communities_gstar2) <- c("QY.init", "QY.star")
+      
       subdata <- data[(data[, communityID] == communityList[1]), ]
       inputYs <- CreateInputs(subdata[, Ynode], Qbounds, alpha, maptoYstar)
       subdata[, Ynode] <- inputYs$Ystar
@@ -773,6 +782,13 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
       } else {
         tmle_gstar2_out <- NULL
       }
+      est.communities_gstar1[i, ] <- tmle_gstar1_out$ests_mat[, 1]
+      est.communities_gstar2[i, ] <- tmle_gstar2_out$ests_mat[, 1]
+      wts.communities_gstar1[i, ] <- tmle_gstar1_out$wts_mat[, 1]
+      wts.communities_gstar2[i, ] <- tmle_gstar2_out$wts_mat[, 1]
+      fWi.communities_gstar1[i, ] <- tmle_gstar1_out$fWi_mat[, 1]
+      fWi.communities_gstar2[i, ] <- tmle_gstar2_out$fWi_mat[, 1]
+      
       
     }
   }  
