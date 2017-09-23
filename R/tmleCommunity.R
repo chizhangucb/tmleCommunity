@@ -702,23 +702,30 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
     message("Warning: inference for gcomp is not accurate! It is based on TMLE influence curves.")
     message("######################################################################################")
   } else if (community.step == "perCommunity") {
+    #----------------------------------------------------------------------------------
+    # Create matrices to store substitution estsimators of all communities
+    #----------------------------------------------------------------------------------
     communityList <- unique(data[, communityID])
+    est.communities_gstar1 <- matrix(0L, nrow = length(communityList), ncol = 3)
+    colnames(est.communities_gstar1) <- colnames(est.communities_gstar2) <- c("TMLE", "IPTW", "MLE")
+    wts.communities_gstar1 <- matrix(0L, nrow = NROW(data), ncol = 1)
+    colnames(wts.communities_gstar1) <- c("h_wts")
+    fWi.communities_gstar1 <- matrix(0L, nrow = NROW(data), ncol = 1)
+    colnames(fWi.communities_gstar1) <- c("fWi_Qinit")
+    QY.communities_gstar1  <- matrix(0L, nrow = NROW(data), ncol = 2)
+    colnames(QY.communities_gstar1) <- c("QY.init", "QY.star")
+    if (!is.null(f_gstar2)) { # Matrices for estimators under f_gstar2
+      est.communities_gstar2 <- est.communities_gstar1
+      wts.communities_gstar2 <- wts.communities_gstar1
+      fWi.communities_gstar2 <- fWi.communities_gstar1
+      QY.communities_gstar2 <- QY.communities_gstar1
+    }
+    
     for (i in 1:length(communityList)) {
       message("###########################################################################")
       message("Fitting TMLE on the " %+% i %+% "th community: " %+% communityList[i])
       
-      #----------------------------------------------------------------------------------
-      # Create matrices to store substitution estsimators of all communities
-      #----------------------------------------------------------------------------------
-      est.communities_gstar1 <- est.communities_gstar2 <- matrix(0L, nrow = length(communityList), ncol = 3)
-      colnames(est.communities_gstar1) <- colnames(est.communities_gstar2) <- c("TMLE", "IPTW", "MLE")
-      wts.communities_gstar1 <- wts.communities_gstar2 <- matrix(0L, nrow = NROW(dats), ncol = 1)
-      colnames(wts.communities_gstar1) <- c("h_wts")
-      fWi.communities_gstar1 <- fWi.communities_gstar2 <- matrix(0L, nrow = NROW(dats), ncol = 1)
-      colnames(fWi.communities_gstar1) <- colnames(fWi.communities_gstar2) <- c("fWi_Qinit")
-      QY.communities_gstar1 <- QY.communities_gstar2 <- matrix(0L, nrow = NROW(dats), ncol = 2)
-      colnames(QY.communities_gstar1) <- colnames(QY.communities_gstar2) <- c("QY.init", "QY.star")
-      
+      ## Create an R6 object that stores and manages the subdata for each community, later passed on to estimation algorithm(s)
       subdata <- data[(data[, communityID] == communityList[1]), ]
       inputYs <- CreateInputs(subdata[, Ynode], Qbounds, alpha, maptoYstar)
       subdata[, Ynode] <- inputYs$Ystar
@@ -787,16 +794,23 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
         tmle_gstar2_out <- NULL
       }
       
-      
+      #----------------------------------------------------------------------------------
+      # Store substitution estsimators for each corresponding community
+      #----------------------------------------------------------------------------------
       est.communities_gstar1[i, ] <- tmle_gstar1_out$ests_mat[, 1]
       wts.communities_gstar1[i, ] <- tmle_gstar1_out$wts_mat[, 1]
       fWi.communities_gstar1[i, ] <- tmle_gstar1_out$fWi_mat[, 1]
       QY.communities_gstar1[i, ] <- tmle_gstar1_out$QY_mat[, 1]
+      if (!is.null(f_gstar2)) {
+        est.communities_gstar2[i, ] <- tmle_gstar2_out$ests_mat[, 1]
+        wts.communities_gstar2[i, ] <- tmle_gstar2_out$wts_mat[, 1]
+        fWi.communities_gstar2[i, ] <- tmle_gstar2_out$fWi_mat[, 1]
+        QY.communities_gstar2[i, ] <- tmle_gstar2_out$QY_mat[, 1]
+      }
       
-      est.communities_gstar2[i, ] <- tmle_gstar2_out$ests_mat[, 1]
-      wts.communities_gstar2[i, ] <- tmle_gstar2_out$wts_mat[, 1]
-      fWi.communities_gstar2[i, ] <- tmle_gstar2_out$fWi_mat[, 1]
-      QY.communities_gstar2[i, ] <- tmle_gstar2_out$QY_mat[, 1]
+      
+      
+      
       
     }
   }  
