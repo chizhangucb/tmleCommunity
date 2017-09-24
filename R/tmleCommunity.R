@@ -548,12 +548,12 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
     community.wts <- matrix(0L, nrow = length(unique(data[, communityID])), ncol = 2)
     colnames(community.wts) <- c("id", "weights")
     community.wts[, 1] <- names(table(data[, communityID]))
+    if (community.wts == "equal.community") { # weigh each community equally
+      community.wts[, 2]  <- rep(1, length(unique(data[, communityID]))) 
+    } else if (community.wts == "size.community") { # weigh each community by its number of observations - The larger community has larger weight
+      community.wts[, 2] <- as.vector(table(data[, communityID]))
+    } 
   }
-  if (community.wts == "equal.community") { # weigh each community equally
-    community.wts[, 2]  <- rep(1, length(unique(data[, communityID]))) 
-  } else if (community.wts == "size.community") { # weigh each community by its number of observations - The larger community has larger weight
-    community.wts[, 2] <- as.vector(table(data[, communityID]))
-  } 
   if (!is.null(Qform) && !is.null(Ynode)) {
     Qform <- paste(Ynode, substring(Qform, first = as.numeric(gregexpr("~", Qform))))
     message("Since both Ynode and Qform are specified, the left-hand side of Qform will be ignored, with outcome being set to Ynode: " %+% Ynode)
