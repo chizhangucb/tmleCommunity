@@ -113,7 +113,7 @@ fit_single_reg.glmS3 <- function(self) {
     print("number of observations: " %+% nrow(Xmat))
   }
   
-  if (nrow(Xmat) == 0L) { . # Xmat has 0 rows: return NA's and avoid throwing exception:
+  if (nrow(Xmat) == 0L) {  # Xmat has 0 rows: return NA's and avoid throwing exception:
     model.fit <- list(coef = rep.int(NA_real_, ncol(Xmat)))
   } else {
     ctrl <- glm.control(trace=FALSE, maxit=1000)
