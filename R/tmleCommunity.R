@@ -529,8 +529,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @example tests/examples/3_tmleCommunity_examples.R
 #' @export
 tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communityID = NULL, working.model = FALSE, 
-                          community.wts = c("equal.community", "size.community"),
-                          obs.wts = c("equal.ind", "size.community"), 
+                          community.wts = c("equal.community", "size.community"), obs.wts = c("equal.within.pop", "equal.within.com"), 
                           community.step = c("NoCommunity", "community_level", "individual_level", "perCommunity"), 
                           f_g0 = NULL, f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995,                                                      
                           fluctuation = "logistic", hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, 
@@ -548,12 +547,10 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
   # INITIALIZE PARAMETERS
   #----------------------------------------------------------------------------------
   if (is.null(savetime.fit.hbars)) savetime.fit.hbars <- getopt("savetime.fit.hbars")
-  if (is.character(obs.wts)) {
-    if (obs.wts == "equal.ind") { # weigh each individual in the entire dataset equally
-      obs.wts <- rep(1, NROW(data))
-    } else if (obs.wts == "equal.within.community") { # weigh each individual in each community equally
-      community.wts <- as.vector(table(data[, communityID]))
-    }
+  if (obs.wts == "equal.within.pop") { # weigh individuals in the entire dataset equally so big community gets bigger total weight
+    obs.wts <- rep(1, NROW(data))
+  } else if (obs.wts == "equal.within.com") { # weigh individuals in each community equally and weigh communities equally
+    obs.wts <- rep(as.vector(1/table(data[, communityID])), as.vector(table(data[, communityID])))
   }
   if (is.character(community.step) && (community.step != "NoCommunity") && !is.data.frame(community.wts)) {
     community.wts.mat <- as.data.frame(matrix(0L, nrow = length(unique(data[, communityID])), ncol = 2))
