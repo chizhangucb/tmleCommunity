@@ -59,7 +59,7 @@ CheckInputs <- function(data, nodes, Qform, hform.g0, hform.gstar, fluctuation, 
                  "\tInvalid term name in regression formula for 'hform.gstar'" %+% deparse(formulas[[3]]))
   
   pass <- c(is.data.frame(data), is.null(datfactor), is.null(obs.wts) || (length(obs.wts)==NROW(data) && all(obs.wts >= 0)),
-            all(dim(community.wts)==c(length(unique(data[, nodes$communityID])), 2) && all(community.wts[, 2] >= 0)),
+            all(dim(community.wts)==c(length(unique(data[, nodes$communityID])), 2) && community.wts[, 2] >= 0),
             all(sort(community.wts[,1])==sort(unique(data[, nodes$communityID]))),
             validFormula, validTerms, validFluct, is.null(Qbounds) || length(Qbounds)==2)
   warning_messages <- c("\tThe input data must be a data frame",
