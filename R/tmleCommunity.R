@@ -727,7 +727,6 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
     EY_gstar1 <- calcParameters(inputYs = inputYs, alpha = CI_alpha, est_params_list = estinfo_list, tmle_g_out = tmle_gstar1_out)
     EY_gstar2 <- NULL
     ATE <- NULL	
-    otherInfo2 <- NULL
     if (!is.null(f_gstar2)) {
       EY_gstar2 <- calcParameters(inputYs = inputYs, alpha = CI_alpha, est_params_list = estinfo_list, tmle_g_out = tmle_gstar2_out)
       ATE <- calcParameters(inputYs = inputYs, alpha = CI_alpha, est_params_list = estinfo_list, tmle_g_out = tmle_gstar1_out, tmle_g2_out = tmle_gstar2_out)
@@ -819,7 +818,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
       if (!is.null(f_gstar2)) { estinfo_list_g2 <- append(estinfo_list, list(f.gstar = f_gstar2)) }
       
       #----------------------------------------------------------------------------------
-      # Running MC evaluation for substitution TMLE estsimators
+      # Running MC evaluation for substitution TMLE, MLE and IPTW estsimators
       #----------------------------------------------------------------------------------
       # Incl. estimate treatment mechanism f(a|E, W)) and clever covariates & targeting step
       tmle_gstar1_out <- CalcAllEstimators(OData.ObsP0 = OData.ObsP0, est_params_list = estinfo_list_g1)
@@ -843,11 +842,32 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
         fWi.communities_gstar2 <- rbind(fWi.communities_gstar2, tmle_gstar2_out$fWi_mat)
         QY.communities_gstar2 <- rbind(QY.communities_gstar2, tmle_gstar2_out$QY_mat)
       }
-      
-      #----------------------------------------------------------------------------------
-      # Create output list (estimates, as. variances, CIs)
-      #----------------------------------------------------------------------------------
-      
+    }
+    
+    # Reconstruct the results of substitution estsimators based on the combined matrices
+    tmle_gstar1.communties <- list(ests_mat = est.communities_gstar1, wts_mat = wts.communities_gstar1, 
+                                   fWi_mat = fWi.communities_gstar1, QY_mat = QY.communities_gstar1, obs.wts = obs.wts.communities)
+    if (!is.null(f_gstar2)) {
+      tmle_gstar2.communties <- list(ests_mat = est.communities_gstar2, wts_mat = wts.communities_gstar2, 
+                                     fWi_mat = fWi.communities_gstar2, QY_mat = QY.communities_gstar2, obs.wts = obs.wts.communities)
+    }
+    
+    #----------------------------------------------------------------------------------
+    # Create output list (estimates, as. variances, CIs)
+    #----------------------------------------------------------------------------------
+    inputYs <- CreateInputs(data[, Ynode], Qbounds, alpha, maptoYstar)
+    data[, Ynode] <- inputYs$Ystar
+    OData.ObsP0 <- DatKeepClass$new(Odata = data, nodes = nodes, norm.c.sVars = FALSE)
+    OData.ObsP0$addYnode(YnodeVals = inputYs$Ystar)
+    OData.ObsP0$addObsWeights(obs.wts = obs.wts)
+    # **** Double check IC-based variance calculation with Prof Mark ****
+    EY_gstar1 <- calcParameters(inputYs = inputYs, alpha = CI_alpha, est_params_list = estinfo_list, tmle_g_out = tmle_gstar1.communties)
+    EY_gstar2 <- NULL
+    ATE <- NULL	
+    if (!is.null(f_gstar2)) {
+      EY_gstar2 <- calcParameters(inputYs = inputYs, alpha = CI_alpha, est_params_list = estinfo_list, tmle_g_out = tmle_gstar2.communties)
+      ATE <- calcParameters(inputYs = inputYs, alpha = CI_alpha, est_params_list = estinfo_list, 
+                            tmle_g_out = tmle_gstar1.communties, tmle_g2_out = tmle_gstar2.communties)
     }
   }  
   tmleCommunity.res <- list(EY_gstar1 = EY_gstar1, EY_gstar2 = EY_gstar2, ATE = ATE)
