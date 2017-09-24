@@ -220,7 +220,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   # getting all node vals, including deterministic Y and predictions P(Y=1) for non-DET Y under orignal A
   QY.init <- OData.ObsP0$noNA.Ynodevals 
   QY.init[!OData.ObsP0$det.Y] <- model.Q.init$predict(newdata = OData.ObsP0)$getprobA1[!OData.ObsP0$det.Y]
-  QY.init <- bound(QY.init, Qbounds)
+  QY.init <- bound(QY.init, est_params_list$Qbounds)
   off <- qlogis(QY.init)  # offset
   
   if (community.step == "individual_level" && working.model == FALSE) { # if we do NOT believe our working model (i.e. estimate under the lareg model)
