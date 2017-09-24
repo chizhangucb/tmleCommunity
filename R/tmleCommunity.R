@@ -206,6 +206,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   data <- est_params_list$data
   communityID <- est_params_list$communityID
   community.step <- est_params_list$community.step
+  community.wts <- est_params_list$community.wts
   working.model <- est_params_list$working.model
   TMLE.targetStep <- est_params_list$TMLE.targetStep
   nodes <- OData.ObsP0$nodes
@@ -226,9 +227,16 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
       # aggregate original dataset to the cluster-level & redefine OData.ObsP0
       Y <- aggregate(x = Y, by=list(id = data[, communityID]), mean)[, 2]
       determ.Q <- rep_len(FALSE, length(Y))  # For aggregated data, YnodeDet is currently unavailable, treat all Y^c as nondeterministic
-      data <- aggregate(x = data, by=list(id = data[, communityID]), mean)[, 2 : (ncol(data)+1)] # Don't keep the extra ID column 
+      data <- aggregate(x = data, by=list(newid = data[, communityID]), mean) 
+      colname.allNA <- colnames(data)[colSums(is.na(data)) == NROW(data)]  # columns with all NAs after aggregation, due to non-numeric values
+      if (length(colname.allNA) != 0) {
+        data <- data[, - which(colnames(data) %in% colname.allNA)] # Remove columns that contain only NAs inside
+        names(data)[which(colnames(data) == "newid")] <- communityID  # change 'newid' back to the communityID name
+        warning(paste(colname.allNA, collapse = ', ') %+% " is(are) removed from the aggregated data due to all NAs in the column(s).")
+        warning("Suggestion: convert the non-numeric values to numeric, e.g., create dummy variables for each category/ string/ factor.")
+      }
       est_params_list$data <- data
-      est_params_list$obs.wts <- obs.wts <- est_params_list$community.wts
+      est_params_list$obs.wts <- obs.wts <- community.wts[match(data[, communityID], community.wts[, "id"]), "weights"]  # ensure matching
       OData.ObsP0 <- DatKeepClass$new(Odata = data, nodes = nodes, norm.c.sVars = FALSE)
       OData.ObsP0$addYnode(YnodeVals = data[, est_params_list$nodes$Ynode])  # Already bounded Y into Ystar in the beginning step               
       OData.ObsP0$addObsWeights(obs.wts = obs.wts)
@@ -257,8 +265,8 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   # IPTW_unwt <- mean(IPTW)
   if (community.step == "individual_level" && working.model == TRUE) {
     if (!is.null(communityID)) { 
-      IPTW <- aggregate(x = IPTW, by=list(id = data[, communityID]), mean)[, 2]
-      IPTW <- weighted.mean(IPTW, w = est_params_list$community.wts)
+      IPTW <- aggregate(x = IPTW, by=list(id = data[, communityID]), mean)
+      IPTW <- weighted.mean(IPTW[, "IPTW"], w = community.wts[match(IPTW[, "id"], community.wts[, "id"]), "weights"])
     } else {
       warningMesg <-  c("Since individual-level TMLE with working.model requires communityID to aggregate data to the cluster-level in the end.",
                         "Lack of 'communityID' forces the algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset.")
@@ -346,7 +354,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @param community.step Methods to deal with community-level data, one of "NoCommunity" (Default), "community_level" and "individual_level". 
 #'  If communityID = NULL, then automatically pool over all communities.
 #' @param working.model Logical
-#' @param community.wts Optional matrix/ data frame of community-level observation weights (where dim = the number of communities by 2). The first   
+#' @param community.wts Optional matrix of community-level observation weights (where dim = the number of communities by 2). The first   
 #'  column contains the communities' names (ie., \code{data[, communityID]}) and the second column contains the corresponding weights.   
 #'  If "equal.community", assumed to be all 1. Currently only support a numeric vector, "equal.community" (Default) and "size.community" 
 #'  (i.e., by setting community.wts = "size.community", treat the number of individuals within each community as its weight, respectively).
@@ -553,6 +561,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
     } else if (community.wts == "size.community") { # weigh each community by its number of observations - The larger community has larger weight
       community.wts.mat[, 2] <- as.vector(table(data[, communityID]))
     } 
+    community.wts <- community.wts.mat; community.wts.mat <- NULL
   }
   if (!is.null(Qform) && !is.null(Ynode)) {
     Qform <- paste(Ynode, substring(Qform, first = as.numeric(gregexpr("~", Qform))))
@@ -567,22 +576,23 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
   TMLE.targetStep <- TMLE.targetStep[1]
   
   ## Check if any unexpected inputs
-  if (!(community.wts %in% c("equal.community", "size.community")) && !is.numeric(community.wts)) {
-    stop("Currently only numeric values, 'equal.community' and 'size.community' are supported for community.wts")
-  }
-  if (!(community.step %in% c("NoCommunity", "community_level", "individual_level", "perCommunity"))) 
-    stop("community.step argument must be one of 'NoCommunity', 'community_level', 'individual_level' and 'perCommunity'")
   if (!(TMLE.targetStep %in% c("tmle.intercept", "tmle.covariate"))) 
     stop("TMLE.targetStep argument must be either 'tmle.intercept' or 'tmle.covariate'")
+  if (!(community.step %in% c("NoCommunity", "community_level", "individual_level", "perCommunity"))) 
+    stop("community.step argument must be one of 'NoCommunity', 'community_level', 'individual_level' and 'perCommunity'")
   if ((community.step %in% c("community_level", "individual_level", "perCommunity")) & is.null(communityID)) {
     message("Lack of 'communityID' forces the algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset")
     message("In other words, we simply treat community.step = 'NoCommunity' and working.model = FALSE")
     community.step <- "NoCommunity"
     working.model <- FALSE
   } 
+  if (!(community.wts %in% c("equal.community", "size.community")) && !is.numeric(community.wts)) {
+    stop("Currently only numeric values, 'equal.community' and 'size.community' are supported for community.wts")
+  }
   nodes <- list(Ynode = Ynode, Anodes = Anodes, WEnodes = WEnodes, communityID = communityID)
   for (i in unlist(nodes)) {  CheckVarNameExists(data = data, varname = i) }
-  if (!CheckInputs(data, nodes, Qform, hform.g0, hform.gstar, fluctuation, Qbounds, obs.wts)) stop()
+  if (!CheckInputs(data, nodes, Qform, hform.g0, hform.gstar, fluctuation, Qbounds, obs.wts, community.wts)) stop()
+  colnames(community.wts.mat) <- c("id", "weights")  # ensure that the column names are defined as "id" and "weights"
   maptoYstar <- fluctuation=="logistic"  # if TRUE, cont Y values shifted & scaled to fall b/t (0,1)
   
   #----------------------------------------------------------------------------------
@@ -613,10 +623,10 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
       if (length(colname.allNA) != 0) {
         data <- data[, -which(colnames(data) %in% colname.allNA)] # Remove columns that contain only NAs inside
         names(data)[which(colnames(data) == "newid")] <- communityID  # change 'newid' back to the communityID name
-        warning(paste(colname.allNA, collapse = ', ') %+% " is(are) removed from the aggregated data due to all NAs in the column(s).\n")
+        warning(paste(colname.allNA, collapse = ', ') %+% " is(are) removed from the aggregated data due to all NAs in the column(s).")
         warning("Suggestion: convert the non-numeric values to numeric, e.g., create dummy variables for each category/ string/ factor.")
       }
-      obs.wts <- community.wts
+      obs.wts <- community.wts[match(data[, communityID], community.wts[, "id"]), "weights"]  # ensure that weights match with their corresponding communities
     } else {
       warningMesg <- c("Since community-level TMLE requires communityID to aggregate to the cluster-level. Lack of 'communityID' forces the ",
                        "algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset")
