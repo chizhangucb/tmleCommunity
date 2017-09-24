@@ -543,7 +543,8 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
     community.wts <- as.vector(table(data[, communityID]))
   }
   if (community.wts == "equal.community") { # weigh each community equally
-    community.wts <- rep(1, length(unique(data[, communityID]))) 
+   community.wts <- matrix(0L, nrow = length(communityList), ncol = 2)
+     <- rep(1, length(unique(data[, communityID]))) 
   } else if (community.wts == "size.community") { # weigh each community by its number of observations - The larger community has larger weight
     community.wts <- as.vector(table(data[, communityID]))
   } 
