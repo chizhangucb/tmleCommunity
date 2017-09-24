@@ -650,7 +650,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
   # Why to keep variables that are not indicated in the node list (i.e. Crossnodes): when creating A^* under g.star (delta function)  
   # it's possible to use variablas that are not used in Qform and gform. 
   
-  if (community.step %in% c("community_level", "individual_level", "perCommunity")) {
+  if (community.step %in% c("community_level", "individual_level")) {
     ## Create an R6 object that stores and manages the input data, later passed on to estimation algorithm(s)
     inputYs <- CreateInputs(data[, Ynode], Qbounds, alpha, maptoYstar)
     data[, Ynode] <- inputYs$Ystar
