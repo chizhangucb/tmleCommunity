@@ -610,7 +610,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
       colname.allNA <- colnames(data)[colSums(is.na(data)) == NROW(data)]  # columns with all NAs after aggregation, due to non-numeric values
       if (length(colname.allNA) != 0) {
         data <- data[, -which(colnames(data) %in% colname.allNA)] # Remove columns that contain only NAs inside
-        names(data)[which(colnames(data) == "newid")] <- <- communityID  # change 'newid' back to the communityID name
+        names(data)[which(colnames(data) == "newid")] <- communityID  # change 'newid' back to the communityID name
         warning(paste(colname.allNA, collapse = ', ') %+% " is(are) removed from the aggregated data due to all NAs in the column(s).\n")
         warning("Suggestion: convert the non-numeric values to numeric, e.g., create dummy variables for each category/ string/ factor.")
       }
