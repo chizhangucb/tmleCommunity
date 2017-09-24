@@ -41,16 +41,16 @@ CalcMonteCarloEsts <- function(OData.ObsP0, OData.gstar, MC_fit_params, model.h.
     # Put all estimators together and add names (defined in out_nms outside of this function):
     if (community.step == "individual_level" && working.model == TRUE) {
       if (!is.null(communityID)) {
-        TMLE <- aggregate(x = TMLE, by=list(id = communityID), mean)[, 2]
-        MLE <- aggregate(x = MLE, by=list(id = communityID), mean)[, 2]
-        obs.wts <- community.wts
+        TMLE <- aggregate(x = TMLE, by=list(id = communityID), mean)
+        MLE <- aggregate(x = MLE, by=list(id = communityID), mean)
+        obs.wts <- community.wts[match(TMLE[, "newid"], community.wts[, "id"]), "weights"]
       } # else {
       # warning("Since individual-level TMLE with working.model requires communityID to aggregate data to the cluster-level in the end. Lack of 
       #        'communityID' forces the algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset.")
       # }
     }
-    mean_psis_all <- c(TMLE = weighted.mean(TMLE, w = obs.wts), 
-                       MLE = weighted.mean(MLE, w = obs.wts), 
+    mean_psis_all <- c(TMLE = weighted.mean(TMLE[, "TMLE"], w = obs.wts), 
+                       MLE = weighted.mean(MLE[, "MLE"], w = obs.wts), 
                        fiWs_list$fiW_Qinit)
     names(mean_psis_all) <- c("TMLE", "MLE", paste("fWi_init_", c(1:nobs), sep = ""))
     return(mean_psis_all)
