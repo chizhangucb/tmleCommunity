@@ -286,10 +286,11 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   # IPTW_unwt <- mean(IPTW)
   if (community.step == "individual_level" && working.model == TRUE) {
     # if (!is.null(communityID)) {"IPTW cannnot be aggregated to the cluster-level since lack of 'communityID' so treated as non-hierarchical"}
-    newid <- data[, communityID])
-    IPTW <- Hmisc::summarize(x = IPTW, by = newid, FUN = weighted.mean, w = obs.wts)
-    # IPTW <- aggregate(x = IPTW, by=list(newid = data[, communityID]), mean)  # IPTW[, "newid"]
-    IPTW <- weighted.mean(IPTW[, 2], w = community.wts[match(newid, community.wts[, "id"]), "weights"])
+    # IPTW <- aggregate(x = IPTW, by=list(newid = data[, communityID]), mean)
+    newid <- data[, communityID]; IPTW <- cbind(IPTW, obs.wts)
+    wts.mean <- function(d) { weighted.mean(x = d[, "IPTW"], w = d[, "obs.wts"]) }
+    IPTW <- Hmisc::summarize(X = IPTW, by = newid, FUN = wts.mean)
+    IPTW <- weighted.mean(IPTW[, 2], w = community.wts[match(IPTW[, "newid"], community.wts[, "id"]), "weights"])
   } else {
     IPTW <- weighted.mean(IPTW, w = obs.wts)
   }
