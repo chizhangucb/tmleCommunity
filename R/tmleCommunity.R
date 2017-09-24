@@ -770,7 +770,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
       
       ## Create an R6 object that stores and manages the subdata for each community, later passed on to estimation algorithm(s)
       subdata <- data[(data[, communityID] == communityList[i]), ]
-      sub.obs.wts <- obs.wts.default[data[, communityID] == communityList[i]]
+      sub.obs.wts <- obs.wts[data[, communityID] == communityList[i]]
       inputYs <- CreateInputs(subdata[, Ynode], Qbounds, alpha, maptoYstar)
       subdata[, Ynode] <- inputYs$Ystar
       OData.ObsP0 <- DatKeepClass$new(Odata = subdata, nodes = nodes, norm.c.sVars = FALSE)
