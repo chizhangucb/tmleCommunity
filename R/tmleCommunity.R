@@ -195,18 +195,18 @@ get_est_sigmas <- function(estnames, obsYvals, est_params_list, obs.wts, ests_ma
   # IPTW h (based on the mixture density clever covariate (h)):
   iidIC_iptw <- h_wts * (obsYvals) - ests_mat[rownames(ests_mat) %in% "IPTW",]
   
-  iidIC <- data.table::data.table(iidIC_tmle, iidIC_mle, iidIC_iptw, obs.wts)
+  iidIC <- data.table::data.table(iidIC_tmle, iidIC_mle, iidIC_iptw, obs.wts); sorted.communityID <- communityID
   # if we believe our working model (i.e. if estimating under the submodel) or run TMLE for each community
   if ((community.step == "individual_level" && working.model == TRUE) || community.step == "perCommunity") { 
     # if (!is.null(communityID)) {"iid IC cannnot be aggregated to the cluster-level since lack of 'communityID' so treated as non-hierarchical"}
     iidIC <- data.table::data.table(iidIC_tmle, iidIC_mle, iidIC_iptw, obs.wts, communityID)
     iidIC <- iidIC[, lapply(.SD, weighted.mean, w = obs.wts), by = communityID]; sorted.communityID <- iidIC[["communityID"]]
-    iidIC <- iidIC[, !(colnames(iidIC) %in% c("obs.wts", "communityID")), with = FALSE]
     obs.wts <- community.wts[match(sorted.communityID, community.wts[, "id"]), "weights"]
     # iidIC_tmle <- aggregate(x = iidIC_tmle, by=list(newid = communityID), mean), similarly to iidIC_mle, iidIC_iptw
     # obs.wts <- community.wts[match(iidIC_tmle[, 1], community.wts[, "id"]), "weights"]  # Alternative way
   }
   
+  iidIC <- iidIC[, !(colnames(iidIC) %in% c("obs.wts", "communityID")), with = FALSE]
   var_iid.est <- iidIC[, lapply(.SD, Hmisc::wtd.var, weights = obs.wts, normwt = T)]
   # var_iid.tmle <- Hmisc::wtd.var(iidIC_tmle, weights = obs.wts, normwt = T), similarly to var_iid.mle, var_iid.iptw
   # var_iid.tmle <- mean((iidIC_tmle)^2)  # the same as sum(iidIC_tmle^2) / length(iidIC_tmle) by assume mean(iidIC_tmle) = 0
