@@ -586,7 +586,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
     community.step <- "NoCommunity"
     working.model <- FALSE
   } 
-  if (!(community.wts %in% c("equal.community", "size.community")) && !is.numeric(community.wts)) {
+  if (!(community.wts %in% c("equal.community", "size.community")) && !is.data.frame(community.wts)) {
     stop("Currently only numeric values, 'equal.community' and 'size.community' are supported for community.wts")
   }
   nodes <- list(Ynode = Ynode, Anodes = Anodes, WEnodes = WEnodes, communityID = communityID)
