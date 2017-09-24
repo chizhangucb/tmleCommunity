@@ -123,13 +123,11 @@ calcParameters <- function(inputYs, alpha = 0.05, est_params_list, tmle_g_out, t
   # Test statistic & p-value
   teststat_mat <-  matrix(0L, nrow = 3, ncol = 1)
   teststat_mat[, 1] <- ests_mat[, 1] / sqrt(as.var_mat / nobs)
-  rownames(teststat_mat) <- c("TMLE", "IPTW", "MLE"); colnames(teststat_mat) <- "teststat"
   if (is.na(df)) {
     pval <- 2 * pnorm(abs(teststat_mat), lower.tail = F) 
   } else {
     pval<- 2 * pt(abs(teststat_mat), df = df, lower.tail = F) 
   }
-  colnames(pval) <- "p_value"
 
   get_CI <- function(xrow, n, df = NA) {
     f_est_CI <- function(n, psi, sigma2_N, df) { # get CI
@@ -155,6 +153,8 @@ calcParameters <- function(inputYs, alpha = 0.05, est_params_list, tmle_g_out, t
   rownames(ests_mat) <- c("tmle", "iptw", "gcomp")
   rownames(as.var_mat) <- c("tmle", "iptw", "gcomp")
   rownames(CIs_mat) <- c("tmle", "iptw", "gcomp")
+  rownames(teststat_mat) <- c("tmle", "iptw", "gcomp")
+  colnames(teststat_mat) <- "teststat"; colnames(pval) <- "p_value"
   
   EY_g.star <- list(estimates = ests_mat, 
                     vars = (as.var_mat / nobs), 
