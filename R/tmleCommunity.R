@@ -346,9 +346,10 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @param community.step Methods to deal with community-level data, one of "NoCommunity" (Default), "community_level" and "individual_level". 
 #'  If communityID = NULL, then automatically pool over all communities.
 #' @param working.model Logical
-#' @param community.wts Optional vector of community-level observation weights (of length of the number of communities). If NULL, assumed to be all 1. 
-#'  Currently only support a numeric vector and "by_size" (i.e., by setting community.wts = "by_size", treat the number of individuals within
-#'  each community as its weight, respectively).
+#' @param community.wts Optional matrix/ data frame of community-level observation weights (where dim = the number of communities by 2). The first   
+#'  column contains the communities' names (ie., \code{data[, communityID]}) and the second column contains the corresponding weights.   
+#'  If "equal.community", assumed to be all 1. Currently only support a numeric vector, "equal.community" (Default) and "size.community" 
+#'  (i.e., by setting community.wts = "size.community", treat the number of individuals within each community as its weight, respectively).
 #' @param f_gstar1 Either a function or a vector or a matrix/ data frame of counterfactual exposures, dependin on the number of exposure variables.
 #'  If a matrix/ data frame, its number of rows must be either nrow(data) or 1 (constant exposure assigned to all observations), and its number of 
 #'  columns must be length(Anodes). If a vector, it must be of length nrow(data) or 1. If a function, it must return a data frame of counterfactual
@@ -516,10 +517,12 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' }
 #' @example tests/examples/3_tmleCommunity_examples.R
 #' @export
-tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communityID = NULL, working.model = FALSE, community.wts = NULL,
+tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communityID = NULL, working.model = FALSE, 
+                          community.wts = c("equal.community", "size.community"),
+                          obs.wts = c("equal.ind", "size.community"), 
                           community.step = c("NoCommunity", "community_level", "individual_level", "perCommunity"), 
-                          f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995, fluctuation = "logistic",                                                     
-                          f_g0 = NULL, hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, obs.wts = NULL, 
+                          f_g0 = NULL, f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995,                                                      
+                          fluctuation = "logistic", hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, 
                           h.g0_GenericModel = NULL, h.gstar_GenericModel = NULL, savetime.fit.hbars = TRUE, 
                           TMLE.targetStep = c("tmle.intercept", "tmle.covariate"),
                           n_MCsims = 1, 
@@ -534,14 +537,16 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
   # INITIALIZE PARAMETERS
   #----------------------------------------------------------------------------------
   if (is.null(savetime.fit.hbars)) savetime.fit.hbars <- getopt("savetime.fit.hbars")
-  if (is.null(obs.wts)) obs.wts <- rep(1, NROW(data))
-  if (is.null(community.wts)) {
-    community.wts <- rep(1, length(unique(data[, communityID]))) 
-  } else if (community.wts == "by_size") {
+  if (obs.wts == "equal.ind") { # weigh each individual in the entire dataset equally
+    obs.wts <- rep(1, NROW(data))
+  } else if (obs.wts == "equal.within.community") { # weigh each individual in each community equally
     community.wts <- as.vector(table(data[, communityID]))
-  } else {
-    stop("Currently only numeric values or 'by_size' is supported for community.wts")
   }
+  if (community.wts == "equal.community") { # weigh each community equally
+    community.wts <- rep(1, length(unique(data[, communityID]))) 
+  } else if (community.wts == "size.community") { # weigh each community by its number of observations - The larger community has larger weight
+    community.wts <- as.vector(table(data[, communityID]))
+  } 
   if (!is.null(Qform) && !is.null(Ynode)) {
     Qform <- paste(Ynode, substring(Qform, first = as.numeric(gregexpr("~", Qform))))
     message("Since both Ynode and Qform are specified, the left-hand side of Qform will be ignored, with outcome being set to Ynode: " %+% Ynode)
@@ -555,6 +560,9 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
   TMLE.targetStep <- TMLE.targetStep[1]
   
   ## Check if any unexpected inputs
+  if (!(community.wts %in% c("equal.community", "size.community")) && !is.numeric(community.wts)) {
+    stop("Currently only numeric values, 'equal.community' and 'size.community' are supported for community.wts")
+  }
   if (!(community.step %in% c("NoCommunity", "community_level", "individual_level", "perCommunity"))) 
     stop("community.step argument must be one of 'NoCommunity', 'community_level', 'individual_level' and 'perCommunity'")
   if (!(TMLE.targetStep %in% c("tmle.intercept", "tmle.covariate"))) 
@@ -593,8 +601,16 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
   ## Create data based on community.step, then based on Qform, hform.g0 and hform.gstar, in case of interaction or higher-order term.
   if (community.step == "community_level") { # if running entire TMLE algorithm at cluster-level, aggregate data now
     if (!is.null(communityID)) {
-      data <- aggregate(x = data, by=list(id = data[, communityID]), mean)[, 2 : (ncol(data)+1)] # Don't keep the extra ID column 
-      # obs.wts <- rep(1, NROW(data))  # weights for aggregated data should be 1
+      data <- aggregate(x = data, by=list(newid = data[, communityID]), mean) # [, 2 : (ncol(data)+1)] # Don't keep the extra ID column
+      colname.allNA <- colnames(data)[colSums(is.na(data)) == NROW(data)]  # columns with all NAs after aggregation, due to non-numeric values
+      if (length(colname.allNA) != 0) {
+        data <- data[, -which(colnames(data) %in% colname.allNA)] # Remove columns that contain only NAs inside
+        names(data)[which(colnames(data) == "newid")] <- <- communityID  # change 'newid' back to the communityID name
+        warning(paste(colname.allNA, collapse = ', ') %+% " is(are) removed from the aggregated data due to all NAs in the column(s).\n")
+        warning("Suggestion: convert the non-numeric values to numeric, e.g., create dummy variables for each category/ string/ factor.")
+      }
+      
+      # obs.wts <- rep(1, NROW(data))  # weights for aggregated data should be 1 
       obs.wts <- community.wts
     } else {
       warningMesg <- c("Since community-level TMLE requires communityID to aggregate to the cluster-level. Lack of 'communityID' forces the ",
