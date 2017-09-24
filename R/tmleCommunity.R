@@ -207,7 +207,8 @@ get_est_sigmas <- function(estnames, obsYvals, est_params_list, obs.wts, ests_ma
     iidIC_iptw <- aggregate(x = iidIC_iptw, by=list(newid = communityID), mean)[, 2]
     sorted.communityID <- iidIC_tmle[, 1]; iidIC_tmle <- iidIC_tmle[, 2]
     obs.wts <- community.wts[match(sorted.communityID, community.wts[, "id"]), "weights"]
-    rownames(iidIC_tmle) <- rownames(iidIC_mle) <- rownames(iidIC_iptw) <- sorted.communityID
+    names(iidIC_tmle) <- names(iidIC_mle) <- names(iidIC_iptw) <- sorted.communityID
+    
   } else if (community.step == "perCommunity") {
     
   }
