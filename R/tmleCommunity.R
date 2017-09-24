@@ -89,7 +89,7 @@ calcParameters <- function(inputYs, alpha = 0.05, est_params_list, tmle_g_out, t
   if (est_params_list$community.step %in% c("community_level", "individual_level", "perCommunity")) {
     nobs <- length(unique(est_params_list$communityID))
   }
-  df <- ifelse(nobs < 41, (nobs - 2), NA)  # Use the Student's T distribution in place of the Std Normal if nobs < 41
+  df <- ifelse(nobs <= 40, (nobs - 2), NA)  # Use the Student's T distribution in place of the Std Normal if nobs < 41
   ests_mat <- tmle_g_out$ests_mat
   QY_mat <- tmle_g_out$QY_mat
   fWi_mat <- tmle_g_out$fWi_mat
@@ -119,18 +119,32 @@ calcParameters <- function(inputYs, alpha = 0.05, est_params_list, tmle_g_out, t
     }
   }
   
-  get_CI <- function(xrow, n) {
-    f_est_CI <- function(n, psi, sigma2_N) { # get CI
-      z_alpha <- qnorm(1-alpha/2)
-      CI_est <- c(psi - z_alpha * sqrt(sigma2_N / n), psi + z_alpha * sqrt(sigma2_N / n))
+  # Test statistic & p-value
+  teststat_mat <-  matrix(0L, nrow = 3, ncol = 1)
+  teststat_mat[, 1] <- ests_mat[, 1] / (as.var_mat / nobs)
+  rownames(teststat_mat) <- c("TMLE", "IPTW", "MLE"); colnames(teststat_mat) <- "teststat"
+  if (is.na(df)) {
+    pval <- 2 * pnorm(abs(teststat_mat), lower.tail = F) 
+  } else {
+    pval<- 2 * pt(abs(teststat_mat), df = df, lower.tail = F) 
+  }
+
+  get_CI <- function(xrow, n, df = NA) {
+    f_est_CI <- function(n, psi, sigma2_N, df) { # get CI
+      if (is.na(df)) {
+        cutoff <- qnorm(1 - alpha/2) # z_alpha 
+      } else {
+        cutoff <- qt(1 - alpha/2, df = df) # t_alpha 
+      }
+      CI_est <- c(psi - cutoff * sqrt(sigma2_N / n), psi + cutoff * sqrt(sigma2_N / n))
       return(CI_est)
     }
     psi <- xrow["estimate"];
     sigma2_N <- xrow["Var"];
-    return(f_est_CI(n = n, psi = psi, sigma2_N = sigma2_N))
+    return(f_est_CI(n = n, psi = psi, sigma2_N = sigma2_N, df = df))
   }
   
-  CIs_mat <- t(apply(cbind(ests_mat, as.var_mat), 1, get_CI, n = nobs))
+  CIs_mat <- t(apply(cbind(ests_mat, as.var_mat), 1, get_CI, n = nobs, df = df))
   colnames(CIs_mat) <- c("LBCI_" %+% as.character(alpha/2), "UBCI_" %+% as.character(1-alpha/2))
   
   # ----------------------------------------------------
