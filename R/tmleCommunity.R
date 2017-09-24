@@ -547,7 +547,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
   if (is.null(savetime.fit.hbars)) savetime.fit.hbars <- getopt("savetime.fit.hbars")
   if (obs.wts == "equal.within.pop") { # weigh individuals in the entire dataset equally so big community gets bigger total weight
     obs.wts <- rep(1, NROW(data))
-  } else if (obs.wts == "equal.within.com") { # weigh individuals in each community equally and weigh communities equally
+  } else if (obs.wts == "equal.within.community") { # weigh individuals in each community equally and weigh communities equally
     obs.wts <- rep(as.vector(1/table(data[, communityID])), as.vector(table(data[, communityID])))
   }
   if (is.character(community.step) && (community.step != "NoCommunity") && !is.data.frame(community.wts)) {
