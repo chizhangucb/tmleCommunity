@@ -545,13 +545,13 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
     }
   }
   if (is.character(community.step) && (community.step != "NoCommunity")) {
-    community.wts <- matrix(0L, nrow = length(unique(data[, communityID])), ncol = 2)
-    colnames(community.wts) <- c("id", "weights")
-    community.wts[, 1] <- names(table(data[, communityID]))
+    community.wts.mat <- as.data.frame(matrix(0L, nrow = length(unique(data[, communityID])), ncol = 2))
+    colnames(community.wts.mat) <- c("id", "weights")
+    community.wts.mat[, 1] <- names(table(data[, communityID]))
     if (community.wts == "equal.community") { # weigh each community equally
-      community.wts[, 2]  <- rep(1, length(unique(data[, communityID]))) 
+      community.wts.mat[, 2]  <- rep(1, length(unique(data[, communityID]))) 
     } else if (community.wts == "size.community") { # weigh each community by its number of observations - The larger community has larger weight
-      community.wts[, 2] <- as.vector(table(data[, communityID]))
+      community.wts.mat[, 2] <- as.vector(table(data[, communityID]))
     } 
   }
   if (!is.null(Qform) && !is.null(Ynode)) {
