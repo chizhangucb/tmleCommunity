@@ -537,10 +537,12 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
   # INITIALIZE PARAMETERS
   #----------------------------------------------------------------------------------
   if (is.null(savetime.fit.hbars)) savetime.fit.hbars <- getopt("savetime.fit.hbars")
-  if (obs.wts == "equal.ind") { # weigh each individual in the entire dataset equally
-    obs.wts <- rep(1, NROW(data))
-  } else if (obs.wts == "equal.within.community") { # weigh each individual in each community equally
-    community.wts <- as.vector(table(data[, communityID]))
+  if (is.character(obs.wts)) {
+    if (obs.wts == "equal.ind") { # weigh each individual in the entire dataset equally
+      obs.wts <- rep(1, NROW(data))
+    } else if (obs.wts == "equal.within.community") { # weigh each individual in each community equally
+      community.wts <- as.vector(table(data[, communityID]))
+    }
   }
   if (is.character(community.step) && (community.step != "NoCommunity")) {
     community.wts <- matrix(0L, nrow = length(unique(data[, communityID])), ncol = 2)
