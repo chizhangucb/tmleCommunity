@@ -42,7 +42,7 @@ CreateInputs <- function(Y, Qbounds, alpha, maptoYstar){
 #------------------ function CheckInputs ------------------
 # Purpose: initial checks on data passed in
 #----------------------------------------------------------
-CheckInputs <- function(data, nodes, Qform, hform.g0, hform.gstar, fluctuation, Qbounds, obs.wts) {
+CheckInputs <- function(data, nodes, Qform, hform.g0, hform.gstar, fluctuation, Qbounds, obs.wts, community.wts) {
   datfactor <- CheckExistFactors(data)
   formulas <- list(Qform, hform.g0, hform.gstar) 
   validFormula <- sapply(formulas, function(x) {identical(class(try(as.formula(x))), "formula")})
@@ -58,12 +58,14 @@ CheckInputs <- function(data, nodes, Qform, hform.g0, hform.gstar, fluctuation, 
                  "\tInvalid term name in regression formula for 'hform.g0'" %+% deparse(formulas[[2]]),
                  "\tInvalid term name in regression formula for 'hform.gstar'" %+% deparse(formulas[[3]]))
   
-  pass <- c(is.data.frame(data), is.null(datfactor), is.null(obs.wts) || (length(obs.wts)==NROW(data) && all(obs.wts >= 0)),  
+  pass <- c(is.data.frame(data), is.null(datfactor), is.null(obs.wts) || (length(obs.wts)==NROW(data) && all(obs.wts >= 0)),
+            (length(community.wts)==length(unique(data[, nodes$communityID])) && all(community.wts >= 0)),
             validFormula, validTerms, validFluct, is.null(Qbounds) || length(Qbounds)==2)
   warning_messages <- c("\tThe input data must be a data frame",
                         "\tNo factor column(s) allowed in the input data, consider removing or recoding such column(s) as strings: " 
                           %+% paste0(datfactor, collapse=' , ') %+% "\n", 
                         "\t'obs.wts', must contain the same number of non-negative observations as 'data' does\n",
+                        "\t'community.wts', must contain the same number of non-negative communities as 'data' does\n",
                         formwarns, termwarns, "\tfluctuation should be logistic or linear\n",
                         "\tQbounds should have length 2\n")
   if(!all(pass)) warning("\n", warning_messages[!pass], immediate.=TRUE)
