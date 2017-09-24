@@ -89,6 +89,7 @@ calcParameters <- function(inputYs, alpha = 0.05, est_params_list, tmle_g_out, t
   if (est_params_list$community.step %in% c("community_level", "individual_level", "perCommunity")) {
     nobs <- length(unique(est_params_list$communityID))
   }
+  df <- ifelse(nobs < 41, (nobs - 2), NA)  # Use the Student's T distribution in place of the Std Normal if nobs < 41
   ests_mat <- tmle_g_out$ests_mat
   QY_mat <- tmle_g_out$QY_mat
   fWi_mat <- tmle_g_out$fWi_mat
