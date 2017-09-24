@@ -59,13 +59,15 @@ CheckInputs <- function(data, nodes, Qform, hform.g0, hform.gstar, fluctuation, 
                  "\tInvalid term name in regression formula for 'hform.gstar'" %+% deparse(formulas[[3]]))
   
   pass <- c(is.data.frame(data), is.null(datfactor), is.null(obs.wts) || (length(obs.wts)==NROW(data) && all(obs.wts >= 0)),
-            (length(community.wts)==length(unique(data[, nodes$communityID])) && all(community.wts >= 0)),
+            all(dim(community.wts)==c(length(unique(data[, nodes$communityID])), 2) && all(community.wts[, 2] >= 0)),
+            all(sort(community.wts[,1])==sort(unique(data[, nodes$communityID]))),
             validFormula, validTerms, validFluct, is.null(Qbounds) || length(Qbounds)==2)
   warning_messages <- c("\tThe input data must be a data frame",
                         "\tNo factor column(s) allowed in the input data, consider removing or recoding such column(s) as strings: " 
                           %+% paste0(datfactor, collapse=' , ') %+% "\n", 
                         "\t'obs.wts', must contain the same number of non-negative observations as 'data' does\n",
-                        "\t'community.wts', must contain the same number of non-negative communities as 'data' does\n",
+                        "\t'community.wts', must contain the same number of non-negative communities as 'data' does, and has 2 columns\n",
+                        "\t'community.wts', must contain the same community names as data doee, but could be in different order though\n"
                         formwarns, termwarns, "\tfluctuation should be logistic or linear\n",
                         "\tQbounds should have length 2\n")
   if(!all(pass)) warning("\n", warning_messages[!pass], immediate.=TRUE)
