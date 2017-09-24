@@ -270,7 +270,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   if (community.step == "individual_level" && working.model == TRUE) {
     if (!is.null(communityID)) { 
       IPTW <- aggregate(x = IPTW, by=list(newid = data[, communityID]), mean)
-      IPTW <- weighted.mean(IPTW[, "IPTW"], w = community.wts[match(IPTW[, "newid"], community.wts[, "id"]), "weights"])
+      IPTW <- weighted.mean(IPTW[, 2], w = community.wts[match(IPTW[, "newid"], community.wts[, "id"]), "weights"])
     } else {
       warningMesg <- c("Since individual-level TMLE with working.model requires communityID to aggregate data to the cluster-level in the end. ",
                        "Lack of 'communityID' forces the algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset.")
