@@ -87,7 +87,7 @@ calcParameters <- function(inputYs, alpha = 0.05, est_params_list, tmle_g_out, t
   nobs <- OData.ObsP0$nobs
   # If "perCommunity", still use the number of independent communities in variance calculation
   if (est_params_list$community.step %in% c("community_level", "individual_level", "perCommunity")) {
-    nobs <- length(unique(est_params_list$communityID)). 
+    nobs <- length(unique(est_params_list$communityID))
   }
   ests_mat <- tmle_g_out$ests_mat
   QY_mat <- tmle_g_out$QY_mat
