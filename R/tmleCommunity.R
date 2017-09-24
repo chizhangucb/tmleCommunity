@@ -213,8 +213,8 @@ get_est_sigmas <- function(estnames, obsYvals, est_params_list, obs.wts, ests_ma
   as.var_mat <- matrix(0, nrow = 3, ncol = 1)
   as.var_mat[, 1] <- c(var_iid.est[["iidIC_tmle"]], var_iid.est[["iidIC_iptw"]], var_iid.est[["iidIC_mle"]])
   rownames(as.var_mat) <- estnames; colnames(as.var_mat) <- "Var"
-  rownames(iidIC) <- sorted.communityID; colnames(iidIC) <- c("IC.tmle", "IC.iptw", "IC.gcomp")
-  return(list(as.var_mat = as.var_mat, IC = as.data.frame(iidIC)))
+  iidIC <- as.data.frame(iidIC); rownames(iidIC) <- sorted.communityID; colnames(iidIC) <- c("IC.tmle", "IC.iptw", "IC.gcomp")
+  return(list(as.var_mat = as.var_mat, IC = iidIC))
 }
 
 
