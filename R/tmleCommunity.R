@@ -190,32 +190,26 @@ get_est_sigmas <- function(estnames, obsYvals, est_params_list, obs.wts, ests_ma
   
   # TMLE inference based on the iid IC: (** Use QY.init not QY.star)
   iidIC_tmle <- h_wts * (obsYvals - QY.init) + fWi - ests_mat[rownames(ests_mat) %in% "TMLE",]
-  # var_iid.tmle <- mean((iidIC_tmle)^2)  # assume mean(iidIC_tmle) = 0
-  
-  # MLE inference based on the iid IC: (** Use QY.init not QY.star) *** NOT ACCURATE
+  # MLE inference based on the iid IC: (** Use QY.init not QY.star) *** NOT ACCURATE ***
   iidIC_mle <- h_wts * (obsYvals - QY.init) + fWi - ests_mat[rownames(ests_mat) %in% "MLE",]
-  # var_iid.mle <- mean((iidIC_mle)^2)  # assume mean(iidIC_mle) = 0
-  
   # IPTW h (based on the mixture density clever covariate (h)):
   iidIC_iptw <- h_wts * (obsYvals) - ests_mat[rownames(ests_mat) %in% "IPTW",]
-  # var_iid.iptw <- mean((iidIC_iptw)^2)  # assume mean(iidIC_iptw) = 0
   
-  if (community.step == "individual_level" && working.model == TRUE) { # if we believe our working model (i.e. if estimating under the submodel)
+  # if we believe our working model (i.e. if estimating under the submodel) or run TMLE for each community
+  if ((community.step == "individual_level" && working.model == TRUE) || community.step == "perCommunity") { 
     # if (!is.null(communityID)) {"iid IC cannnot be aggregated to the cluster-level since lack of 'communityID' so treated as non-hierarchical"}
-    iidIC_tmle <- aggregate(x = iidIC_tmle, by=list(newid = communityID), mean)
-    iidIC_mle <- aggregate(x = iidIC_mle, by=list(newid = communityID), mean)[, 2]
-    iidIC_iptw <- aggregate(x = iidIC_iptw, by=list(newid = communityID), mean)[, 2]
-    sorted.communityID <- iidIC_tmle[, 1]; iidIC_tmle <- iidIC_tmle[, 2]
-    obs.wts <- community.wts[match(sorted.communityID, community.wts[, "id"]), "weights"]
-    names(iidIC_tmle) <- names(iidIC_mle) <- names(iidIC_iptw) <- sorted.communityID
-    
-  } else if (community.step == "perCommunity") {
-    
+    iidIC <- data.table::data.table(iidIC_tmle, iidIC_mle, iidIC_iptw, obs.wts)
+    iidIC <- iidIC[, lapply(.SD, weighted.mean, w = obs.wts), by = communityID]
+    obs.wts <- community.wts[match(iidIC[["communityID"]], community.wts[, "id"]), "weights"]
+    iidIC <- iidIC[, !(colnames(iidIC) %in% c("obs.wts", "communityID")), with = FALSE]
+    # Alternative way to calculate:
+    # iidIC_tmle <- aggregate(x = iidIC_tmle, by=list(newid = communityID), mean), similarly to iidIC_mle, iidIC_iptw
+    # obs.wts <- community.wts[match(iidIC_tmle[, 1], community.wts[, "id"]), "weights"]
   }
-  var_iid.tmle <- Hmisc::wtd.var(iidIC_tmle, weights = obs.wts, normwt = T)
-  var_iid.mle <- Hmisc::wtd.var(iidIC_mle, weights = obs.wts, normwt = T)
-  var_iid.iptw <- Hmisc::wtd.var(iidIC_iptw, weights = obs.wts, normwt = T)
   
+  var_iid.est <- iidIC[, lapply(.SD, Hmisc::wtd.var, weights = obs.wts, normwt = T)]
+  # var_iid.tmle <- Hmisc::wtd.var(iidIC_tmle, weights = obs.wts, normwt = T), similarly to var_iid.mle, var_iid.iptw
+  # var_iid.tmle <- mean((iidIC_tmle)^2)  # the same as sum(iidIC_tmle^2) / length(iidIC_tmle) by assume mean(iidIC_tmle) = 0
   as.var_mat <- matrix(0, nrow = 3, ncol = 1)
   as.var_mat[, 1] <- c(var_iid.tmle, var_iid.iptw, var_iid.mle)
   rownames(as.var_mat) <- estnames; colnames(as.var_mat) <- "Var"
