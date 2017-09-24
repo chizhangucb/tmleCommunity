@@ -179,14 +179,17 @@ get_est_sigmas <- function(estnames, obsYvals, est_params_list, obs.wts, ests_ma
   
   if (community.step == "individual_level" && working.model == TRUE) { # if we believe our working model (i.e. if estimating under the submodel)
     if (!is.null(communityID)) { 
-      iidIC_tmle <- aggregate(x = iidIC_tmle, by=list(id = communityID), mean)[, 2]
-      iidIC_mle <- aggregate(x = iidIC_mle, by=list(id = communityID), mean)[, 2]
-      iidIC_iptw <- aggregate(x = iidIC_iptw, by=list(id = communityID), mean)[, 2]
-      obs.wts <- est_params_list$community.wts
-    } # else {
-      # warning("Though individual-level TMLE with working.model assumption, iid Inference curve cannnot be aggregated to the cluster-level 
-      #          since lack of 'communityID'. Thus the data is treated as non-hierarchical." )
-      # }
+      iidIC_tmle <- aggregate(x = iidIC_tmle, by=list(newid = communityID), mean)
+      iidIC_mle <- aggregate(x = iidIC_mle, by=list(newid = communityID), mean)[, 2]
+      iidIC_iptw <- aggregate(x = iidIC_iptw, by=list(newid = communityID), mean)[, 2]
+      sorted.communityID <- iidIC_tmle[, 1]; iidIC_tmle <- iidIC_tmle[, 2]
+      obs.wts <- community.wts[match(sorted.communityID, community.wts[, "id"]), "weights"]
+      names(iidIC_tmle) <- names(iidIC_mle) <- names(iidIC_iptw) <- sorted.communityID
+    } else {
+      warningMesg <- c("Though individual-level TMLE with working.model assumption, iid Inference curve cannnot be aggregated to ",
+                       "the cluster-level since lack of 'communityID'. Thus the data is treated as non-hierarchical.")
+      warning(warningMesg[1] %+% warningMesg[2])
+    }
   }
   var_iid.tmle <- Hmisc::wtd.var(iidIC_tmle, weights = obs.wts, normwt = T)
   var_iid.mle <- Hmisc::wtd.var(iidIC_mle, weights = obs.wts, normwt = T)
@@ -241,9 +244,9 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
       OData.ObsP0$addYnode(YnodeVals = data[, est_params_list$nodes$Ynode])  # Already bounded Y into Ystar in the beginning step               
       OData.ObsP0$addObsWeights(obs.wts = obs.wts)
     } else {
-      warningMesg <- c("Since individual-level TMLE with no working.model requires communityID to aggregate data to the cluster-level",
-                      "in the estimation of treatment mechanism. Lack of 'communityID' forces the algorithm to automatically ",
-                      "pool data over all communities and treat it as non-hierarchical dataset when fitting clever covariates.")
+      warningMesg <- c("Since individual-level TMLE with no working.model requires communityID to aggregate data to the cluster-level ",
+                       "in the estimation of treatment mechanism. Lack of 'communityID' forces the algorithm to automatically ",
+                       "pool data over all communities and treat it as non-hierarchical dataset when fitting clever covariates.")
       warning(warningMesg[1] %+% warningMesg[2] %+% warningMesg[3])
     }
   }
@@ -265,11 +268,11 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   # IPTW_unwt <- mean(IPTW)
   if (community.step == "individual_level" && working.model == TRUE) {
     if (!is.null(communityID)) { 
-      IPTW <- aggregate(x = IPTW, by=list(id = data[, communityID]), mean)
-      IPTW <- weighted.mean(IPTW[, "IPTW"], w = community.wts[match(IPTW[, "id"], community.wts[, "id"]), "weights"])
+      IPTW <- aggregate(x = IPTW, by=list(newid = data[, communityID]), mean)
+      IPTW <- weighted.mean(IPTW[, "IPTW"], w = community.wts[match(IPTW[, "newid"], community.wts[, "id"]), "weights"])
     } else {
-      warningMesg <-  c("Since individual-level TMLE with working.model requires communityID to aggregate data to the cluster-level in the end.",
-                        "Lack of 'communityID' forces the algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset.")
+      warningMesg <- c("Since individual-level TMLE with working.model requires communityID to aggregate data to the cluster-level in the end. ",
+                       "Lack of 'communityID' forces the algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset.")
       warning(warningMesg[1] %+% warningMesg[2])
     }
   } else {
