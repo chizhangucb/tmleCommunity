@@ -83,9 +83,9 @@ tmle.update <- function(TMLE.targetStep, Y, obs.wts, off, h_wts, subset, family)
 #-------------------------------------------------------------------------------------------
 calcParameters <- function(inputYs, alpha = 0.05, est_params_list, tmle_g_out, tmle_g2_out = NULL) {
   OData.ObsP0 <- tmle_g_out$OData.ObsP0
-  if (!is.null(communityID)) est_params_list$communityID <- OData.ObsP0$get.sVar(name.sVar = est_params_list$communityID)
   # If "perCommunity", still use the number of independent communities in variance calculation (aggregate IC by community first)
   if (est_params_list$community.step %in% c("community_level", "individual_level", "perCommunity")) {
+    est_params_list$communityID <- OData.ObsP0$get.sVar(name.sVar = est_params_list$communityID)
     nobs <- length(unique(est_params_list$communityID))
   } else {
     nobs <- OData.ObsP0$nobs
