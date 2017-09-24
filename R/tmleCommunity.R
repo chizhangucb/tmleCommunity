@@ -846,10 +846,10 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
     }
     
     # Reconstruct the results of substitution estsimators based on the combined matrices
-    tmle_gstar1.communties <- list(ests_mat = est.communities_gstar1, wts_mat = wts.communities_gstar1, 
-                                   fWi_mat = fWi.communities_gstar1, QY_mat = QY.communities_gstar1, obs.wts = obs.wts.communities)
+    tmle_gstar1.communities <- list(ests_mat = est.communities_gstar1, wts_mat = wts.communities_gstar1, fWi_mat = fWi.communities_gstar1, 
+                                   QY_mat = QY.communities_gstar1, obs.wts = obs.wts.communities)
     if (!is.null(f_gstar2)) {
-      tmle_gstar2.communties <- list(ests_mat = est.communities_gstar2, wts_mat = wts.communities_gstar2, 
+      tmle_gstar2.communities <- list(ests_mat = est.communities_gstar2, wts_mat = wts.communities_gstar2, 
                                      fWi_mat = fWi.communities_gstar2, QY_mat = QY.communities_gstar2, obs.wts = obs.wts.communities)
     }
     
@@ -861,14 +861,15 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
     OData.ObsP0 <- DatKeepClass$new(Odata = data, nodes = nodes, norm.c.sVars = FALSE)
     OData.ObsP0$addYnode(YnodeVals = inputYs$Ystar)
     OData.ObsP0$addObsWeights(obs.wts = obs.wts)
+    tmle_gstar1.communities$OData.ObsP0 <- tmle_gstar2.communities$OData.ObsP0 <- OData.ObsP0
     # **** Double check IC-based variance calculation with Prof Mark ****
-    EY_gstar1 <- calcParameters(inputYs = inputYs, alpha = CI_alpha, est_params_list = estinfo_list, tmle_g_out = tmle_gstar1.communties)
+    EY_gstar1 <- calcParameters(inputYs = inputYs, alpha = CI_alpha, est_params_list = estinfo_list, tmle_g_out = tmle_gstar1.communities)
     EY_gstar2 <- NULL
     ATE <- NULL	
     if (!is.null(f_gstar2)) {
-      EY_gstar2 <- calcParameters(inputYs = inputYs, alpha = CI_alpha, est_params_list = estinfo_list, tmle_g_out = tmle_gstar2.communties)
+      EY_gstar2 <- calcParameters(inputYs = inputYs, alpha = CI_alpha, est_params_list = estinfo_list, tmle_g_out = tmle_gstar2.communities)
       ATE <- calcParameters(inputYs = inputYs, alpha = CI_alpha, est_params_list = estinfo_list, 
-                            tmle_g_out = tmle_gstar1.communties, tmle_g2_out = tmle_gstar2.communties)
+                            tmle_g_out = tmle_gstar1.communties, tmle_g2_out = tmle_gstar2.communities)
     }
   }  
   tmleCommunity.res <- list(EY_gstar1 = EY_gstar1, EY_gstar2 = EY_gstar2, ATE = ATE)
