@@ -755,7 +755,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
     colnames(fWi.communities_gstar1) <- c("fWi_Qinit")
     QY.communities_gstar1  <- matrix(0L, nrow = 0, ncol = 2)
     colnames(QY.communities_gstar1) <- c("QY.init", "QY.star")
-    obs.wts.communities <- c()
+    obs.wts.communities <- c(); obs.wts.default <- obs.wts
     if (!is.null(f_gstar2)) { # Matrices for estimators under f_gstar2
       est.communities_gstar2 <- est.communities_gstar1
       wts.communities_gstar2 <- wts.communities_gstar1
@@ -770,12 +770,12 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
       
       ## Create an R6 object that stores and manages the subdata for each community, later passed on to estimation algorithm(s)
       subdata <- data[(data[, communityID] == communityList[i]), ]
-      sub.obs.wts <- obs.wts[data[, communityID] == communityList[i]]
+      obs.wts <- obs.wts.default[data[, communityID] == communityList[i]]
       inputYs <- CreateInputs(subdata[, Ynode], Qbounds, alpha, maptoYstar)
       subdata[, Ynode] <- inputYs$Ystar
       OData.ObsP0 <- DatKeepClass$new(Odata = subdata, nodes = nodes, norm.c.sVars = FALSE)
       OData.ObsP0$addYnode(YnodeVals = inputYs$Ystar)
-      OData.ObsP0$addObsWeights(obs.wts = sub.obs.wts)
+      OData.ObsP0$addObsWeights(obs.wts = obs.wts)
       nobs <- OData.ObsP0$nobs
       if (is.null(YnodeDet)) {
         determ.Q <- rep_len(FALSE, nobs)
@@ -810,7 +810,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
         community.step = community.step,
         working.model = working.model,
         TMLE.targetStep = TMLE.targetStep,
-        obs.wts = sub.obs.wts, 
+        obs.wts = obs.wts, 
         community.wts = community.wts,
         Qbounds = inputYs$Qbounds,
         lbound = lbound,
@@ -877,7 +877,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
     data[, Ynode] <- inputYs$Ystar
     OData.ObsP0 <- DatKeepClass$new(Odata = data, nodes = nodes, norm.c.sVars = FALSE)
     OData.ObsP0$addYnode(YnodeVals = inputYs$Ystar)
-    OData.ObsP0$addObsWeights(obs.wts = obs.wts)
+    OData.ObsP0$addObsWeights(obs.wts = obs.wts.default)
     tmle_gstar1.communities$OData.ObsP0 <- tmle_gstar2.communities$OData.ObsP0 <- OData.ObsP0
     
     # **** Double check IC-based variance calculation with Prof Mark ****
