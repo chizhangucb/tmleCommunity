@@ -555,7 +555,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
       community.wts <- as.vector(table(data[, communityID]))
     }
   }
-  if (is.character(community.step) && (community.step != "NoCommunity")) {
+  if (is.character(community.step) && (community.step != "NoCommunity") && !is.data.frame(community.wts)) {
     community.wts.mat <- as.data.frame(matrix(0L, nrow = length(unique(data[, communityID])), ncol = 2))
     colnames(community.wts.mat) <- c("id", "weights")
     community.wts.mat[, 1] <- names(table(data[, communityID]))
@@ -595,7 +595,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
   nodes <- list(Ynode = Ynode, Anodes = Anodes, WEnodes = WEnodes, communityID = communityID)
   for (i in unlist(nodes)) {  CheckVarNameExists(data = data, varname = i) }
   if (!CheckInputs(data, nodes, Qform, hform.g0, hform.gstar, fluctuation, Qbounds, obs.wts, community.wts)) stop()
-  colnames(community.wts.mat) <- c("id", "weights")  # ensure that the column names are defined as "id" and "weights"
+  colnames(community.wts) <- c("id", "weights")  # ensure that the column names are defined as "id" and "weights"
   maptoYstar <- fluctuation=="logistic"  # if TRUE, cont Y values shifted & scaled to fall b/t (0,1)
   
   #----------------------------------------------------------------------------------
@@ -741,13 +741,13 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
     #----------------------------------------------------------------------------------
     communityList <- unique(data[, communityID])
     est.communities_gstar1 <- matrix(0L, nrow = length(communityList), ncol = 3)
-    colnames(est.communities_gstar1) <- colnames(est.communities_gstar2) <- c("TMLE", "IPTW", "MLE")
-    wts.communities_gstar1 <- matrix(0L, nrow = NROW(data), ncol = 1)
+    colnames(est.communities_gstar1) <- c("TMLE", "IPTW", "MLE")
+    wts.communities_gstar1 <- fWi.communities_gstar1 <- matrix(0L, nrow = 0, ncol = 1)
     colnames(wts.communities_gstar1) <- c("h_wts")
-    fWi.communities_gstar1 <- matrix(0L, nrow = NROW(data), ncol = 1)
     colnames(fWi.communities_gstar1) <- c("fWi_Qinit")
-    QY.communities_gstar1  <- matrix(0L, nrow = NROW(data), ncol = 2)
+    QY.communities_gstar1  <- matrix(0L, nrow = 0, ncol = 2)
     colnames(QY.communities_gstar1) <- c("QY.init", "QY.star")
+    obs.wts.communities <- c()
     if (!is.null(f_gstar2)) { # Matrices for estimators under f_gstar2
       est.communities_gstar2 <- est.communities_gstar1
       wts.communities_gstar2 <- wts.communities_gstar1
@@ -760,20 +760,21 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
       message("Fitting TMLE on the " %+% i %+% "th community: " %+% communityList[i])
       
       ## Create an R6 object that stores and manages the subdata for each community, later passed on to estimation algorithm(s)
-      subdata <- data[(data[, communityID] == communityList[1]), ]
+      subdata <- data[(data[, communityID] == communityList[i]), ]
+      sub.obs.wts <- obs.wts[data[, communityID] == communityList[i]]
       inputYs <- CreateInputs(subdata[, Ynode], Qbounds, alpha, maptoYstar)
       subdata[, Ynode] <- inputYs$Ystar
       OData.ObsP0 <- DatKeepClass$new(Odata = subdata, nodes = nodes, norm.c.sVars = FALSE)
       OData.ObsP0$addYnode(YnodeVals = inputYs$Ystar)
-      OData.ObsP0$addObsWeights(obs.wts = obs.wts)
+      OData.ObsP0$addObsWeights(obs.wts = sub.obs.wts)
       nobs <- OData.ObsP0$nobs
       if (is.null(YnodeDet)) {
         determ.Q <- rep_len(FALSE, nobs)
       } else {
         determ.Q <- (data[, YnodeDet] == 1)
       }
-      if (length(unique(obs.wts)) > 1 && any(unlist(OData.ObsP0$type.sVar[Anodes]) != "binary")) {
-        warning("obs.wts are currently implemented on binary A. The results for non-binary A with weights may be unrealiable.")
+      if (length(unique(sub.obs.wts)) > 1 && any(unlist(OData.ObsP0$type.sVar[Anodes]) != "binary")) {
+        warning("sub.obs.wts are currently implemented on binary A. The results for non-binary A with weights may be unrealiable.")
       }
       
       #----------------------------------------------------------------------------------
@@ -794,13 +795,13 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
       # Create an list with model estimates, data & other information that is passed on to treatment estimation procedure
       #----------------------------------------------------------------------------------
       estinfo_list <- list(
-        data = data, 
+        data = subdata, 
         nodes = nodes,
         communityID = communityID,
         community.step = community.step,
         working.model = working.model,
         TMLE.targetStep = TMLE.targetStep,
-        obs.wts = obs.wts, 
+        obs.wts = sub.obs.wts, 
         community.wts = community.wts,
         lbound = lbound,
         merged.form = merged.form, 
@@ -832,19 +833,20 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
       # Store substitution estsimators for each corresponding community
       #----------------------------------------------------------------------------------
       est.communities_gstar1[i, ] <- tmle_gstar1_out$ests_mat[, 1]
-      wts.communities_gstar1[i, ] <- tmle_gstar1_out$wts_mat[, 1]
-      fWi.communities_gstar1[i, ] <- tmle_gstar1_out$fWi_mat[, 1]
-      QY.communities_gstar1[i, ] <- tmle_gstar1_out$QY_mat[, 1]
+      wts.communities_gstar1 <- rbind(wts.communities_gstar1, tmle_gstar1_out$wts_mat)
+      fWi.communities_gstar1 <- rbind(fWi.communities_gstar1, tmle_gstar1_out$fWi_mat)
+      QY.communities_gstar1<- rbind(QY.communities_gstar1, tmle_gstar1_out$QY_mat)
+      obs.wts.communities <- c(obs.wts.communities, tmle_gstar1_out$obs.wts)
       if (!is.null(f_gstar2)) {
         est.communities_gstar2[i, ] <- tmle_gstar2_out$ests_mat[, 1]
-        wts.communities_gstar2[i, ] <- tmle_gstar2_out$wts_mat[, 1]
-        fWi.communities_gstar2[i, ] <- tmle_gstar2_out$fWi_mat[, 1]
-        QY.communities_gstar2[i, ] <- tmle_gstar2_out$QY_mat[, 1]
+        wts.communities_gstar2 <- rbind(wts.communities_gstar2, tmle_gstar2_out$wts_mat)
+        fWi.communities_gstar2 <- rbind(fWi.communities_gstar2, tmle_gstar2_out$fWi_mat)
+        QY.communities_gstar2 <- rbind(QY.communities_gstar2, tmle_gstar2_out$QY_mat)
       }
       
-      
-      
-      
+      #----------------------------------------------------------------------------------
+      # Create output list (estimates, as. variances, CIs)
+      #----------------------------------------------------------------------------------
       
     }
   }  
