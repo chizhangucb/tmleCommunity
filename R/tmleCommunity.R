@@ -217,9 +217,10 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   determ.Q <- OData.ObsP0$det.Y
   model.Q.init <- est_params_list$model.Q.init
   
-  QY.init <- OData.ObsP0$noNA.Ynodevals # getting all node vals, inc. deterministic  
-  # predictions P(Y=1) for non-DET Y under orignal A
-  QY.init[!OData.ObsP0$det.Y] <- model.Q.init$predict(newdata = OData.ObsP0)$getprobA1[!OData.ObsP0$det.Y] 
+  # getting all node vals, including deterministic Y and predictions P(Y=1) for non-DET Y under orignal A
+  QY.init <- OData.ObsP0$noNA.Ynodevals 
+  QY.init[!OData.ObsP0$det.Y] <- model.Q.init$predict(newdata = OData.ObsP0)$getprobA1[!OData.ObsP0$det.Y]
+  QY.init <- bound(QY.init, Qbounds)
   off <- qlogis(QY.init)  # offset
   
   if (community.step == "individual_level" && working.model == FALSE) { # if we do NOT believe our working model (i.e. estimate under the lareg model)
@@ -692,6 +693,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
       TMLE.targetStep = TMLE.targetStep,
       obs.wts = obs.wts, 
       community.wts = community.wts,
+      Qbounds = inputYs$Qbounds,
       lbound = lbound,
       merged.form = merged.form, 
       model.Q.init = model.Q.init,
@@ -800,6 +802,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
         TMLE.targetStep = TMLE.targetStep,
         obs.wts = sub.obs.wts, 
         community.wts = community.wts,
+        Qbounds = inputYs$Qbounds,
         lbound = lbound,
         merged.form = merged.form, 
         model.Q.init = model.Q.init,
