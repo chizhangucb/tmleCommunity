@@ -83,11 +83,12 @@ tmle.update <- function(TMLE.targetStep, Y, obs.wts, off, h_wts, subset, family)
 #-------------------------------------------------------------------------------------------
 calcParameters <- function(inputYs, alpha = 0.05, est_params_list, tmle_g_out, tmle_g2_out = NULL) {
   OData.ObsP0 <- tmle_g_out$OData.ObsP0
-  est_params_list$communityID <- OData.ObsP0$get.sVar(name.sVar = est_params_list$communityID)
-  nobs <- OData.ObsP0$nobs
-  # If "perCommunity", still use the number of independent communities in variance calculation
+  if (!is.null(communityID)) est_params_list$communityID <- OData.ObsP0$get.sVar(name.sVar = est_params_list$communityID)
+  # If "perCommunity", still use the number of independent communities in variance calculation (aggregate IC by community first)
   if (est_params_list$community.step %in% c("community_level", "individual_level", "perCommunity")) {
     nobs <- length(unique(est_params_list$communityID))
+  } else {
+    nobs <- OData.ObsP0$nobs
   }
   df <- ifelse(nobs <= 40, (nobs - 2), NA)  # Use the Student's T distribution in place of the Std Normal if nobs < 41
   ests_mat <- tmle_g_out$ests_mat
@@ -200,19 +201,16 @@ get_est_sigmas <- function(estnames, obsYvals, est_params_list, obs.wts, ests_ma
   # var_iid.iptw <- mean((iidIC_iptw)^2)  # assume mean(iidIC_iptw) = 0
   
   if (community.step == "individual_level" && working.model == TRUE) { # if we believe our working model (i.e. if estimating under the submodel)
-    if (!is.null(communityID)) { 
-      iidIC_tmle <- aggregate(x = iidIC_tmle, by=list(newid = communityID), mean)
-      iidIC_mle <- aggregate(x = iidIC_mle, by=list(newid = communityID), mean)[, 2]
-      iidIC_iptw <- aggregate(x = iidIC_iptw, by=list(newid = communityID), mean)[, 2]
-      sorted.communityID <- iidIC_tmle[, 1]; iidIC_tmle <- iidIC_tmle[, 2]
-      obs.wts <- community.wts[match(sorted.communityID, community.wts[, "id"]), "weights"]
-      rownames(iidIC_tmle) <- rownames(iidIC_mle) <- rownames(iidIC_iptw) <- sorted.communityID
-    } else {
-      warningMesg <- c("Though individual-level TMLE with working.model assumption, iid Inference curve cannnot be aggregated to ",
-                       "the cluster-level since lack of 'communityID'. Thus the data is treated as non-hierarchical.")
-      warning(warningMesg[1] %+% warningMesg[2])
-    }
-  } else if (community.step == "perCommunity") 
+    # if (!is.null(communityID)) {"iid IC cannnot be aggregated to the cluster-level since lack of 'communityID' so treated as non-hierarchical"}
+    iidIC_tmle <- aggregate(x = iidIC_tmle, by=list(newid = communityID), mean)
+    iidIC_mle <- aggregate(x = iidIC_mle, by=list(newid = communityID), mean)[, 2]
+    iidIC_iptw <- aggregate(x = iidIC_iptw, by=list(newid = communityID), mean)[, 2]
+    sorted.communityID <- iidIC_tmle[, 1]; iidIC_tmle <- iidIC_tmle[, 2]
+    obs.wts <- community.wts[match(sorted.communityID, community.wts[, "id"]), "weights"]
+    rownames(iidIC_tmle) <- rownames(iidIC_mle) <- rownames(iidIC_iptw) <- sorted.communityID
+  } else if (community.step == "perCommunity") {
+    
+  }
   var_iid.tmle <- Hmisc::wtd.var(iidIC_tmle, weights = obs.wts, normwt = T)
   var_iid.mle <- Hmisc::wtd.var(iidIC_mle, weights = obs.wts, normwt = T)
   var_iid.iptw <- Hmisc::wtd.var(iidIC_iptw, weights = obs.wts, normwt = T)
@@ -246,33 +244,30 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   off <- qlogis(QY.init)  # offset
   
   if (community.step == "individual_level" && working.model == FALSE) { # if we do NOT believe our working model (i.e. estimate under the lareg model)
-    if (!is.null(communityID)) { 
-      # aggregate initial outcome predictions to the cluster-level
-      QY.init <- aggregate(x = QY.init, by=list(id = data[, communityID]), mean)[, 2]
-      off <- qlogis(QY.init)  # Recalculate offset based on aggregated initiate predictions
-      # aggregate original dataset to the cluster-level & redefine OData.ObsP0
-      Y <- aggregate(x = Y, by=list(id = data[, communityID]), mean)[, 2]
-      determ.Q <- rep_len(FALSE, length(Y))  # For aggregated data, YnodeDet is currently unavailable, treat all Y^c as nondeterministic
-      data <- aggregate(x = data, by=list(newid = data[, communityID]), mean) 
-      colname.allNA <- colnames(data)[colSums(is.na(data)) == NROW(data)]  # columns with all NAs after aggregation, due to non-numeric values
-      if (length(colname.allNA) != 0) {
-        data <- data[, - which(colnames(data) %in% colname.allNA)] # Remove columns that contain only NAs inside
-        names(data)[which(colnames(data) == "newid")] <- communityID  # change 'newid' back to the communityID name
-        warning(paste(colname.allNA, collapse = ', ') %+% " is(are) removed from the aggregated data due to all NAs in the column(s).")
-        warning("Suggestion: convert the non-numeric values to numeric, e.g., create dummy variables for each category/ string/ factor.")
-      }
-      est_params_list$data <- data
-      est_params_list$obs.wts <- obs.wts <- community.wts[match(data[, communityID], community.wts[, "id"]), "weights"]  # ensure matching
-      OData.ObsP0 <- DatKeepClass$new(Odata = data, nodes = nodes, norm.c.sVars = FALSE)
-      OData.ObsP0$addYnode(YnodeVals = data[, est_params_list$nodes$Ynode])  # Already bounded Y into Ystar in the beginning step               
-      OData.ObsP0$addObsWeights(obs.wts = obs.wts)
-    } else {
-      warningMesg <- c("Since individual-level TMLE with no working.model requires communityID to aggregate data to the cluster-level ",
-                       "in the estimation of treatment mechanism. Lack of 'communityID' forces the algorithm to automatically ",
-                       "pool data over all communities and treat it as non-hierarchical dataset when fitting clever covariates.")
-      warning(warningMesg[1] %+% warningMesg[2] %+% warningMesg[3])
+    # if (!is.null(communityID)) {}  # Don't need it here since tmleCommunity takes care of it
+    # Since individual-level TMLE with no working.model requires 'communityID' to aggregate data to the cluster-level in the estimation of 
+    # trt mechanism. Lack of 'communityID' pool data over all communities & treat it as non-hierarchical data when fitting clever covariates
+    
+    # aggregate initial outcome predictions to the cluster-level & Recalculate offset based on aggregated initiate predictions
+    QY.init <- aggregate(x = QY.init, by=list(id = data[, communityID]), mean)[, 2]
+    off <- qlogis(QY.init)  
+    # aggregate original dataset to the cluster-level & redefine OData.ObsP0
+    Y <- aggregate(x = Y, by=list(id = data[, communityID]), mean)[, 2] 
+    determ.Q <- rep_len(FALSE, length(Y))  # For aggregated data, YnodeDet is currently unavailable, treat all Y^c as nondeterministic
+    data <- aggregate(x = data, by=list(newid = data[, communityID]), mean) 
+    colname.allNA <- colnames(data)[colSums(is.na(data)) == NROW(data)]  # columns with all NAs after aggregation, due to non-numeric values
+    if (length(colname.allNA) != 0) {
+      data <- data[, - which(colnames(data) %in% colname.allNA)] # Remove columns that contain only NAs inside
+      names(data)[which(colnames(data) == "newid")] <- communityID  # change 'newid' back to the communityID name
+      warning(paste(colname.allNA, collapse = ', ') %+% " is(are) removed from the aggregated data due to all NAs in the column(s).")
+      warning("Suggestion: convert the non-numeric values to numeric, e.g., create dummy variables for each category/ string/ factor.")
     }
-  }
+    est_params_list$data <- data
+    est_params_list$obs.wts <- obs.wts <- community.wts[match(data[, communityID], community.wts[, "id"]), "weights"]  # ensure matching
+    OData.ObsP0 <- DatKeepClass$new(Odata = data, nodes = nodes, norm.c.sVars = FALSE)
+    OData.ObsP0$addYnode(YnodeVals = data[, est_params_list$nodes$Ynode])  # Already bounded Y into Ystar in the beginning step               
+    OData.ObsP0$addObsWeights(obs.wts = obs.wts)
+  } 
   
   #************************************************
   # Fitting h_gstar / h_gN clever covariate:
@@ -290,14 +285,11 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   IPTW[!determ.Q] <- Y[!determ.Q] * h_wts[!determ.Q]
   # IPTW_unwt <- mean(IPTW)
   if (community.step == "individual_level" && working.model == TRUE) {
-    if (!is.null(communityID)) { 
-      IPTW <- aggregate(x = IPTW, by=list(newid = data[, communityID]), mean)
-      IPTW <- weighted.mean(IPTW[, 2], w = community.wts[match(IPTW[, "newid"], community.wts[, "id"]), "weights"])
-    } else {
-      warningMesg <- c("Since individual-level TMLE with working.model requires communityID to aggregate data to the cluster-level in the end. ",
-                       "Lack of 'communityID' forces the algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset.")
-      warning(warningMesg[1] %+% warningMesg[2])
-    }
+    # if (!is.null(communityID)) {"IPTW cannnot be aggregated to the cluster-level since lack of 'communityID' so treated as non-hierarchical"}
+    newid <- data[, communityID])
+    IPTW <- Hmisc::summarize(x = IPTW, by = newid, FUN = weighted.mean, w = obs.wts)
+    # IPTW <- aggregate(x = IPTW, by=list(newid = data[, communityID]), mean)  # IPTW[, "newid"]
+    IPTW <- weighted.mean(IPTW[, 2], w = community.wts[match(newid, community.wts[, "id"]), "weights"])
   } else {
     IPTW <- weighted.mean(IPTW, w = obs.wts)
   }
@@ -601,10 +593,12 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
   if (!(community.step %in% c("NoCommunity", "community_level", "individual_level", "perCommunity"))) 
     stop("community.step argument must be one of 'NoCommunity', 'community_level', 'individual_level' and 'perCommunity'")
   if ((community.step %in% c("community_level", "individual_level", "perCommunity")) & is.null(communityID)) {
-    message("Lack of 'communityID' forces the algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset")
-    message("In other words, we simply treat community.step = 'NoCommunity' and working.model = FALSE")
-    community.step <- "NoCommunity"
-    working.model <- FALSE
+    messageMSg <- c("'communityID' is required when using 'community_level', 'individual_level' and 'perCommunity. '",
+                    "Lack of 'communityID' forces the algorithm to automatically pool data over all communities ",
+                    "and treat it as non-hierarchical dataset. Details in package documentation.\n",
+                    "In other words, we simply treat community.step = 'NoCommunity' and working.model = FALSE")
+    message(messageMSg[1] %+% messageMSg[2] %+% messageMSg[3] %+% messageMSg[4])
+    community.step <- "NoCommunity"; working.model <- FALSE
   } 
   if (!(community.wts %in% c("equal.community", "size.community")) && !is.data.frame(community.wts)) {
     stop("Currently only numeric values, 'equal.community' and 'size.community' are supported for community.wts")
@@ -637,21 +631,21 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
   
   ## Create data based on community.step, then based on Qform, hform.g0 and hform.gstar, in case of interaction or higher-order term.
   if (community.step == "community_level") { # if running entire TMLE algorithm at cluster-level, aggregate data now
-    if (!is.null(communityID)) {
-      data <- aggregate(x = data, by=list(newid = data[, communityID]), mean) # [, 2 : (ncol(data)+1)] # Don't keep the extra ID column
-      colname.allNA <- colnames(data)[colSums(is.na(data)) == NROW(data)]  # columns with all NAs after aggregation, due to non-numeric values
-      if (length(colname.allNA) != 0) {
-        data <- data[, -which(colnames(data) %in% colname.allNA)] # Remove columns that contain only NAs inside
-        names(data)[which(colnames(data) == "newid")] <- communityID  # change 'newid' back to the communityID name
-        warning(paste(colname.allNA, collapse = ', ') %+% " is(are) removed from the aggregated data due to all NAs in the column(s).")
-        warning("Suggestion: convert the non-numeric values to numeric, e.g., create dummy variables for each category/ string/ factor.")
-      }
-      obs.wts <- community.wts[match(data[, communityID], community.wts[, "id"]), "weights"]  # ensure that weights match with their corresponding communities
-    } else {
-      warningMesg <- c("Since community-level TMLE requires communityID to aggregate to the cluster-level. Lack of 'communityID' forces the ",
-                       "algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset")
-      warning(warningMesg[1] %+% warningMesg[2])
+    # if (!is.null(communityID)) {
+    data <- aggregate(x = data, by=list(newid = data[, communityID]), mean) # [, 2 : (ncol(data)+1)] # Don't keep the extra ID column
+    colname.allNA <- colnames(data)[colSums(is.na(data)) == NROW(data)]  # columns with all NAs after aggregation, due to non-numeric values
+    if (length(colname.allNA) != 0) {
+      data <- data[, -which(colnames(data) %in% colname.allNA)] # Remove columns that contain only NAs inside
+      names(data)[which(colnames(data) == "newid")] <- communityID  # change 'newid' back to the communityID name
+      warning(paste(colname.allNA, collapse = ', ') %+% " is(are) removed from the aggregated data due to all NAs in the column(s).")
+      warning("Suggestion: convert the non-numeric values to numeric, e.g., create dummy variables for each category/ string/ factor.")
     }
+    obs.wts <- community.wts[match(data[, communityID], community.wts[, "id"]), "weights"]  # ensure that weights match with their corresponding communities
+    # } else {
+    #   warningMesg <- c("Since community-level TMLE requires communityID to aggregate to the cluster-level. Lack of 'communityID' forces the ",
+    #                    "algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset")
+    #   warning(warningMesg[1] %+% warningMesg[2])
+    # }
   }
   
   if (!is.null(c(Qform, hform.g0, hform.gstar))) {
@@ -669,7 +663,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
   # Why to keep variables that are not indicated in the node list (i.e. Crossnodes): when creating A^* under g.star (delta function)  
   # it's possible to use variablas that are not used in Qform and gform. 
   
-  if (community.step %in% c("community_level", "individual_level")) {
+  if (community.step %in% c("NoCommunity", "community_level", "individual_level")) {
     ## Create an R6 object that stores and manages the input data, later passed on to estimation algorithm(s)
     inputYs <- CreateInputs(data[, Ynode], Qbounds, alpha, maptoYstar)
     data[, Ynode] <- inputYs$Ystar
