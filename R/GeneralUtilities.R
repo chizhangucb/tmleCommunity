@@ -67,7 +67,7 @@ CheckInputs <- function(data, nodes, Qform, hform.g0, hform.gstar, fluctuation, 
                           %+% paste0(datfactor, collapse=' , ') %+% "\n", 
                         "\t'obs.wts', must contain the same number of non-negative observations as 'data' does\n",
                         "\t'community.wts', must contain the same number of non-negative communities as 'data' does, and has 2 columns\n",
-                        "\t'community.wts', must contain the same community names as data doee, but could be in different order though\n"
+                        "\t'community.wts', must contain the same community names as data doee, but could be in different order though\n",
                         formwarns, termwarns, "\tfluctuation should be logistic or linear\n",
                         "\tQbounds should have length 2\n")
   if(!all(pass)) warning("\n", warning_messages[!pass], immediate.=TRUE)
