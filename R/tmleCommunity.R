@@ -529,17 +529,14 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' }
 #' @example tests/examples/3_tmleCommunity_examples.R
 #' @export
-tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communityID = NULL, working.model = FALSE, 
-                          community.wts = c("equal.community", "size.community"), obs.wts = c("equal.within.pop", "equal.within.com"), 
+tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts = c("equal.within.pop", "equal.within.community"), 
+                          communityID = NULL, working.model = FALSE, community.wts = c("equal.community", "size.community"), 
                           community.step = c("NoCommunity", "community_level", "individual_level", "perCommunity"), 
                           f_g0 = NULL, f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995,                                                      
                           fluctuation = "logistic", hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, 
                           h.g0_GenericModel = NULL, h.gstar_GenericModel = NULL, savetime.fit.hbars = TRUE, 
                           TMLE.targetStep = c("tmle.intercept", "tmle.covariate"),
-                          n_MCsims = 1, 
-                          CI_alpha = 0.05, 
-                          rndseed = NULL, 
-                          verbose = TRUE) {
+                          n_MCsims = 1, CI_alpha = 0.05, rndseed = NULL, verbose = TRUE) {
   if (!is.null(rndseed))  set.seed(rndseed)  # make stochastic intervention trackable
   gvars$verbose <- verbose
   message("Running tmleCommunity with the following settings from tmleCom_Options(): "); str(gvars$opts)
