@@ -212,7 +212,7 @@ get_est_sigmas <- function(estnames, obsYvals, est_params_list, obs.wts, ests_ma
                        "the cluster-level since lack of 'communityID'. Thus the data is treated as non-hierarchical.")
       warning(warningMesg[1] %+% warningMesg[2])
     }
-  }
+  } else if (community.step == "perCommunity") 
   var_iid.tmle <- Hmisc::wtd.var(iidIC_tmle, weights = obs.wts, normwt = T)
   var_iid.mle <- Hmisc::wtd.var(iidIC_mle, weights = obs.wts, normwt = T)
   var_iid.iptw <- Hmisc::wtd.var(iidIC_iptw, weights = obs.wts, normwt = T)
