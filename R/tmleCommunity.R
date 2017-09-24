@@ -82,8 +82,11 @@ tmle.update <- function(TMLE.targetStep, Y, obs.wts, off, h_wts, subset, family)
 # (or ATE if two tmle obj are passed) boot.var, n.boot
 #-------------------------------------------------------------------------------------------
 calcParameters <- function(inputYs, alpha = 0.05, est_params_list, tmle_g_out, tmle_g2_out = NULL) {
+  est_params_list$communityID <- OData.ObsP0$get.sVar(name.sVar = est_params_list$communityID)
   OData.ObsP0 <- tmle_g_out$OData.ObsP0
   nobs <- OData.ObsP0$nobs
+  # If "perCommunity", still use the number of independent communities in variance calculation
+  if (est_params_list$community.step == "perCommunity") nobs <- length(unique(est_params_list$communityID))
   ests_mat <- tmle_g_out$ests_mat
   QY_mat <- tmle_g_out$QY_mat
   fWi_mat <- tmle_g_out$fWi_mat
@@ -91,7 +94,7 @@ calcParameters <- function(inputYs, alpha = 0.05, est_params_list, tmle_g_out, t
   obs.wts <- tmle_g_out$obs.wts
   maptoYstar <- inputYs$maptoYstar
   ab <- inputYs$ab
-  est_params_list$communityID <- OData.ObsP0$get.sVar(name.sVar = est_params_list$communityID)
+
   
   if (!is.null(tmle_g2_out)) {
     ests_mat <- tmle_g_out$ests_mat - tmle_g2_out$ests_mat
