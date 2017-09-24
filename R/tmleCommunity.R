@@ -542,11 +542,15 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
   } else if (obs.wts == "equal.within.community") { # weigh each individual in each community equally
     community.wts <- as.vector(table(data[, communityID]))
   }
+  if (is.character(community.step) && (community.step != "NoCommunity")) {
+    community.wts <- matrix(0L, nrow = length(unique(data[, communityID])), ncol = 2)
+    colnames(community.wts) <- c("id", "weights")
+    community.wts[, 1] <- names(table(data[, communityID]))
+  }
   if (community.wts == "equal.community") { # weigh each community equally
-   community.wts <- matrix(0L, nrow = length(communityList), ncol = 2)
-     <- rep(1, length(unique(data[, communityID]))) 
+    community.wts[, 2]  <- rep(1, length(unique(data[, communityID]))) 
   } else if (community.wts == "size.community") { # weigh each community by its number of observations - The larger community has larger weight
-    community.wts <- as.vector(table(data[, communityID]))
+    community.wts[, 2] <- as.vector(table(data[, communityID]))
   } 
   if (!is.null(Qform) && !is.null(Ynode)) {
     Qform <- paste(Ynode, substring(Qform, first = as.numeric(gregexpr("~", Qform))))
@@ -610,8 +614,6 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, communi
         warning(paste(colname.allNA, collapse = ', ') %+% " is(are) removed from the aggregated data due to all NAs in the column(s).\n")
         warning("Suggestion: convert the non-numeric values to numeric, e.g., create dummy variables for each category/ string/ factor.")
       }
-      
-      # obs.wts <- rep(1, NROW(data))  # weights for aggregated data should be 1 
       obs.wts <- community.wts
     } else {
       warningMesg <- c("Since community-level TMLE requires communityID to aggregate to the cluster-level. Lack of 'communityID' forces the ",
