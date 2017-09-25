@@ -6,11 +6,11 @@
 # -------------------------------------------------------------------------------------------------------
 
 get.cluster.dat.Acont <- function(id, n.ind = 1000, rndseed = NULL, is.Y.bin = T, truncBD = 5, shift.val = 1, 
-                                  working.model = T, timevarying = F) {
+                                  working.model = T, timevarying = T) {
   set.seed(rndseed)
   # Construct community-level & individual-level baseline covariates E, W 
   E1 <- runif(n = 1, min = 0, max = 1)
-  E2 <- sample(x = c(0, 0.25, 0.75, 1), size = 1)
+  E2 <- sample(x = c(0.2, 0.4, 0.6, 0.8), size = 1)
   W1 <- rbinom(n = n.ind, size = 1, prob = plogis(- 0.4 + 1.2 * E1 - 1.3 * E2))
   UW2 <- MASS::mvrnorm(n = n.ind, mu = rep(0, 2), Sigma = matrix(c(1, 0.6, 0.6, 1), ncol = 2))
   W2 <- 0.8 * E1 - 0.4 * E2 + 1 * UW2[, 1] 
@@ -39,9 +39,9 @@ get.cluster.dat.Acont <- function(id, n.ind = 1000, rndseed = NULL, is.Y.bin = T
   } else {  # when working.model fails
     if (is.Y.bin) {
       Y <- rbinom(n = n.ind, size = 1, 
-                  prob = plogis(- 2 + 1 * A + 0.3 * E1 + 1.1 * E2 - 0.4 * W1 + 0.1 * W2 + 1.8 * mean(W1) + 2 * mean(W2)) + 3 * mean(W3))
-      Y.gstar <- rbinom(n = n.ind, size = 1, prob = plogis(- 2 + 1 * trunc.A.gstar + 0.3 * E1 + 1.1 * E2 - 0.4 * W1 +
-                                                             0.1 * W2 + 1.8 * mean(W1) + 2 * mean(W2)) + 3 * mean(W3))
+                  prob = plogis(- 5 + 1 * A - 0.2 * E1 + 1.1 * E2 - 0.4 * W1 + 0.1 * W2 + 1.8 * mean(W1) + 2 * mean(W2) + 3 * mean(W3)))
+      Y.gstar <- rbinom(n = n.ind, size = 1, prob = plogis(- 5 + 1 * trunc.A.gstar - 0.2 * E1 + 1.1 * E2 - 0.4 * W1 + 
+                                                             0.1 * W2 + 1.8 * mean(W1) + 2 * mean(W2) + 3 * mean(W3)))
     } else {
       # finishing ....
     }
@@ -75,15 +75,16 @@ rndseed <- 12345
 truncBD <- 5
 shift.val <- 1
 
-#### Data 1. One A with Binary Y, when working model holds & A is time-varying
-popDat.wmT.tvcontA.binY <- get.fullDat.Acont(J = 10000, n.ind = n.ind, rndseed = rndseed, truncBD = truncBD, shift.val = shift.val, 
-                                             is.Y.bin = TRUE, working.model = TRUE, timevarying = TRUE, n.ind.fix = FALSE)
-psi0.Y <- mean(popDat.wmT.tvcontA.binY$Y)  # 
-psi0.Ygstar <- mean(popDat.wmT.tvcontA.binY$Y.gstar)  # 
-dat_com.wmT.tvcontA.binY <- get.fullDat.Acont(J = J, n.ind = n.ind, rndseed = rndseed, truncBD = truncBD, shift.val = shift.val, 
-                                              is.Y.bin = TRUE, working.model = TRUE, timevarying = TRUE, n.ind.fix = FALSE)
-sampleDat_com.wmT.tvcontA.binY <- list(dat_com.wmT.tvcontA.binY = dat_com.wmT.tvcontA.binY, psi0.Y = psi0.Y, psi0.Ygstar = psi0.Ygstar,
+#### Data 1. One A with Binary Y, when working model fails & A is time-varying
+popDat.wmF.tvcontA.binY <- get.fullDat.Acont(J = 2000, n.ind = n.ind, rndseed = rndseed, truncBD = truncBD, shift.val = shift.val, 
+                                             is.Y.bin = TRUE, working.model = FALSE, timevarying = TRUE, n.ind.fix = FALSE)
+psi0.Y <- mean(popDat.wmF.tvcontA.binY$Y)  # 0.3454371
+psi0.Ygstar <- mean(popDat.wmF.tvcontA.binY$Y.gstar)  # 0.3897471
+dat_com.wmF.tvcontA.binY <- get.fullDat.Acont(J = J, n.ind = n.ind, rndseed = rndseed, truncBD = truncBD, shift.val = shift.val, 
+                                              is.Y.bin = TRUE, working.model = FALSE, timevarying = TRUE, n.ind.fix = FALSE)
+sampleDat_com.wmF.tvcontA.binY <- list(dat_com.wmF.tvcontA.binY = dat_com.wmF.tvcontA.binY, psi0.Y = psi0.Y, psi0.Ygstar = psi0.Ygstar,
                                        truncBD = truncBD, shift.val = shift.val, rndseed = rndseed)
-save(sampleDat_com.wmT.tvcontA.binY, file = "sampleDat_com.wmT.tvcontA.binY.Rda")
+save(sampleDat_com.wmF.tvcontA.binY, file = "sampleDat_com.wmF.tvcontA.binY.Rda")
 
+#### Data 2. One A with Binary Y, when working model holds & A is time-varying
 
