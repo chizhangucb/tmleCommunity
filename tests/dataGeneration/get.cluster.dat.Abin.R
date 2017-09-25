@@ -32,6 +32,6 @@ get.cluster.dat.Abin <- function(id, n.incluster = 10000, rndseed = NULL, is.Y.b
       # finishing ....
     }
   }
-  return(data.frame(cbind(id = id, E1 = E1, E2 = E2, W1 = W1, W2 = W2, A = A, Y = Y, Y1 = Y1, Y0 = Y0)))
+  return(data.frame(cbind(id, E1, E2, W1, W2, A, Y, Y1, Y0)))
 }
 
