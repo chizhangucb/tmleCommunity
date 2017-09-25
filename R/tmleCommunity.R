@@ -878,7 +878,8 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
     OData.ObsP0 <- DatKeepClass$new(Odata = data, nodes = nodes, norm.c.sVars = FALSE)
     OData.ObsP0$addYnode(YnodeVals = inputYs$Ystar)
     OData.ObsP0$addObsWeights(obs.wts = obs.wts)
-    tmle_gstar1.communities$OData.ObsP0 <- tmle_gstar2.communities$OData.ObsP0 <- OData.ObsP0
+    tmle_gstar1.communities$OData.ObsP0 <- OData.ObsP0
+    if (!is.null(f_gstar2)) { tmle_gstar2.communities$OData.ObsP0 <- OData.ObsP0 }
     
     # **** Double check IC-based variance calculation with Prof Mark ****
     EY_gstar1 <- calcParameters(inputYs = inputYs, alpha = CI_alpha, est_params_list = estinfo_list, tmle_g_out = tmle_gstar1.communities)
