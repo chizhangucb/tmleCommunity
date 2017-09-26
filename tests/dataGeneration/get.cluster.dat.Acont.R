@@ -69,22 +69,22 @@ get.fullDat.Acont <- function(J, n.ind, rndseed = NULL, is.Y.bin = TRUE, truncBD
   return(full.data)
 }
 
-J <- 1000
-n.ind <- 100
-rndseed <- 12345
-truncBD <- 5
-shift.val <- 1
+# J <- 1000
+# n.ind <- 100
+# rndseed <- 12345
+# truncBD <- 5
+# shift.val <- 1
 
 #### Data 1. One A with Binary Y, when working model fails & A is time-varying
-popDat.wmF.tvcontA.binY <- get.fullDat.Acont(J = 2000, n.ind = n.ind, rndseed = rndseed, truncBD = truncBD, shift.val = shift.val, 
-                                             is.Y.bin = TRUE, working.model = FALSE, timevarying = TRUE, n.ind.fix = FALSE)
-psi0.Y <- mean(popDat.wmF.tvcontA.binY$Y)  # 0.3454371
-psi0.Ygstar <- mean(popDat.wmF.tvcontA.binY$Y.gstar)  # 0.3897471
-dat_com.wmF.tvcontA.binY <- get.fullDat.Acont(J = J, n.ind = n.ind, rndseed = rndseed, truncBD = truncBD, shift.val = shift.val, 
-                                              is.Y.bin = TRUE, working.model = FALSE, timevarying = TRUE, n.ind.fix = FALSE)
-sampleDat_com.wmF.tvcontA.binY <- list(dat_com.wmF.tvcontA.binY = dat_com.wmF.tvcontA.binY, psi0.Y = psi0.Y, psi0.Ygstar = psi0.Ygstar,
-                                       truncBD = truncBD, shift.val = shift.val, rndseed = rndseed)
-save(sampleDat_com.wmF.tvcontA.binY, file = "sampleDat_com.wmF.tvcontA.binY.Rda")
+# popDat.wmF.tvcontA.binY <- get.fullDat.Acont(J = 2000, n.ind = n.ind, rndseed = rndseed, truncBD = truncBD, shift.val = shift.val, 
+#                                              is.Y.bin = TRUE, working.model = FALSE, timevarying = TRUE, n.ind.fix = FALSE)
+# psi0.Y <- mean(popDat.wmF.tvcontA.binY$Y)  # 0.3454371
+# psi0.Ygstar <- mean(popDat.wmF.tvcontA.binY$Y.gstar)  # 0.3897471
+# dat_com.wmF.tvcontA.binY <- get.fullDat.Acont(J = J, n.ind = n.ind, rndseed = rndseed, truncBD = truncBD, shift.val = shift.val, 
+#                                               is.Y.bin = TRUE, working.model = FALSE, timevarying = TRUE, n.ind.fix = FALSE)
+# sampleDat_com.wmF.tvcontA.binY <- list(dat_com.wmF.tvcontA.binY = dat_com.wmF.tvcontA.binY, psi0.Y = psi0.Y, psi0.Ygstar = psi0.Ygstar,
+#                                        truncBD = truncBD, shift.val = shift.val, rndseed = rndseed)
+# save(sampleDat_com.wmF.tvcontA.binY, file = "sampleDat_com.wmF.tvcontA.binY.Rda")
 
 #### Data 2. One A with Binary Y, when working model holds & A is time-varying
 
