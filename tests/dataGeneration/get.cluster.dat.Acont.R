@@ -76,7 +76,7 @@ get.fullDat.Acont <- function(J, n.ind, rndseed = NULL, is.Y.bin = TRUE, truncBD
       full.data <- rbind(full.data, cluster.data.j)
     }
   }  
-  ifelse(OnlyYkeep, return(data.frame(cbind(Y, Y.gstar))), return(full.data))
+  ifelse(onlyYkeep, return(data.frame(cbind(Y, Y.gstar))), return(full.data))
 }
 
 # J <- 1000
