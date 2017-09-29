@@ -14,7 +14,7 @@ get.cluster.dat.Acont <- function(id, n.ind = 1000, rndseed = NULL, is.Y.bin = T
   W1 <- rbinom(n = n.ind, size = 1, prob = plogis(- 0.4 + 1.2 * E1 - 1.3 * E2))
   UW2 <- MASS::mvrnorm(n = n.ind, mu = rep(0, 2), Sigma = matrix(c(1, 0.6, 0.6, 1), ncol = 2))
   W2 <- 0.8 * E1 - 0.4 * E2 + 1 * UW2[, 1] 
-  W3 <- rbinom(n = n.ind, size = 1, prob = 0.5)
+  W3 <- rpois(n = n.ind, lambda = 4)
   
   # Construct continuous exposure; time-varying within community if timevarying = T
   if (timevarying) { # A is time-varying within community 
@@ -49,8 +49,8 @@ get.cluster.dat.Acont <- function(id, n.ind = 1000, rndseed = NULL, is.Y.bin = T
   return(data.frame(cbind(id, E1, E2, W1, W2, W3, A, trunc.A.gstar, Y, Y.gstar)))
 }
 
-get.fullDat.Acont <- function(J, n.ind, rndseed = NULL, is.Y.bin = TRUE, truncBD = 5, shift.val = 1, 
-                              working.model = TRUE, timevarying = TRUE, n.ind.fix = FALSE, verbose = TRUE) {
+get.fullDat.Acont <- function(J, n.ind, rndseed = NULL, is.Y.bin = TRUE, truncBD = 5, shift.val = 1, working.model = TRUE, 
+                             timevarying = TRUE, n.ind.fix = FALSE, onlyYkeep = FALSE, verbose = TRUE) {
   set.seed(rndseed)
   if (n.ind.fix) {
     n.ind <- rep(n.ind, J)
@@ -59,14 +59,24 @@ get.fullDat.Acont <- function(J, n.ind, rndseed = NULL, is.Y.bin = TRUE, truncBD
     n.ind[n.ind <= 0] <- n.ind  # set to n.ind if any generated number less than 1
   }
   
-  full.data <- NULL
-  for(j in 1:J){
+  if (onlyYkeep) {
+    message("Only the unshifted & shifted outcomes are useful, only just keep these two")
+    Y <- Y.gstar <- NULL
+  } else {
+    full.data <- NULL
+  }
+  
+  for(j in 1:J) {
     if (verbose) message("#### generating " %+% j %+% "th cluster ####")
     cluster.data.j <- get.cluster.dat.Acont(id = j, n.ind = n.ind[j], rndseed = NULL, is.Y.bin = is.Y.bin, truncBD = truncBD, 
                                             shift.val = shift.val, working.model = working.model, timevarying = timevarying) 
-    full.data <- rbind(full.data, cluster.data.j)
-  }
-  return(full.data)
+    if (onlyYkeep) {
+      Y <- c(Y, cluster.data.j[, "Y"]); Y.gstar <- c(Y.gstar, cluster.data.j[, "Y.gstar"]) 
+    } else {
+      full.data <- rbind(full.data, cluster.data.j)
+    }
+  }  
+  ifelse(OnlyYkeep, return(data.frame(cbind(Y, Y.gstar))), return(full.data))
 }
 
 # J <- 1000
