@@ -89,8 +89,8 @@ shift.val <- 1
 #### Data 1. One continuous, time-varying A with Binary Y, when working model fails
 popDat.wmF.tvcontA.binY <- get.fullDat.Acont(J = 4000, n.ind = 4000, rndseed = NULL, truncBD = truncBD, shift.val = shift.val, 
                                              is.Y.bin = TRUE, working.model = FALSE, timevarying = TRUE, n.ind.fix = FALSE, onlyYkeep = T)
-psi0.Y <- mean(popDat.wmF.tvcontA.binY$Y)  # 
-psi0.Ygstar <- mean(popDat.wmF.tvcontA.binY$Y.gstar)  # 
+psi0.Y <- mean(popDat.wmF.tvcontA.binY$Y)  # 0.2472083
+psi0.Ygstar <- mean(popDat.wmF.tvcontA.binY$Y.gstar)  # 0.3123667
 dat_com.wmF.tvcontA.binY <- get.fullDat.Acont(J = J, n.ind = n.ind, rndseed = rndseed, truncBD = truncBD, shift.val = shift.val, 
                                               is.Y.bin = TRUE, working.model = FALSE, timevarying = TRUE, n.ind.fix = FALSE)
 sampleDat_com.wmF.tvcontA.binY <- list(dat_com.wmF.tvcontA.binY = dat_com.wmF.tvcontA.binY, psi0.Y = psi0.Y, psi0.Ygstar = psi0.Ygstar,
