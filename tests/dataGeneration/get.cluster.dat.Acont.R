@@ -86,7 +86,7 @@ rndseed <- 12345
 truncBD <- 5
 shift.val <- 1
 
-#### Data 1. One A with Binary Y, when working model fails & A is time-varying
+#### Data 1. One continuous, time-varying A with Binary Y, when working model fails
 popDat.wmF.tvcontA.binY <- get.fullDat.Acont(J = 4000, n.ind = 4000, rndseed = NULL, truncBD = truncBD, shift.val = shift.val, 
                                              is.Y.bin = TRUE, working.model = FALSE, timevarying = TRUE, n.ind.fix = FALSE, onlyYkeep = T)
 psi0.Y <- mean(popDat.wmF.tvcontA.binY$Y)  # 0.2406796
@@ -97,5 +97,13 @@ sampleDat_com.wmF.tvcontA.binY <- list(dat_com.wmF.tvcontA.binY = dat_com.wmF.tv
                                        truncBD = truncBD, shift.val = shift.val, rndseed = rndseed)
 save(sampleDat_com.wmF.tvcontA.binY, file = "sampleDat_com.wmF.tvcontA.binY.Rda")
 
-#### Data 2. One A with Binary Y, when working model holds & A is time-varying
-
+#### Data 2. One continuous, time-varying A with Binary Y, when working model holds
+popDat.wmT.tvcontA.binY <- get.fullDat.Acont(J = 4000, n.ind = 4000, rndseed = NULL, truncBD = truncBD, shift.val = shift.val, 
+                                             is.Y.bin = TRUE, working.model = TRUE, timevarying = TRUE, n.ind.fix = FALSE, onlyYkeep = T)
+psi0.Y <- mean(popDat.wmT.tvcontA.binY$Y)  # 0.2406796
+psi0.Ygstar <- mean(popDat.wmT.tvcontA.binY$Y.gstar)  # 0.2964227
+dat_com.wmT.tvcontA.binY <- get.fullDat.Acont(J = J, n.ind = n.ind, rndseed = rndseed, truncBD = truncBD, shift.val = shift.val, 
+                                              is.Y.bin = TRUE, working.model = TRUE, timevarying = TRUE, n.ind.fix = FALSE)
+sampleDat_com.wmT.tvcontA.binY <- list(dat_com.wmT.tvcontA.binY = dat_com.wmT.tvcontA.binY, psi0.Y = psi0.Y, psi0.Ygstar = psi0.Ygstar,
+                                       truncBD = truncBD, shift.val = shift.val, rndseed = rndseed)
+save(sampleDat_com.wmT.tvcontA.binY, file = "sampleDat_com.wmT.tvcontA.binY.Rda")
