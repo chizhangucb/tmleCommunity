@@ -24,9 +24,9 @@ define_f.gstar <- function(shift.val, truncBD, rndseed = NULL) {
   f.gstar <- function(data, ...) {
     print("shift.const: " %+% shift.const)
     set.seed(rndseed)
-    A.mu <- - 1.2  + 0.8 * data[,"E1"] + 0.21 * data[,"E2"] + 3 * data[,"W1"] - 0.7 * data[,"W2"] + 1.3 * data[,"W3"]
+    A.mu <- - 1.2  + 0.8 * data[,"E1"] + 0.21 * data[,"E2"] + 3 * data[,"W1"] - 0.7 * data[,"W2"] + 0.3 * data[,"W3"]
     untrunc.A <- rnorm(n = nrow(data), mean = A.mu + shift.const, sd = 1)
-    r.new.A <- exp(2.8 * shift.const * (untrunc.A - A.mu - shift.const / 10))
+    r.new.A <- exp(1.5 * shift.const * (untrunc.A - A.mu - shift.const / 4))
     trunc.A <- ifelse(r.new.A > trunc.const, untrunc.A - shift.const, untrunc.A)
     return(trunc.A)
   }
