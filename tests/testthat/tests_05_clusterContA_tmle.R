@@ -46,7 +46,7 @@ bootstrap.TMLE <- function(nBoot, J, n.ind, truncBD, shift.val, nbins = 5, Qesti
   var_tmle1a <- var_tmle1b <- var_tmle2 <- var_tmlePer <- NULL
   CI_tmle1a <- CI_tmle1b <- CI_tmle2 <- CI_tmlePer <- NULL
   pval_tmle1a <- pval_tmle1b <- pval_tmle2 <- pval_tmlePer <- NULL
-  error_1a <- error_1b <- error_2 <- error_Per <- 0
+  error_dat <- error_1a <- error_1b <- error_2 <- error_Per <- 0
   
   set.seed(rndseed)
   r <- 1
@@ -56,8 +56,9 @@ bootstrap.TMLE <- function(nBoot, J, n.ind, truncBD, shift.val, nbins = 5, Qesti
     message("##################################################################\n")
     
     # Generate a sample of hierarchical data, when working.model fails
-    data <- get.fullDat.Acont(J = J, n.ind = n.ind, rndseed = NULL, truncBD = truncBD, shift.val = shift.val, 
-                              is.Y.bin = TRUE, working.model = working.model, timevarying = TRUE, n.ind.fix = FALSE)
+    data <- try(get.fullDat.Acont(J = J, n.ind = n.ind, rndseed = NULL, truncBD = truncBD, shift.val = shift.val, 
+                                  is.Y.bin = TRUE, working.model = working.model, timevarying = TRUE, n.ind.fix = FALSE))
+    if (inherits(data, "try-error")) { error_dat <- error_dat + 1; next } # skip iterations with errors
     
     tmleCom_Options(Qestimator = Qestimator, gestimator = gestimator, maxNperBin = nrow(data), nbins = nbins)
     
@@ -112,7 +113,7 @@ bootstrap.TMLE <- function(nBoot, J, n.ind, truncBD, shift.val, nbins = 5, Qesti
               var_tmle1a = var_tmle1a, var_tmle1b = var_tmle1b, var_tmle2 = var_tmle2, var_tmlePer = var_tmlePer,
               CI_tmle1a = CI_tmle1a, CI_tmle1b = CI_tmle1b, CI_tmle2 = CI_tmle2, CI_tmlePer = CI_tmlePer,
               pval_tmle1a = pval_tmle1a, pval_tmle1b = pval_tmle1b, pval_tmle2 = pval_tmle2, pval_tmlePer = pval_tmlePer,
-              error = c(error_1a, error_1b, error_2, error_Per)))
+              error = c(error_dat, error_1a, error_1b, error_2, error_Per)))
 }
 
 # Want to test combination of J = c(30, 300, 500, 1000) and n = c(30, 300, 500) whne conducting 1000 simulations
