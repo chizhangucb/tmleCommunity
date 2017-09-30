@@ -192,14 +192,14 @@ tmle.wmT.Qc.gm.J1000.n300.T <-
                                                           lbound = 0.025, working.model = TRUE, Qform = Qform.corr, gform = gform.mis, rndseed = 1))
 save(tmle.wmT.Qc.gm.J1000.n300, tmle.wmT.Qc.gm.J1000.n300.T, file = "tmle.wmT.Qc.gm.J1000.n300.Rda")
 
-## Test 1.1.1.5 The number of communities = 300 & the number of individual per community = 500
+## Test 1.1.2.5 The number of communities = 300 & the number of individual per community = 500
 tmle.wmT.Qc.gm.J300.n500.T <- 
   system.time(tmle.wmT.Qc.gm.J300.n500 <- bootstrap.TMLE(nBoot = 200, J = 300, n.ind = 500, truncBD = truncBD, shift.val = shift.val, nbins = 5,
                                                          Qestimator = "speedglm__glm", gestimator = "speedglm__glm", f.gstar = f.gstar, 
                                                          lbound = 0.025, working.model = TRUE, Qform = Qform.corr, gform = gform.mis, rndseed = 1))
 save(tmle.wmT.Qc.gm.J300.n500, tmle.wmT.Qc.gm.J300.n500.T, file = "tmle.wmT.Qc.gm.J300.n500.Rda")
 
-## Test 1.1.1.6 The number of communities = 500 & the number of individual per community = 500
+## Test 1.1.2.6 The number of communities = 500 & the number of individual per community = 500
 tmle.wmT.Qc.gm.J500.n500.T <-
   system.time(tmle.wmT.Qc.gm.J500.n500 <- bootstrap.TMLE(nBoot = 200, J = 500, n.ind = 500, truncBD = truncBD, shift.val = shift.val, nbins = 5,
                                                          Qestimator = "speedglm__glm", gestimator = "speedglm__glm", f.gstar = f.gstar, 
