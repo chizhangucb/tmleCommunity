@@ -123,10 +123,11 @@ bootstrap.TMLE <- function(nBoot, J, n.ind, truncBD, shift.val, nbins = 5, Qesti
 #######################################################
 ## Test 1.1.1 Correctly specified Qform & gform
 ## Test 1.1.1.1 The number of communities = 30 & the number of individual per community = 30
-tmle.wmT.Qc.gc.J30.n30 <- bootstrap.TMLE(nBoot = 200, J = 30, n.ind = 30, truncBD = truncBD, shift.val = shift.val, nbins = 5,
-                                         Qestimator = "speedglm__glm", gestimator = "speedglm__glm", f.gstar = f.gstar, 
-                                         lbound = 0.025, working.model = TRUE, Qform = Qform.corr, gform = gform.corr, rndseed = 1)
-save(tmle.wmT.Qc.gc.J30.n30, file = "tmle.wmT.Qc.gc.J30.n30.Rda")
+tmle.wmT.Qc.gc.J30.n30.T <- 
+  system.time(tmle.wmT.Qc.gc.J30.n30 <- bootstrap.TMLE(nBoot = 200, J = 30, n.ind = 30, truncBD = truncBD, shift.val = shift.val, nbins = 5,
+                                                       Qestimator = "speedglm__glm", gestimator = "speedglm__glm", f.gstar = f.gstar, 
+                                                       lbound = 0.025, working.model = TRUE, Qform = Qform.corr, gform = gform.corr, rndseed = 1))
+save(tmle.wmT.Qc.gc.J30.n30, tmle.wmT.Qc.gc.J30.n30.T, file = "tmle.wmT.Qc.gc.J30.n30.Rda")
 
 ## Test 1.1.1.2 The number of communities = 300 & the number of individual per community = 300
 tmle.wmT.Qc.gc.J300.n300.T <- 
@@ -242,7 +243,7 @@ tmle.wmT.Qm.gc.J300.n500.T <-
                                                          lbound = 0.025, working.model = TRUE, Qform = Qform.mis, gform = gform.corr, rndseed = 1))
 save(tmle.wmT.Qm.gc.J300.n500, tmle.wmT.Qm.gc.J300.n500.T, file = "tmle.wmT.Qm.gc.J300.n500.Rda")
 
-## Test 1.1.1.6 The number of communities = 500 & the number of individual per community = 500
+## Test 1.1.3.6 The number of communities = 500 & the number of individual per community = 500
 tmle.wmT.Qm.gc.J500.n500.T <- 
   system.time(tmle.wmT.Qm.gc.J500.n500 <- bootstrap.TMLE(nBoot = 200, J = 500, n.ind = 500, truncBD = truncBD, shift.val = shift.val, nbins = 5,
                                                          Qestimator = "speedglm__glm", gestimator = "speedglm__glm", f.gstar = f.gstar, 
