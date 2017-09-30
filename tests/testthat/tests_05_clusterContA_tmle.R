@@ -35,7 +35,7 @@ define_f.gstar <- function(shift.val, truncBD, rndseed = NULL) {
 f.gstar <- define_f.gstar(shift = shift.val, truncBD = truncBD, rndseed = NULL)
 
 Qform.corr <- "Y ~ E1 + E2 + W1 + W2 + W3 + A" # correct Q
-Qform.mis <- "Y ~ E1 + A" # incorrect Q
+Qform.mis <- "Y ~ E1 + W1" # incorrect Q
 gform.corr <- "A ~ E1 + E2 + W1 + W2 + W3"  # correct g
 gform.mis <- "A ~ E1 + W3"  # incorrect g
 
