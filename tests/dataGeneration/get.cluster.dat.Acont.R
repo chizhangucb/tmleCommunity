@@ -100,8 +100,8 @@ save(sampleDat_com.wmF.tvcontA.binY, file = "sampleDat_com.wmF.tvcontA.binY.Rda"
 #### Data 2. One continuous, time-varying A with Binary Y, when working model holds
 popDat.wmT.tvcontA.binY <- get.fullDat.Acont(J = 4000, n.ind = 4000, rndseed = NULL, truncBD = truncBD, shift.val = shift.val, 
                                              is.Y.bin = TRUE, working.model = TRUE, timevarying = TRUE, n.ind.fix = FALSE, onlyYkeep = T)
-psi0.Y <- mean(popDat.wmT.tvcontA.binY$Y)  # 0.4703624
-psi0.Ygstar <- mean(popDat.wmT.tvcontA.binY$Y.gstar)  # 0.5329862
+psi0.Y <- mean(popDat.wmT.tvcontA.binY$Y)  # 0.2860212
+psi0.Ygstar <- mean(popDat.wmT.tvcontA.binY$Y.gstar)  # 0.3340003
 dat_com.wmT.tvcontA.binY <- get.fullDat.Acont(J = J, n.ind = n.ind, rndseed = rndseed, truncBD = truncBD, shift.val = shift.val, 
                                               is.Y.bin = TRUE, working.model = TRUE, timevarying = TRUE, n.ind.fix = FALSE)
 sampleDat_com.wmT.tvcontA.binY <- list(dat_com.wmT.tvcontA.binY = dat_com.wmT.tvcontA.binY, psi0.Y = psi0.Y, psi0.Ygstar = psi0.Ygstar,
