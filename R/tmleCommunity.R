@@ -764,9 +764,11 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
     }
     
     for (i in 1:length(communityList)) {
-      message("###########################################################################")
-      message("Fitting TMLE on the " %+% i %+% "th community: " %+% communityList[i])
-      message("###########################################################################")
+      if (verbose) {
+        message("###########################################################################")
+        message("Fitting TMLE on the " %+% i %+% "th community: " %+% communityList[i])
+        message("###########################################################################")
+      }
       
       ## Create an R6 object that stores and manages the subdata for each community, later passed on to estimation algorithm(s)
       subdata <- data[(data[, communityID] == communityList[i]), ]
