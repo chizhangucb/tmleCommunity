@@ -740,9 +740,11 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
       EY_gstar2 <- calcParameters(inputYs = inputYs, alpha = CI_alpha, est_params_list = estinfo_list, tmle_g_out = tmle_gstar2_out)
       ATE <- calcParameters(inputYs = inputYs, alpha = CI_alpha, est_params_list = estinfo_list, tmle_g_out = tmle_gstar1_out, tmle_g2_out = tmle_gstar2_out)
     }
-    message("######################################################################################")
-    message("Warning: inference for gcomp is not accurate! It is based on TMLE influence curves.")
-    message("######################################################################################")
+    if (verbose) {
+      message("######################################################################################")
+      message("Warning: inference for gcomp is not accurate! It is based on TMLE influence curves.")
+      message("######################################################################################")
+    }
   } else if (community.step == "perCommunity") {
     #----------------------------------------------------------------------------------
     # Create matrices to store substitution estsimators of all communities
