@@ -574,8 +574,10 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
   }
   if (!is.null(Qform) && !is.null(Ynode)) {
     Qform <- paste(Ynode, substring(Qform, first = as.numeric(gregexpr("~", Qform))))
-    message("Since both Ynode and Qform are specified, the left-hand side of Qform will be ignored, with outcome being set to Ynode: " %+% Ynode)
-    message("Thus the Qform becomes " %+% Qform)
+    if (verbose) {
+      message("Since both Ynode and Qform are specified, the left-hand side of Qform will be ignored, with outcome being set to Ynode: " %+% Ynode)
+      message("Thus the Qform becomes " %+% Qform)
+    }
   }
   if (!is.null(Qform) && is.null(Ynode)) {
     Ynode <- LhsVars(Qform)[1]
