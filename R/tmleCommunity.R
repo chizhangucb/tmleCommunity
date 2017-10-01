@@ -550,7 +550,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
                           n_MCsims = 1, CI_alpha = 0.05, rndseed = NULL, verbose = TRUE) {
   if (!is.null(rndseed))  set.seed(rndseed)  # make stochastic intervention trackable
   gvars$verbose <- verbose
-  if (verbose) message("Running tmleCommunity with the following settings from tmleCom_Options(): "); str(gvars$opts)
+  if (verbose) { message("Running tmleCommunity with the following settings from tmleCom_Options(): "); str(gvars$opts) }
   
   #----------------------------------------------------------------------------------
   # INITIALIZE PARAMETERS
