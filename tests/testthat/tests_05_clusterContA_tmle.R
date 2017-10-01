@@ -22,7 +22,7 @@ define_f.gstar <- function(shift.val, truncBD, rndseed = NULL) {
   shift.const <- shift.val
   trunc.const <- truncBD
   f.gstar <- function(data, ...) {
-    print("shift.const: " %+% shift.const)
+    # print("shift.const: " %+% shift.const)
     set.seed(rndseed)
     A.mu <- - 1.2  + 0.8 * data[,"E1"] + 0.21 * data[,"E2"] + 3 * data[,"W1"] - 0.7 * data[,"W2"] + 0.3 * data[,"W3"]
     untrunc.A <- rnorm(n = nrow(data), mean = A.mu + shift.const, sd = 1)
@@ -40,7 +40,7 @@ gform.corr <- "A ~ E1 + E2 + W1 + W2 + W3"  # correct g
 gform.mis <- "A ~ E1 + W3"  # incorrect g
 
 bootstrap.TMLE <- function(nBoot, J, n.ind, truncBD, shift.val, nbins = 5, Qestimator = "speedglm__glm", gestimator = "speedglm__glm", 
-                           f.gstar, lbound = 0.005, working.model = TRUE, Qform = NULL, gform = NULL, rndseed = NULL) {
+                           f.gstar, lbound = 0.005, working.model = TRUE, Qform = NULL, gform = NULL, rndseed = NULL, verbose = F) {
   
   est_tmle1a <- est_tmle1b <- est_tmle2 <- est_tmlePer <- NULL
   var_tmle1a <- var_tmle1b <- var_tmle2 <- var_tmlePer <- NULL
@@ -56,7 +56,7 @@ bootstrap.TMLE <- function(nBoot, J, n.ind, truncBD, shift.val, nbins = 5, Qesti
     message("##################################################################\n")
     
     # Generate a sample of hierarchical data, when working.model fails
-    data <- try(get.fullDat.Acont(J = J, n.ind = n.ind, rndseed = NULL, truncBD = truncBD, shift.val = shift.val, 
+    data <- try(get.fullDat.Acont(J = J, n.ind = n.ind, rndseed = NULL, truncBD = truncBD, shift.val = shift.val, verbose = verbose,
                                   is.Y.bin = TRUE, working.model = working.model, timevarying = TRUE, n.ind.fix = FALSE))
     if (inherits(data, "try-error")) { error_dat <- error_dat + 1; next } # skip iterations with errors
     
@@ -66,39 +66,43 @@ bootstrap.TMLE <- function(nBoot, J, n.ind, truncBD, shift.val, nbins = 5, Qesti
     tmleCom_1a_size <- try(tmleCommunity(data = data, Ynode = "Y", Anodes = "A", WEnodes = c("E1", "E2", "W1", "W2", "W3"), 
                                          obs.wts = "equal.within.community", community.wts = "size.community", communityID = "id",
                                          community.step = "community_level", working.model = FALSE, f_gstar1 = f.gstar,
-                                         Qform = Qform, hform.g0 = gform, hform.gstar = gform, lbound = lbound))
+                                         Qform = Qform, hform.g0 = gform, hform.gstar = gform, lbound = lbound, verbose = verbose))
     if (inherits(tmleCom_1a_size, "try-error")) { error_1a <- error_1a + 1; next } # skip iterations with errors
+    message("################### Finishing the TMLE-Ia ###################\n")
     
     # TMLE-Ib
     tmleCom_1b_size <- try(tmleCommunity(data = data, Ynode = "Y", Anodes = "A", WEnodes = c("E1", "E2", "W1", "W2", "W3"), 
                                          obs.wts = "equal.within.community", community.wts = "size.community", communityID = "id",
                                          community.step = "individual_level", working.model = FALSE,  f_gstar1 = f.gstar, 
-                                         Qform = Qform, hform.g0 = gform, hform.gstar = gform, lbound = lbound))
+                                         Qform = Qform, hform.g0 = gform, hform.gstar = gform, lbound = lbound, verbose = verbose))
     if (inherits(tmleCom_1b_size, "try-error")) { error_1b <- error_1b + 1; next } # skip iterations with errors
+    message("################### Finishing the TMLE-Ib ###################\n")
     
     # TMLE-II
     tmleCom_ii_size <- try(tmleCommunity(data = data, Ynode = "Y", Anodes = "A", WEnodes = c("E1", "E2", "W1", "W2", "W3"), 
                                          obs.wts = "equal.within.community", community.wts = "size.community", communityID = "id",
                                          community.step = "individual_level", working.model = TRUE, f_gstar1 = f.gstar,
-                                         Qform = Qform, hform.g0 = gform, hform.gstar = gform, lbound = lbound))
+                                         Qform = Qform, hform.g0 = gform, hform.gstar = gform, lbound = lbound, verbose = verbose))
     if (inherits(tmleCom_ii_size, "try-error")) { error_2 <- error_2 + 1; next } # skip iterations with errors
+    message("################### Finishing the TMLE-II ###################\n")
     
     # TMLE-Per
     tmleCom_per_size <- try(tmleCommunity(data = data, Ynode = "Y", Anodes = "A", WEnodes = c("E1", "E2", "W1", "W2", "W3"), 
                                           obs.wts = "equal.within.community", community.wts = "equal.community", communityID = "id",
                                           community.step = "perCommunity", working.model = TRUE, f_gstar1 = f.gstar,
-                                          Qform = Qform, hform.g0 = gform, hform.gstar = gform, lbound = lbound))
+                                          Qform = Qform, hform.g0 = gform, hform.gstar = gform, lbound = lbound, verbose = verbose))
     if (inherits(tmleCom_per_size, "try-error")) { error_Per <- error_Per + 1; next } # skip iterations with errors
-    
-    est_tmle1b <- rbind(est_tmle1b, tmleCom_1b_size$EY_gstar1$estimates[, 1])
-    var_tmle1b <- rbind(var_tmle1b, tmleCom_1b_size$EY_gstar1$vars[, 1])
-    CI_tmle1b <- rbind(CI_tmle1b, c(tmleCom_1b_size$EY_gstar1$CIs[, 1], tmleCom_1b_size$EY_gstar1$CIs[, 2]))
-    pval_tmle1b <- rbind(pval_tmle1b, tmleCom_1b_size$EY_gstar1$pval[, 1])
+    message("################### Finishing the TMLE-Stratifed ###################\n")
     
     est_tmle1a <- rbind(est_tmle1a, tmleCom_1a_size$EY_gstar1$estimates[, 1])
     var_tmle1a <- rbind(var_tmle1a, tmleCom_1a_size$EY_gstar1$vars[, 1])
     CI_tmle1a <- rbind(CI_tmle1a, c(tmleCom_1a_size$EY_gstar1$CIs[, 1], tmleCom_1a_size$EY_gstar1$CIs[, 2]))
     pval_tmle1a <- rbind(pval_tmle1a, tmleCom_1a_size$EY_gstar1$pval[, 1])
+    
+    est_tmle1b <- rbind(est_tmle1b, tmleCom_1b_size$EY_gstar1$estimates[, 1])
+    var_tmle1b <- rbind(var_tmle1b, tmleCom_1b_size$EY_gstar1$vars[, 1])
+    CI_tmle1b <- rbind(CI_tmle1b, c(tmleCom_1b_size$EY_gstar1$CIs[, 1], tmleCom_1b_size$EY_gstar1$CIs[, 2]))
+    pval_tmle1b <- rbind(pval_tmle1b, tmleCom_1b_size$EY_gstar1$pval[, 1])
     
     est_tmle2 <- rbind(est_tmle2, tmleCom_ii_size$EY_gstar1$estimates[, 1])
     var_tmle2 <- rbind(var_tmle2, tmleCom_ii_size$EY_gstar1$vars[, 1])
