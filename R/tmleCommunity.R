@@ -153,7 +153,7 @@ calcParameters <- function(inputYs, alpha = 0.05, est_params_list, tmle_g_out, t
   rownames(ests_mat) <- c("tmle", "iptw", "gcomp")
   rownames(as.var_mat) <- c("tmle", "iptw", "gcomp")
   rownames(CIs_mat) <- c("tmle", "iptw", "gcomp")
-  rownames(teststat_mat) <- c("tmle", "iptw", "gcomp")
+  rownames(teststat_mat) <- rownames(pval) <- c("tmle", "iptw", "gcomp")
   colnames(teststat_mat) <- "teststat"; colnames(pval) <- "p_value"
   
   EY_g.star <- list(estimates = ests_mat, 
