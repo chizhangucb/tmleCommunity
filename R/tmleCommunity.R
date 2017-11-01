@@ -359,13 +359,16 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' analysis, respectively. The individual-level TMLE cooperates with additional working assumptions and has potential efficiency gain. It also  
 #' provide corresponding \strong{IPTW} (the inverse-probability-of-treatment or Horvitz-Thompson) and \strong{GCOMP} (parametric G-computation).
 #' @param data Observed data, \code{data.frame} with named columns, containing \code{WEnodes}, \code{Anode}, \code{Ynode} and possibly \code{communityIndex}.
-#' @param Ynode Column names or indices in \code{data} of outcome variable name. Outcome can be either binary or continuous. 
-#'   This can instead be specified on the left-side of the regression formula in argument \code{Qform}.
+#' @param Ynode Column names or indices in \code{data} of outcome variable name. Outcome can be either binary or continuous (could be beyong 0 and 1). 
+#'   If Ynode undefined, the left-side of the regression formula in argument \code{Qform} will be treated as \code{Ynode}.
 #' @param Anodes Column names or indices in \code{data} of exposure (treatment) variables; exposures can be either binary, categorical or continuous.
 #' @param WEndoes Column names or indices in \code{data} of individual-level (and possibly community-level) baseline covariates.
 #'   Factors are not currently allowed.
-#' @param YnodeDet Optional column name or index in \code{data} of deterministic values of outcome Ynode, coded as (TRUE/FALSE) or (1/0). If TRUE/1, 
-#'  value of Ynode is given deterministically / constant. 
+#' @param YnodeDet Optional column name or index in \code{data} of deterministic values of outcome \code{Ynode}, coded as (TRUE / FALSE) or (1 / 0).  
+#'  If TRUE or 1, value of \code{Ynode} is given deterministically / constant. 
+#' @param obs.wts Optional vector of individual-level observation (sampling) weights (of length \code{nrow(data)}). Currently supports a numeric vector, 
+#'  "equal.within.pop" (Default) and equal.within.community. If "equal.within.pop", weigh individuals in the entire dataset equally (weigh to be all 1);
+#'  If "equal.within.community", weigh individuals within the same community equally (i.e., 1 / (nobs in one community)).
 #' @param communityID Optional column name or index in \code{data} of community identifier variable. If known, it can support the two options wiithin 
 #'  \code{community.step}, i.e., community-level or individual-level TMLE (See details for \code{community.step}).
 #' @param community.wts Optional matrix of community-level observation weights (where dim = the number of communities \eqn{\times} 2). The first   
@@ -398,7 +401,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @param hform.gstar Character vector of regression formula for estimating the conditional density P(A | W, E) under interventions f_gstar1 or f_gstar2. 
 #'  If not specified, it follows the same rule used in hform.g0. 
 #' @param lbound Value between (0,1) for truncation of predicted P(A | W, E). Default to 0.005
-#' @param obs.wts Optional vector of individual-level observation (sampling) weights (of length \code{nrow(data)}). If NULL, assumed to be all 1. 
+ 
 #' @param h.g0_GenericModel Previously fitted models for P(A | W, E) under g0, one of returns of tmleCommunity.function. If known, predictions
 #'  for P(A=a | W=w, E=e) under g0 are based on the fitted models in \code{h.g0_GenericModel}.
 #' @param h.gstar_GenericModel Previously fitted models for P(A^* | W, E) under gstar, one of returns of tmleCommunity.function. If known,  
@@ -561,6 +564,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
   #----------------------------------------------------------------------------------
   # INITIALIZE PARAMETERS
   #----------------------------------------------------------------------------------
+  if (missing(Ynode)) Ynode <- NULL
   if (is.null(savetime.fit.hbars)) savetime.fit.hbars <- getopt("savetime.fit.hbars")
   if (obs.wts == "equal.within.pop") { # weigh individuals in the entire dataset equally so big community gets bigger total weight
     obs.wts <- rep(1, NROW(data))
