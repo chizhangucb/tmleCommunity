@@ -416,6 +416,34 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @param rndseed Random seed for controlling sampling A under f_gstar1 or f_gstar2 (for reproducibility of Monte-Carlo simulations)
 #' @param verbose Flag. If TRUE, print status messages. Default to TRUE.
 #'
+#' @return \link{\code{tmleCommunity}} returns an object of class "\code{tmleCommunity}", which is a named list containing the estimation results 
+#'  stored by the following 3 items:
+#'  \itemize{
+#'  \item \code{EY_gstar1} - estimates of the mean counterfactual outcome under (stochastic) intervention function \code{f_gstar1} \eqn{(E_{g^*_1}[Y])}.
+#'  \item \code{EY_gstar2} - estimates of the mean counterfactual outcome under (stochastic) intervention function \code{f_gstar2} \eqn{(E_{g^*_2}[Y])}, 
+#'    or \code{NULL} if \code{f_gstar2} not specified.
+#'  \item \code{ATE} - additive treatment effect (\eqn{E_{g^*_1}[Y]} - \eqn{E_{g^*_2}[Y]}) under interventions \code{f_gstar1}
+#'    vs. in \code{f_gstar2}, or \code{NULL} if \code{f_gstar2} not specified.
+#' }
+#' Each list item above is itself a list containing the items:
+#'  \itemize{
+#'  \item \code{estimates} - various estimates of the target parameter (network population counterfactual mean under (stochastic) intervention).
+#'  \item \code{vars} - the asymptotic variance estimates, for \strong{TMLE}, \strong{IPTW} and \strong{GCOMP}. Notice, inference for gcomp is 
+#'    not accurate! It is based on TMLE influence curves.
+#'  \item \code{CIs} - CI estimates at \code{alpha} level, for \strong{TMLE}, \strong{IPTW} and \strong{GCOMP}.
+#'  \item \code{h.g0_GenericModel} - The model fits for P(\code{A}|\code{W, E}) under observed exposure mechanism
+#'    \code{g0}. This is an object of \code{h.g0_GenericModel} \pkg{R6} class.
+#'  \item \code{h.gstar_GenericModel} - The model fits for P(\code{A}|\code{W, E}) under intervention \code{f_gstar1}
+#'    or \code{f_gstar2}. This is an object of \code{GenericModel} \pkg{R6} class.
+#' }
+#' Currently implemented estimators are:
+#'  \itemize{
+#'  \item \code{tmle} - Either weighted regression intercept-based TMLE (\code{tmle.intercept} - the default) with weights defined by the IPTW weights
+#'    \code{h_gstar/h_gN} or covariate-based unweighted TMLE (\code{tmle.covariate}) that uses the IPTW weights as a covariate \code{h_gstar/h_gN}.  
+#'  \item \code{iptw} - Efficient IPTW based on weights h_gstar/h_gN.
+#'  \item \code{gcomp} - Parametric G-computation formula substitution estimator.
+#' }
+#'
 #' @section IPTW estimator:
 #' **********************************************************************
 #'
@@ -523,33 +551,6 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' The data-adaptive approach dhist is a mix of Approaches 1 & 2. See Denby and Mallows "Variations on the Histogram"
 #'  (2009)). This interval definition method is selected by passing an argument \code{bin.method="dhist"} to
 #'  \code{tmleCom_Options()}  prior to calling \code{tmleCommunity()}.
-#'
-#' @return A named list with 3 items containing the estimation results for:
-#'  \itemize{
-#'  \item \code{EY_gstar1} - estimates of the mean counterfactual outcome under (stochastic) intervention function \code{f_gstar1} \eqn{(E_{g^*_1}[Y])}.
-#'  \item \code{EY_gstar2} - estimates of the mean counterfactual outcome under (stochastic) intervention function \code{f_gstar2} \eqn{(E_{g^*_2}[Y])}, 
-#'    or \code{NULL} if \code{f_gstar2} not specified.
-#'  \item \code{ATE} - additive treatment effect (\eqn{E_{g^*_1}[Y]} - \eqn{E_{g^*_2}[Y]}) under interventions \code{f_gstar1}
-#'    vs. in \code{f_gstar2}, or \code{NULL} if \code{f_gstar2} not specified.
-#' }
-#' Each list item above is itself a list containing the items:
-#'  \itemize{
-#'  \item \code{estimates} - various estimates of the target parameter (network population counterfactual mean under (stochastic) intervention).
-#'  \item \code{vars} - the asymptotic variance estimates, for \strong{TMLE}, \strong{IPTW} and \strong{GCOMP}. Notice, inference for gcomp is 
-#'    not accurate! It is based on TMLE influence curves.
-#'  \item \code{CIs} - CI estimates at \code{alpha} level, for \strong{TMLE}, \strong{IPTW} and \strong{GCOMP}.
-#'  \item \code{h.g0_GenericModel} - The model fits for P(\code{A}|\code{W, E}) under observed exposure mechanism
-#'    \code{g0}. This is an object of \code{h.g0_GenericModel} \pkg{R6} class.
-#'  \item \code{h.gstar_GenericModel} - The model fits for P(\code{A}|\code{W, E}) under intervention \code{f_gstar1}
-#'    or \code{f_gstar2}. This is an object of \code{GenericModel} \pkg{R6} class.
-#' }
-#' Currently implemented estimators are:
-#'  \itemize{
-#'  \item \code{tmle} - Either weighted regression intercept-based TMLE (\code{tmle.intercept} - the default) with weights defined by the IPTW weights
-#'    \code{h_gstar/h_gN} or covariate-based unweighted TMLE (\code{tmle.covariate}) that uses the IPTW weights as a covariate \code{h_gstar/h_gN}.  
-#'  \item \code{iptw} - Efficient IPTW based on weights h_gstar/h_gN.
-#'  \item \code{gcomp} - Parametric G-computation formula substitution estimator.
-#' }
 #' @example tests/examples/3_tmleCommunity_examples.R
 #' @export
 tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts = c("equal.within.pop", "equal.within.community"), 
