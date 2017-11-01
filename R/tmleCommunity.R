@@ -368,10 +368,10 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  or (1 / 0). If TRUE or 1, value of \code{Ynode} is given deterministically / constant. 
 #' @param obs.wts Optional vector of individual-level observation (sampling) weights (of length \code{nrow(data)}). Currently supports a numeric vector, 
 #'  "equal.within.pop" (Default) and equal.within.community. If "equal.within.pop", weigh individuals in the entire dataset equally (weigh to be all 1);
-#'  If "equal.within.community", weigh individuals within the same community equally (i.e., 1 / (nobs in one community)).
+#'  If "equal.within.community", weigh individuals within the same community equally (i.e., 1 / (number of individuals in each community)).
 #' @param communityID Optional column name or index in \code{data} of community identifier variable. If known, it can support the two options wiithin 
-#'  \code{community.step}, i.e., community-level or individual-level TMLE (See details for \code{community.step}).
-#' @param community.wts Optional matrix of community-level observation weights (where dim = the number of communities \eqn{\times} 2). The first   
+#'  \code{community.step}, i.e., community-level or individual-level TMLE (See details for \link{\code{community.step}}).
+#' @param community.wts Optional matrix of community-level observation weights (where dimension = the number of communities\eqn{\times}2). The first   
 #'  column contains the communities' names (ie., \code{data[, communityID]}) and the second column contains the corresponding weights.   
 #'  Currently only support a numeric vector, "equal.community" (Default) and "size.community". If "equal.community", assumed weights to be all 1;  
 #'  If setting community.wts = "size.community", treat the number of individuals within each community as its weight, respectively.
@@ -381,36 +381,39 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @param community.step Methods to deal with hierarchical data, one of "NoCommunity" (Default), "community_level", "individual_level" and  
 #'  "PerCommunity". If "NoCommunity", claim that no hirerachical structure in data; If "community_level", use community-level TMLE;  
 #'  If "individual_level", use individual-level TMLE cooperating with the assumption of no covariate interference. If "PerCommunity",  
-#'  use stratified TMLE. If communityID = NULL, then automatically pool over all communities.
+#'  use stratified TMLE. If communityID = NULL, then automatically pool over all communities (i.e., treated it as "NoCommunity").
+#' @param f_g0 Optional function used to specify model knowledge about value of Anodes. It estimates \code{P(A | W, E)} under \code{g0} by 
+#'  sampling a large vector/ data frame of Anode (of length \code{nrow(data)*n_MCsims} or number of rows if a data frame) from \code{f_g0} function.
 #' @param f_gstar1 Either a function or a vector or a matrix/ data frame of counterfactual exposures, dependin on the number of exposure variables.
 #'  If a matrix/ data frame, its number of rows must be either \code{nrow(data)} or 1 (constant exposure assigned to all observations), and its number of 
 #'  columns must be \code{length(Anodes)}. If a vector, it must be of length \code{nrow(data)} or 1. If a function, it must return a vector or a data frame 
 #'  of counterfactual exposures sampled based on Anodes, WEnodes (and possibly communityIndex) passed as a named argument "data". Thus, the function must 
 #'  include "data" as one of its argument names. The interventions defined by f_gstar1 can be static, dynamic or stochastic. See Exmaples below.
 #' @param f_gstar2 Either a function or a vector or a matrix/ data frame of counterfactual exposures, dependin on the number of exposure variables.
-#'  It has the same components and requirements as f_gstar1
+#'  It has the same components and requirements as f_gstar1 has.
 #' @param Qform Character vector of regression formula for Ynode. If not specified, the outcome variable is regressed on all covariates included in 
 #'  Anodes and WEnodes.
 #' @param Qbounds Upper and lower bounds on Y and predicted values for initial Q. Defaults to the range of Y, widened by 10\% of the min and max values.
-#' @param alpha Used to keep predicted values for initial Q bounded away from (0,1) for logistic fluctuation.
+#' @param alpha Used to keep predicted values for initial Q bounded away from (0,1) for logistic fluctuation 
+#'  (set \code{Qbounds} to (1 - \code{alpha}), \code{alpha}).
 #' @param fluctuation Default to "logistic", it could also be "linear" (for targeting step).
-#' @param f_g0 Optional function used to specify model knowledge about value of Anodes. It estimates \code{P(A | W, E)} under \code{g0} by 
-#'  sampling a large vector/ data frame of Anode (of length or number of rows \code{nrow(data)*n_MCsims}) from \code{f_g0}
-#' @param hform.g0 Character vector of regression formula for estimating the conditional density of P(A | W, E) under the observed treatment mechanism
+#' @param hform.g0 Character vector of regression formula for estimating the conditional density of P(A | W, E) under observed treatment mechanism
 #'  g0. If not specified, its form will be Anodes ~ WEnodes. If there are more than one expsosure, it fits a joint probability.
-#' @param hform.gstar Character vector of regression formula for estimating the conditional density P(A | W, E) under interventions f_gstar1 or f_gstar2. 
-#'  If not specified, it follows the same rule used in hform.g0. 
+#' @param hform.gstar Character vector of regression formula for estimating the conditional density P(A | W, E) under user-supplied interventions  
+#'  f_gstar1 or f_gstar2. If not specified, it follows the same rule used in hform.g0. 
 #' @param lbound Value between (0,1) for truncation of predicted P(A | W, E). Default to 0.005
- 
-#' @param h.g0_GenericModel Previously fitted models for P(A | W, E) under g0, one of returns of tmleCommunity.function. If known, predictions
-#'  for P(A=a | W=w, E=e) under g0 are based on the fitted models in \code{h.g0_GenericModel}.
-#' @param h.gstar_GenericModel Previously fitted models for P(A^* | W, E) under gstar, one of returns of tmleCommunity.function. If known,  
-#'  Predictions for P(A=a | W=w, E=e) under gstar are based on the fitted models in \code{h.gstar_GenericModel}.
-#' @param savetime.fit.hbars Logical for saving time when fitting fit.hbars. If true, 
-#' @param TMLE.targetStep TMLE targeting step method, either "tmle.intercept" (Default) or "tmle.covariate".
-#' @param n_MCsims Number of simulations for Monte-Carlo analysis. Each simulation generates new exposures under f_gstar1 or f_gstar2, with a sample 
-#'  size of nrow(data). Then these expsosures are used when fitting the conditional densities P(A | W, E).
-#' @param rndseed Random seed for controlling sampling A under f_gdelta1 or f_gdelta2 (reproducibility)
+#' @param h.g0_GenericModel An object of \code{GenericModel} \strong{R6} class containing the previously fitted models for P(A | W, E) under observed  
+#'  treatment mechanism g0, one of the returns of \code{tmleCommunity} function. If known, predictions for P(A=a | W=w, E=e) under g0 are based on  
+#'  the fitted models in \code{h.g0_GenericModel}.
+#' @param h.gstar_GenericModel An object of \code{GenericModel} \strong{R6} class containing the previously fitted models for P(A^* | W, E) under  
+#'  intervention gstar, one of the returns of \code{tmleCommunity} function. If known, predictions for P(A=a | W=w, E=e) under gstar are based on 
+#'  the fitted models in \code{h.gstar_GenericModel}.
+#' @param TMLE.targetStep TMLE targeting step method, either "tmle.intercept" (Default) or "tmle.covariate". See Details below.
+#' @param n_MCsims Number of simulations for Monte-Carlo analysis. Each simulation generates new exposures under f_gstar1 or f_gstar2 (if specified)  
+#'  or f_g0 (if specified), with a sample size of nrow(data). Then these generated expsosures are used when fitting the conditional densities P(A | W, E).
+#'  and estimating for \strong{IPTW} and \strong{GCOMP} under intervention f_gstar1 or f_gstar2. Note that deterministic intervention only needs one 
+#'  simulation and stochastic intervention could use more simulation times such as 10 (Default to 1). 
+#' @param rndseed Random seed for controlling sampling A under f_gstar1 or f_gstar2 (for reproducibility of Monte-Carlo simulations)
 #' @param verbose Flag. If TRUE, print status messages. Default to TRUE.
 #'
 #' @section IPTW estimator:
@@ -554,7 +557,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
                           community.step = c("NoCommunity", "community_level", "individual_level", "perCommunity"), 
                           f_g0 = NULL, f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995,                                                      
                           fluctuation = "logistic", hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, 
-                          h.g0_GenericModel = NULL, h.gstar_GenericModel = NULL, savetime.fit.hbars = TRUE, 
+                          h.g0_GenericModel = NULL, h.gstar_GenericModel = NULL, 
                           TMLE.targetStep = c("tmle.intercept", "tmle.covariate"),
                           n_MCsims = 1, CI_alpha = 0.05, rndseed = NULL, verbose = TRUE) {
   if (!is.null(rndseed))  set.seed(rndseed)  # make stochastic intervention trackable
@@ -565,7 +568,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
   # INITIALIZE PARAMETERS
   #----------------------------------------------------------------------------------
   if (missing(Ynode)) Ynode <- NULL
-  if (is.null(savetime.fit.hbars)) savetime.fit.hbars <- getopt("savetime.fit.hbars")
+  savetime.fit.hbars <- getopt("savetime.fit.hbars")  # One of conditions for skip g0 & gstar fitting procedure and directly set h_gstar_h_gN = 1 
   if (obs.wts == "equal.within.pop") { # weigh individuals in the entire dataset equally so big community gets bigger total weight
     obs.wts <- rep(1, NROW(data))
   } else if (obs.wts == "equal.within.community") { # weigh individuals in each community equally and weigh communities equally
