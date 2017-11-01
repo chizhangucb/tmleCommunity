@@ -355,26 +355,30 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' Estimate Marginal Treatment Effects For Arbitrary (Stochastic) Interventions in Hierarchical Data
 #'
 #' Estimate the marginal treatment effect among independent communities (or i.i.d units if no hierarchical structure) using \strong{TMLE} 
-#' (targeted maximum likelihood estimation). It supports two different \strong{TMLE}s that are based on community-level and individual-level 
+#' (targeted maximum likelihood estimation). It supports two different TMLEs that are based on community-level and individual-level 
 #' analysis, respectively. The individual-level TMLE cooperates with additional working assumptions and has potential efficiency gain. It also  
 #' provide corresponding \strong{IPTW} (the inverse-probability-of-treatment or Horvitz-Thompson) and \strong{GCOMP} (parametric G-computation).
-#' @param data \code{data.frame} with named columns, containing \code{WEnodes}, \code{Anode}, \code{Ynode} and possibly \code{communityIndex}.
+#' @param data Observed data, \code{data.frame} with named columns, containing \code{WEnodes}, \code{Anode}, \code{Ynode} and possibly \code{communityIndex}.
 #' @param Ynode Column names or indices in \code{data} of outcome variable name. Outcome can be either binary or continuous. 
 #'   This can instead be specified on the left-side of the regression formula in argument \code{Qform}.
 #' @param Anodes Column names or indices in \code{data} of exposure (treatment) variables; exposures can be either binary, categorical or continuous.
 #' @param WEndoes Column names or indices in \code{data} of individual-level (and possibly community-level) baseline covariates.
 #'   Factors are not currently allowed.
-#' @param communityID Optional column name or index in \code{data} of community identifier variable. If known, either stratify on community level
-#'   when estimating outcome and treatment mechanisms, or perform panel transformation on data before estiamtion, depending on \code{community.step}.
 #' @param YnodeDet Optional column name or index in \code{data} of deterministic values of outcome Ynode, coded as (TRUE/FALSE) or (1/0). If TRUE/1, 
 #'  value of Ynode is given deterministically / constant. 
-#' @param community.step Methods to deal with community-level data, one of "NoCommunity" (Default), "community_level" and "individual_level". 
-#'  If communityID = NULL, then automatically pool over all communities.
-#' @param working.model Logical
-#' @param community.wts Optional matrix of community-level observation weights (where dim = the number of communities by 2). The first   
+#' @param communityID Optional column name or index in \code{data} of community identifier variable. If known, it can support the two options wiithin 
+#'  \code{community.step}, i.e., community-level or individual-level TMLE (See details for \code{community.step}).
+#' @param community.wts Optional matrix of community-level observation weights (where dim = the number of communities \times 2). The first   
 #'  column contains the communities' names (ie., \code{data[, communityID]}) and the second column contains the corresponding weights.   
-#'  If "equal.community", assumed to be all 1. Currently only support a numeric vector, "equal.community" (Default) and "size.community" 
-#'  (i.e., by setting community.wts = "size.community", treat the number of individuals within each community as its weight, respectively).
+#'  Currently only support a numeric vector, "equal.community" (Default) and "size.community". If "equal.community", assumed weights to be all 1;  
+#'  If setting community.wts = "size.community", treat the number of individuals within each community as its weight, respectively.
+#' @param working.model Logical for making assumptions about the covariate interference. If TRUE, assumes that each individual's outcome is known not
+#'  to be affected by the covariates of other individuals in the same community (Weaker covariate interference assumption may allow a subset of the 
+#'  individual's known "connections"). Currrently only the "no covariate interference" assumption is implemented. Default to be FASLE. 
+#' @param community.step Methods to deal with hierarchical data, one of "NoCommunity" (Default), "community_level", "individual_level" and  
+#'  "PerCommunity". If "NoCommunity", claim that no hirerachical structure in data; If "community_level", use community-level TMLE;  
+#'  If "individual_level", use individual-level TMLE cooperating with the assumption of no covariate interference. If "PerCommunity",  
+#'  use stratified TMLE. If communityID = NULL, then automatically pool over all communities.
 #' @param f_gstar1 Either a function or a vector or a matrix/ data frame of counterfactual exposures, dependin on the number of exposure variables.
 #'  If a matrix/ data frame, its number of rows must be either nrow(data) or 1 (constant exposure assigned to all observations), and its number of 
 #'  columns must be length(Anodes). If a vector, it must be of length nrow(data) or 1. If a function, it must return a data frame of counterfactual
@@ -543,7 +547,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @example tests/examples/3_tmleCommunity_examples.R
 #' @export
 tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts = c("equal.within.pop", "equal.within.community"), 
-                          community.wts = c("equal.community", "size.community"), communityID = NULL, working.model = FALSE, 
+                          communityID = NULL, community.wts = c("equal.community", "size.community"), working.model = FALSE, 
                           community.step = c("NoCommunity", "community_level", "individual_level", "perCommunity"), 
                           f_g0 = NULL, f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995,                                                      
                           fluctuation = "logistic", hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, 
