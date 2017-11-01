@@ -368,7 +368,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  value of Ynode is given deterministically / constant. 
 #' @param communityID Optional column name or index in \code{data} of community identifier variable. If known, it can support the two options wiithin 
 #'  \code{community.step}, i.e., community-level or individual-level TMLE (See details for \code{community.step}).
-#' @param community.wts Optional matrix of community-level observation weights (where dim = the number of communities \times 2). The first   
+#' @param community.wts Optional matrix of community-level observation weights (where dim = the number of communities \eqn{\times} 2). The first   
 #'  column contains the communities' names (ie., \code{data[, communityID]}) and the second column contains the corresponding weights.   
 #'  Currently only support a numeric vector, "equal.community" (Default) and "size.community". If "equal.community", assumed weights to be all 1;  
 #'  If setting community.wts = "size.community", treat the number of individuals within each community as its weight, respectively.
