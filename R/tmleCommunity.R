@@ -360,12 +360,12 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' provide corresponding \strong{IPTW} (the inverse-probability-of-treatment or Horvitz-Thompson) and \strong{GCOMP} (parametric G-computation).
 #' @param data Observed data, \code{data.frame} with named columns, containing \code{WEnodes}, \code{Anode}, \code{Ynode} and possibly \code{communityIndex}.
 #' @param Ynode Column names or indices in \code{data} of outcome variable name. Outcome can be either binary or continuous (could be beyong 0 and 1). 
-#'   If Ynode undefined, the left-side of the regression formula in argument \code{Qform} will be treated as \code{Ynode}.
+#'  If Ynode undefined, the left-side of the regression formula in argument \code{Qform} will be treated as \code{Ynode}.
 #' @param Anodes Column names or indices in \code{data} of exposure (treatment) variables; exposures can be either binary, categorical or continuous.
 #' @param WEndoes Column names or indices in \code{data} of individual-level (and possibly community-level) baseline covariates.
-#'   Factors are not currently allowed.
-#' @param YnodeDet Optional column name or index in \code{data} of deterministic values of outcome \code{Ynode}, coded as (TRUE / FALSE) or (1 / 0).  
-#'  If TRUE or 1, value of \code{Ynode} is given deterministically / constant. 
+#'  Factors are not currently allowed.
+#' @param YnodeDet Optional column name or index in \code{data} of indicators of deterministic values of outcome \code{Ynode}, coded as (TRUE / FALSE)  
+#'  or (1 / 0). If TRUE or 1, value of \code{Ynode} is given deterministically / constant. 
 #' @param obs.wts Optional vector of individual-level observation (sampling) weights (of length \code{nrow(data)}). Currently supports a numeric vector, 
 #'  "equal.within.pop" (Default) and equal.within.community. If "equal.within.pop", weigh individuals in the entire dataset equally (weigh to be all 1);
 #'  If "equal.within.community", weigh individuals within the same community equally (i.e., 1 / (nobs in one community)).
@@ -383,9 +383,9 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  If "individual_level", use individual-level TMLE cooperating with the assumption of no covariate interference. If "PerCommunity",  
 #'  use stratified TMLE. If communityID = NULL, then automatically pool over all communities.
 #' @param f_gstar1 Either a function or a vector or a matrix/ data frame of counterfactual exposures, dependin on the number of exposure variables.
-#'  If a matrix/ data frame, its number of rows must be either nrow(data) or 1 (constant exposure assigned to all observations), and its number of 
-#'  columns must be length(Anodes). If a vector, it must be of length nrow(data) or 1. If a function, it must return a data frame of counterfactual
-#'  exposures sampled based on Anodes, WEnodes (and possibly communityIndex) passed as a named argument "data". Thus, the function must 
+#'  If a matrix/ data frame, its number of rows must be either \code{nrow(data)} or 1 (constant exposure assigned to all observations), and its number of 
+#'  columns must be \code{length(Anodes)}. If a vector, it must be of length \code{nrow(data)} or 1. If a function, it must return a vector or a data frame 
+#'  of counterfactual exposures sampled based on Anodes, WEnodes (and possibly communityIndex) passed as a named argument "data". Thus, the function must 
 #'  include "data" as one of its argument names. The interventions defined by f_gstar1 can be static, dynamic or stochastic. See Exmaples below.
 #' @param f_gstar2 Either a function or a vector or a matrix/ data frame of counterfactual exposures, dependin on the number of exposure variables.
 #'  It has the same components and requirements as f_gstar1
