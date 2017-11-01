@@ -1,6 +1,6 @@
 #' Targeted Maximum Likelihood Estimation for Community-level Data
 #'
-#' The \textbf{tmleCommunity} package implements the Targeted Maximum Likelihood Estimation (TMLE) for the sample average community-based  
+#' The \pkg{tmleCommunity} package implements the Targeted Maximum Likelihood Estimation (TMLE) for the sample average community-based  
 #'  treatment specific means effects (and can be extended to ATE) in community-independent data structures. In other words, it estimates  
 #'  the marginal treatment effect of single-time point arbitrary interventions on a continuous or binary outcome in community-independent 
 #'  data, adjusting for both community-level and individual-level baseline covariates. The package also provides Inverse-Probability-of-
