@@ -352,10 +352,12 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 
 
 #------------------------------------
-#' Estimate Marginal Treatment Effects For Arbitrary (Stochastic) Interventions
+#' Estimate Marginal Treatment Effects For Arbitrary (Stochastic) Interventions in Hierarchical Data
 #'
-#' Estimate the marginal treatment effect among i.i.d units using \strong{TMLE} (targeted maximum likelihood estimation). It also provide
-#' \strong{IPTW} (the inverse-probability-of-treatment or Horvitz-Thompson) and \strong{GCOMP} (parametric G-computation formula).
+#' Estimate the marginal treatment effect among independent communities (or i.i.d units if no hierarchical structure) using \strong{TMLE} 
+#' (targeted maximum likelihood estimation). It supports two different \strong{TMLE}s that are based on community-level and individual-level 
+#' analysis, respectively. The individual-level TMLE cooperates with additional working assumptions and has potential efficiency gain. It also  
+#' provide corresponding \strong{IPTW} (the inverse-probability-of-treatment or Horvitz-Thompson) and \strong{GCOMP} (parametric G-computation).
 #' @param data \code{data.frame} with named columns, containing \code{WEnodes}, \code{Anode}, \code{Ynode} and possibly \code{communityIndex}.
 #' @param Ynode Column names or indices in \code{data} of outcome variable name. Outcome can be either binary or continuous. 
 #'   This can instead be specified on the left-side of the regression formula in argument \code{Qform}.
