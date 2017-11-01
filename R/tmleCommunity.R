@@ -370,7 +370,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  "equal.within.pop" (Default) and equal.within.community. If "equal.within.pop", weigh individuals in the entire dataset equally (weigh to be all 1);
 #'  If "equal.within.community", weigh individuals within the same community equally (i.e., 1 / (number of individuals in each community)).
 #' @param communityID Optional column name or index in \code{data} of community identifier variable. If known, it can support the two options wiithin 
-#'  \code{community.step}, i.e., community-level or individual-level TMLE (See details for \link{\code{community.step}}).
+#'  \code{community.step}, i.e., community-level or individual-level TMLE (See details for \code{community.step}).
 #' @param community.wts Optional matrix of community-level observation weights (where dimension = the number of communities\eqn{\times}2). The first   
 #'  column contains the communities' names (ie., \code{data[, communityID]}) and the second column contains the corresponding weights.   
 #'  Currently only support a numeric vector, "equal.community" (Default) and "size.community". If "equal.community", assumed weights to be all 1;  
