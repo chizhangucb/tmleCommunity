@@ -416,7 +416,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @param rndseed Random seed for controlling sampling A under f_gstar1 or f_gstar2 (for reproducibility of Monte-Carlo simulations)
 #' @param verbose Flag. If TRUE, print status messages. Default to TRUE.
 #'
-#' @return \link{\code{tmleCommunity}} returns an object of class "\code{tmleCommunity}", which is a named list containing the estimation results 
+#' @return \code{tmleCommunity} returns an object of class "\code{tmleCommunity}", which is a named list containing the estimation results 
 #'  stored by the following 3 items:
 #'  \itemize{
 #'  \item \code{EY_gstar1} - estimates of the mean counterfactual outcome under (stochastic) intervention function \code{f_gstar1} \eqn{(E_{g^*_1}[Y])}.
