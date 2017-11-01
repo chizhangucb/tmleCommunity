@@ -1,10 +1,14 @@
 #' Targeted Maximum Likelihood Estimation for Community-level Data
-#' 
-#' Targeted Maximum Likelihood Estimation (TMLE) of marginal treatment effect of single-time point arbitrary interventions on a continuous or 
-#.  binary outcome in community-level independent data, adjusting for both community-level and individual-level baseline covariates. The package 
-#'  also provides Inverse-Probability-of-Treatment-Weighted estimate (IPTW) and Parametric G-computation estimate (GCOMP). The inferences 
-#'  (Standard errors and confidence intervals) of both TMLE and IPTW are based on the influence curve. Optional data-adaptive estimation of 
-#‘  exposure and outcome mechanisms using the SuperLearner package and h2o package (latter for a large dataset) is strongly recommended. 
+#'
+#' The \textbf{tmleCommunity} package implements the Targeted Maximum Likelihood Estimation (TMLE) for the sample average community-based  
+#'  treatment specific means effects (and can be extended to ATE) in community-independent data structures. In other words, it estimates  
+#'  the marginal treatment effect of single-time point arbitrary interventions on a continuous or binary outcome in community-independent 
+#'  data, adjusting for both community-level and individual-level baseline covariates. The package also provides Inverse-Probability-of-
+#'  Treatment-Weighted estimator (IPTW) and parametric G-computation formula estimator (GCOMP). The statistical inference (Standard errors, 
+#'  p-value and confidence intervals) of both TMLE and IPTW are based on the corresponding influence curve, respectively. Optional data-adaptive 
+#‘  estimation of exposure and outcome mechanisms using the SuperLearner package and h2o package (latter for a large dataset) is strongly 
+#'  recommended, especially when the outcome mechanism and treatment mechnism are unknown. Besides, it allows for panel data transformation, 
+#'  such as with random effects and fixed effects. 
 #' 
 #' The input dataset should be made up of rows of unit-specific observations, each row i includes variables (W_i, E_i, A_i, Y_i), where W_i 
 #'  represents a vector of i’s individual-level baseline covariates, E_i represents a vector of i’s community-level baseline covariates 
