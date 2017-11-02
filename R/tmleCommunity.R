@@ -474,8 +474,8 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  mechanism. Thus, \code{alpha} needs to be between (0, 1), otherwise reset to 0.995. Besides, \code{lbound} can be used to truncate the weights 
 #'  \code{h_gstar/h_gN}, that is, [0, 1/\code{lbound}].
 #' 
-#' \code{TMLE.targetStep} specifies how to use weights \code{h_gstar/h_gN} in the \strong{TMLE} targeting step. If \code{tmle.intercept} (default), it  
-#'  performs the weighted intercept-based \code{TMLE} that runs a intercept-only weighted logistic regression using offsets \code{logit(Qstar)} and  
+#' \code{TMLE.targetStep} specifies how to use weights \code{h_gstar/h_gN} in the \strong{TMLE} targeting step. If \code{tmle.intercept} (default),   
+#'  it performs the weighted intercept-based TMLE that runs a intercept-only weighted logistic regression using offsets \code{logit(Qstar)} and  
 #'  weights \code{h_gstar/h_gN} and so no covariate. If \code{\code{tmle.intercept}}, it performs tbe unweighted covariate-based TMLE that run a 
 #'  unweighted logistic regression using offsets \code{logit(Qstar)} and a clever covariate \code{h_gstar/h_gN}. 
 #' 
@@ -488,10 +488,8 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @section TMLE estimator:
 #' **********************************************************************
 #'
-#' @section Modeling \code{P(A|W)} for covariates \code{(A,W)}:
-#' **********************************************************************
-#' Non-parametric
-#'  estimation of the common \strong{unit-level} multivariate joint conditional probability model \code{P_g0(A|W)},
+#' @section Modeling \code{P(A | W, E)} for covariates \code{(A, W, E)}:
+#'  Non-parametric estimation of the common \strong{unit-level} multivariate joint conditional probability model \code{P_g0(A|W)},
 #'  for unit-level summary measures \code{(sA,sW)} generated from the observed exposures and baseline covariates
 #'  \eqn{(A,W)=(A_i,W_i : i=1,...,N)} (their joint density given by \eqn{g_0(A|W)Q(W)}), is performed by first
 #'  constructing the dataset of N summary measures, \eqn{(sA_i,sW_i : i=1,...,N)}, and then fitting the usual i.i.d. MLE
@@ -599,18 +597,18 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  \item \code{estimates} - matrix, 3\eqn{\times}1, storing 3 algorithm estimates of the target parameter (population community-level counterfactual 
 #'    mean under (deterministic or stochastic) intervention), including \code{TMLE}, \code{IPTW} and \code{GCOMP}.
 #'  \item \code{vars} - matrix, 3\eqn{\times}1, storing 3 influence-curve based asymptotic variance estimates for \code{TMLE}, \code{IPTW} and 
-#     \code{GCOMP}. Notice, all IC-based statistical inference for \strong{GCOMP} is not accurate (Just for reference). See explanation in \code{IC}.
+#'    \code{GCOMP}. Notice, all IC-based statistical inference for \strong{GCOMP} is not accurate (Just for reference). See explanation in \code{IC}.
 #'  \item \code{CIs} - matrix, 3\eqn{\times}2, storing 3 confidence interval estimates at \code{CI_alpha} level, for \code{TMLE}, \code{IPTW} and 
-#     \code{GCOMP}. The first column contains the lower bounds and the second column contains the upper bounds.
+#'    \code{GCOMP}. The first column contains the lower bounds and the second column contains the upper bounds.
 #'  \item \code{tstat} - matrix, 3\eqn{\times}1, storing 3 test statistics.
 #'  \item \code{pval} - matrix, 3\eqn{\times}1, storing 3 p-values. It's based on the Student's T distribution if the number of communities  
 #'    (or the number of individuals if no hierarchical structure) is less than 41, otherwise based on the Z normal distribution.
 #'  \item \code{IC} - data frame, nobs\eqn{\times}3, the first column contains the influence curves (ICs) for \code{TMLE} estimate, the second column
 #'    contains the ICs for \code{IPTW} estimate, and the third column contains the ICs for \code{GCOMP} estimate (not accurate since it's based on ICs
 #'    for \code{TMLE} estimate without updating step).  
-#'  \item \code{h.g0_GenericModel} - An object of \code{\link{GenericModel}} \pkg{R6} class, storing the model fits for P(\code{A} | \code{W, E}) under  
+#'  \item \code{h.g0_GenericModel} - An object of \code{\link{GenericModel}} \pkg{R6} class, storing the model fits for P(A | W, E) under  
 #'    observed exposure mechanism \code{g0}. This can be used in \code{\link{tmleCommunity}} (See \strong{Arguments}).
-#'  \item \code{h.gstar_GenericModel} - An object of \code{\link{GenericModel}} \pkg{R6} class, storing the model fits for P(\code{A} | \code{W, E})  
+#'  \item \code{h.gstar_GenericModel} - An object of \code{\link{GenericModel}} \pkg{R6} class, storing the model fits for P(A | W, E)  
 #'    under intervention \code{f_gstar1} or \code{f_gstar2}. This can be used in \code{\link{tmleCommunity}} (See \strong{Arguments}).
 #' }
 #' 
@@ -618,7 +616,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  \itemize{
 #'  \item \code{tmle} - Either weighted intercept-based TMLE based on weights \code{h_gstar/h_gN} (default choice)
 #'    or unweighted covariate-based TMLE based on a covariate \code{h_gstar/h_gN}.  
-#'  \item \code{iptw} - \code{IPTW} (Horvitz-Thompson) estimator based on the \code{TMLE} weights h_gstar/h_gN.
+#'  \item \code{iptw} - IPTW (Horvitz-Thompson) estimator based on the \code{TMLE} weights h_gstar/h_gN.
 #'  \item \code{gcomp} - Maximum likelihood based G-computation substitution estimator.
 #' }
 #'
