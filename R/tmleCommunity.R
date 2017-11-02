@@ -358,93 +358,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' (targeted maximum likelihood estimation). It supports two different TMLEs that are based on community-level and individual-level 
 #' analysis, respectively. The individual-level TMLE cooperates with additional working assumptions and has potential efficiency gain. It also  
 #' provide corresponding \strong{IPTW} (the inverse-probability-of-treatment or Horvitz-Thompson) and \strong{GCOMP} (parametric G-computation).
-#' @param data Observed data, \code{data.frame} with named columns, containing \code{WEnodes}, \code{Anode}, \code{Ynode} and possibly \code{communityIndex}.
-#' @param Ynode Column names or indices in \code{data} of outcome variable name. Outcome can be either binary or continuous (could be beyong 0 and 1). 
-#'  If Ynode undefined, the left-side of the regression formula in argument \code{Qform} will be treated as \code{Ynode}.
-#' @param Anodes Column names or indices in \code{data} of exposure (treatment) variables; exposures can be either binary, categorical or continuous.
-#' @param WEndoes Column names or indices in \code{data} of individual-level (and possibly community-level) baseline covariates.
-#'  Factors are not currently allowed.
-#' @param YnodeDet Optional column name or index in \code{data} of indicators of deterministic values of outcome \code{Ynode}, coded as (TRUE / FALSE)  
-#'  or (1 / 0). If TRUE or 1, value of \code{Ynode} is given deterministically / constant. 
-#' @param obs.wts Optional vector of individual-level observation (sampling) weights (of length \code{nrow(data)}). Currently supports a numeric vector, 
-#'  "equal.within.pop" (Default) and equal.within.community. If "equal.within.pop", weigh individuals in the entire dataset equally (weigh to be all 1);
-#'  If "equal.within.community", weigh individuals within the same community equally (i.e., 1 / (number of individuals in each community)).
-#' @param communityID Optional column name or index in \code{data} of community identifier variable. If known, it can support the two options wiithin 
-#'  \code{community.step}, i.e., community-level or individual-level TMLE (See details for \code{community.step}).
-#' @param community.wts Optional matrix of community-level observation weights (where dimension = the number of communities\eqn{\times}2). The first   
-#'  column contains the communities' names (ie., \code{data[, communityID]}) and the second column contains the corresponding weights.   
-#'  Currently only support a numeric vector, "equal.community" (Default) and "size.community". If "equal.community", assumed weights to be all 1;  
-#'  If setting community.wts = "size.community", treat the number of individuals within each community as its weight, respectively.
-#' @param working.model Logical for making assumptions about the covariate interference. If TRUE, assumes that each individual's outcome is known not
-#'  to be affected by the covariates of other individuals in the same community (Weaker covariate interference assumption may allow a subset of the 
-#'  individual's known "connections"). Currrently only the "no covariate interference" assumption is implemented. Default to be FASLE. 
-#' @param community.step Methods to deal with hierarchical data, one of "NoCommunity" (Default), "community_level", "individual_level" and  
-#'  "PerCommunity". If "NoCommunity", claim that no hirerachical structure in data; If "community_level", use community-level TMLE;  
-#'  If "individual_level", use individual-level TMLE cooperating with the assumption of no covariate interference. If "PerCommunity",  
-#'  use stratified TMLE. If communityID = NULL, then automatically pool over all communities (i.e., treated it as "NoCommunity").
-#' @param f_g0 Optional function used to specify model knowledge about value of Anodes. It estimates \code{P(A | W, E)} under \code{g0} by 
-#'  sampling a large vector/ data frame of Anode (of length \code{nrow(data)*n_MCsims} or number of rows if a data frame) from \code{f_g0} function.
-#' @param f_gstar1 Either a function or a vector or a matrix/ data frame of counterfactual exposures, dependin on the number of exposure variables.
-#'  If a matrix/ data frame, its number of rows must be either \code{nrow(data)} or 1 (constant exposure assigned to all observations), and its number of 
-#'  columns must be \code{length(Anodes)}. If a vector, it must be of length \code{nrow(data)} or 1. If a function, it must return a vector or a data frame 
-#'  of counterfactual exposures sampled based on Anodes, WEnodes (and possibly communityIndex) passed as a named argument "data". Thus, the function must 
-#'  include "data" as one of its argument names. The interventions defined by f_gstar1 can be static, dynamic or stochastic. See Exmaples below.
-#' @param f_gstar2 Either a function or a vector or a matrix/ data frame of counterfactual exposures, dependin on the number of exposure variables.
-#'  It has the same components and requirements as f_gstar1 has.
-#' @param Qform Character vector of regression formula for Ynode. If not specified, the outcome variable is regressed on all covariates included in 
-#'  Anodes and WEnodes.
-#' @param Qbounds Upper and lower bounds on Y and predicted values for initial Q. Defaults to the range of Y, widened by 10\% of the min and max values.
-#' @param alpha Used to keep predicted values for initial Q bounded away from (0,1) for logistic fluctuation 
-#'  (set \code{Qbounds} to (1 - \code{alpha}), \code{alpha}).
-#' @param fluctuation Default to "logistic", it could also be "linear" (for targeting step).
-#' @param hform.g0 Character vector of regression formula for estimating the conditional density of P(A | W, E) under observed treatment mechanism
-#'  g0. If not specified, its form will be Anodes ~ WEnodes. If there are more than one expsosure, it fits a joint probability.
-#' @param hform.gstar Character vector of regression formula for estimating the conditional density P(A | W, E) under user-supplied interventions  
-#'  f_gstar1 or f_gstar2. If not specified, it follows the same rule used in hform.g0. 
-#' @param lbound Value between (0,1) for truncation of predicted P(A | W, E). Default to 0.005
-#' @param h.g0_GenericModel An object of \code{GenericModel} \strong{R6} class containing the previously fitted models for P(A | W, E) under observed  
-#'  treatment mechanism g0, one of the returns of \code{tmleCommunity} function. If known, predictions for P(A=a | W=w, E=e) under g0 are based on  
-#'  the fitted models in \code{h.g0_GenericModel}.
-#' @param h.gstar_GenericModel An object of \code{GenericModel} \strong{R6} class containing the previously fitted models for P(A^* | W, E) under  
-#'  intervention gstar, one of the returns of \code{tmleCommunity} function. If known, predictions for P(A=a | W=w, E=e) under gstar are based on 
-#'  the fitted models in \code{h.gstar_GenericModel}.
-#' @param TMLE.targetStep TMLE targeting step method, either "tmle.intercept" (Default) or "tmle.covariate". See Details below.
-#' @param n_MCsims Number of simulations for Monte-Carlo analysis. Each simulation generates new exposures under f_gstar1 or f_gstar2 (if specified)  
-#'  or f_g0 (if specified), with a sample size of nrow(data). Then these generated expsosures are used when fitting the conditional densities P(A | W, E).
-#'  and estimating for \strong{IPTW} and \strong{GCOMP} under intervention f_gstar1 or f_gstar2. Note that deterministic intervention only needs one 
-#'  simulation and stochastic intervention could use more simulation times such as 10 (Default to 1). 
-#' @param rndseed Random seed for controlling sampling A under f_gstar1 or f_gstar2 (for reproducibility of Monte-Carlo simulations)
-#' @param verbose Flag. If TRUE, print status messages. Default to TRUE.
-#'
-#' @return \code{tmleCommunity} returns an object of class "\code{tmleCommunity}", which is a named list containing the estimation results 
-#'  stored by the following 3 elements:
-#'  \itemize{
-#'  \item \code{EY_gstar1} - a list with estimates of the mean counterfactual outcome under (deterministic or stochastic) intervention  
-#'    function \code{f_gstar1} \eqn{(\mathbb{E}[Y_{g^*_1}])}.
-#'  \item \code{EY_gstar2} - a list with estimates of the mean counterfactual outcome under (deterministic or stochastic) intervention   
-#'    function \code{f_gstar2} \eqn{(\mathbb{E}[Y_{g^*_2}])}; or \code{NULL} if \code{f_gstar2} not specified.
-#'  \item \code{ATE} - additive treatment effect (\eqn{\mathbb{E}[Y_{g^*_1}]} - \eqn{\mathbb{E}[Y_{g^*_2}]) under two interventions
-#'    functions code{f_gstar1} vs. \code{f_gstar2}; or \code{NULL} if \code{f_gstar2} not specified.
-#' }
-#' Each element in the returned \code{tmleCommunity} object is itself a list containing the following 5 items:
-#'  \itemize{
-#'  \item \code{estimates} - various estimates of the target parameter (network population counterfactual mean under (stochastic) intervention).
-#'  \item \code{vars} - the asymptotic variance estimates, for \strong{TMLE}, \strong{IPTW} and \strong{GCOMP}. Notice, inference for gcomp is 
-#'    not accurate! It is based on TMLE influence curves.
-#'  \item \code{CIs} - CI estimates at \code{alpha} level, for \strong{TMLE}, \strong{IPTW} and \strong{GCOMP}.
-#'  \item \code{h.g0_GenericModel} - The model fits for P(\code{A}|\code{W, E}) under observed exposure mechanism
-#'    \code{g0}. This is an object of \code{h.g0_GenericModel} \pkg{R6} class.
-#'  \item \code{h.gstar_GenericModel} - The model fits for P(\code{A}|\code{W, E}) under intervention \code{f_gstar1}
-#'    or \code{f_gstar2}. This is an object of \code{GenericModel} \pkg{R6} class.
-#' }
-#' Currently implemented estimators are:
-#'  \itemize{
-#'  \item \code{tmle} - Either weighted regression intercept-based TMLE (\code{tmle.intercept} - the default) with weights defined by the IPTW weights
-#'    \code{h_gstar/h_gN} or covariate-based unweighted TMLE (\code{tmle.covariate}) that uses the IPTW weights as a covariate \code{h_gstar/h_gN}.  
-#'  \item \code{iptw} - Efficient IPTW based on weights h_gstar/h_gN.
-#'  \item \code{gcomp} - Parametric G-computation formula substitution estimator.
-#' }
-#'
+#' 
 #' @section IPTW estimator:
 #' **********************************************************************
 #'
@@ -548,6 +462,93 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' Approach 3 (\code{dhist}): combination of 1 & 2.
 #'
 #' *********************
+#'
+#' @param data Observed data, \code{data.frame} with named columns, containing \code{WEnodes}, \code{Anode}, \code{Ynode} and possibly \code{communityIndex}.
+#' @param Ynode Column names or indices in \code{data} of outcome variable name. Outcome can be either binary or continuous (could be beyong 0 and 1). 
+#'  If Ynode undefined, the left-side of the regression formula in argument \code{Qform} will be treated as \code{Ynode}.
+#' @param Anodes Column names or indices in \code{data} of exposure (treatment) variables; exposures can be either binary, categorical or continuous.
+#' @param WEndoes Column names or indices in \code{data} of individual-level (and possibly community-level) baseline covariates.
+#'  Factors are not currently allowed.
+#' @param YnodeDet Optional column name or index in \code{data} of indicators of deterministic values of outcome \code{Ynode}, coded as (TRUE / FALSE)  
+#'  or (1 / 0). If TRUE or 1, value of \code{Ynode} is given deterministically / constant. 
+#' @param obs.wts Optional vector of individual-level observation (sampling) weights (of length \code{nrow(data)}). Currently supports a numeric vector, 
+#'  "equal.within.pop" (Default) and equal.within.community. If "equal.within.pop", weigh individuals in the entire dataset equally (weigh to be all 1);
+#'  If "equal.within.community", weigh individuals within the same community equally (i.e., 1 / (number of individuals in each community)).
+#' @param communityID Optional column name or index in \code{data} of community identifier variable. If known, it can support the two options wiithin 
+#'  \code{community.step}, i.e., community-level or individual-level TMLE (See details for \code{community.step}).
+#' @param community.wts Optional matrix of community-level observation weights (where dimension = the number of communities\eqn{\times}2). The first   
+#'  column contains the communities' names (ie., \code{data[, communityID]}) and the second column contains the corresponding weights.   
+#'  Currently only support a numeric vector, "equal.community" (Default) and "size.community". If "equal.community", assumed weights to be all 1;  
+#'  If setting community.wts = "size.community", treat the number of individuals within each community as its weight, respectively.
+#' @param working.model Logical for making assumptions about the covariate interference. If TRUE, assumes that each individual's outcome is known not
+#'  to be affected by the covariates of other individuals in the same community (Weaker covariate interference assumption may allow a subset of the 
+#'  individual's known "connections"). Currrently only the "no covariate interference" assumption is implemented. Default to be FASLE. 
+#' @param community.step Methods to deal with hierarchical data, one of "NoCommunity" (Default), "community_level", "individual_level" and  
+#'  "PerCommunity". If "NoCommunity", claim that no hirerachical structure in data; If "community_level", use community-level TMLE;  
+#'  If "individual_level", use individual-level TMLE cooperating with the assumption of no covariate interference. If "PerCommunity",  
+#'  use stratified TMLE. If communityID = NULL, then automatically pool over all communities (i.e., treated it as "NoCommunity").
+#' @param f_g0 Optional function used to specify model knowledge about value of Anodes. It estimates \code{P(A | W, E)} under \code{g0} by 
+#'  sampling a large vector/ data frame of Anode (of length \code{nrow(data)*n_MCsims} or number of rows if a data frame) from \code{f_g0} function.
+#' @param f_gstar1 Either a function or a vector or a matrix/ data frame of counterfactual exposures, dependin on the number of exposure variables.
+#'  If a matrix/ data frame, its number of rows must be either \code{nrow(data)} or 1 (constant exposure assigned to all observations), and its number of 
+#'  columns must be \code{length(Anodes)}. If a vector, it must be of length \code{nrow(data)} or 1. If a function, it must return a vector or a data frame 
+#'  of counterfactual exposures sampled based on Anodes, WEnodes (and possibly communityIndex) passed as a named argument "data". Thus, the function must 
+#'  include "data" as one of its argument names. The interventions defined by f_gstar1 can be static, dynamic or stochastic. See Exmaples below.
+#' @param f_gstar2 Either a function or a vector or a matrix/ data frame of counterfactual exposures, dependin on the number of exposure variables.
+#'  It has the same components and requirements as f_gstar1 has.
+#' @param Qform Character vector of regression formula for Ynode. If not specified, the outcome variable is regressed on all covariates included in 
+#'  Anodes and WEnodes.
+#' @param Qbounds Upper and lower bounds on Y and predicted values for initial Q. Defaults to the range of Y, widened by 10\% of the min and max values.
+#' @param alpha Used to keep predicted values for initial Q bounded away from (0,1) for logistic fluctuation 
+#'  (set \code{Qbounds} to (1 - \code{alpha}), \code{alpha}).
+#' @param fluctuation Default to "logistic", it could also be "linear" (for targeting step).
+#' @param hform.g0 Character vector of regression formula for estimating the conditional density of P(A | W, E) under observed treatment mechanism
+#'  g0. If not specified, its form will be Anodes ~ WEnodes. If there are more than one expsosure, it fits a joint probability.
+#' @param hform.gstar Character vector of regression formula for estimating the conditional density P(A | W, E) under user-supplied interventions  
+#'  f_gstar1 or f_gstar2. If not specified, it follows the same rule used in hform.g0. 
+#' @param lbound Value between (0,1) for truncation of predicted P(A | W, E). Default to 0.005
+#' @param h.g0_GenericModel An object of \code{GenericModel} \strong{R6} class containing the previously fitted models for P(A | W, E) under observed  
+#'  treatment mechanism g0, one of the returns of \code{tmleCommunity} function. If known, predictions for P(A=a | W=w, E=e) under g0 are based on  
+#'  the fitted models in \code{h.g0_GenericModel}.
+#' @param h.gstar_GenericModel An object of \code{GenericModel} \strong{R6} class containing the previously fitted models for P(A^* | W, E) under  
+#'  intervention gstar, one of the returns of \code{tmleCommunity} function. If known, predictions for P(A=a | W=w, E=e) under gstar are based on 
+#'  the fitted models in \code{h.gstar_GenericModel}.
+#' @param TMLE.targetStep TMLE targeting step method, either "tmle.intercept" (Default) or "tmle.covariate". See Details below.
+#' @param n_MCsims Number of simulations for Monte-Carlo analysis. Each simulation generates new exposures under f_gstar1 or f_gstar2 (if specified)  
+#'  or f_g0 (if specified), with a sample size of nrow(data). Then these generated expsosures are used when fitting the conditional densities P(A | W, E).
+#'  and estimating for \strong{IPTW} and \strong{GCOMP} under intervention f_gstar1 or f_gstar2. Note that deterministic intervention only needs one 
+#'  simulation and stochastic intervention could use more simulation times such as 10 (Default to 1). 
+#' @param rndseed Random seed for controlling sampling A under f_gstar1 or f_gstar2 (for reproducibility of Monte-Carlo simulations)
+#' @param verbose Flag. If TRUE, print status messages. Default to TRUE.
+#'
+#' @return \code{tmleCommunity} returns an object of class "\code{tmleCommunity}", which is a named list containing the estimation results 
+#'  stored by the following 3 elements:
+#'  \itemize{
+#'  \item \code{EY_gstar1} - a list with estimates of the mean counterfactual outcome under (deterministic or stochastic) intervention  
+#'    function \code{f_gstar1} \eqn{(\mathbb{E}[Y_{g^*_1}])}.
+#'  \item \code{EY_gstar2} - a list with estimates of the mean counterfactual outcome under (deterministic or stochastic) intervention   
+#'    function \code{f_gstar2} \eqn{(\mathbb{E}[Y_{g^*_2}])}; or \code{NULL} if \code{f_gstar2} not specified.
+#'  \item \code{ATE} - additive treatment effect (\eqn{\mathbb{E}[Y_{g^*_1}]} - \eqn{\mathbb{E}[Y_{g^*_2}]) under two interventions
+#'    functions code{f_gstar1} vs. \code{f_gstar2}; or \code{NULL} if \code{f_gstar2} not specified.
+#' }
+#' Each element in the returned \code{tmleCommunity} object is itself a list containing the following 5 items:
+#'  \itemize{
+#'  \item \code{estimates} - various estimates of the target parameter (network population counterfactual mean under (stochastic) intervention).
+#'  \item \code{vars} - the asymptotic variance estimates, for \strong{TMLE}, \strong{IPTW} and \strong{GCOMP}. Notice, inference for gcomp is 
+#'    not accurate! It is based on TMLE influence curves.
+#'  \item \code{CIs} - CI estimates at \code{alpha} level, for \strong{TMLE}, \strong{IPTW} and \strong{GCOMP}.
+#'  \item \code{h.g0_GenericModel} - The model fits for P(\code{A}|\code{W, E}) under observed exposure mechanism
+#'    \code{g0}. This is an object of \code{h.g0_GenericModel} \pkg{R6} class.
+#'  \item \code{h.gstar_GenericModel} - The model fits for P(\code{A}|\code{W, E}) under intervention \code{f_gstar1}
+#'    or \code{f_gstar2}. This is an object of \code{GenericModel} \pkg{R6} class.
+#' }
+#' Currently implemented estimators are:
+#'  \itemize{
+#'  \item \code{tmle} - Either weighted regression intercept-based TMLE (\code{tmle.intercept} - the default) with weights defined by the IPTW weights
+#'    \code{h_gstar/h_gN} or covariate-based unweighted TMLE (\code{tmle.covariate}) that uses the IPTW weights as a covariate \code{h_gstar/h_gN}.  
+#'  \item \code{iptw} - Efficient IPTW based on weights h_gstar/h_gN.
+#'  \item \code{gcomp} - Parametric G-computation formula substitution estimator.
+#' }
 #'
 #' The data-adaptive approach dhist is a mix of Approaches 1 & 2. See Denby and Mallows "Variations on the Histogram"
 #'  (2009)). This interval definition method is selected by passing an argument \code{bin.method="dhist"} to
