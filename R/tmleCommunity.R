@@ -526,16 +526,21 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'    function \code{f_gstar1} (\eqn{E[Y_{g^*_1}]}).
 #'  \item \code{EY_gstar2} - a list with estimates of the mean counterfactual outcome under (deterministic or stochastic) intervention   
 #'    function \code{f_gstar2} \eqn{(E[Y_{g^*_2}])}; or \code{NULL} if \code{f_gstar2} not specified.
-#'  \item \code{ATE} - additive treatment effect (\eqn{\mathbb{E}[Y_{g^*_1}]} - \eqn{E[Y_{g^*_2}]}) under two interventions functions \code{f_gstar1} vs.
-#'    \code{f_gstar2}; or \code{NULL} if \code{f_gstar2} not specified.
+#'  \item \code{ATE} - a list with estimates of additive treatment effect (\eqn{E[Y_{g^*_1}]} - \eqn{E[Y_{g^*_2}]}) under two interventions
+#'     functions \code{f_gstar1} VS \code{f_gstar2}; or \code{NULL} if \code{f_gstar2} not specified.
 #' }
 #' Each element in the returned \code{tmleCommunity} object is itself a list containing the following 5 items:
 #'  \itemize{
-#'  \item \code{estimates} - various estimates of the target parameter (network population counterfactual mean under (stochastic) intervention).
-#'  \item \code{vars} - the asymptotic variance estimates, for \strong{TMLE}, \strong{IPTW} and \strong{GCOMP}. Notice, inference for gcomp is 
-#'    not accurate! It is based on TMLE influence curves.
-#'  \item \code{CIs} - CI estimates at \code{alpha} level, for \strong{TMLE}, \strong{IPTW} and \strong{GCOMP}.
-#'  \item \code{h.g0_GenericModel} - The model fits for P(\code{A}|\code{W, E}) under observed exposure mechanism
+#'  \item \code{estimates} - matrix, 3\eqn{\times}1, storing 3 algorithm estimates of the target parameter (population community-level counterfactual 
+#'    mean under (deterministic or stochastic) intervention), including \strong{TMLE}, \code{IPTW} and \code{GCOMP}.
+#'  \item \code{vars} - matrix, 3\eqn{\times}1, storing 3 influence-curve based asymptotic variance estimates for \strong{TMLE}, \strong{IPTW} and 
+#'     \strong{GCOMP}. Notice, inference for \strong{GCOMP} is not accurate since it is based on TMLE's influence curves! (Just for reference).
+#'  \item \code{CIs} - Confidence interval estimates at \code{CI_alpha} level, for \strong{TMLE}, \strong{IPTW} and \strong{GCOMP}.
+#'  \item \code{tstat} - matrix, 3\eqn{\times}1, storing 3 test statistics, for \strong{TMLE}, \strong{IPTW} and \strong{GCOMP}.
+#'  \item \code{pval} - matrix, 3\eqn{\times}1, storing 3 p-values, for \strong{TMLE}, \strong{IPTW} and \strong{GCOMP}. It's based on the Student's T 
+#'    distribution if the number of communities (or the number of individuals if no hierarchical structure) is less than 41.
+#'  \item \code{IC} - data frame, nobs\eqn{\times}3,
+#'  \item \code{h.g0_GenericModel} - The model fits for P(\code{A}|\code{W, E}) under observed exposure mechanism.
 #'    \code{g0}. This is an object of \code{h.g0_GenericModel} \pkg{R6} class.
 #'  \item \code{h.gstar_GenericModel} - The model fits for P(\code{A}|\code{W, E}) under intervention \code{f_gstar1}
 #'    or \code{f_gstar2}. This is an object of \code{GenericModel} \pkg{R6} class.
