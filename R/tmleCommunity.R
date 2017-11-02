@@ -454,16 +454,16 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  library for initial estimation of the outcome mechanism. If \code{pooled.Q} = \code{FALSE}, both outcome and treatment mechanisms are
 #'  estimated on the community-level (no use of individual-level information). 
 #'  
-#' \codeP{Qform} should be \code{NULL}, in which cases all parent nodes of Y node will be used as regressors, or a character vector that can  
+#' \code{Qform} should be \code{NULL}, in which cases all parent nodes of Y node will be used as regressors, or a character vector that can  
 #'  be coerced to class \code{"formula"}. If \code{Qestimator} (an argument in \code{tmleCom_Options}) is \code{"speedglm__glm"} (or  
 #'  \code{"speedglm__glm"}), then \code{speedglm} (or \code{glm}) will be called using the components of \code{Qform}. If \code{Qestimator} 
 #'  is \code{"SuperLearner"}, then \code{SuperLearner} will be called after a data frame is created using \code{Qform}, based on the specified
 #'  algorithms in \code{SL.library} (an argument in \code{tmleCom_Options}); If \code{Qestimator} is \code{"h2o__ensemble"}, then \code{h2o} and 
 #'  \code{h2oEnsemble} will be called after a H2OFrame dataset is creating using \code{Qform}, based on specified algorithms in \code{h2olearner}
-#'  and \code{h2ometalearner}. See "Arguments" in \code{tmleCom_Options}.
+#'  and \code{h2ometalearner}. \code{hform.g0} and \code{hform.gstar} should also be \code{NULL}, in which cases all parent nodes of A node(s) 
+#'  will be used as regressors, or a character vector that can be coerced to class \code{"formula"}. It follows the same rules applied to 
+#'  \code{Qform} except it's now based on \code{gestimator} (an argument in \code{tmleCom_Options}).See "Arguments" in \code{tmleCom_Options}.
 #' 
-#' \code{hform.g0} and \code{hform.gstar} should be \code{NULL}, in which cases all parent nodes of A node(s) will be used as regressors, or
-#'  a character vector that can be coerced to class \code{"formula"}. 
 #' 
 #' @section IPTW estimator:
 #' **********************************************************************
