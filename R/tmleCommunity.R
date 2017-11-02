@@ -529,6 +529,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  \item \code{ATE} - additive treatment effect (\eqn{\mathbb{E}[Y_{g^*_1}]} - \eqn{\mathbb{E}[Y_{g^*_2}]) under two interventions
 #'    functions code{f_gstar1} vs. \code{f_gstar2}; or \code{NULL} if \code{f_gstar2} not specified.
 #' }
+#' 
 #' Each element in the returned \code{tmleCommunity} object is itself a list containing the following 5 items:
 #'  \itemize{
 #'  \item \code{estimates} - various estimates of the target parameter (network population counterfactual mean under (stochastic) intervention).
@@ -540,6 +541,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  \item \code{h.gstar_GenericModel} - The model fits for P(\code{A}|\code{W, E}) under intervention \code{f_gstar1}
 #'    or \code{f_gstar2}. This is an object of \code{GenericModel} \pkg{R6} class.
 #' }
+#' 
 #' Currently implemented estimators are:
 #'  \itemize{
 #'  \item \code{tmle} - Either weighted regression intercept-based TMLE (\code{tmle.intercept} - the default) with weights defined by the IPTW weights
