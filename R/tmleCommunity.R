@@ -403,10 +403,10 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @param hform.gstar Character vector of regression formula for estimating the conditional density P(A | W, E) under user-supplied interventions  
 #'  f_gstar1 or f_gstar2. If not specified, it follows the same rule used in hform.g0. 
 #' @param lbound Value between (0,1) for truncation of predicted P(A | W, E). Default to 0.005
-#' @param h.g0_GenericModel An object of \code{GenericModel} \strong{R6} class containing the previously fitted models for P(A | W, E) under observed  
+#' @param h.g0_GenericModel An object of \code{GenericModel} \pkg{R6} class containing the previously fitted models for P(A | W, E) under observed  
 #'  treatment mechanism g0, one of the returns of \code{tmleCommunity} function. If known, predictions for P(A=a | W=w, E=e) under g0 are based on  
 #'  the fitted models in \code{h.g0_GenericModel}.
-#' @param h.gstar_GenericModel An object of \code{GenericModel} \strong{R6} class containing the previously fitted models for P(A^* | W, E) under  
+#' @param h.gstar_GenericModel An object of \code{GenericModel} \pkg{R6} class containing the previously fitted models for P(A^* | W, E) under  
 #'  intervention gstar, one of the returns of \code{tmleCommunity} function. If known, predictions for P(A=a | W=w, E=e) under gstar are based on 
 #'  the fitted models in \code{h.gstar_GenericModel}.
 #' @param TMLE.targetStep TMLE targeting step method, either "tmle.intercept" (Default) or "tmle.covariate". See Details below.
@@ -532,13 +532,14 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' Each element in the returned \code{tmleCommunity} object is itself a list containing the following 5 items:
 #'  \itemize{
 #'  \item \code{estimates} - matrix, 3\eqn{\times}1, storing 3 algorithm estimates of the target parameter (population community-level counterfactual 
-#'    mean under (deterministic or stochastic) intervention), including \strong{TMLE}, \code{IPTW} and \code{GCOMP}.
-#'  \item \code{vars} - matrix, 3\eqn{\times}1, storing 3 influence-curve based asymptotic variance estimates for \strong{TMLE}, \strong{IPTW} and 
-#'     \strong{GCOMP}. Notice, inference for \strong{GCOMP} is not accurate since it is based on TMLE's influence curves! (Just for reference).
-#'  \item \code{CIs} - Confidence interval estimates at \code{CI_alpha} level, for \strong{TMLE}, \strong{IPTW} and \strong{GCOMP}.
-#'  \item \code{tstat} - matrix, 3\eqn{\times}1, storing 3 test statistics, for \strong{TMLE}, \strong{IPTW} and \strong{GCOMP}.
-#'  \item \code{pval} - matrix, 3\eqn{\times}1, storing 3 p-values, for \strong{TMLE}, \strong{IPTW} and \strong{GCOMP}. It's based on the Student's T 
-#'    distribution if the number of communities (or the number of individuals if no hierarchical structure) is less than 41.
+#'    mean under (deterministic or stochastic) intervention), including \code{TMLE}, \code{IPTW} and \code{GCOMP}.
+#'  \item \code{vars} - matrix, 3\eqn{\times}1, storing 3 influence-curve based asymptotic variance estimates for \code{TMLE}, \code{IPTW} and 
+#'     \code{GCOMP}. Notice, inference for \strong{GCOMP} is not accurate since it is based on TMLE's influence curves! (Just for reference).
+#'  \item \code{CIs} - matrix, 3\eqn{\times}2, storing 3 confidence interval estimates at \code{CI_alpha} level, for \code{TMLE}, \code{IPTW} and 
+#'     \code{GCOMP}. The first column contains the lower bounds and the second column contains the upper bounds.
+#'  \item \code{tstat} - matrix, 3\eqn{\times}1, storing 3 test statistics.
+#'  \item \code{pval} - matrix, 3\eqn{\times}1, storing 3 p-values. It's based on the Student's T distribution if the number of communities  
+#'    (or the number of individuals if no hierarchical structure) is less than 41, otherwise based on the Z normal distribution.
 #'  \item \code{IC} - data frame, nobs\eqn{\times}3,
 #'  \item \code{h.g0_GenericModel} - The model fits for P(\code{A}|\code{W, E}) under observed exposure mechanism.
 #'    \code{g0}. This is an object of \code{h.g0_GenericModel} \pkg{R6} class.
