@@ -521,6 +521,10 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' 
 #' @return \code{tmleCommunity} returns an object of class "\code{tmleCommunity}", which is a named list containing the estimation results
 #'  stored by the following 3 elements:
+#'  \itemize{
+#'  \item \code{EY_gstar1} - a list with estimates of the mean counterfactual outcome under (deterministic or stochastic) intervention  
+#'    function \code{f_gstar1} (\eqn{\mathbb{E}[Y_{g^*_1}]}).
+#' }
 #' Each element in the returned \code{tmleCommunity} object is itself a list containing the following 5 items:
 #'  \itemize{
 #'  \item \code{estimates} - various estimates of the target parameter (network population counterfactual mean under (stochastic) intervention).
