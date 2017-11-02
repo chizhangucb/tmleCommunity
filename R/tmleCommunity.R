@@ -180,7 +180,6 @@ calcParameters <- function(inputYs, alpha = 0.05, est_params_list, tmle_g_out, t
 #-------------------------------------------------------------------------------------------------
 get_est_sigmas <- function(estnames, obsYvals, est_params_list, obs.wts, ests_mat, QY_mat, wts_mat, fWi_mat) {
   community.step <- est_params_list$community.step
-  working.model <- est_params_list$working.model
   community.wts <- est_params_list$community.wts
   communityID <- est_params_list$communityID
   
@@ -197,7 +196,7 @@ get_est_sigmas <- function(estnames, obsYvals, est_params_list, obs.wts, ests_ma
   
   iidIC <- data.table::data.table(iidIC_tmle, iidIC_mle, iidIC_iptw, obs.wts); sorted.communityID <- communityID
   # if we believe our working model (i.e. if estimating under the submodel) or run TMLE for each community
-  if ((community.step == "individual_level" && working.model == TRUE) || community.step == "perCommunity") { 
+  if (community.step == "individual_level" || community.step == "perCommunity") { 
     # if (!is.null(communityID)) {"iid IC cannnot be aggregated to the cluster-level since lack of 'communityID' so treated as non-hierarchical"}
     iidIC <- data.table::data.table(iidIC_tmle, iidIC_mle, iidIC_iptw, obs.wts, communityID)
     iidIC <- iidIC[, lapply(.SD, weighted.mean, w = obs.wts), by = communityID]; sorted.communityID <- iidIC[["communityID"]]
@@ -226,7 +225,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   communityID <- est_params_list$communityID
   community.step <- est_params_list$community.step
   community.wts <- est_params_list$community.wts
-  working.model <- est_params_list$working.model
+  pooled.Q <- est_params_list$pooled.Q
   TMLE.targetStep <- est_params_list$TMLE.targetStep
   nodes <- OData.ObsP0$nodes
   Y <- OData.ObsP0$noNA.Ynodevals # actual observed & transformed Y's
@@ -239,10 +238,10 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   QY.init <- bound(QY.init, est_params_list$Qbounds)
   off <- qlogis(QY.init)  # offset
   
-  if (community.step == "individual_level" && working.model == FALSE) { # if we do NOT believe our working model (i.e. estimate under the lareg model)
+  if (community.step == "community_level" && pooled.Q == TRUE) { # if we do NOT believe our working model (i.e. estimate under the lareg model)
     # if (!is.null(communityID)) {}  # Don't need it here since tmleCommunity takes care of it
-    # Since individual-level TMLE with no working.model requires 'communityID' to aggregate data to the cluster-level in the estimation of 
-    # trt mechanism. Lack of 'communityID' pool data over all communities & treat it as non-hierarchical data when fitting clever covariates
+    # Since community-level TMLE with pooled individual-level Q requires 'communityID' to aggregate data to the cluster-level in the estimation  
+    # of trt mechanism. Lack of 'communityID' pool data over all communities & treat it as non-hierarchical data when fitting clever covariates
     
     # aggregate initial outcome predictions to the cluster-level & Recalculate offset based on aggregated initiate predictions
     QY.init <- aggregate(x = QY.init, by=list(id = data[, communityID]), mean)[, 2]
@@ -280,7 +279,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   IPTW <- Y
   IPTW[!determ.Q] <- Y[!determ.Q] * h_wts[!determ.Q]
   # IPTW_unwt <- mean(IPTW)
-  if (community.step == "individual_level" && working.model == TRUE) {
+  if (community.step == "individual_level") {
     # if (!is.null(communityID)) {"IPTW cannnot be aggregated to the cluster-level since lack of 'communityID' so treated as non-hierarchical"}
     # IPTW <- aggregate(x = IPTW, by=list(newid = data[, communityID]), mean)
     newid <- data[, communityID]; IPTW <- cbind(IPTW, obs.wts)
@@ -376,12 +375,12 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  column contains the communities' names (ie., \code{data[, communityID]}) and the second column contains the corresponding weights.   
 #'  Currently only support a numeric vector, "equal.community" (Default) and "size.community". If "equal.community", assumed weights to be all 1;  
 #'  If setting community.wts = "size.community", treat the number of individuals within each community as its weight, respectively.
-#' @param working.model Logical for making assumptions about the covariate interference. If TRUE, assumes no covariate interference. 
-#'  Currrently only the "no covariate interference" assumption is implemented. Default to be FASLE. See "Details". 
-#' @param community.step Methods to deal with hierarchical data, one of "NoCommunity" (Default), "community_level", "individual_level" and  
-#'  "PerCommunity". If "NoCommunity", claim that no hirerachical structure in data; If "community_level", use community-level TMLE;  
-#'  If "individual_level", use individual-level TMLE cooperating with the assumption of no covariate interference. If "PerCommunity",  
-#'  use stratified TMLE. If communityID = NULL, then automatically pool over all communities (i.e., treated it as "NoCommunity").
+#' @param pooled.Q Logical for incorporating hierarchical data to estimate the outcome mechanism. If \code{TRUE}, use a pooled individual-level
+#'  regression for initial estimation of the mean outcome (i.e., outcome mechanism). Default to be \code{FASLE}. See "Details". 
+#' @param community.step Methods to deal with hierarchical data, one of "NoCommunity" (Default), "community_level", "individual_level" and "PerCommunity".  
+#'  If "NoCommunity", claim that no hirerachical structure in data; If "community_level", use community-level TMLE; If "individual_level", use  
+#'  individual-level TMLE cooperating with the assumption of no covariate interference. If "PerCommunity", use stratified TMLE. If \code{communityID} =  
+#'  \code{NULL}, then automatically pool over all communities (i.e., treated it as "NoCommunity"). See "Details".
 #' @param f_g0 Optional function used to specify model knowledge about value of Anodes. It estimates \code{P(A | W, E)} under \code{g0} by 
 #'  sampling a large vector/ data frame of Anode (of length \code{nrow(data)*n_MCsims} or number of rows if a data frame) from \code{f_g0} function.
 #' @param f_gstar1 Either a function or a vector or a matrix/ data frame of counterfactual exposures, dependin on the number of exposure variables.
@@ -415,7 +414,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  and estimating for \strong{IPTW} and \strong{GCOMP} under intervention f_gstar1 or f_gstar2. Note that deterministic intervention only needs one 
 #'  simulation and stochastic intervention could use more simulation times such as 10 (Default to 1). 
 #' @param rndseed Random seed for controlling sampling A under f_gstar1 or f_gstar2 (for reproducibility of Monte-Carlo simulations)
-#' @param verbose Flag. If TRUE, print status messages. Default to TRUE.
+#' @param verbose Flag. If \code{TRUE}, print status messages. Default to \code{TRUE}.
 #' 
 #' @details
 #' The estimates returned by \code{tmleCommunity} are of a treatment-specific mean, \eqn{E[Y_{g^*}]}, the expected community-level outcome if all 
@@ -440,7 +439,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'   each individual's outcome is known not to be affected by the covariates of other individuals in the same community. But this strong assumption  
 #'   can be relaxed by integrating knowledge of the dependence structure among individuals within communities (i.e., "weak covariate interference").
 #'   If \code{working.model} is \code{TRUE}, use individual-level \code{TMLE} (and the corresponding \code{IPTW} and \code{GCOMP}). If \code{FALSE}, 
-#'   then use community-level \code{TMLE}. 
+#'   then use community-level \code{TMLE}. Currrently only the "no covariate interference" assumption is implemented. 
 #'  
 #' @section IPTW estimator:
 #' **********************************************************************
@@ -588,7 +587,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @example tests/examples/3_tmleCommunity_examples.R
 #' @export
 tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts = c("equal.within.pop", "equal.within.community"), 
-                          communityID = NULL, community.wts = c("equal.community", "size.community"), working.model = FALSE, 
+                          communityID = NULL, community.wts = c("equal.community", "size.community"), pooled.Q = FALSE, 
                           community.step = c("NoCommunity", "community_level", "individual_level", "perCommunity"), 
                           f_g0 = NULL, f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995,                                                      
                           fluctuation = "logistic", hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, 
@@ -643,9 +642,9 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
     messageMSg <- c("'communityID' is required when using 'community_level', 'individual_level' and 'perCommunity. '",
                     "Lack of 'communityID' forces the algorithm to automatically pool data over all communities ",
                     "and treat it as non-hierarchical dataset. Details in package documentation.\n",
-                    "In other words, we simply treat community.step = 'NoCommunity' and working.model = FALSE")
+                    "In other words, we simply treat community.step = 'NoCommunity' and pooled.Q = FALSE")
     message(messageMSg[1] %+% messageMSg[2] %+% messageMSg[3] %+% messageMSg[4])
-    community.step <- "NoCommunity"; working.model <- FALSE
+    community.step <- "NoCommunity"; pooled.Q <- FALSE
   } 
   if (!(community.wts %in% c("equal.community", "size.community")) && !is.data.frame(community.wts)) {
     stop("Currently only numeric values, 'equal.community' and 'size.community' are supported for community.wts")
@@ -749,7 +748,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
       nodes = nodes,
       communityID = communityID,
       community.step = community.step,
-      working.model = working.model,
+      pooled.Q = pooled.Q,
       TMLE.targetStep = TMLE.targetStep,
       obs.wts = obs.wts, 
       community.wts = community.wts,
@@ -862,7 +861,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
         nodes = nodes,
         communityID = communityID,
         community.step = community.step,
-        working.model = working.model,
+        pooled.Q = pooled.Q,
         TMLE.targetStep = TMLE.targetStep,
         obs.wts = sub.obs.wts, 
         community.wts = community.wts,
