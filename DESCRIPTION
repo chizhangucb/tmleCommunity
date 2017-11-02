@@ -1,10 +1,11 @@
 Package: tmleCommunity
-Title: What the Package Does (one line, title case)
-Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Title: Targeted Maximum Likelihood Estimation for Hierarchical Data
+Version: 0.1.0
+Authors@R: c(person("Chi", "Zhang", email = "chi.zhang@berkeley.edu", role = c("aut", "cre")), 
+             person("Mark J.", "van der Laan", role = c("aut")))
+Description: Targeted minimum loss-based estimation (TMLE) of the average causal effect of community-based intervention(s) at a single time point on an individual-based outcome of interest. Implementations of the inverse-probability-of-treatment-weighting (IPTW) and the G-computation formula (GCOMP) are also available. The package supports multivariate arbitrary interventions (deterministic or stochastic) with a binary or continuous outcome. The tmleCommunity() function calculates the marginal treatment effect among independent community units (or i.i.d individual units if no hierarchical structure) using TMLE. Besides, it allows user-specified data-adaptive machine learning algorithms through SuperLearner and h2oEnsemble packages. 
 Depends: R (>= 3.3.1)
-License: What license is it under?
+License: GPL-2
 Encoding: UTF-8
 LazyData: true
 Imports: assertthat,
