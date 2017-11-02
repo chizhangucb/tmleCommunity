@@ -359,11 +359,12 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' analysis, respectively. The individual-level TMLE cooperates with additional working assumptions and has potential efficiency gain. It also  
 #' provide corresponding \strong{IPTW} (the inverse-probability-of-treatment or Horvitz-Thompson) and \strong{GCOMP} (parametric G-computation).
 #'
-#' @param data Observed data, \code{data.frame} with named columns, containing \code{WEnodes}, \code{Anode}, \code{Ynode} and possibly \code{communityIndex}.
-#' @param Ynode Column names or indices in \code{data} of outcome variable name. Outcome can be either binary or continuous (could be beyong 0 and 1). 
+#' @param data Observed data, \code{data.frame} with named columns, containing \code{WEnodes}, \code{Anode}, \code{Ynode} and possibly 
+#'  \code{communityID}, \code{YnodeDet}. See "Details".
+#' @param Ynode Column names or indices in \code{data} of outcome variable name. Outcome can be either binary or continuous (could be beyond 0 and 1). 
 #'  If Ynode undefined, the left-side of the regression formula in argument \code{Qform} will be treated as \code{Ynode}.
-#' @param Anodes Column names or indices in \code{data} of exposure (treatment) variables; exposures can be either binary, categorical or continuous.
-#' @param WEndoes Column names or indices in \code{data} of individual-level (and possibly community-level) baseline covariates.
+#' @param Anodes Column names or indices in \code{data} of exposure (treatment) variables
+#' @param WEnodes Column names or indices in \code{data} of community-level and individual-level (and possibly community-level) baseline covariates.
 #'  Factors are not currently allowed.
 #' @param YnodeDet Optional column name or index in \code{data} of indicators of deterministic values of outcome \code{Ynode}, coded as (TRUE / FALSE)  
 #'  or (1 / 0). If TRUE or 1, value of \code{Ynode} is given deterministically / constant. 
@@ -388,13 +389,14 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @param f_gstar1 Either a function or a vector or a matrix/ data frame of counterfactual exposures, dependin on the number of exposure variables.
 #'  If a matrix/ data frame, its number of rows must be either \code{nrow(data)} or 1 (constant exposure assigned to all observations), and its number of 
 #'  columns must be \code{length(Anodes)}. If a vector, it must be of length \code{nrow(data)} or 1. If a function, it must return a vector or a data frame 
-#'  of counterfactual exposures sampled based on Anodes, WEnodes (and possibly communityIndex) passed as a named argument "data". Thus, the function must 
+#'  of counterfactual exposures sampled based on Anodes, WEnodes (and possibly communityID) passed as a named argument "data". Thus, the function must 
 #'  include "data" as one of its argument names. The interventions defined by f_gstar1 can be static, dynamic or stochastic. See Exmaples below.
 #' @param f_gstar2 Either a function or a vector or a matrix/ data frame of counterfactual exposures, dependin on the number of exposure variables.
 #'  It has the same components and requirements as f_gstar1 has.
 #' @param Qform Character vector of regression formula for Ynode. If not specified, the outcome variable is regressed on all covariates included in 
 #'  Anodes and WEnodes.
-#' @param Qbounds Upper and lower bounds on Y and predicted values for initial Q. Defaults to the range of Y, widened by 10\% of the min and max values.
+#' @param Qbounds Vector of upper and lower bounds on Y and predicted value for initial Q. Default to the range of Y, widened by 10\% of the min 
+#'  and max values. See "Details".
 #' @param alpha Used to keep predicted values for initial Q bounded away from (0,1) for logistic fluctuation 
 #'  (set \code{Qbounds} to (1 - \code{alpha}), \code{alpha}).
 #' @param fluctuation Default to "logistic", it could also be "linear" (for targeting step).
@@ -418,8 +420,21 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @param verbose Flag. If TRUE, print status messages. Default to TRUE.
 #' 
 #' @details
-#' 
-#' 
+#' The estimates returned by \code{tmleCommunity} are of a treatment-specific mean, \eqn{E[Y_{g^*}]}, the expected community-level outcome if all 
+#'  communities in the target population received the exposures generated under the user-supplied (deterministic or stochastic) intervention \eqn{g^*}. 
+#'  
+#' \code{data} must be a data frame (no matrix accepted) and doesn't support factor values (considering removing or recording such columns as strings), 
+#'  \code{data} includes the following (optional) columns:
+#'  \itemize{
+#'   \item community-level and individual-level baseline covariate columns (\code{WEnodes}): can be any numeric data. Notice that W represents 
+#'     individual-level covariates and E represent community-level covariates. 
+#'   \item exposure columns (\code{Anodes}): can have more than one exposure and each exposure could be can be either binary, categorical or continuous. 
+#'   \item outcome column (\code{Ynode}): one column that contains any numeric data. If \code{Ynode} values are continuous, they may be automatically 
+#'     scaled. See details for \code{Qbounds} below.  
+#'   \item deterministic \code{Ynode} indicator column (\code{YnodeDet}): (optional) column that must be logical or binary. Only non-determinstic  
+#'     \code{Ynode} values will be used in the final estimation step (e.g., \code{IPTW[!determ.Q] <- Y[!determ.Q] * h_wts[!determ.Q]}). 
+#'   \item community identifier variable column (\code{communityID}): (optional) column that 
+#'  }
 #' @section IPTW estimator:
 #' **********************************************************************
 #'
@@ -540,9 +555,9 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  \item \code{estimates} - matrix, 3\eqn{\times}1, storing 3 algorithm estimates of the target parameter (population community-level counterfactual 
 #'    mean under (deterministic or stochastic) intervention), including \code{TMLE}, \code{IPTW} and \code{GCOMP}.
 #'  \item \code{vars} - matrix, 3\eqn{\times}1, storing 3 influence-curve based asymptotic variance estimates for \code{TMLE}, \code{IPTW} and 
-#'     \code{GCOMP}. Notice, all IC-based statistical inference for \strong{GCOMP} is not accurate (Just for reference). See explanation in \code{IC}.
+#     \code{GCOMP}. Notice, all IC-based statistical inference for \strong{GCOMP} is not accurate (Just for reference). See explanation in \code{IC}.
 #'  \item \code{CIs} - matrix, 3\eqn{\times}2, storing 3 confidence interval estimates at \code{CI_alpha} level, for \code{TMLE}, \code{IPTW} and 
-#'     \code{GCOMP}. The first column contains the lower bounds and the second column contains the upper bounds.
+#     \code{GCOMP}. The first column contains the lower bounds and the second column contains the upper bounds.
 #'  \item \code{tstat} - matrix, 3\eqn{\times}1, storing 3 test statistics.
 #'  \item \code{pval} - matrix, 3\eqn{\times}1, storing 3 p-values. It's based on the Student's T distribution if the number of communities  
 #'    (or the number of individuals if no hierarchical structure) is less than 41, otherwise based on the Z normal distribution.
