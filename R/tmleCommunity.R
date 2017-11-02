@@ -519,7 +519,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'
 #' Approach 3 (\code{dhist}): combination of 1 & 2.
 #'
-#' @return \code{tmleCommunity} returns an object of class "\code{tmleCommunity}", which is a named list containing the estimation results 
+#' @return tmleCommunity returns an object of class "tmleCommunity", which is a named list containing the estimation results 
 #'  stored by the following 3 elements:
 #'  \itemize{
 #'  \item \code{EY_gstar1} - a list with estimates of the mean counterfactual outcome under (deterministic or stochastic) intervention  
