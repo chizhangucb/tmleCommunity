@@ -543,18 +543,18 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  \item \code{IC} - data frame, nobs\eqn{\times}3, the first column contains the influence curves (ICs) for \code{TMLE} estimate, the second column
 #'    contains the ICs for \code{IPTW} estimate, and the third column contains the ICs for \code{GCOMP} estimate (not accurate since it's based on ICs
 #'    for \code{TMLE} estimate without updating step).  
-#'  \item \code{h.g0_GenericModel} - An object of \code{\link{GenericModel}} \pkf{R6} class, storing the model fits for P(\code{A} | \code{W, E}) under  
+#'  \item \code{h.g0_GenericModel} - An object of \code{\link{GenericModel}} \pkg{R6} class, storing the model fits for P(\code{A} | \code{W, E}) under  
 #'    observed exposure mechanism \code{g0}. This can be used in \code{\link{tmleCommunity}} (See \strong{Arguments}).
-#'  \item \code{h.gstar_GenericModel} - An object of \code{\link{GenericModel}} \pkf{R6} class, storing the model fits for P(\code{A} | \code{W, E})  
+#'  \item \code{h.gstar_GenericModel} - An object of \code{\link{GenericModel}} \pkg{R6} class, storing the model fits for P(\code{A} | \code{W, E})  
 #'    under intervention \code{f_gstar1} or \code{f_gstar2}. This can be used in \code{\link{tmleCommunity}} (See \strong{Arguments}).
 #' }
 #' 
-#' Currently implemented estimators are:
+#' Estimations are based on either community-level or individual-level analysis. Each analysis currently implements 3 estimators:
 #'  \itemize{
-#'  \item \code{tmle} - Either weighted regression intercept-based TMLE (\code{tmle.intercept} - the default) with weights defined by the IPTW weights
-#'    \code{h_gstar/h_gN} or covariate-based unweighted TMLE (\code{tmle.covariate}) that uses the IPTW weights as a covariate \code{h_gstar/h_gN}.  
-#'  \item \code{iptw} - Efficient IPTW based on weights h_gstar/h_gN.
-#'  \item \code{gcomp} - Parametric G-computation formula substitution estimator.
+#'  \item \code{tmle} - Either weighted intercept-based TMLE (\code{tmle.intercept}) with weights \code{h_gstar/h_gN} (default choice)
+#'    or unweighted covariate-based TMLE (\code{tmle.covariate}) that uses the weights as a clever covariate \code{h_gstar/h_gN}.  
+#'  \item \code{iptw} - \code{IPTW} (Horvitz-Thompson) estimator based on the \code{TMLE} weights h_gstar/h_gN.
+#'  \item \code{gcomp} - Maximum likelihood based G-computation substitution estimator.
 #' }
 #'
 #' The data-adaptive approach dhist is a mix of Approaches 1 & 2. See Denby and Mallows "Variations on the Histogram"
