@@ -375,8 +375,8 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  \code{NULL}, then automatically pool over all communities (i.e., treated it as "NoCommunity"). See "Details".
 #' @param communityID Optional column name or index in \code{data} of community identifier variable. If known, it can support the two options within 
 #'  \code{community.step}: community-level or individual-level TMLE (See details for \code{community.step}).
-#' @param community.wts Optional matrix of community-level observation weights (where dimension = the number of communities\eqn{\times}2). The first   
-#'  column contains the communities' names (ie., \code{data[, communityID]}) and the second column contains the corresponding weights.   
+#' @param community.wts Optional matrix of community-level observation weights (where dimension = \eqn{J\times}2, where J = the number of communities).   
+#'  The first column contains the communities' names (ie., \code{data[, communityID]}) and the second column contains the corresponding weights.   
 #'  Currently only support a numeric vector, "equal.community" (Default) and "size.community". If "equal.community", assumed weights to be all 1;  
 #'  If setting community.wts = "size.community", treat the number of individuals within each community as its weight, respectively.
 #' @param pooled.Q Logical for incorporating hierarchical data to estimate the outcome mechanism. If \code{TRUE}, use a pooled individual-level
@@ -435,11 +435,23 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'     \code{NULL} means no hierarchical structure and all distinct individuals.
 #'  }
 #' 
-#'  \code{pooled.Q} is in regard to assumption of covariate interference. Strong assumption claims no covariate interference, which states that 
-#'   each individual's outcome is known not to be affected by the covariates of other individuals in the same community. But this strong assumption  
-#'   can be relaxed by integrating knowledge of the dependence structure among individuals within communities (i.e., "weak covariate interference").
-#'   If \code{pooled.Q} is \code{TRUE}, use individual-level \code{TMLE} (and the corresponding \code{IPTW} and \code{GCOMP}). If \code{FALSE}, 
-#'   then use community-level \code{TMLE}. Currrently only the "no covariate interference" assumption is implemented. 
+#' \code{community.step} specifies how to read the structure of the input data (as hierarchical or non-hierarchical) and how to analyze the data. 
+#'  community_level TMLE (\code{"community_level"}) is exactly analogous to the TMLE of the treatment specific individual-level mean outcome 
+#'  (\code{"NoCommunity"}) with the trivial modification that the community rather than the individual serves as the unit of analysis.  
+#'  \code{communityID} is needed when using \code{"community_level"}, \code{"individual_level"} and \code{"perCommunity"}. Lack of  
+#'  \code{communityID} forces the algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset (so force   
+#'  \code{community.step} = \code{"NoCommunity"}). If \code{community.step} = \code{"individual_level"}, it incorporates with working models that 
+#'  assume that each individual's outcome is known not to be affected by the covariates of other individuals in the same community (i.e., "no   
+#'  covariate interference"). This strong assumption can be relaxed by integrating knowledge of the dependence structure among individuals  
+#'  within communities (i.e., "weak covariate interference"). But currrently only the "no covariate interference" assumption is implemented. 
+#'  If \code{community.step} = \code{"perCommunity"}), run a single TMLE on each community and calculate a (weighted) mean outcome for the J  
+#'  communities.
+#' 
+#' \code{pooled.Q} is in regard to incorporate the working model of "no covariate inference" in community-level \code{TMLE} (and the 
+#'  corresponding \code{IPTW} and \code{GCOMP}) although the working model is not assumed to hold. In other words, when \code{community.step} 
+#'  = \code{"community_level"}, if \code{pooled.Q} = \code{TRUE}, add pooled individual-level regressions as candidates in the Super Learner  
+#'  library for initial estimation of the outcome mechanism. If \code{pooled.Q} = \code{FALSE}, both outcome and treatment mechanisms are
+#'  estimated on the community-level (no use of individual-level information). 
 #'  
 #' @section IPTW estimator:
 #' **********************************************************************
@@ -639,11 +651,10 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
   if (!(community.step %in% c("NoCommunity", "community_level", "individual_level", "perCommunity"))) 
     stop("community.step argument must be one of 'NoCommunity', 'community_level', 'individual_level' and 'perCommunity'")
   if ((community.step %in% c("community_level", "individual_level", "perCommunity")) & is.null(communityID)) {
-    messageMSg <- c("'communityID' is required when using 'community_level', 'individual_level' and 'perCommunity. '",
-                    "Lack of 'communityID' forces the algorithm to automatically pool data over all communities ",
-                    "and treat it as non-hierarchical dataset. Details in package documentation.\n",
+    messageMSg <- c("'communityID' is needed when using 'community_level', 'individual_level' and 'perCommunity'. Lack of 'communityID'",
+                    "forces the algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset. \n",
                     "In other words, we simply treat community.step = 'NoCommunity' and pooled.Q = FALSE")
-    message(messageMSg[1] %+% messageMSg[2] %+% messageMSg[3] %+% messageMSg[4])
+    message(messageMSg[1] %+% messageMSg[2] %+% messageMSg[3])
     community.step <- "NoCommunity"; pooled.Q <- FALSE
   } 
   if (!(community.wts %in% c("equal.community", "size.community")) && !is.data.frame(community.wts)) {
