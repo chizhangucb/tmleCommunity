@@ -229,11 +229,11 @@ fit_single_reg.SLS3 <- function(self) {
   Xmat <- self$getXmat
   Y_vals <- self$getY
   wt_vals <- self$getWeight
-  g.SL.library <- getopt("g.SL.library")
+  SL.library <- getopt("SL.library")
   CVfolds <- getopt("CVfolds")
   if (gvars$verbose) {
     print("calling SuperLearner...")
-    print(length(g.SL.library) %+% " machine learning algorithm(s): " %+% paste0(g.SL.library, collapse = '; '))
+    print(length(SL.library) %+% " machine learning algorithm(s): " %+% paste0(SL.library, collapse = '; '))
     print("number of observations: " %+% nrow(Xmat))
   }    
   
@@ -254,7 +254,7 @@ fit_single_reg.SLS3 <- function(self) {
     n <- length(Y_vals)
     X <- data.frame(Xmat[, colnames(Xmat)[colnames(Xmat) != "Intercept"]])
     model.fit <- try(SuperLearner::SuperLearner( 
-      Y = Y_vals, X = X, family = SLFamily, verbose = gvars$verbose, SL.library = g.SL.library, 
+      Y = Y_vals, X = X, family = SLFamily, verbose = gvars$verbose, SL.library = SL.library, 
       obsWeights = wt_vals, cvControl = list(V=CVfolds), control = list(saveFitLibrary=TRUE)))
     
     if (inherits(model.fit, "try-error")) { # if failed, fall back on speedglm::speedglm.wfit
@@ -262,7 +262,7 @@ fit_single_reg.SLS3 <- function(self) {
       return(fit_single_reg.speedglmS3(self))
     }
   }
-  fit <- list(model.fit = model.fit, coef = NULL, SL.library = g.SL.library, fitfunname = "speedglm")
+  fit <- list(model.fit = model.fit, coef = NULL, SL.library = SL.library, fitfunname = "speedglm")
   if (class(model.fit) == "SuperLearner") {
     fit$coef <- model.fit$coef
     class(fit) <- c(class(fit), "SuperLearner")
