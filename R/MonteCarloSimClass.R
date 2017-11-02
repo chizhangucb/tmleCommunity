@@ -11,7 +11,7 @@ CalcMonteCarloEsts <- function(OData.ObsP0, OData.gstar, MC_fit_params, model.h.
   obs.wts <- MC_fit_params$obs.wts
   community.wts <- MC_fit_params$community.wts
   community.step <- MC_fit_params$community.step
-  working.model <- MC_fit_params$working.model
+  pooled.Q <- MC_fit_params$pooled.Q
   model.Q.init <- MC_fit_params$model.Q.init
   model.Q.star <- MC_fit_params$model.Q.star
   communityID <- OData.ObsP0$get.sVar(name.sVar = MC_fit_params$communityID)
@@ -39,15 +39,15 @@ CalcMonteCarloEsts <- function(OData.ObsP0, OData.gstar, MC_fit_params, model.h.
     ## fi_W - hold W fixed to observed values (a component of TMLE Var)
     fiWs_list <- evaluator$get.fiW()  
     # Put all estimators together and add names (defined in out_nms outside of this function):
-    if (community.step == "individual_level" && working.model == TRUE) {
+    if (community.step == "individual_level") {
       if (!is.null(communityID)) {
         TMLE <- aggregate(x = TMLE, by=list(newid = communityID), mean)
         MLE <- aggregate(x = MLE, by=list(newid = communityID), mean)[, 2]
         obs.wts <- community.wts[match(TMLE[, "newid"], community.wts[, "id"]), "weights"]
         TMLE <- TMLE[, 2]
       } else {
-        warningMesg <- c("Since individual-level TMLE with working.model requires communityID to aggregate data to the cluster-level ",
-                         "in the end. Lack of 'communityID' forces the algorithm to treat the data as non-hierarchical.")
+        warningMesg <- c("Since individual-level TMLE requires communityID to aggregate data to the cluster-level in the end. ",
+                         "Lack of 'communityID' forces the algorithm to treat the data as non-hierarchical.")
         warning(warningMesg[1] %+% warningMesg[2])
       }
     }
