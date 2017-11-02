@@ -364,22 +364,20 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @param Ynode Column names or indices in \code{data} of outcome variable name. Outcome can be either binary or continuous (could be beyond 0 and 1). 
 #'  If Ynode undefined, the left-side of the regression formula in argument \code{Qform} will be treated as \code{Ynode}.
 #' @param Anodes Column names or indices in \code{data} of exposure (treatment) variables
-#' @param WEnodes Column names or indices in \code{data} of community-level and individual-level (and possibly community-level) baseline covariates.
-#'  Factors are not currently allowed.
+#' @param WEnodes Column names or indices in \code{data} of individual-level (and possibly community-level) baseline covariates. Factors are not allowed.
 #' @param YnodeDet Optional column name or index in \code{data} of indicators of deterministic values of outcome \code{Ynode}, coded as (TRUE / FALSE)  
 #'  or (1 / 0). If TRUE or 1, value of \code{Ynode} is given deterministically / constant. 
 #' @param obs.wts Optional vector of individual-level observation (sampling) weights (of length \code{nrow(data)}). Currently supports a numeric vector, 
 #'  "equal.within.pop" (Default) and equal.within.community. If "equal.within.pop", weigh individuals in the entire dataset equally (weigh to be all 1);
 #'  If "equal.within.community", weigh individuals within the same community equally (i.e., 1 / (number of individuals in each community)).
-#' @param communityID Optional column name or index in \code{data} of community identifier variable. If known, it can support the two options wiithin 
-#'  \code{community.step}, i.e., community-level or individual-level TMLE (See details for \code{community.step}).
+#' @param communityID Optional column name or index in \code{data} of community identifier variable. If known, it can support the two options within 
+#'  \code{community.step}: community-level or individual-level TMLE (See details for \code{community.step}).
 #' @param community.wts Optional matrix of community-level observation weights (where dimension = the number of communities\eqn{\times}2). The first   
 #'  column contains the communities' names (ie., \code{data[, communityID]}) and the second column contains the corresponding weights.   
 #'  Currently only support a numeric vector, "equal.community" (Default) and "size.community". If "equal.community", assumed weights to be all 1;  
 #'  If setting community.wts = "size.community", treat the number of individuals within each community as its weight, respectively.
-#' @param working.model Logical for making assumptions about the covariate interference. If TRUE, assumes that each individual's outcome is known not
-#'  to be affected by the covariates of other individuals in the same community (Weaker covariate interference assumption may allow a subset of the 
-#'  individual's known "connections"). Currrently only the "no covariate interference" assumption is implemented. Default to be FASLE. 
+#' @param working.model Logical for making assumptions about the covariate interference. If TRUE, assumes no covariate interference. 
+#'  Currrently only the "no covariate interference" assumption is implemented. Default to be FASLE. See "Details". 
 #' @param community.step Methods to deal with hierarchical data, one of "NoCommunity" (Default), "community_level", "individual_level" and  
 #'  "PerCommunity". If "NoCommunity", claim that no hirerachical structure in data; If "community_level", use community-level TMLE;  
 #'  If "individual_level", use individual-level TMLE cooperating with the assumption of no covariate interference. If "PerCommunity",  
@@ -429,12 +427,21 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'   \item community-level and individual-level baseline covariate columns (\code{WEnodes}): can be any numeric data. Notice that W represents 
 #'     individual-level covariates and E represent community-level covariates. 
 #'   \item exposure columns (\code{Anodes}): can have more than one exposure and each exposure could be can be either binary, categorical or continuous. 
-#'   \item outcome column (\code{Ynode}): one column that contains any numeric data. If \code{Ynode} values are continuous, they may be automatically 
-#'     scaled. See details for \code{Qbounds} below.  
+#'   \item outcome column (\code{Ynode}): can be any numeric data. If \code{Ynode} values are continuous, they may be automatically scaled. 
+#'     See details for \code{Qbounds} below.  
 #'   \item deterministic \code{Ynode} indicator column (\code{YnodeDet}): (optional) column that must be logical or binary. Only non-determinstic  
 #'     \code{Ynode} values will be used in the final estimation step (e.g., \code{IPTW[!determ.Q] <- Y[!determ.Q] * h_wts[!determ.Q]}). 
-#'   \item community identifier variable column (\code{communityID}): (optional) column that 
+#'   \item community identifier variable column (\code{communityID}): (optional) column that stores community identifier for hierarchical data 
+#'     (or subject identifier if multiple observations for the same individual). Integer or character recommended (No factor allowed). 
+#'     \code{NULL} means no hierarchical structure and all distinct individuals.
 #'  }
+#' 
+#'  \code{working.model} is in regard to assumption of covariate interference. Strong assumption claims no covariate interference, which states that 
+#'   each individual's outcome is known not to be affected by the covariates of other individuals in the same community. But this strong assumption  
+#'   can be relaxed by integrating knowledge of the dependence structure among individuals within communities (i.e., "weak covariate interference").
+#'   If \code{working.model} is \code{TRUE}, use individual-level \code{TMLE} (and the corresponding \code{IPTW} and \code{GCOMP}). If \code{FALSE}, 
+#'   then use community-level \code{TMLE}. 
+#'  
 #' @section IPTW estimator:
 #' **********************************************************************
 #'
