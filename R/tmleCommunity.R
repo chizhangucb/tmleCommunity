@@ -409,7 +409,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @param h.gstar_GenericModel An object of \code{\link{GenericModel}} \pkg{R6} class containing the previously fitted models for P(A^* | W, E) under  
 #'  intervention gstar, one of the returns of \code{tmleCommunity} function. If known, predictions for P(A=a | W=w, E=e) under gstar are based on 
 #'  the fitted models in \code{h.gstar_GenericModel}.
-#' @param TMLE.targetStep TMLE targeting step method, either "tmle.intercept" (Default) or "tmle.covariate". See Details below.
+#' @param TMLE.targetStep TMLE targeting step method, either "tmle.intercept" (Default) or "tmle.covariate". See "Details".
 #' @param n_MCsims Number of simulations for Monte-Carlo analysis. Each simulation generates new exposures under f_gstar1 or f_gstar2 (if specified)  
 #'  or f_g0 (if specified), with a sample size of nrow(data). Then these generated expsosures are used when fitting the conditional densities P(A | W, E).
 #'  and estimating for \strong{IPTW} and \strong{GCOMP} under intervention f_gstar1 or f_gstar2. Note that deterministic intervention only needs one 
@@ -467,11 +467,17 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  \code{gestimator} (an argument in \code{tmleCom_Options}). See "Arguments" in \code{tmleCom_Options}.
 #' 
 #' \code{Qbounds} can be used to bound continuous outcomes Y. If \code{Qbounds} not specified (\code{NULL}), it will be set to the range of Y, 
-#'  widened by 10\% of the minimum and maximum. That is, \code{[0.9*min(Y), 1.1*max(Y)]}. If specified, then Y will be truncated at the min and 
-#'  max values of \code{Qbounds}, and then scaled to be in \code{[0, 1]} by \code{(Y - min(Qbound))/(diff(Qbound))}.Statistical inferences for 
-#'  the transformed outcome can be directly translated back into statistical inference for the unscaled outcome. Once \code{Qbounds} finish
-#'  bounding the observed outcomes, it will be set to \code{(1 - alpha), alpha} and used to bound the predicted values for the initial outcome 
-#'  mechanism. Thus, \code{alpha} needs to be between (0, 1), otherwise reset to 0.995. 
+#'  widened by 10\% of the minimum and maximum. That is, [0.9*\code{min(Y)}, 1.1*\code{max(Y)}]. If specified, then Y will be truncated at the min 
+#'  max values of \code{Qbounds}, and then scaled to be in [0, 1] by (Y - \code{min(Qbound)})/(\code{diff(Qbound)}). Statistical inferences  
+#'  and for the transformed outcome can be directly translated back into statistical inference for the unscaled outcome. Once \code{Qbounds} finish
+#'  bounding the observed outcomes, it will be set to (1 - \code{alpha}, \code{alpha}) and used to bound the predicted values for the initial outcome 
+#'  mechanism. Thus, \code{alpha} needs to be between (0, 1), otherwise reset to 0.995. Besides, \code{lbound} can be used to truncate the weights 
+#'  \code{h_gstar/h_gN}, that is, [0, 1/\code{lbound}].
+#' 
+#' \code{TMLE.targetStep} specifies how to use weights \code{h_gstar/h_gN} in the \strong{TMLE} targeting step. If \code{tmle.intercept} (default), it  
+#'  performs the weighted intercept-based \code{TMLE} that runs a intercept-only weighted logistic regression using offsets \code{logit(Qstar)} and  
+#'  weights \code{h_gstar/h_gN} and so no covariate. If \code{\code{tmle.intercept}}, it performs tbe unweighted covariate-based TMLE that run a 
+#'  unweighted logistic regression using offsets \code{logit(Qstar)} and a clever covariate \code{h_gstar/h_gN}. 
 #' 
 #' @section IPTW estimator:
 #' **********************************************************************
@@ -610,8 +616,8 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' 
 #' Estimations are based on either community-level or individual-level analysis. Each analysis currently implements 3 estimators:
 #'  \itemize{
-#'  \item \code{tmle} - Either weighted intercept-based TMLE (\code{tmle.intercept}) with weights \code{h_gstar/h_gN} (default choice)
-#'    or unweighted covariate-based TMLE (\code{tmle.covariate}) that uses the weights as a clever covariate \code{h_gstar/h_gN}.  
+#'  \item \code{tmle} - Either weighted intercept-based TMLE based on weights \code{h_gstar/h_gN} (default choice)
+#'    or unweighted covariate-based TMLE based on a covariate \code{h_gstar/h_gN}.  
 #'  \item \code{iptw} - \code{IPTW} (Horvitz-Thompson) estimator based on the \code{TMLE} weights h_gstar/h_gN.
 #'  \item \code{gcomp} - Maximum likelihood based G-computation substitution estimator.
 #' }
