@@ -417,6 +417,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @param rndseed Random seed for controlling sampling A under f_gstar1 or f_gstar2 (for reproducibility of Monte-Carlo simulations)
 #' @param verbose Flag. If TRUE, print status messages. Default to TRUE.
 #' 
+#' @details
 #' @section IPTW estimator:
 #' **********************************************************************
 #'
@@ -529,7 +530,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  \item \code{ATE} - a list with estimates of additive treatment effect (\eqn{E[Y_{g^*_1}]} - \eqn{E[Y_{g^*_2}]}) under two interventions
 #'     functions \code{f_gstar1} VS \code{f_gstar2}; or \code{NULL} if \code{f_gstar2} not specified.
 #' }
-#' Each element in the returned \code{tmleCommunity} object is itself a list containing the following 5 items:
+#' Each element in the returned \code{tmleCommunity} object is itself a list containing the following 8 items:
 #'  \itemize{
 #'  \item \code{estimates} - matrix, 3\eqn{\times}1, storing 3 algorithm estimates of the target parameter (population community-level counterfactual 
 #'    mean under (deterministic or stochastic) intervention), including \code{TMLE}, \code{IPTW} and \code{GCOMP}.
