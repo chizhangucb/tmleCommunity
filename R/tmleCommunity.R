@@ -418,6 +418,8 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @param verbose Flag. If TRUE, print status messages. Default to TRUE.
 #' 
 #' @details
+#' 
+#' 
 #' @section IPTW estimator:
 #' **********************************************************************
 #'
@@ -519,6 +521,9 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  is controlled by setting \code{maxNperBin}. The default setting is \code{maxNperBin=1000} observations per interval.
 #'
 #' Approach 3 (\code{dhist}): combination of 1 & 2.
+#' The data-adaptive approach dhist is a mix of Approaches 1 & 2. See Denby and Mallows "Variations on the Histogram"
+#'  (2009)). This interval definition method is selected by passing an argument \code{bin.method="dhist"} to
+#'  \code{tmleCom_Options()}  prior to calling \code{tmleCommunity()}.
 #' 
 #' @return \code{tmleCommunity} returns an object of class "\code{tmleCommunity}", which is a named list containing the estimation results
 #'  stored by the following 3 elements:
@@ -558,9 +563,6 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  \item \code{gcomp} - Maximum likelihood based G-computation substitution estimator.
 #' }
 #'
-#' The data-adaptive approach dhist is a mix of Approaches 1 & 2. See Denby and Mallows "Variations on the Histogram"
-#'  (2009)). This interval definition method is selected by passing an argument \code{bin.method="dhist"} to
-#'  \code{tmleCom_Options()}  prior to calling \code{tmleCommunity()}.
 #' @example tests/examples/3_tmleCommunity_examples.R
 #' @export
 tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts = c("equal.within.pop", "equal.within.community"), 
