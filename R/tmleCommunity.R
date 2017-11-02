@@ -524,6 +524,10 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  \itemize{
 #'  \item \code{EY_gstar1} - a list with estimates of the mean counterfactual outcome under (deterministic or stochastic) intervention  
 #'    function \code{f_gstar1} (\eqn{E[Y_{g^*_1}]}).
+#'  \item \code{EY_gstar2} - a list with estimates of the mean counterfactual outcome under (deterministic or stochastic) intervention   
+#'    function \code{f_gstar2} \eqn{(E[Y_{g^*_2}])}; or \code{NULL} if \code{f_gstar2} not specified.
+#'  \item \code{ATE} - additive treatment effect (\eqn{E[Y_{g^*_1}]} - \eqn{E[Y_{g^*_2}]) under two interventions functions code{f_gstar1} vs.
+#'    \code{f_gstar2}; or \code{NULL} if \code{f_gstar2} not specified.
 #' }
 #' Each element in the returned \code{tmleCommunity} object is itself a list containing the following 5 items:
 #'  \itemize{
