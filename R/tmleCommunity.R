@@ -461,8 +461,6 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'
 #' Approach 3 (\code{dhist}): combination of 1 & 2.
 #'
-#' *********************
-#'
 #' @aliases tmleCommunity
 #' @param data Observed data, \code{data.frame} with named columns, containing \code{WEnodes}, \code{Anode}, \code{Ynode} and possibly \code{communityIndex}.
 #' @param Ynode Column names or indices in \code{data} of outcome variable name. Outcome can be either binary or continuous (could be beyong 0 and 1). 
@@ -521,7 +519,6 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  simulation and stochastic intervention could use more simulation times such as 10 (Default to 1). 
 #' @param rndseed Random seed for controlling sampling A under f_gstar1 or f_gstar2 (for reproducibility of Monte-Carlo simulations)
 #' @param verbose Flag. If TRUE, print status messages. Default to TRUE.
-#'
 #' @return \code{tmleCommunity} returns an object of class "\code{tmleCommunity}", which is a named list containing the estimation results 
 #'  stored by the following 3 elements:
 #'  \itemize{
