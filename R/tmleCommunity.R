@@ -369,6 +369,10 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @param obs.wts Optional vector of individual-level observation (sampling) weights (of length \code{nrow(data)}). Currently supports a numeric vector, 
 #'  "equal.within.pop" (Default) and equal.within.community. If "equal.within.pop", weigh individuals in the entire dataset equally (weigh to be all 1);
 #'  If "equal.within.community", weigh individuals within the same community equally (i.e., 1 / (number of individuals in each community)).
+#' @param community.step Methods to deal with hierarchical data, one of "NoCommunity" (Default), "community_level", "individual_level" and "PerCommunity".  
+#'  If "NoCommunity", claim that no hirerachical structure in data; If "community_level", use community-level TMLE; If "individual_level", use  
+#'  individual-level TMLE cooperating with the assumption of no covariate interference. If "PerCommunity", use stratified TMLE. If \code{communityID} =  
+#'  \code{NULL}, then automatically pool over all communities (i.e., treated it as "NoCommunity"). See "Details".
 #' @param communityID Optional column name or index in \code{data} of community identifier variable. If known, it can support the two options within 
 #'  \code{community.step}: community-level or individual-level TMLE (See details for \code{community.step}).
 #' @param community.wts Optional matrix of community-level observation weights (where dimension = the number of communities\eqn{\times}2). The first   
@@ -377,10 +381,6 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  If setting community.wts = "size.community", treat the number of individuals within each community as its weight, respectively.
 #' @param pooled.Q Logical for incorporating hierarchical data to estimate the outcome mechanism. If \code{TRUE}, use a pooled individual-level
 #'  regression for initial estimation of the mean outcome (i.e., outcome mechanism). Default to be \code{FASLE}. See "Details". 
-#' @param community.step Methods to deal with hierarchical data, one of "NoCommunity" (Default), "community_level", "individual_level" and "PerCommunity".  
-#'  If "NoCommunity", claim that no hirerachical structure in data; If "community_level", use community-level TMLE; If "individual_level", use  
-#'  individual-level TMLE cooperating with the assumption of no covariate interference. If "PerCommunity", use stratified TMLE. If \code{communityID} =  
-#'  \code{NULL}, then automatically pool over all communities (i.e., treated it as "NoCommunity"). See "Details".
 #' @param f_g0 Optional function used to specify model knowledge about value of Anodes. It estimates \code{P(A | W, E)} under \code{g0} by 
 #'  sampling a large vector/ data frame of Anode (of length \code{nrow(data)*n_MCsims} or number of rows if a data frame) from \code{f_g0} function.
 #' @param f_gstar1 Either a function or a vector or a matrix/ data frame of counterfactual exposures, dependin on the number of exposure variables.
@@ -435,10 +435,10 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'     \code{NULL} means no hierarchical structure and all distinct individuals.
 #'  }
 #' 
-#'  \code{working.model} is in regard to assumption of covariate interference. Strong assumption claims no covariate interference, which states that 
+#'  \code{pooled.Q} is in regard to assumption of covariate interference. Strong assumption claims no covariate interference, which states that 
 #'   each individual's outcome is known not to be affected by the covariates of other individuals in the same community. But this strong assumption  
 #'   can be relaxed by integrating knowledge of the dependence structure among individuals within communities (i.e., "weak covariate interference").
-#'   If \code{working.model} is \code{TRUE}, use individual-level \code{TMLE} (and the corresponding \code{IPTW} and \code{GCOMP}). If \code{FALSE}, 
+#'   If \code{pooled.Q} is \code{TRUE}, use individual-level \code{TMLE} (and the corresponding \code{IPTW} and \code{GCOMP}). If \code{FALSE}, 
 #'   then use community-level \code{TMLE}. Currrently only the "no covariate interference" assumption is implemented. 
 #'  
 #' @section IPTW estimator:
@@ -587,8 +587,8 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @example tests/examples/3_tmleCommunity_examples.R
 #' @export
 tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts = c("equal.within.pop", "equal.within.community"), 
+                          community.step = c("NoCommunity", "community_level", "individual_level", "perCommunity"),
                           communityID = NULL, community.wts = c("equal.community", "size.community"), pooled.Q = FALSE, 
-                          community.step = c("NoCommunity", "community_level", "individual_level", "perCommunity"), 
                           f_g0 = NULL, f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995,                                                      
                           fluctuation = "logistic", hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, 
                           h.g0_GenericModel = NULL, h.gstar_GenericModel = NULL, 
