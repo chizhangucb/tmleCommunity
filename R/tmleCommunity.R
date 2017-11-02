@@ -463,6 +463,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'
 #' *********************
 #'
+#' @aliases tmleCommunity
 #' @param data Observed data, \code{data.frame} with named columns, containing \code{WEnodes}, \code{Anode}, \code{Ynode} and possibly \code{communityIndex}.
 #' @param Ynode Column names or indices in \code{data} of outcome variable name. Outcome can be either binary or continuous (could be beyong 0 and 1). 
 #'  If Ynode undefined, the left-side of the regression formula in argument \code{Qform} will be treated as \code{Ynode}.
