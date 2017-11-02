@@ -31,7 +31,7 @@ gvars$opts.allowedVals <- list(Qestimator = c("speedglm__glm", "glm__glm", "h2o_
                                h2ometalearner = "_character_",
                                h2olearner = "_character_",
                                CVfolds = "_positive_integer_",
-                               g.SL.library = "_character_"
+                               SL.library = "_character_"
                                # panel.effect = c("individual", "time", "twoways"), 
                                # panel.model = c("within", "random", "between","pooling", "ht", "fd"),
                                # community.index = "_character_"
@@ -88,7 +88,7 @@ print_tmleCom_opts <- function() {
 #'  the base models for the ensemble. The functions must have the same format as the h2o wrapper functions. Default to "h2o.glm.wrapper".
 #' @param CVfolds Set the number of splits for the V-fold cross-validation step to pass to \code{\link{SuperLearner}} and 
 #'  \code{\link{h2o.ensemble}}. Default to 5.
-#' @param g.SL.library A string or character vector of prediction algorithms to pass to \code{\link{SuperLearner}}. Default to 
+#' @param SL.library A string or character vector of prediction algorithms to pass to \code{\link{SuperLearner}}. Default to 
 #'  c("SL.glm", "SL.step", "SL.glm.interaction"). For more available algorithms see \code{SuperLearner::listWrappers()} .
 #' @return Invisibly returns a list with old option settings.
 # @seealso \code{\link{print_tmlenet_opts}}
@@ -99,10 +99,10 @@ print_tmleCom_opts <- function() {
 #'                     h2olearner = c("h2o.glm.wrapper", "h2o.randomForest.wrapper"), CVfolds = 10)
 #'
 #' tmleCom_Options(Qestimator = "SuperLearner", gestimator = "SuperLearner", maxNperBin = nrow(data),
-#'                     g.SL.library = c("SL.glm", "SL.glmnet", "SL.ridge", "SL.stepAIC"), CVfolds = 5)
+#'                     SL.library = c("SL.glm", "SL.glmnet", "SL.ridge", "SL.stepAIC"), CVfolds = 5)
 #' 
 #' tmleCom_Options(Qestimator = "SuperLearner", gestimator = "h2o__ensemble", maxNperBin = nrow(data),
-#'                     g.SL.library = c("SL.glm", "SL.glmnet", "SL.ridge", "SL.stepAIC"), CVfolds = 5,
+#'                     SL.library = c("SL.glm", "SL.glmnet", "SL.ridge", "SL.stepAIC"), CVfolds = 5,
 #'                 h2ometalearner = "h2o.deeplearning.wrapper", 
 #'                 h2olearner = c("h2o.gbm.wrapper", "h2o.randomForest.wrapper"))
 #' 
@@ -119,7 +119,7 @@ tmleCom_Options <- function(Qestimator = c("speedglm__glm", "glm__glm", "h2o__en
                             h2ometalearner = "h2o.glm.wrapper",
                             h2olearner = "h2o.glm.wrapper",
                             CVfolds = 5,
-                            g.SL.library = c("SL.glm", "SL.step", "SL.glm.interaction")
+                            SL.library = c("SL.glm", "SL.step", "SL.glm.interaction")
                            ) {
   old.opts <- gvars$opts
   Qestimator <- Qestimator[1L]
@@ -162,7 +162,7 @@ tmleCom_Options <- function(Qestimator = c("speedglm__glm", "glm__glm", "h2o__en
     h2ometalearner = h2ometalearner,
     h2olearner = h2olearner,
     CVfolds = CVfolds,
-    g.SL.library = g.SL.library
+    SL.library = SL.library
   )
   gvars$opts <- opts
   invisible(old.opts)
