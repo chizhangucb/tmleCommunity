@@ -460,10 +460,18 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  is \code{"SuperLearner"}, then \code{SuperLearner} will be called after a data frame is created using \code{Qform}, based on the specified
 #'  algorithms in \code{SL.library} (an argument in \code{tmleCom_Options}); If \code{Qestimator} is \code{"h2o__ensemble"}, then \code{h2o} and 
 #'  \code{h2oEnsemble} will be called after a H2OFrame dataset is creating using \code{Qform}, based on specified algorithms in \code{h2olearner}
-#'  and \code{h2ometalearner}. \code{hform.g0} and \code{hform.gstar} should also be \code{NULL}, in which cases all parent nodes of A node(s) 
-#'  will be used as regressors, or a character vector that can be coerced to class \code{"formula"}. It follows the same rules applied to 
-#'  \code{Qform} except it's now based on \code{gestimator} (an argument in \code{tmleCom_Options}).See "Arguments" in \code{tmleCom_Options}.
+#'  and \code{h2ometalearner}. See "Arguments" in \code{tmleCom_Options}.
 #' 
+#' \code{hform.g0} and \code{hform.gstar} should also be \code{NULL}, in which cases all parent nodes of A node(s) will be used as regressors, or 
+#'  a character vector that can be coerced to class \code{"formula"}. It follows the same rules applied to \code{Qform} except it's now based on
+#'  \code{gestimator} (an argument in \code{tmleCom_Options}). See "Arguments" in \code{tmleCom_Options}.
+#' 
+#' \code{Qbounds} can be used to bound continuous outcomes Y. If \code{Qbounds} not specified (\code{NULL}), it will be set to the range of Y, 
+#'  widened by 10\% of the minimum and maximum. That is, \code{[0.9*min(Y), 1.1*max(Y)]}. If specified, then Y will be truncated at the min and 
+#'  max values of \code{Qbounds}, and then scaled to be in \code{[0, 1]} by \code{(Y - min(Qbound))/(diff(Qbound))}.Statistical inferences for 
+#'  the transformed outcome can be directly translated back into statistical inference for the unscaled outcome. Once \code{Qbounds} finish
+#'  bounding the observed outcomes, it will be set to \code{(1 - alpha), alpha} and used to bound the predicted values for the initial outcome 
+#'  mechanism. Thus, \code{alpha} needs to be between (0, 1), otherwise reset to 0.995. 
 #' 
 #' @section IPTW estimator:
 #' **********************************************************************
