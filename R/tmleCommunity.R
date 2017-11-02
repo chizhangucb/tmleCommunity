@@ -390,17 +390,18 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  include "data" as one of its argument names. The interventions defined by f_gstar1 can be static, dynamic or stochastic. See Exmaples below.
 #' @param f_gstar2 Either a function or a vector or a matrix/ data frame of counterfactual exposures, dependin on the number of exposure variables.
 #'  It has the same components and requirements as f_gstar1 has.
-#' @param Qform Character vector of regression formula for Ynode. If not specified, the outcome variable is regressed on all covariates included in 
-#'  Anodes and WEnodes.
+#' @param Qform Character vector of regression formula for Ynode. If not specified (i.e., \code{NULL}), the outcome variable is regressed on all 
+#'  covariates included in Anodes and WEnodes (i.e., \code{Ynode ~ Anodes + WEnodes}). See "Details".
 #' @param Qbounds Vector of upper and lower bounds on Y and predicted value for initial Q. Default to the range of Y, widened by 10\% of the min 
 #'  and max values. See "Details".
 #' @param alpha Used to keep predicted values for initial Q bounded away from (0,1) for logistic fluctuation 
 #'  (set \code{Qbounds} to (1 - \code{alpha}), \code{alpha}).
 #' @param fluctuation Default to "logistic", it could also be "linear" (for targeting step).
 #' @param hform.g0 Character vector of regression formula for estimating the conditional density of P(A | W, E) under observed treatment mechanism
-#'  g0. If not specified, its form will be Anodes ~ WEnodes. If there are more than one expsosure, it fits a joint probability.
+#'  g0. If not specified, its form will be \code{Anodes ~ WEnodes}. If there are more than one expsosure, it fits a joint probability. See section 
+#'  "Modeling P(A | W, E) for covariates (A, W, E)".
 #' @param hform.gstar Character vector of regression formula for estimating the conditional density P(A | W, E) under user-supplied interventions  
-#'  f_gstar1 or f_gstar2. If not specified, it follows the same rule used in hform.g0. 
+#'  f_gstar1 or f_gstar2. If not specified, it use the same regression formula as used in hform.g0. 
 #' @param lbound Value between (0,1) for truncation of predicted P(A | W, E). Default to 0.005
 #' @param h.g0_GenericModel An object of \code{\link{GenericModel}} \pkg{R6} class containing the previously fitted models for P(A | W, E) under   
 #'  observed treatment mechanism g0, one of the returns of \code{tmleCommunity} function. If known, predictions for P(A=a | W=w, E=e) under g0 are  
@@ -453,6 +454,17 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  library for initial estimation of the outcome mechanism. If \code{pooled.Q} = \code{FALSE}, both outcome and treatment mechanisms are
 #'  estimated on the community-level (no use of individual-level information). 
 #'  
+#' \codeP{Qform} should be \code{NULL}, in which cases all parent nodes of Y node will be used as regressors, or a character vector that can  
+#'  be coerced to class \code{"formula"}. If \code{Qestimator} (an argument in \code{tmleCom_Options}) is \code{"speedglm__glm"} (or  
+#'  \code{"speedglm__glm"}), then \code{speedglm} (or \code{glm}) will be called using the components of \code{Qform}. If \code{Qestimator} 
+#'  is \code{"SuperLearner"}, then \code{SuperLearner} will be called after a data frame is created using \code{Qform}, based on the specified
+#'  algorithms in \code{SL.library} (an argument in \code{tmleCom_Options}); If \code{Qestimator} is \code{"h2o__ensemble"}, then \code{h2o} and 
+#'  \code{h2oEnsemble} will be called after a H2OFrame dataset is creating using \code{Qform}, based on specified algorithms in \code{h2olearner}
+#'  and \code{h2ometalearner}. See "Arguments" in \code{tmleCom_Options}.
+#' 
+#' \code{hform.g0} and \code{hform.gstar} should be \code{NULL}, in which cases all parent nodes of A node(s) will be used as regressors, or
+#'  a character vector that can be coerced to class \code{"formula"}. 
+#' 
 #' @section IPTW estimator:
 #' **********************************************************************
 #'
