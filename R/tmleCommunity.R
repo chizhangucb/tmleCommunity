@@ -541,8 +541,8 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  is fit separately, depending on the type of the m-specific outcome variable \eqn{A(m)}. For binary \eqn{A(m)}, the conditional probability 
 #'  \eqn{P(A(m)|W,A(1),...,A(m-1))} will be esimtated by a user-specific library of candidate algorithms, including parametric estimators such as 
 #'  logistic model with only main terms, and data-adaptive estimator such as super-learner algorithms. For continuous (or categorical) \eqn{A(m)},
-#'  consider a sequence of values \eqn{\lambda_1, \lambda_2,...,\lambda_{K+1}} that span the range of \eqn{A} and define \eqn{K} bins and the 
-#'  corresponding \eqn{K} bin indicators (\eqn{S_1,...,S_K}), in which case each bin indicator \eqn{S_k \equiv [\lambda_k, \lambda_{k+1})} is used 
+#'  consider a sequence of values \eqn{\delta_1, \delta_2,...,\delta_{K+1}} that span the range of \eqn{A} and define \eqn{K} bins and the 
+#'  corresponding \eqn{K} bin indicators (\eqn{B_1,...,B_K}), in which case each bin indicator \eqn{B_k \equiv [\delta_k, \delta_{k+1})} is used 
 #'  as an binary outcome in a seperate user-specific library of candidate algorithms, with predictors given by \eqn{(W, A(1),..., A(m-1))}. That is  
 #'  how the joint probability \eqn{P(A|W)} is factorized into such an entire tree of binary regression models.
 #'
@@ -553,28 +553,30 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' \item Consider the usual setting in which we observe n independently and identically distributed copies \eqn{o_i=(w_i, a_i, y_i: i=1,..,n)} of
 #'   the random variable \eqn{O=(W, A, Y)}, where the observed \eqn{(a_i: i=1...,n)} are continuous. 
 #'
-#' \item As described above, consider a sequence of \eqn{K+1} values that span the support of \eqn{A} values into \eqn{K} bin intervals \eqn{\Lambda} 
-#'   = (\eqn{\lambda_1, \lambda_2,...,\lambda_{K+1}}) so that any observed data point \eqn{a_i} belongs to one interval within R, in other words, 
+#' \item As described above, consider a sequence of \eqn{K+1} values that span the support of \eqn{A} values into \eqn{K} bin intervals \eqn{\Delta} 
+#'   = (\eqn{\delta_1, \delta_2,...,\delta_{K+1}}) so that any observed data point \eqn{a_i} belongs to one interval within R, in other words, 
 #'   for each possible value \eqn{a \in A} (even if it's not in the observed \eqn{(a_i:i)}), there always exists a \eqn{k \in {1, ...,K}} such  
-#'   that \eqn{\lambda_{k}\leq a<\lambda_{k+1}}, and the length (bandwidth) of the interval can be defined as \eqn{bw_{k}=\lambda_{k+1}-\lambda_{k}}. 
-#'   Then let the mapping \eqn{B(a)\in \{1,2,..,K\}} denote a unique indicator index in \eqn{\Lambda} that \eqn{a} falls into, where \eqn{B(a)=k} if 
-#'   \eqn{a \in [\lambda_{k},\lambda_{k+1}]}, namely, \eqn{\lambda_{B(a)} \leq a < \lambda_{B(a)+1}}. Moreover, we use \eqn{b_k} to denote a binary 
-#'   indicator of whether the observed \eqn{a} belongs to bin \eqn{k} (i.e., \eqn{b_k\equiv I(B(a)=k)} for all \eqn{k\leq B(a)}; \eqn{b_k\equiv}
-#'   \code{NA} for all \eqn{k>B(a))}. This is similar to methods for censored longitudinal data, which code observations as \code{NA} (censored or 
+#'   that \eqn{\delta_{k}\leq a<\delta_{k+1}}, and the length (bandwidth) of the interval can be defined as \eqn{bw_{k}=[\delta_{k+1}-\delta_{k})}. 
+#'   Then let the mapping \eqn{S(a)\in \{1,2,..,K\}} denote a unique index of the indicator in \eqn{\Lambda} that \eqn{a} falls in, where \eqn{S(a)=k}
+#'   if \eqn{a\in [\delta_{k},\delta_{k+1})}, namely, \eqn{\delta_{S(a)} \leq a < \delta_{S(a)+1}}. Moreover, we use \eqn{b_k} to denote a binary 
+#'   indicator of whether the observed \eqn{a} belongs to bin \eqn{k} (i.e., \eqn{b_k\equiv I(S(a)=k)} for all \eqn{k\leq S(a)}; \eqn{b_k\equiv}
+#'   \code{NA} for all \eqn{k>S(a))}. This is similar to methods for censored longitudinal data, which code observations as \code{NA} (censored or 
 #'   missing) once the indicator \eqn{b_k} jumps from 0 to 1. Since \eqn{a} is a realization of the random variable \eqn{A} for one individual, 
 #'   the corresponding random binary indicators of whether \eqn{A} belongs to bin \eqn{k} can be denoted by \eqn{B_k:k=1,..,=K} where 
-#'   \eqn{B_k \equiv I(B(A)=k)} for all \eqn{k\leq B(A)}; \eqn{B_k\equiv}\code{NA} for all \eqn{k>B(A)}.
+#'   \eqn{B_k \equiv I(S(A)=k)} for all \eqn{k\leq S(A)}; \eqn{B_k\equiv}\code{NA} for all \eqn{k>S(A)}.
 #'
 #' \item For each k = 1,...,K, a binary nonparametric regression is used to estimate the true conditional probability \eqn{P(B_k=1|B_{k-1}=0,W)}, 
 #'   which corresponds to the conditional probability of \eqn{B_k} jumping from 0 to 1, given \eqn{B_{k-1}=0} and tbe baseline covariates \eqn{W}.
 #'   Note tha for each k, the corresponding nonparametric regression model is fit only among observations that are uncensored (i.e., still at risk
-#'   of getting \eqn{B_{k}=1} with \eqn{B_{k-1}=0}). 
-#'
+#'   of getting \eqn{B_{k}=1} with \eqn{B_{k-1}=0}). Note the above conditional probability \eqn{P(B_k=1|B_{k-1}=0,W)} is equivalent to 
+#'   \eqn{P(A\in [\delta_{k}, \delta_{k+1}) | A\geq \delta_{k+1}, W)}, which is the probability of \eqn{A} belongs to the interval 
+#'   \eqn{[\delta_{k}, \delta_{k+1})}, given that \eqn{A} doesn't belong to any intervals before \eqn{[\delta_{k}, \delta_{k+1})} and \eqn{W}.
+#'   Then the discrete conditional hazard function for each k is defined as a normalization of the conditional probability using the corresponding
+#'   interval bandwidth \eqn{bw_{k}}: 
+#'   \eqn{\lambda_k(A,W)=\frac{P(B_k=1|B_{k-1}=0,W)}{bw_k}=\frac{P(A\in [\delta_{k},\delta_{k+1})|A\geq \delta_{k+1},W)}{bw_k}}
+#'   
 #' \item Normalize the above conditional probability of B_j jumping from 0 to 1 by its corresponding interval length (bandwidth) bw_j to
 #'    obtain the discrete conditional hazards h_j(W):=P(B_j = 1 | (B_{j-1}=0, W) / bw_j, for each j.
-#'    For the summary measure \code{A}, the above conditional hazard h_j(sW) is equal to P(\code{A} \\in (i_j,i_{j+1}) | \code{A}>=i_j, sW),
-#'    i.e., this is the probability that \code{A} falls in the interval (i_j,i_{j+1}), conditional on sW and conditional on the fact that
-#'    \code{A} does not belong to any intervals before j.
 #'
 #' \item  Finally, for any given data-point \code{(a,w)}, evaluate the discretized conditional density for P(\code{A}=a|W=w) by first
 #'    evaluating the interval number k=B(a)\\in{1,...,M} for \code{a} and then computing \\prod{j=1,...,k-1}{1-h_j(W))*h_k(W)}
