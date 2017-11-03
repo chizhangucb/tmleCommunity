@@ -530,17 +530,16 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  the random variables drawn jointly from distribution \eqn{H_0(A, W)} with denisty \eqn{h_0(A, W) \equiv g_0(A|W)q_{W,0}(W)} and \eqn{q_{W,0}(W)}
 #'  denotes the marginal density of the baseline covariates \eqn{W}.  
 #'
-#' Note that \eqn{A} can be multivariate (i.e., \eqn{(A(1), ..., A(M))}) and each of its components \eqn{A[m]} can be either binary, categorical  
+#' Note that \eqn{A} can be multivariate (i.e., \eqn{(A(1), ..., A(M))}) and each of its components \eqn{A(m)} can be either binary, categorical  
 #'  or continuous. The joint probability model for \eqn{P(A|W)=P(A(1),...,A(M)|W)} can be factorized as a sequence \eqn{P(A(1)|W) \times 
 #'  P(A(2)|W,A(1)) \times ... \times P(A(M)|W, A(1),...,A(M-1))}, where each of these conditional probability models \eqn{P(A(m)|W,A(1),...,A(m-1))}
-#'  is fit separately, depending on the type of the k-specific outcome variable \eqn{A(m)}. For binary \eqn{A(m)}, the conditional probability 
-#'  \eqn{P(A(m)|W,A(1),...,A(k-1))} will be esimtated by a user-specific library of candidate algorithms, including parametric estimators such as 
+#'  is fit separately, depending on the type of the m-specific outcome variable \eqn{A(m)}. For binary \eqn{A(m)}, the conditional probability 
+#'  \eqn{P(A(m)|W,A(1),...,A(m-1))} will be esimtated by a user-specific library of candidate algorithms, including parametric estimators such as 
 #'  logistic model with only main terms, and data-adaptive estimator such as super-learner algorithms. For continuous (or categorical) \eqn{A(m)},
 #'  consider a sequence of values \eqn{\lambda_1, \lambda_2,...,\lambda_{K+1}} that span the range of \eqn{A} and define \eqn{K} bins and the 
-#'  corresponding \eqn{K} bin indicators are denoted as (\eqn{B_1,...,B_K}), 
-#'  where each bin indicator \code{B_j} is then used as an outcome in a
-#'  separate logistic regression model with predictors given by \code{W, A[1],..., A[k-1]}.
-#'  Thus, the joint probability \code{P(A|W)} is defined by such a tree of binary logistic regressions.
+#'  corresponding \eqn{K} bin indicators (\eqn{B_1,...,B_K}), in which case each bin indicator eqn{B_k = [\lambda_k, \lambda_{k+1})} is used as an 
+#'  binary outcome in a seperate user-specific library of candidate algorithms, with predictors given by \eqn{W, A(1),..., A(m-1)}. That is how 
+#'  the joint probability \eqn{P(A|W)} is factorized into by such an entire tree of binary regression models.
 #'
 #' For simplicity, we now suppose \code{sA} is continuous and univariate and we describe here an algorithm for fitting \eqn{P_{g_0}(A|W)} 
 #'  (the algorithm for fitting \eqn{P_{g^*}(A^*|W^*)} is equivalent, except that exposure \code{A} is replaced with exposure \code{A^*}
