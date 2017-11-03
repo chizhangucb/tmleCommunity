@@ -513,14 +513,14 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  }
 #'
 #' For individual-level TMLE, its estimator is obtained as:
-#'  \deqn{\psi^{II}_{TMLE,n}=\frac{1}{J}\sum_{j=1}^{J}\sum_{i=1}^{n_j}\alpha_{i,j}\int_{a}\hat{\bar{Q}}^*(a, w_{i,j}, E_j)g^*(a|w_{i,j}, E_j)d\mu(a)}
+#'  \deqn{\psi^{II}_{TMLE,n}=\frac{1}{J}\sum_{j=1}^{J}\sum_{i=1}^{n_j}\alpha_{i,j}\int_{a}\hat{\bar{Q}}^*(a, W_{i,j}, E_j)g^*(a|W_{i,j}, E_j)d\mu(a)}
 #' 
 #' @section GCOMP estimator:
-#' The GCOMP estimator is similar to the the TMLE estimator except it's based on the untargeted model \eqn{\hat{\bar{Q}}^c(A|W,E)}, thus the community-
-#'  level GCOMP estimator is given by: 
+#' The GCOMP estimator is similar to the the TMLE estimator except it uses the untargeted (initial) model \eqn{\hat{\bar{Q}}^c(A|W,E)} instead of 
+#'  its targeted version \eqn{\hat{\bar{Q}^{c*}}^c(A | W, E)}, for example the community-level GCOMP estimator is given by: 
 #'  \deqn{\psi^{I}_{GCOMP,n}=\frac{1}{J}\sum_{j=1}^{J}\int_{a}\hat{\bar{Q}}^{c}(a, \textbf{W}_j, E_j)g^{c*}(a|\textbf{W}_j, E_j)d\mu(a)}
-#' Similary the individual estimator can be written as:
-#'  \deqn{\psi^{II}_{GCOMP,n}=\frac{1}{J}\sum_{j=1}^{J}\sum_{i=1}^{n_j}\alpha_{i,j}\int_{a}\hat{\bar{Q}}(a, w_{i,j}, E_j)g^*(a|w_{i,j}, E_j)d\mu(a)}
+# Similary the individual estimator can be written as:
+#  \deqn{\psi^{II}_{GCOMP,n}=\frac{1}{J}\sum_{j=1}^{J}\sum_{i=1}^{n_j}\alpha_{i,j}\int_{a}\hat{\bar{Q}}(a, w_{i,j}, E_j)g^*(a|w_{i,j}, E_j)d\mu(a)}
 #'
 #'
 #' @section Modeling \code{P(A | W, E)} for covariates \code{(A, W, E)}:
