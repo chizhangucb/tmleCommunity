@@ -480,7 +480,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  unweighted logistic regression using offsets \code{logit(Qstar)} and a clever covariate \code{h_gstar/h_gN}. 
 #' 
 #' @section IPTW estimator:
-#' IPTW estimator is based on the TMLE weights \eqn{h_{g^*}(A^*, W, E)/h_{g}(A,  W, E)}, which is equivalent to \eqn{P_{g^*}(A^*|W,E)/P_{g}(A|W,E)} 
+#' The IPTW estimator is based on the TMLE weights \eqn{h_{g^*}(A^*,W,E)/h_{g}(A,W,E)}, which is equivalent to \eqn{P_{g^*}(A^*|W,E)/P_{g}(A|W,E)} 
 #'  and is defined as the the weighted average of the observed outcomes Y. The following algorithm shows a general template of the community-level 
 #'  \code{IPTW}: 
 #'  \itemize{
@@ -501,8 +501,8 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'   {P_{g^{*}}(A_j | W_{i,j}, E_j)}}
 #' 
 #' @section TMLE estimator:
-#' TMLE estimator is based on the updated model prediction \eqn{\bar{Q}^*(A, W, E)} and is defined by the G-formula. The following algorithm shows a 
-#'  general template of the community-level \code{TMLE}:
+#' The TMLE estimator is based on the updated model prediction \eqn{\bar{Q}^*(A, W, E)} and is defined by the G-formula. The following algorithm  
+#'  shows a general template of the community-level \code{TMLE}:
 #'  \itemize{ 
 #'   \item The first step is exactly the same as \code{IPTW}: construct two density estimators and use the ratio of them as the weights 
 #'     \eqn{P_{g^*}(A^*|W,E)/P_{g}(A|W,E)} in the targeting step. 
@@ -512,14 +512,16 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'     \deqn{\psi^{I}_{TMLE, n}=\frac{1}{J}\sum_{j=1}^{J}\int_{a}\hat{\bar{Q}}^{c*}(a, \textbf{W}_j, E_j)g^{c*}(a|\textbf{W}_j, E_j)d\mu(a)}
 #'  }
 #'
-#' For individual-level TMLE, its estimator is given by:
+#' For individual-level TMLE, its estimator is obtained as:
 #'  \deqn{\psi^{II}_{TMLE,n}=\frac{1}{J}\sum_{j=1}^{J}\sum_{i=1}^{n_j}\alpha_{i,j}\int_{a}\hat{\bar{Q}}^*(a, w_{i,j}, E_j)g^*(a|w_{i,j}, E_j)d\mu(a)}
 #' 
 #' @section GCOMP estimator:
-#' 
-#' 
-
-#' **********************************************************************
+#' The GCOMP estimator is similar to the the TMLE estimator except it's based on the untargeted model \eqn{\hat{\bar{Q}}^c(A|W,E)}, thus the community-
+#'  level GCOMP estimator is given by: 
+#'  \deqn{\psi^{I}_{GCOMP,n}=\frac{1}{J}\sum_{j=1}^{J}\int_{a}\hat{\bar{Q}}^{c}(a, \textbf{W}_j, E_j)g^{c*}(a|\textbf{W}_j, E_j)d\mu(a)}
+#' Similary the individual estimator can be written as:
+#'  \deqn{\psi^{II}_{GCOMP,n}=\frac{1}{J}\sum_{j=1}^{J}\sum_{i=1}^{n_j}\alpha_{i,j}\int_{a}\hat{\bar{Q}}(a, w_{i,j}, E_j)g^*(a|w_{i,j}, E_j)d\mu(a)}
+#'
 #'
 #' @section Modeling \code{P(A | W, E)} for covariates \code{(A, W, E)}:
 #'  Non-parametric estimation of the common \strong{unit-level} multivariate joint conditional probability model \code{P_g0(A|W)},
