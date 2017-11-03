@@ -556,15 +556,16 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' \item As described above, consider a sequence of \eqn{K+1} values that span the support of \eqn{A} values into \eqn{K} bin intervals \eqn{\Lambda} 
 #'   = (\eqn{\lambda_1, \lambda_2,...,\lambda_{K+1}}) so that any observed data point \eqn{a_i} belongs to one interval within R, in other words, 
 #'   for each possible value \eqn{a \in A} (even if it's not in the observed \eqn{(a_i:i)}), there always exists a \eqn{k \in {1, ...,K}} such  
-#'   that \eqn{\lambda_{k} \leq a < \lambda_{k+1}}. Let the mapping \eqn{B(a)} denote a unique indicator index in \eqn{\Lambda} that \eqn{a} falls 
-#'   into, where \eqn{B(a)=k} if \eqn{a \in [\lambda_{k},\lambda_{k+1})}, namely, \eqn{\lambda_{B(a)} \leq a < \lambda_{B(a)+1}}. Moreover, we use 
-#'   \eqn{b_k} to denote a binary indicator of whether the observed \eqn{a} belongs to bin \eqn{k} (i.e., \eqn{b_k\equiv I(B(a)=k)} if B(a)
-#'   \eqn{\geq k}; \eqn{b_k\equiv} if B(a))<k)
-#    \deqn{\begin{equation} b_k = \begin{cases} I(B(a)=k), & B(a) \geq k \\ \text{NA}, & B(a)<k \end{cases} \end{equation}} 
-#'   
-#'    Let bw_{B(a)}:=i_{B(a)+1}-i_{B(a)} be the length of the interval (bandwidth) (i_{B(a)},i_{B(a)+1}).
-#'    That is we set b_j to 
-#'    missing ones the indicator I(B(a)=j) jumps from 0 to 1. Now let \code{A} denote the random variable for the observed exposure for one unit
+#'   that \eqn{\lambda_{k}\leq a<\lambda_{k+1}}, and the length (bandwidth) of the interval can be defined as \eqn{bw_{k}=\lambda_{k+1}-\lambda_{k}}. 
+#'   Then let the mapping \eqn{B(a)\in {1,2,..,K}} denote a unique indicator index in \eqn{\Lambda} that \eqn{a} falls into, where \eqn{B(a)=k} if 
+#'   \eqn{a \in [\lambda_{k},\lambda_{k+1}]}, namely, \eqn{\lambda_{B(a)} \leq a < \lambda_{B(a)+1}}. Moreover, we use \eqn{b_k} to denote a binary 
+#'   indicator of whether the observed \eqn{a} belongs to bin \eqn{k} (i.e., \eqn{b_k\equiv I(B(a)=k)} for all \eqn{k\leq B(a)}; \eqn{b_k\equiv}
+#'   \code{NA} for all \eqn{k>B(a))}. This is similar to methods for censored longitudinal data, which code observations as \code{NA} (missing) once  
+#'   the indicator \eqn{b_k} jumps from 0 to 1. Since \eqn{a} is a realization of the random variable \eqn{A} for one individual, the corresponding 
+#'   random binary indicators of whether \eqn{A} belongs to bin \eqn{k} can be denoted by \eqn{B_k:k=1,..,=K} where \eqn{B_k \equiv I(B(A)=k)} for
+#'   all \eqn{k\leq B(A)}; \eqn{B_k\equiv}\code{NA} for all \eqn{k>B(A)}.
+#'
+#'    Now let \code{A} denote the random variable for the observed exposure for one unit
 #'    and denote by (B_1,...,B_M) the corresponding random indicators for \code{A} defined as B_j := I(B(\code{A}) = j) for all j <= B(\code{A}) 
 #'    and B_j:=NA for all j>B(\code{A}).
 #'
