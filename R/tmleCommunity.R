@@ -558,12 +558,12 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'   for each possible value \eqn{a \in A} (even if it's not in the observed \eqn{(a_i:i)}), there always exists a \eqn{k \in {1, ...,K}} such  
 #'   that \eqn{\lambda_{k} \leq a < \lambda_{k+1}}. Let the mapping \eqn{B(a)} denote a unique indicator index in \eqn{\Lambda} that \eqn{a} falls 
 #'   into, where \eqn{B(a)=k} if \eqn{a \in [\lambda_{k},\lambda_{k+1})}, namely, \eqn{\lambda_{B(a)} \leq a < \lambda_{B(a)+1}}. Moreover, we use 
-#'   \eqn{b_k} to denote a binary indicator of whether the observed \eqn{a} belongs to bin \eqn{k} 
-#   \deqn{\begin{equation} b_k = \begin{cases} I(B(a)=k), & B(a) \geq k \\ \text{NA}, & B(a)<k \end{cases} \end{equation}} 
-#   (i.e., \eqn{b_k \equiv I(B(a)=k)}). 
-#'  
+#'   \eqn{b_k} to denote a binary indicator of whether the observed \eqn{a} belongs to bin \eqn{k} (i.e., \eqn{b_k\equiv I(B(a)=k)} if B(a)
+#'   \eqn{\geq k}; \eqn{b_k\equiv} if B(a))<k)
+#    \deqn{\begin{equation} b_k = \begin{cases} I(B(a)=k), & B(a) \geq k \\ \text{NA}, & B(a)<k \end{cases} \end{equation}} 
+#'   
 #'    Let bw_{B(a)}:=i_{B(a)+1}-i_{B(a)} be the length of the interval (bandwidth) (i_{B(a)},i_{B(a)+1}).
-#'    Also define the binary indicators b_1,...,b_M, where b_j:=I(B(a)=j), for all j <= B(a) and b_j:=NA for all j>B(a). That is we set b_j to 
+#'    That is we set b_j to 
 #'    missing ones the indicator I(B(a)=j) jumps from 0 to 1. Now let \code{A} denote the random variable for the observed exposure for one unit
 #'    and denote by (B_1,...,B_M) the corresponding random indicators for \code{A} defined as B_j := I(B(\code{A}) = j) for all j <= B(\code{A}) 
 #'    and B_j:=NA for all j>B(\code{A}).
