@@ -522,7 +522,6 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 # Similary the individual estimator can be written as:
 #  \deqn{\psi^{II}_{GCOMP,n}=\frac{1}{J}\sum_{j=1}^{J}\sum_{i=1}^{n_j}\alpha_{i,j}\int_{a}\hat{\bar{Q}}(a, w_{i,j}, E_j)g^*(a|w_{i,j}, E_j)d\mu(a)}
 #'
-#'
 #' @section Modeling \eqn{P(A | W, E)} for covariates \eqn{(A, W, E)}:
 #' For simplicity (and without loss of generality), we now suppose that there is no hierarchical structure in data and are interested in finding 
 #'  an non-parametric estimator of the common (in i) \strong{individual-level} exposure mechanism \eqn{g_0(A|W)}, or the commom multivariate 
@@ -565,21 +564,19 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'   the corresponding random binary indicators of whether \eqn{A} belongs to bin \eqn{k} can be denoted by \eqn{B_k:k=1,..,=K} where 
 #'   \eqn{B_k \equiv I(S(A)=k)} for all \eqn{k\leq S(A)}; \eqn{B_k\equiv}\code{NA} for all \eqn{k>S(A)}.
 #'
-#' \item For each k = 1,...,K, a binary nonparametric regression is used to estimate the true conditional probability \eqn{P(B_k=1|B_{k-1}=0,W)}, 
-#'   which corresponds to the conditional probability of \eqn{B_k} jumping from 0 to 1, given \eqn{B_{k-1}=0} and tbe baseline covariates \eqn{W}.
-#'   Note tha for each k, the corresponding nonparametric regression model is fit only among observations that are uncensored (i.e., still at risk
-#'   of getting \eqn{B_{k}=1} with \eqn{B_{k-1}=0}). Note the above conditional probability \eqn{P(B_k=1|B_{k-1}=0,W)} is equivalent to 
+#' \item Then for each k = 1,...,K, a binary nonparametric regression is used to estimate the conditional probability \eqn{P(B_k=1|B_{k-1}=0,W)}, 
+#'   which corresponds to the probability of \eqn{B_k} jumping from 0 to 1, given \eqn{B_{k-1}=0} and tbe baseline covariates \eqn{W}. Note tha 
+#'   for each k, the corresponding nonparametric regression model is fit only among observations that are uncensored (i.e., still at risk of  
+#'   getting \eqn{B_{k}=1} with \eqn{B_{k-1}=0}). Note the above conditional probability \eqn{P(B_k=1|B_{k-1}=0,W)} is equivalent to 
 #'   \eqn{P(A\in [\delta_{k}, \delta_{k+1}) | A\geq \delta_{k+1}, W)}, which is the probability of \eqn{A} belongs to the interval 
-#'   \eqn{[\delta_{k}, \delta_{k+1})}, given that \eqn{A} doesn't belong to any intervals before \eqn{[\delta_{k}, \delta_{k+1})} and \eqn{W}.
-#'   Then the discrete conditional hazard function for each k is defined as a normalization of the conditional probability using the corresponding
-#'   interval bandwidth \eqn{bw_{k}}: 
+#'   \eqn{[\delta_{k},\delta_{k+1})}, given that \eqn{A} doesn't belong to any intervals before \eqn{[\delta_{k}, \delta_{k+1})} and \eqn{W}.
+#'   Then the discrete conditional hazard function for each k is defined as a normalization of the conditional probability using the 
+#'   corresponding interval bandwidth \eqn{bw_{k}}: 
 #'   \eqn{\lambda_k(A,W)=\frac{P(B_k=1|B_{k-1}=0,W)}{bw_k}=\frac{P(A\in [\delta_{k},\delta_{k+1})|A\geq \delta_{k+1},W)}{bw_k}}
-#'   
-#' \item Normalize the above conditional probability of B_j jumping from 0 to 1 by its corresponding interval length (bandwidth) bw_j to
-#'    obtain the discrete conditional hazards h_j(W):=P(B_j = 1 | (B_{j-1}=0, W) / bw_j, for each j.
 #'
-#' \item  Finally, for any given data-point \code{(a,w)}, evaluate the discretized conditional density for P(\code{A}=a|W=w) by first
-#'    evaluating the interval number k=B(a)\\in{1,...,M} for \code{a} and then computing \\prod{j=1,...,k-1}{1-h_j(W))*h_k(W)}
+#' \item Finally, for any given observation \code{(a,w)}, the discretized conditional density of \eqn{P(A=a|W=w)} can be evaluated by first
+#'   finding out the interval index \eqn{k} to which \eqn{a} belongs (i.e., \eqn{k=S(a)\in{1,...,K}} and then computing 
+#'   \\prod{j=1,...,k-1}{1-h_j(W))*h_k(W)}
 #'    which is equivalent to the joint conditional probability that \code{a} belongs to the interval (i_k,i_{k+1}) and does not belong
 #'    to any of the intervals 1 to k-1, conditional on sW.
 #'  }
