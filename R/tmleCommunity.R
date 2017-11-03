@@ -486,7 +486,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  \item As described in the following section, the first step is to construct an estimator \eqn{P_{\hat{g}^{c}}(A | W, E)} of the density for  
 #'    the common (in j) conditional distribution of \eqn{A} given \eqn{W, E}, that is \eqn{P_{g_0^{c}}(A | W, E)} for common (in j) community-
 #'    level covariates (A, W, E). 
-#'  \imte Implementing the same modeling \& fitting algorithm to construct an estimator \eqn{P_{\hat{g}^{c}}(A^* | W, E)} of the  density for  
+#'  \item Implementing the same modeling \& fitting algorithm to construct an estimator \eqn{P_{\hat{g}^{c}}(A^* | W, E)} of the  density for  
 #'    the common (in j) conditional distribution of \eqn{A^*} given \eqn{W, E}, that is \eqn{P_{g_0^{c*}}(A^* | W, E)} 
 #' }
 #'
