@@ -491,11 +491,15 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'    community-level covariates (\eqn{A^*, W, E}) where \eqn{A^*} is determined by the user-supplied stochastic intervention \code{f_gstar1} or 
 #'    \code{f_gstar2}, given the observed baseline covariates \eqn{W, E}. 
 #'  \item Given observed J independent communities \eqn{\textbf{O}_j = (E_j, \textbf{W}_j, A_j, Y^c_j: j = 1, ..., J)}, the IPTW estimator is given by
-#'    \deqn{\psi^{I}_{IPTW, n} = \frac{1}{J}\sum_{j=1,...,J}Y^c_j[\frac{P_{\bar{g}^{c*}}(A^*_j | \textbf{W}_j, E_j)}{P_{\hat{g}^{c*}}(A_j | \textbf{W}_j, E_j)]}}
+#'    \deqn{\psi^{I}_{IPTW, n}=\frac{1}{J}\sum_{j=1}^{J}Y^c_j\frac{P_{\hat{g}^{c*}}(A^*_j|\textbf{W}_j,E_j)}{P_{\hat{g}^{c*}}(A_j|\textbf{W}_j,E_j)}}
 #' }
 #'
+#' For individual-level IPTW, it incorporates working model that assumes no covariate interference, where the IPTW estimator is given by
+#'    \deqn{\psi^{II}_{IPTW, n} = \frac{1}{J}\sum_{j=1}^{J}\sum_{i=1}^{n_j}\alpha_{i,j}Y_{i,j}\frac{P_{\hat{g}^{*}}(A^*_j|W_{i,j}, E_j)}
+#'      {P_{\hat{g}^{*}}(A_j | W_{i,j}, E_j)}}
+#' 
 #' @section GCOMP estimator:
-#' **********************************************************************
+#' 
 #' 
 #' @section TMLE estimator:
 #' **********************************************************************
