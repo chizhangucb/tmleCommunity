@@ -546,11 +546,12 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  as an binary outcome in a seperate user-specific library of candidate algorithms, with predictors given by \eqn{(W, A(1),..., A(m-1))}. That is  
 #'  how the joint probability \eqn{P(A|W)} is factorized into such an entire tree of binary regression models.
 #'
-#' For simplicity (and without loss of generality), we now suppose \eqn{A} is univariate (M=1) and continuous and a general template of an fitting 
-#'  algorithm for \eqn{P_{g_0}(A|W)} is summrized below:
+#' For simplicity (and without loss of generality), we now suppose \eqn{A} is univariate (i.e., M=1) and continuous and a general template of an 
+#'  fitting algorithm for \eqn{P_{g_0}(A|W)} is summrized below:
 #'
 #' \enumerate{
-#' \item Generate a dataset of N observed continuous summary measures (\code{A_i}:i=1,...,N) from observed ((\code{A_i},\code{W_i}):i=1,...,N).
+#' \item Consider the usual setting in which we observe n independently and identically distributed copies \eqn{o_i=(w_i, a_i, y_i: i=1,..,n)} of
+#'   the random variable \eqn{O=(W, A, Y)}, where \eqn{(a_i: i=1...,n)} are continuous. 
 #'
 #' \item Divide the range of \code{sA} values into intervals S=(i_1,...,i_M,i_{M+1}) so that any observed data point
 #'    \code{sa_i} belongs to one interval in S, namely, for each possible value sa of \code{A} there is k\\in{1,...,M}, such that, 
