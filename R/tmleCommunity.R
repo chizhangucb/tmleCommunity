@@ -557,21 +557,18 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'   = (\eqn{\lambda_1, \lambda_2,...,\lambda_{K+1}}) so that any observed data point \eqn{a_i} belongs to one interval within R, in other words, 
 #'   for each possible value \eqn{a \in A} (even if it's not in the observed \eqn{(a_i:i)}), there always exists a \eqn{k \in {1, ...,K}} such  
 #'   that \eqn{\lambda_{k}\leq a<\lambda_{k+1}}, and the length (bandwidth) of the interval can be defined as \eqn{bw_{k}=\lambda_{k+1}-\lambda_{k}}. 
-#'   Then let the mapping \eqn{B(a)\in {1,2,..,K}} denote a unique indicator index in \eqn{\Lambda} that \eqn{a} falls into, where \eqn{B(a)=k} if 
+#'   Then let the mapping \eqn{B(a)\in \{1,2,..,K\}} denote a unique indicator index in \eqn{\Lambda} that \eqn{a} falls into, where \eqn{B(a)=k} if 
 #'   \eqn{a \in [\lambda_{k},\lambda_{k+1}]}, namely, \eqn{\lambda_{B(a)} \leq a < \lambda_{B(a)+1}}. Moreover, we use \eqn{b_k} to denote a binary 
 #'   indicator of whether the observed \eqn{a} belongs to bin \eqn{k} (i.e., \eqn{b_k\equiv I(B(a)=k)} for all \eqn{k\leq B(a)}; \eqn{b_k\equiv}
-#'   \code{NA} for all \eqn{k>B(a))}. This is similar to methods for censored longitudinal data, which code observations as \code{NA} (missing) once  
-#'   the indicator \eqn{b_k} jumps from 0 to 1. Since \eqn{a} is a realization of the random variable \eqn{A} for one individual, the corresponding 
-#'   random binary indicators of whether \eqn{A} belongs to bin \eqn{k} can be denoted by \eqn{B_k:k=1,..,=K} where \eqn{B_k \equiv I(B(A)=k)} for
-#'   all \eqn{k\leq B(A)}; \eqn{B_k\equiv}\code{NA} for all \eqn{k>B(A)}.
+#'   \code{NA} for all \eqn{k>B(a))}. This is similar to methods for censored longitudinal data, which code observations as \code{NA} (censored or 
+#'   missing) once the indicator \eqn{b_k} jumps from 0 to 1. Since \eqn{a} is a realization of the random variable \eqn{A} for one individual, 
+#'   the corresponding random binary indicators of whether \eqn{A} belongs to bin \eqn{k} can be denoted by \eqn{B_k:k=1,..,=K} where 
+#'   \eqn{B_k \equiv I(B(A)=k)} for all \eqn{k\leq B(A)}; \eqn{B_k\equiv}\code{NA} for all \eqn{k>B(A)}.
 #'
-#'    Now let \code{A} denote the random variable for the observed exposure for one unit
-#'    and denote by (B_1,...,B_M) the corresponding random indicators for \code{A} defined as B_j := I(B(\code{A}) = j) for all j <= B(\code{A}) 
-#'    and B_j:=NA for all j>B(\code{A}).
-#'
-#' \item For each j=1,...,M, fit the logistic regression model for the conditional probability P(B_j = 1 | B_{j-1}=0, W), i.e.,
-#'    at each j this is defined as the conditional probability of B_j jumping from 0 to 1 at bin j, given that B_{j-1}=0 and
-#'    each of these logistic regression models is fit only among the observations that are still at risk of having B_j=1 with B_{j-1}=0.
+#' \item For each k = 1,...,K, a binary nonparametric regression is used to estimate the true conditional probability \eqn{P(B_k=1|B_{k-1}=0,W)}, 
+#'   which corresponds to the conditional probability of \eqn{B_k} jumping from 0 to 1, given \eqn{B_{k-1}=0} and tbe baseline covariates \eqn{W}.
+#'   Note tha for each k, the corresponding nonparametric regression model is fit only among observations that are uncensored (i.e., still at risk
+#'   of getting \eqn{B_{k}=1} with \eqn{B_{k-1}=0}). 
 #'
 #' \item Normalize the above conditional probability of B_j jumping from 0 to 1 by its corresponding interval length (bandwidth) bw_j to
 #'    obtain the discrete conditional hazards h_j(W):=P(B_j = 1 | (B_{j-1}=0, W) / bw_j, for each j.
