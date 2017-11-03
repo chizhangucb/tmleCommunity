@@ -523,7 +523,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #  \deqn{\psi^{II}_{GCOMP,n}=\frac{1}{J}\sum_{j=1}^{J}\sum_{i=1}^{n_j}\alpha_{i,j}\int_{a}\hat{\bar{Q}}(a, w_{i,j}, E_j)g^*(a|w_{i,j}, E_j)d\mu(a)}
 #'
 #'
-#' @section Modeling \code{P(A | W, E)} for covariates \code{(A, W, E)}:
+#' @section Modeling \eqn{P(A | W, E)} for covariates \eqn{(A, W, E)}:
 #' For simplicity (and without loss of generality), we now suppose that there is no hierarchical structure in data and are interested in finding 
 #'  an non-parametric estimator of the common (in i) \strong{individual-level} exposure mechanism \eqn{g_0(A|W)}, which can be a multivariate 
 #'  joint conditional probability model \eqn{P_{g_0}(A|W)}, where the exposures and baseline covariates \eqn{(A,W)=(A_i, W_i: i=1,...,n)} denote 
@@ -531,8 +531,8 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  denotes the marginal density of the baseline covariates \eqn{W}.  
 #'
 #' Note that \eqn{A} can be multivariate (i.e., \eqn{(A[1], ..., A[K])}) and each of its components \eqn{A[k]} can be either binary, categorical  
-#'  or continuous. The joint probability model for \eqn{P(A|W)=P(A[1],...,A[K]|W)} can be factorized as a sequence \eqn{P(A[1]|W)\timesP(A[2]|W,A[1])
-#'  \times...\timesP(A[K]|W, A[1],...,A[K-1])}, where each of these conditional probability models \eqn{P(A[k]|W, A[1],...,A[k-1])} is fit 
+#'  or continuous. The joint probability model for \eqn{P(A|W)=P(A[1],...,A[K]|W)} can be factorized as a sequence \eqn{P(A[1]|W) \times P(A[2]|W,A[1])
+#'  \times ... \times P(A[K]|W, A[1],...,A[K-1])}, where each of these conditional probability models \eqn{P(A[k]|W, A[1],...,A[k-1])} is fit 
 #'  separately, depending on the type of the outcome variable \eqn{A[k]}.
 #'
 #'  If \code{A[j]} is binary, the conditional probability \code{P(A[j]|W,A[1],...,A[j-1])} is evaluated via logistic regression model.
