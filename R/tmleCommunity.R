@@ -486,12 +486,13 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  \item As described in the following section, the first step is to construct an estimator \eqn{P_{\hat{g}^{c}}(A | W, E)} of the density for  
 #'    the common (in j) conditional distribution of \eqn{A} given \eqn{W, E}, that is \eqn{P_{g_0^{c}}(A | W, E)} for common (in j) community-
 #'    level covariates (A, W, E). 
-#'  \item Implementing the same modeling & fitting algorithm to construct an estimator \eqn{P_{\hat{g}^{c}}(A^* | W, E)} of the  density for  
+#'  \item Implementing the same modeling & fitting algorithm to construct an estimator \eqn{P_{\hat{g}^{c*}}(A^* | W, E)} of the  density for  
 #'    the common (in j) conditional distribution of \eqn{A^*} given \eqn{W, E}, that is \eqn{P_{g_0^{c*}}(A^* | W, E)} for common (in j)
 #'    community-level covariates (\eqn{A^*, W, E}) where \eqn{A^*} is determined by the user-supplied stochastic intervention \code{f_gstar1} or 
 #'    \code{f_gstar2}, given the observed baseline covariates \eqn{W, E}. 
 #'  \item Given observed J independent communities \eqn{\textbf{O}_j = (E_j, \textbf{W}_j, A_j, Y^c_j: j = 1, ..., J)}, the IPTW estimator is given by
-#'    \deqn{}
+#'    \deqn{\psi^{I}_{IPTW, n} = \frac{1}{J}\sum_{j=1,...,J}Y^c_j[\frac{P_{\bar{g}^{c*}}(A^*_j | \textbf{W}_j, E_j)}
+#'      {P_{\hat{g}^{c*}}(A_j | \textbf{W}_j, E_j)]}
 #' }
 #'
 #' @section GCOMP estimator:
