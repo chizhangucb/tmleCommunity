@@ -480,11 +480,19 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  unweighted logistic regression using offsets \code{logit(Qstar)} and a clever covariate \code{h_gstar/h_gN}. 
 #' 
 #' @section IPTW estimator:
-#' **********************************************************************
+#' IPTW estimator is based on the TMLE weights \eqn{h_{g^*}(A^*, W, E)/h_{g}(A,  W, E) = P_{g^*}(A^* | W, E)/P_{g}(A | W, E)} and is defined as the 
+#'  the weighted average of the observed outcomes Y. The following algorithm shows a general template of the community-level \code{IPTW}: 
+#' \itemize{
+#'  \item As described in the following section, the first step is to construct an estimator \eqn{P_{\hat{g}^{c}}(A | W, E)} of the density for  
+#'    the common (in j) conditional distribution of \eqn{A} given \eqn{W, E}, that is \eqn{P_{g_0^{c}}(A | W, E)} for common (in j) community-
+#'    level covariates (A, W, E). 
+#'  \imte Implementing the same modeling \& fitting algorithm to construct an estimator \eqn{P_{\hat{g}^{c}}(A^* | W, E)} of the  density for  
+#'    the common (in j) conditional distribution of \eqn{A^*} given \eqn{W, E}, that is \eqn{P_{g_0^{c*}}(A^* | W, E)} 
+#' }
 #'
 #' @section GCOMP estimator:
 #' **********************************************************************
-#'
+#' 
 #' @section TMLE estimator:
 #' **********************************************************************
 #'
