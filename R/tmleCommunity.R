@@ -556,7 +556,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' \item As described above, consider a sequence of \eqn{K+1} values that span the support of \eqn{A} values into \eqn{K} bin intervals R = 
 #'   (\eqn{\lambda_1, \lambda_2,...,\lambda_{K+1}}) so that any observed data point \eqn{a_i} belongs to one interval within R, namely, for each 
 #'   possible value \eqn{a \in A} (even if it's not in the observed \eqn{a}), there always exists a \eqn{k \in {1, ...,K}} such that 
-#'   \eqn{\lambda_{k} \leq a \lambda_{k+1}}.
+#'   \eqn{\lambda_{k} \leq a < \lambda_{k+1}}.
 #'    i_k < \code{a} <= i_{k+1}. Let the mapping B(sa)\\in{1,...,M} denote a unique interval in S for a, such that, i_{B(a)} < a <= i_{B(a)+1}.
 #'    Let bw_{B(a)}:=i_{B(a)+1}-i_{B(a)} be the length of the interval (bandwidth) (i_{B(a)},i_{B(a)+1}).
 #'    Also define the binary indicators b_1,...,b_M, where b_j:=I(B(a)=j), for all j <= B(a) and b_j:=NA for all j>B(a). That is we set b_j to 
