@@ -490,7 +490,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'    the common (in j) conditional distribution of \eqn{A^*} given \eqn{W, E}, that is \eqn{P_{g_0^{c*}}(A^* | W, E)} for common (in j)
 #'    community-level covariates (\eqn{A^*, W, E}) where \eqn{A^*} is determined by the user-supplied stochastic intervention \code{f_gstar1} or 
 #'    \code{f_gstar2}, given the observed baseline covariates \eqn{W, E}. 
-#'  \item Given observed J independent communities \eqn{\bf{O}_j = (E_j, \bf{W}_j, A_j, Y^c_j: j = 1, ..., J)}, the IPTW estimator is given by
+#'  \item Given observed J independent communities \eqn{\textbf{O}_j = (E_j, \textbf{W}_j, A_j, Y^c_j: j = 1, ..., J)}, the IPTW estimator is given by
 #'    \deqn{}
 #' }
 #'
