@@ -527,18 +527,13 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' For simplicity (and without loss of generality), we now suppose that there is no hierarchical structure in data and are interested in finding 
 #'  an non-parametric estimator of the common (in i) \strong{individual-level} exposure mechanism \eqn{g_0(A|W)}, which can be a multivariate 
 #'  joint conditional probability model \eqn{P_{g_0}(A|W)}, where the exposures and baseline covariates \eqn{(A,W)=(A_i, W_i: i=1,...,n)} denote 
-#'  the random variables drawn jointly from distribution \eqn{H_0(A, W)} with denisty \eqn{h_0(A, W) \equiv g_0(A|W)q_{W,0}(W)}
-#'  are 
-#'  
-#'  for unit-level summary measures \code{(sA,sW)} generated from the observed exposures and baseline covariates
-#'  \eqn{(A,W)=(A_i,W_i : i=1,...,N)} (their joint density given by \eqn{g_0(A|W)Q(W)}), is performed by first
-#'  constructing the dataset of N summary measures, \eqn{(sA_i,sW_i : i=1,...,N)}, and then fitting the usual i.i.d. MLE
-#'  for the common density \code{P_g0(A|W)} based on the pooled N sample of these summary measures.
+#'  the random variables drawn jointly from distribution \eqn{H_0(A, W)} with denisty \eqn{h_0(A, W) \equiv g_0(A|W)q_{W,0}(W)} and \eqn{q_{W,0}(W)}
+#'  denotes the marginal density of the baseline covariates \eqn{W}.  
 #'
-#'  Note that \code{A} can be multivariate and any of its components \code{A[j]} can be either binary, categorical
-#'  or continuous. The joint probability model for \code{P(A|W)} = \code{P(A[1],...,A[k]|W)} can be factorized as
-#'  \code{P(A[1]|W)} * \code{P(A[2]|W, A[1])} * ... * \code{P(A[k]|W, A[1],...,A[k-1])},
-#'  where each of these conditional probability models is fit separately, depending on the type of the outcome variable \code{A[j]}.
+#' Note that \eqn{A} can be multivariate (i.e., \eqn{(A[1], ..., A[K])}) and each of its components \eqn{A[k]} can be either binary, categorical  
+#'  or continuous. The joint probability model for \eqn{P(A|W)=P(A[1],...,A[K]|W)} can be factorized as a sequence \eqn{P(A[1]|W)\timesP(A[2]|W,A[1])
+#'  \times...\timesP(A[K]|W, A[1],...,A[K-1])}, where each of these conditional probability models \eqn{P(A[k]|W, A[1],...,A[k-1])} is fit 
+#'  separately, depending on the type of the outcome variable \eqn{A[k]}.
 #'
 #'  If \code{A[j]} is binary, the conditional probability \code{P(A[j]|W,A[1],...,A[j-1])} is evaluated via logistic regression model.
 #'  When \code{sA[j]} is continuous (or categorical), its range will be fist partitioned into \code{K} bins and the corresponding \code{K}
