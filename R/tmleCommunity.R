@@ -525,11 +525,16 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'
 #' @section Modeling \eqn{P(A | W, E)} for covariates \eqn{(A, W, E)}:
 #' For simplicity (and without loss of generality), we now suppose that there is no hierarchical structure in data and are interested in finding 
-#'  an non-parametric estimator of the common (in i) \strong{individual-level} exposure mechanism \eqn{g_0(A|W)}, which can be a multivariate 
-#'  joint conditional probability model \eqn{P_{g_0}(A|W)}, where the exposures and baseline covariates \eqn{(A,W)=(A_i, W_i: i=1,...,n)} denote 
-#'  the random variables drawn jointly from distribution \eqn{H_0(A, W)} with denisty \eqn{h_0(A, W) \equiv g_0(A|W)q_{W,0}(W)} and \eqn{q_{W,0}(W)}
-#'  denotes the marginal density of the baseline covariates \eqn{W}.  
-#'
+#'  an non-parametric estimator of the common (in i) \strong{individual-level} exposure mechanism \eqn{g_0(A|W)}, or the commom multivariate 
+#'  joint conditional probability model \eqn{P_{g_0}(A|W)}, where the exposures and baseline covariates (\eqn{(A,W)=(A_i, W_i: i=1,...,n)}) denote 
+#'  the random variables drawn jointly from distribution \eqn{H_0(A, W)} with denisty \eqn{h_0(a, w) \equiv g_0(a|w)q_{W,0}(w)} and \eqn{q_{W,0}(W)}
+#'  denotes the marginal density of the baseline covariates \eqn{W} specified by the regression formula \code{hform.g0}
+#'  (Notice that an non-parametric estimator of the model \eqn{P_{g^*_0}(A|W)}) is similar, except that now the exposures and baseline covariates 
+#'  (\eqn{(A^*,W)=(A^*_i, W_i: i=1,...,n)}) are randomly drawn from \eqn{H^*_0(A, W)} with density \eqn{h^*_0(a, w) \equiv g^*_0(a|w)q_{W,0}(w)}, 
+#'  where \eqn{A^*} is determined by the user-supplied (stochastic) intervention \code{f_gstar1} or \code{f_gstar2} and \eqn{q_{W,0}(W)} denotes
+#'  the marginal density of the baseline covariates \eqn{W} specified by the regression formula \code{hform.gstar}. Thus, the fitting algorithm
+#'  for \eqn{P_{g^*_0}(A|W)}) is equivalent for \eqn{P_{g_0}(A|W)}).
+#' 
 #' Note that \eqn{A} can be multivariate (i.e., \eqn{(A(1), ..., A(M))}) and each of its components \eqn{A(m)} can be either binary, categorical  
 #'  or continuous. The joint probability model for \eqn{P(A|W)=P(A(1),...,A(M)|W)} can be factorized as a sequence \eqn{P(A(1)|W) \times 
 #'  P(A(2)|W,A(1)) \times ... \times P(A(M)|W, A(1),...,A(M-1))}, where each of these conditional probability models \eqn{P(A(m)|W,A(1),...,A(m-1))}
@@ -537,14 +542,12 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  \eqn{P(A(m)|W,A(1),...,A(m-1))} will be esimtated by a user-specific library of candidate algorithms, including parametric estimators such as 
 #'  logistic model with only main terms, and data-adaptive estimator such as super-learner algorithms. For continuous (or categorical) \eqn{A(m)},
 #'  consider a sequence of values \eqn{\lambda_1, \lambda_2,...,\lambda_{K+1}} that span the range of \eqn{A} and define \eqn{K} bins and the 
-#'  corresponding \eqn{K} bin indicators (\eqn{B_1,...,B_K}), in which case each bin indicator eqn{B_k = [\lambda_k, \lambda_{k+1})} is used as an 
-#'  binary outcome in a seperate user-specific library of candidate algorithms, with predictors given by \eqn{W, A(1),..., A(m-1)}. That is how 
-#'  the joint probability \eqn{P(A|W)} is factorized into by such an entire tree of binary regression models.
+#'  corresponding \eqn{K} bin indicators (\eqn{B_1,...,B_K}), in which case each bin indicator \eqn{B_k \equiv [\lambda_k, \lambda_{k+1})} is used 
+#'  as an binary outcome in a seperate user-specific library of candidate algorithms, with predictors given by \eqn{(W, A(1),..., A(m-1))}. That is  
+#'  how the joint probability \eqn{P(A|W)} is factorized into such an entire tree of binary regression models.
 #'
-#' For simplicity, we now suppose \code{sA} is continuous and univariate and we describe here an algorithm for fitting \eqn{P_{g_0}(A|W)} 
-#'  (the algorithm for fitting \eqn{P_{g^*}(A^*|W^*)} is equivalent, except that exposure \code{A} is replaced with exposure \code{A^*}
-#'  generated under \code{f_gstar1} or \code{f_gstar2} and the predictors \code{W} from the regression formula
-#'  \code{hform.g0} are replaced with predictors \code{W^*} specified by the regression formula \code{hform.gstar}).
+#' For simplicity (and without loss of generality), we now suppose \eqn{A} is univariate (M=1) and continuous and a general template of an fitting 
+#'  algorithm for \eqn{P_{g_0}(A|W)} is summrized below:
 #'
 #' \enumerate{
 #' \item Generate a dataset of N observed continuous summary measures (\code{A_i}:i=1,...,N) from observed ((\code{A_i},\code{W_i}):i=1,...,N).
