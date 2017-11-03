@@ -495,7 +495,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'     \deqn{\psi^{I}_{IPTW, n}=\frac{1}{J}\sum_{j=1}^{J}Y^c_j\frac{P_{\hat{g}^{c*}}(A^*_j|\textbf{W}_j,E_j)}{P_{\hat{g}^{c*}}(A_j|\textbf{W}_j,E_j)}}
 #'  }
 #'
-#' For individual-level IPTW, it read the input data as \eqn{O_{i,j} = (E_j, W_{i,j}, A_j, Y_{i,j}: j = 1, ..., J; i = 1, ..., n_j)} and incorporates 
+#' For individual-level IPTW, it reads the input data as \eqn{O_{i,j} = (E_j, W_{i,j}, A_j, Y_{i,j}: j = 1, ..., J; i = 1, ..., n_j)} and incorporates 
 #'  working model that assumes no covariate interference, weighing each individual within one community by \eqn{\alpha_{i,j}}, where the IPTW estimator
 #'  is given by: \deqn{\psi^{II}_{IPTW, n}=\frac{1}{J}\sum_{j=1}^{J}\sum_{i=1}^{n_j}\alpha_{i,j}Y_{i,j}\frac{P_{g^{*}}(A^*_j|W_{i,j}, E_j)}
 #'   {P_{g^{*}}(A_j | W_{i,j}, E_j)}}
@@ -507,7 +507,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'   \item The first step is exactly the same as \code{IPTW}: construct two density estimators and use the ratio of them as the weights 
 #'     \eqn{P_{g^*}(A^*|W,E)/P_{g}(A|W,E)} in the targeting step. 
 #'   \item Construct an initial estimator \eqn{\hat{\bar{Q}}^c(A | W, E)} of the common (in j) conditional distribution of \eqn{Y^c} given 
-#'     \eqn{(A, W, E)} and update \eqn{\hat{\bar{Q}^{c*}}^c(A | W, E)} for \eqn{\hat{\bar{Q}}^c(A | W, E)} by weights calculated in the first step.
+#'     \eqn{(A, W, E)} and update \eqn{\hat{\bar{Q}}^{c*}(A | W, E)} for \eqn{\hat{\bar{Q}}^c(A | W, E)} by weights calculated in the first step.
 #'   \item The TMLE estimator is defined as the following substitution estimator:
 #'     \deqn{\psi^{I}_{TMLE, n}=\frac{1}{J}\sum_{j=1}^{J}\int_{a}\hat{\bar{Q}}^{c*}(a, \textbf{W}_j, E_j)g^{c*}(a|\textbf{W}_j, E_j)d\mu(a)}
 #'  }
@@ -517,14 +517,19 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' 
 #' @section GCOMP estimator:
 #' The GCOMP estimator is similar to the the TMLE estimator except it uses the untargeted (initial) model \eqn{\hat{\bar{Q}}^c(A|W,E)} instead of 
-#'  its targeted version \eqn{\hat{\bar{Q}^{c*}}^c(A | W, E)}, for example the community-level GCOMP estimator is given by: 
+#'  its targeted version \eqn{\hat{\bar{Q}}^{c*}(A | W, E)}, for example the community-level GCOMP estimator is given by: 
 #'  \deqn{\psi^{I}_{GCOMP,n}=\frac{1}{J}\sum_{j=1}^{J}\int_{a}\hat{\bar{Q}}^{c}(a, \textbf{W}_j, E_j)g^{c*}(a|\textbf{W}_j, E_j)d\mu(a)}
 # Similary the individual estimator can be written as:
 #  \deqn{\psi^{II}_{GCOMP,n}=\frac{1}{J}\sum_{j=1}^{J}\sum_{i=1}^{n_j}\alpha_{i,j}\int_{a}\hat{\bar{Q}}(a, w_{i,j}, E_j)g^*(a|w_{i,j}, E_j)d\mu(a)}
 #'
 #'
 #' @section Modeling \code{P(A | W, E)} for covariates \code{(A, W, E)}:
-#'  Non-parametric estimation of the common \strong{unit-level} multivariate joint conditional probability model \code{P_g0(A|W)},
+#' For simplicity (and without loss of generality), we now suppose that there is no hierarchical structure in data and are interested in finding 
+#'  an non-parametric estimator of the common (in i) \strong{individual-level} exposure mechanism \eqn{g_0(A|W)}, which can be a multivariate 
+#'  joint conditional probability model \eqn{P_{g_0}(A|W)}, where the exposures and baseline covariates \eqn{(A,W)=(A_i, W_i: i=1,...,n)} denote 
+#'  the random variables drawn jointly from distribution \eqn{H_0(A, W)} with denisty \eqn{h_0(A, W) \equiv g_0(A|W)q_{W,0}(W)}
+#'  are 
+#'  
 #'  for unit-level summary measures \code{(sA,sW)} generated from the observed exposures and baseline covariates
 #'  \eqn{(A,W)=(A_i,W_i : i=1,...,N)} (their joint density given by \eqn{g_0(A|W)Q(W)}), is performed by first
 #'  constructing the dataset of N summary measures, \eqn{(sA_i,sW_i : i=1,...,N)}, and then fitting the usual i.i.d. MLE
