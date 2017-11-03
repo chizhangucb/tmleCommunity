@@ -494,9 +494,10 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'    \deqn{\psi^{I}_{IPTW, n}=\frac{1}{J}\sum_{j=1}^{J}Y^c_j\frac{P_{\hat{g}^{c*}}(A^*_j|\textbf{W}_j,E_j)}{P_{\hat{g}^{c*}}(A_j|\textbf{W}_j,E_j)}}
 #' }
 #'
-#' For individual-level IPTW, it incorporates working model that assumes no covariate interference, where the IPTW estimator is given by
-#'    \deqn{\psi^{II}_{IPTW, n} = \frac{1}{J}\sum_{j=1}^{J}\sum_{i=1}^{n_j}\alpha_{i,j}Y_{i,j}\frac{P_{\hat{g}^{*}}(A^*_j|W_{i,j}, E_j)}
-#'      {P_{\hat{g}^{*}}(A_j | W_{i,j}, E_j)}}
+#' For individual-level IPTW, it read the input data as \eqn{O_{i,j} = (E_j, W_{i,j}, A_j, Y_{i,j}: j = 1, ..., J; i = 1, ..., n_j)} and incorporates 
+#'  working model that assumes no covariate interference, weighing each individual within one community by \eqn{\alpha_{i,j}}, where the IPTW estimator
+#'  is given by \deqn{\psi^{II}_{IPTW, n} = \frac{1}{J}\sum_{j=1}^{J}\sum_{i=1}^{n_j}\alpha_{i,j}Y_{i,j}\frac{P_{\hat{g}^{*}}(A^*_j|W_{i,j}, E_j)}
+#'   {P_{\hat{g}^{*}}(A_j | W_{i,j}, E_j)}}
 #' 
 #' @section GCOMP estimator:
 #' 
