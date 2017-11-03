@@ -482,27 +482,39 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @section IPTW estimator:
 #' IPTW estimator is based on the TMLE weights \eqn{h_{g^*}(A^*, W, E)/h_{g}(A,  W, E) = P_{g^*}(A^* | W, E)/P_{g}(A | W, E)} and is defined as the 
 #'  the weighted average of the observed outcomes Y. The following algorithm shows a general template of the community-level \code{IPTW}: 
-#' \itemize{
-#'  \item As described in the following section, the first step is to construct an estimator \eqn{P_{\hat{g}^{c}}(A | W, E)} of the density for  
-#'    the common (in j) conditional distribution of \eqn{A} given \eqn{W, E}, that is \eqn{P_{g_0^{c}}(A | W, E)} for common (in j) community-
-#'    level covariates (A, W, E). 
-#'  \item Implementing the same modeling & fitting algorithm to construct an estimator \eqn{P_{\hat{g}^{c*}}(A^* | W, E)} of the  density for  
-#'    the common (in j) conditional distribution of \eqn{A^*} given \eqn{W, E}, that is \eqn{P_{g_0^{c*}}(A^* | W, E)} for common (in j)
-#'    community-level covariates (\eqn{A^*, W, E}) where \eqn{A^*} is determined by the user-supplied stochastic intervention \code{f_gstar1} or 
-#'    \code{f_gstar2}, given the observed baseline covariates \eqn{W, E}. 
-#'  \item Given observed J independent communities \eqn{\textbf{O}_j = (E_j, \textbf{W}_j, A_j, Y^c_j: j = 1, ..., J)}, the IPTW estimator is given by
-#'    \deqn{\psi^{I}_{IPTW, n}=\frac{1}{J}\sum_{j=1}^{J}Y^c_j\frac{P_{\hat{g}^{c*}}(A^*_j|\textbf{W}_j,E_j)}{P_{\hat{g}^{c*}}(A_j|\textbf{W}_j,E_j)}}
-#' }
+#'  \itemize{
+#'   \item As described in the following section ("Modeling \code{P(A | W, E)} for covariates \code{(A, W, E)}"), the first step is to construct an 
+#'     estimator \eqn{P_{\hat{g}^{c}}(A | W, E)} of the density for the common (in j) conditional distribution of \eqn{A} given \eqn{W, E}, that is 
+#'     \eqn{P_{g_0^{c}}(A | W, E)} for common (in j) community-level covariates (A, W, E). 
+#'   \item Implementing the same modeling & fitting algorithm to construct an estimator \eqn{P_{\hat{g}^{c*}}(A^* | W, E)} of the density for  
+#'     the common (in j) conditional distribution of \eqn{A^*} given \eqn{(W, E)}, that is \eqn{P_{g_0^{c*}}(A^* | W, E)} for common (in j)
+#'     community-level covariates (\eqn{A^*, W, E}) where \eqn{A^*} is determined by the user-supplied stochastic intervention \code{f_gstar1} or 
+#'     \code{f_gstar2}, given the observed baseline covariates \eqn{(W, E)}. 
+#'   \item Given observed J independent communities \eqn{\textbf{O}_j = (E_j, \textbf{W}_j, A_j, Y^c_j: j = 1, ..., J)}, the IPTW estimator is given by
+#'     \deqn{\psi^{I}_{IPTW, n}=\frac{1}{J}\sum_{j=1}^{J}Y^c_j\frac{P_{\hat{g}^{c*}}(A^*_j|\textbf{W}_j,E_j)}{P_{\hat{g}^{c*}}(A_j|\textbf{W}_j,E_j)}}
+#'  }
 #'
 #' For individual-level IPTW, it read the input data as \eqn{O_{i,j} = (E_j, W_{i,j}, A_j, Y_{i,j}: j = 1, ..., J; i = 1, ..., n_j)} and incorporates 
 #'  working model that assumes no covariate interference, weighing each individual within one community by \eqn{\alpha_{i,j}}, where the IPTW estimator
-#'  is given by \deqn{\psi^{II}_{IPTW, n} = \frac{1}{J}\sum_{j=1}^{J}\sum_{i=1}^{n_j}\alpha_{i,j}Y_{i,j}\frac{P_{\hat{g}^{*}}(A^*_j|W_{i,j}, E_j)}
-#'   {P_{\hat{g}^{*}}(A_j | W_{i,j}, E_j)}}
+#'  is given by \deqn{\psi^{II}_{IPTW, n}=\frac{1}{J}\sum_{j=1}^{J}\sum_{i=1}^{n_j}\alpha_{i,j}Y_{i,j}\frac{P_{g^{*}}(A^*_j|W_{i,j}, E_j)}
+#'   {P_{g^{*}}(A_j | W_{i,j}, E_j)}}
 #' 
+#' @section TMLE estimator:
+#' TMLE estimator is based on the updated model prediction \eqn{\bar{Q}^*(A, W, E)} and is defined by the G-formula. The following algorithm shows a 
+#'  general template of the community-level \code{TMLE}:
+#'  \itemize{ 
+#'   \item The first step is exactly the same as \code{IPTW}: construct two density estimators and use the ratio of them as the weights 
+#'     \eqn{P_{g^*}(A^*|W,E)/P_{g}(A|W,E)} in the targeting step. 
+#'   \item Construct an initial estimator \eqn{\hat{\bar{Q}}^c(A | W, E)} of the common (in j) conditional distribution of \eqn{Y^c} given 
+#'     \eqn{(A, W, E)} and update \eqn{\hat{\bar{Q}^{c*}}^c(A | W, E)} for \eqn{\hat{\bar{Q}}^c(A | W, E)} by weights calculated in the first step.
+#'   \item The TMLE estimator is defined as the following substitution estimator:
+#'     \deqn{\psi^{I}_{TMLE, n}=\frac{1}{J}\sum_{j=1}^{J}Y^c_j\int_{a}\hat{\bar{Q}}^{c*}(a, \textbf{W}_j, E_j)g^{c*}(a|\textbf{W}_j, E_j)d\mu(a)}
+#'  }
+#'
 #' @section GCOMP estimator:
 #' 
 #' 
-#' @section TMLE estimator:
+
 #' **********************************************************************
 #'
 #' @section Modeling \code{P(A | W, E)} for covariates \code{(A, W, E)}:
