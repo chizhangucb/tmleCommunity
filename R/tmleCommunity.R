@@ -591,7 +591,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  cutoffs. See \code{help(tmleCom_Options)} for more argument details. 
 #' 
 #' \itemize{
-#'  \item \code{equal.mass} (Approach 1): The default discretization method, aka equal-area interval method, set by passing an argument
+#'  \item \code{equal.mass}: The default discretization method, equal mass (aka equal area) interval method, set by passing an argument
 #'    \code{bin.method="equal.mass"} to \code{tmleCom_Options()} prior to calling the main function \code{tmleCommunity()}. The interval are 
 #'    defined by spanning the support of \eqn{A} into non-equal length of bins, each containing (approximately) the same number of observations. 
 #'    It's data-adaptive since it tends to be wide where the population density is small, and narrow where the density is large. If \code{nbins} 
@@ -599,37 +599,16 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'    \code{n} is the total number of observations in \eqn{A}, and the default setting of \code{maxNperBin} is 500 observations per interval.
 #'    This method could identify spikes in the density, but oversmooths in the tails and so couldn't discover outliers. 
 #'    
-#'  \item \code{equal.len} (Approach 2): equal length interval method, set by passing an argument \code{bin.method="equal.len"} to 
+#'  \item \code{equal.len}: equal length interval method, set by passing an argument \code{bin.method="equal.len"} to 
 #'    \code{tmleCom_Options()} prior to calling \code{tmleCommunity()}. The intervals are defined by spanning the support of \eqn{A} into 
-#'    \code{nbins} number of equal length of bins. This method describes the tails of the density and identifies outliers well, but oversmooths 
-#'    in regions of high density and so is poor at identifying sharp peaks.
+#'    \code{nbins} number of equal length of bins. This method describes the tails of the density and identifies outliers well, but  
+#'    oversmooths in regions of high density and so is poor at identifying sharp peaks.
 #'
-#'  \item \code{dhist} (Approach 3): (for diagonally cut histogram) Combination of 
+#'  \item \code{dhist}: (for diagonally cut histogram) Combination of equal-area equal length and equal mass method, set by passing an 
+#'    argument \code{bin.method="dhist"} to \code{tmleCom_Options()} prior to calling \code{tmleCommunity()}. We use the slope a = 
+#'    \eqn{5{\times}\text{IQR}(A)} as suggested by Denby and Mallows ("Variations on the Histogram" (2009)). For more details, please  
+#'    also see this paper.
 #' }
-#'
-# where \code{nbins} is another argument
-#'  of \code{tmleCom_Options()} function. When \code{nbins=NA} (the default setting) the actual value of \code{nbins}
-#'  is computed at run time by taking the integer value (floor) of \code{n/maxNperBin},
-#'  for \code{n} - the total observed sample size and \code{maxNperBin=1000} - another argument of
-#'  \code{tmleCom_Options()} with the default value 1,000.
-#'
-#'
-#' *********************
-#'
-#'  ensures that each interval contains around
-#'  \code{maxNperBin} observations from (sa_j:j=1,...,N).
-#'  The method ensures that an approximately equal number of observations will belong to each interval, where that number
-#'  of observations for each interval
-#'  is controlled by setting \code{maxNperBin}. The default setting is \code{maxNperBin=1000} observations per interval.
-#'
-#' Approach 3 (\code{dhist}): combination of 1 & 2.
-#' The data-adaptive approach dhist is a mix of Approaches 1 & 2. See Denby and Mallows "Variations on the Histogram"
-#'  (2009)). This interval definition method is selected by passing an argument \code{bin.method="dhist"} to
-#'  \code{tmleCom_Options()}  prior to calling \code{tmleCommunity()}.
-#' 
-#'  The choice of which method is used along with other discretization parameters (e.g., total number of
-#'  bins) is controlled via the tmlenet_options() function. See \code{?tmlenet_options} argument \code{bin.method} for
-#'  additional details.
 #'
 #' @return \code{tmleCommunity} returns an object of class "\code{tmleCommunity}", which is a named list containing the estimation results
 #'  stored by the following 3 elements:
