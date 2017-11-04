@@ -569,31 +569,28 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'   for each k, the corresponding nonparametric regression model is fit only among observations that are uncensored (i.e., still at risk of  
 #'   getting \eqn{B_{k}=1} with \eqn{B_{k-1}=0}). Note the above conditional probability \eqn{P(B_k=1|B_{k-1}=0,W)} is equivalent to 
 #'   \eqn{P(A\in [\delta_{k}, \delta_{k+1}) | A\geq \delta_{k+1}, W)}, which is the probability of \eqn{A} belongs to the interval 
-#'   \eqn{[\delta_{k},\delta_{k+1})}, given that \eqn{A} doesn't belong to any intervals before \eqn{[\delta_{k}, \delta_{k+1})} and \eqn{W}.
+#'   \eqn{[\delta_{k},\delta_{k+1})}, conditional on \eqn{A} doesn't belong to any intervals before \eqn{[\delta_{k}, \delta_{k+1})} and \eqn{W}.
 #'   Then the discrete conditional hazard function for each k is defined as a normalization of the conditional probability using the 
 #'   corresponding interval bandwidth \eqn{bw_{k}}: 
 #'   \eqn{\lambda_k(A,W)=\frac{P(B_k=1|B_{k-1}=0,W)}{bw_k}=\frac{P(A\in[\delta_{k},\delta_{k+1})|A\geq \delta_{k+1},W)}{bw_k}}
 #'
 #' \item Finally, for any given observation \code{(a,w)}, we first find out the interval index \eqn{k} to which \eqn{a} belongs (i.e., 
 #'   \eqn{k=S(a)\in{1,...,K}}). Then the discretized conditional density of \eqn{P(A=a|W=w)} can be evaluated by 
-#'   \eqn{\lambda_k(A, W){\times}[\prod_{j=1}^{k-1}{1-\lambda_j(A, W))}]}
+#'   \eqn{\lambda_k(A, W){\times}[\prod_{j=1}^{k-1}(1-\lambda_j(A, W))]}, which corresponds to the conditional probability of \eqn{a} 
+#'   belongs to the interval \eqn{[\delta_{k},\delta_{k+1})} and doesn't belong to any intervals before, given \eqn{W}.
 #' }
 #'
-#' The evaluation above utilizes a discretization of the fact that any continuous density f of random variable X can be written as f_X(x)=S_X(x)*h_X(x),
-#'  for a continuous density f of X where S_X(x):=P(X>x) is the survival function for X, h_X=P(X>x|X>=x) is the hazard function for X; as well as the fact that
-#'  the discretized survival function S_X(x) can be written as a of the hazards for s<x: S_X(x)=\\prod{s<x}h_X(x).
-#'
-#' @section Three methods for defining bin (interval) cuttoffs for a continuous one-dimenstional summary measure \code{A[j]}:
-#' **********************************************************************
-#'
-#' There are 3 alternative methods to defining the bin cutoffs S=(i_1,...,i_M,i_{M+1}) for a continuous summary measure
-#'  \code{A}. The choice of which method is used along with other discretization parameters (e.g., total number of
-#'  bins) is controlled via the tmlenet_options() function. See \code{?tmlenet_options} argument \code{bin.method} for
-#'  additional details.
-#'
-#' Approach 1 (\code{equal.len}): equal length, default.
-#'
-#' *********************
+#' @section Three methods for choosing the locations of bins (intervals) for a univariate and continuous variable \eqn{A}:
+#' Note that the choice of the values \eqn{\delta_k (k=1,..,K)} implies defining the number and positions of the bins. First, a cross- 
+#'  validation selector can be applied to data-adaptively select the candidate number of bins, which minimizes variance and maximizes precision 
+#'  (Don't recommend too many bins due to easily violating the positivity assumption). Then, we need to choose the most convenient locations 
+#'  (cuttoffs) for the bins (for fixed K). There are 3 alternative methods that use the histogram as a graphical descriptive tool to define 
+#'  the bin cutoffs \eqn{\Delta=(\delta_1,...,\delta_K,\delta_{K+1})} for a continuous variable \code{A}:
+#' 
+#' \itemize{
+#'  \item \code{equal.mass}: 
+#' }
+#' Approach 1 (equal.len): equal length, default.
 #'
 #' The bins are defined by splitting the range of observed \code{A} (sa_1,...,sa_n) into equal length intervals.
 #'  This is the dafault discretization method, set by passing an argument \code{bin.method="equal.len"} to
@@ -604,7 +601,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  for \code{n} - the total observed sample size and \code{maxNperBin=1000} - another argument of
 #'  \code{tmleCom_Options()} with the default value 1,000.
 #'
-#' Approach 2 (\code{equal.mass}): data-adaptive equal mass intervals.
+#' Approach 2 (\code{}): data-adaptive equal mass intervals.
 #'
 #' *********************
 #'
@@ -622,6 +619,10 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  (2009)). This interval definition method is selected by passing an argument \code{bin.method="dhist"} to
 #'  \code{tmleCom_Options()}  prior to calling \code{tmleCommunity()}.
 #' 
+#'  The choice of which method is used along with other discretization parameters (e.g., total number of
+#'  bins) is controlled via the tmlenet_options() function. See \code{?tmlenet_options} argument \code{bin.method} for
+#'  additional details.
+#'
 #' @return \code{tmleCommunity} returns an object of class "\code{tmleCommunity}", which is a named list containing the estimation results
 #'  stored by the following 3 elements:
 #'  \itemize{
