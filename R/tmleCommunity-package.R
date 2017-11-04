@@ -96,33 +96,41 @@ NULL
 
 #' An example of a hierarchical data containing a cluster-based binary exposure with a individual-level binary outcome.
 #'
-#' Simulated dataset containing measured i.i.d. baseline covariates (\code{W1}, \code{W2}, \code{W3} and \code{W4}), continuous  
-#'  exposure (\code{A}) and continous outcome (\code{Y}). The 10,000 baseline covariates \code{W1}, \code{W2}, \code{W3} and \code{W4}
-#'  were sampled as i.i.d., while the exposure value of \code{A} for each observation \code{i} was sampled conditionally on the value
-#'  of \code{i}'s four baseline covariates, Similarly, the continuous outcome \code{Y} for each observation was generated conditionally 
-#'  on \code{i}'s exposure and baseline covariates values in (\code{W1[i]},\code{W2[i]}, \code{W3[i]}, \code{W4[i]}, \code{A[i]}).
-#'  Individual variables are described below.
+#' Simulated hierarchical dataset containing 1000 independent clusters, each (community \eqn{j}) containing \eqn{n_j} (non-fixed) 
+#'  number of individuals where \eqn{n_j} is drawn from a normal with mean 100 and standard deviation 10 and round to the nearest 
+#'  integer. Each communnity include 2 measured community-level baseline covariates (\code{E1, E2}), 3 individual-level baseline 
+#'  covariates (\code{W1, W2, W3}), 1 bianry exposure (\code{A}) and 1 binary outcoem (\code{Y}), along with one unique community  
+#'  identifier (\code{id}). The community-level baseline covariates (\code{E1, E2}) were sampled as i.i.d across all communities, 
+#'  while the individual-level baseline covariates (\code{W1, W2, W3}) for each individual \eqn{i} within communty \eqn{j} was
+#'  generated conditionally on the values of \eqn{j}'s community-level baseline covariates (\code{E1[j], E2[j]}). Then the 
+#'  community-level exposure (\code{A}) for each community \eqn{j} was sampled conditionally on the value of \eqn{j}'s community- 
+#'  level baseline covariates (\code{E1[j], E2[j]}), together with all invididuals' baseline covariates (\code{W1[i], W2[i], W3[i]})  
+#'  within community \eqn{j} where \eqn{i=1,..,n_j}. Similary, the individual-level binary outcome \code{Y} for each individual  
+#'  \eqn{i} within communty \eqn{j} was sampled conditionally on the value of community \eqn{j}'s baseline covariates and exposure 
+#'  (\code{E1[j], E2[j]}), as well as the value of individual \eqn{i}'s baseline covariates (\code{W1[i], W2[i], W3[i]}). The 
+#'  following section provides more details regarding individual variables in simulated data.
 #'
-#' @format A data frame with 10,000 independent observations (rows) and 6 variables:
+#' @format A data frame with 1000 independent communities, each containing around 1000 individuals, and 8 variables:
 #' \describe{
-#'   \item{W1}{binary baseline covariate with \code{P(W1 = 1) = 0.5}}
-#'   \item{W2}{binary baseline covariate with \code{P(W1 = 1) = 0.3}}
-#'   \item{W3}{continuous normal baseline covariate with mean = 0 and \eqn{\mu} = 0.25}
-#'   \item{W4}{continuous uniform baseline covariate with min = 0 and max = 1}
-#'   \item{A}{continuous normal exposure that depends on unit's baseline covariate values in \code{W1}, \code{W2}, \code{W3}, \code{W4}}
-#'   \item{Y}{continuous normal  outcome that depends on unit's baseline covariate values and exposure in \code{W1}, \code{W2}, 
+#'   \item {id} {integer (unique) community identifier from 1 to 1000}
+#'   \item {E1} {binary baseline covariate with \code{P(W1 = 1) = 0.5}}
+#'   \item {E2} {binary baseline covariate with \code{P(W1 = 1) = 0.5}}
+#'   \item {W1} {binary baseline covariate with \code{P(W1 = 1) = 0.5}}
+#'   \item {W2} {binary baseline covariate with \code{P(W1 = 1) = 0.3}}
+#'   \item {W3} {continuous normal baseline covariate with mean = 0 and \eqn{\mu} = 0.25}
+#'   \item {W4} {continuous uniform baseline covariate with min = 0 and max = 1}
+#'   \item {A} {continuous normal exposure that depends on unit's baseline covariate values in \code{W1}, \code{W2}, \code{W3}, \code{W4}}
+#'   \item {Y} {continuous normal  outcome that depends on unit's baseline covariate values and exposure in \code{W1}, \code{W2}, 
 #'   \code{W3}, \code{W4}, \code{A}}
 #' }
 #' @docType data
 #' @keywords datasets
-#' @name sampleDat_iidcontAContY
-#' @usage data(sampleDat_iidcontAContY)
+#' @name comSample.wmT.bA.bY_list
+#' @usage data(comSample.wmT.bA.bY_list)
 #' @examples
 #'
-#' data(sampleDat_iidcontAContY)
-#' dat_iidcontAContY <- sampleDat_iidcontAContY$dat_iidcontAContY
-#' psi0.Y <- sampleDat_iidcontAContY$psi0.Y
-#' psi0.Ygstar <- sampleDat_iidcontAContY$psi0.Ygstar
-#' sampleDat_iidcontAContY$truncBD
-#' sampleDat_iidcontAContY$shift.val
+#' data(comSample.wmT.bA.bY_list)
+#' comSample.wmT.bA.bY <- comSample.wmT.bA.bY_list$comSample.wmT.bA.bY
+#' head(comSample.wmT.bA.bY)
+#' head(table(comSample.wmT.bA.bY$id))  # summarize the number of individuals within each community
 NULL
