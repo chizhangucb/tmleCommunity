@@ -112,15 +112,15 @@ NULL
 #'
 #' @format A data frame with 1000 independent communities, each containing around 1000 individuals, and 8 variables:
 #' \describe{
-#'   \item {id} {integer (unique) community identifier from 1 to 1000}
-#'   \item {E1} {binary baseline covariate with \code{P(W1 = 1) = 0.5}}
-#'   \item {E2} {binary baseline covariate with \code{P(W1 = 1) = 0.5}}
-#'   \item {W1} {binary baseline covariate with \code{P(W1 = 1) = 0.5}}
-#'   \item {W2} {binary baseline covariate with \code{P(W1 = 1) = 0.3}}
-#'   \item {W3} {continuous normal baseline covariate with mean = 0 and \eqn{\mu} = 0.25}
-#'   \item {W4} {continuous uniform baseline covariate with min = 0 and max = 1}
-#'   \item {A} {continuous normal exposure that depends on unit's baseline covariate values in \code{W1}, \code{W2}, \code{W3}, \code{W4}}
-#'   \item {Y} {continuous normal  outcome that depends on unit's baseline covariate values and exposure in \code{W1}, \code{W2}, 
+#'   \item{id} {integer (unique) community identifier from 1 to 1000}
+#'   \item{E1} {binary baseline covariate with \code{P(W1 = 1) = 0.5}}
+#'   \item{E2} {binary baseline covariate with \code{P(W1 = 1) = 0.5}}
+#'   \item{W1} {binary baseline covariate with \code{P(W1 = 1) = 0.5}}
+#'   \item{W2} {binary baseline covariate with \code{P(W1 = 1) = 0.3}}
+#'   \item{W3} {continuous normal baseline covariate with mean = 0 and \eqn{\mu} = 0.25}
+#'   \item{W4} {continuous uniform baseline covariate with min = 0 and max = 1}
+#'   \item{A} {continuous normal exposure that depends on unit's baseline covariate values in \code{W1}, \code{W2}, \code{W3}, \code{W4}}
+#'   \item{Y} {continuous normal  outcome that depends on unit's baseline covariate values and exposure in \code{W1}, \code{W2}, 
 #'   \code{W3}, \code{W4}, \code{A}}
 #' }
 #' @docType data
