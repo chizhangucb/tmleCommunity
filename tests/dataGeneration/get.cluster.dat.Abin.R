@@ -59,7 +59,7 @@ get.fullDat.Abin <- function(J, n.ind, rndseed = NULL, is.Y.bin = TRUE, working.
   
   for(j in 1:J) {
     if (verbose) message("#### generating " %+% j %+% "th cluster ####")
-    cluster.data.j <- get.cluster.dat.Abin(id = j, n.ind = n.ind[j], rndseed = rndseed, is.Y.bin = is.Y.bin, working.model = working.model) 
+    cluster.data.j <- get.cluster.dat.Abin(id = j, n.ind = n.ind[j], is.Y.bin = is.Y.bin, working.model = working.model) 
     if (onlyYkeep) {
       Y <- c(Y, cluster.data.j[, "Y"])
       Y1 <- c(Y1, cluster.data.j[, "Y1"])
