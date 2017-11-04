@@ -68,6 +68,7 @@ get.fullDat.Abin <- function(J, n.ind, rndseed = NULL, is.Y.bin = TRUE, working.
       full.data <- rbind(full.data, cluster.data.j)
     }
   }  
+  full.data$id <- as.integer(full.data$id)
   ifelse(onlyYkeep, return(data.frame(cbind(Y, Y1, Y0))), return(full.data))
 }
 
