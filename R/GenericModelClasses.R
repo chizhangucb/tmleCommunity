@@ -209,12 +209,12 @@ RegressionClass <- R6Class("RegressionClass",
 #'  or \eqn{g_0}. By calling \code{self$new(reg)}, it utilizes estimation options defined in \code{\link{RegressionClass}} class, and 
 #'  automatically factorizes the multivariate conditional probability model \eqn{P(A|W,E)} into \eqn{M} univariate conditional probability 
 #'  models (can be binary, categorical or continuous) and finally an entire tree of binary regression models (see details in
-#'  \code{\link{RegressionClass}} and \code{\link{tmleCommunity}}), where a new instance of \code{\link{BinaryOutModel}} class will be  
-#'  initialized for each binary regression (If one outcome variable \eqn{A[m]} is already binary, then immediately call a new instance of 
-#'  \code{\link{BinaryOutModel}}). By calling \code{self$fit(data)} and \code{self$predict(newdata)},  where \code{data} and \code{newdata}
+#'  \code{\link{tmleCommunity}}), where a new instance of \code{\link{BinaryOutModel}} class will be initialized for each binary 
+#'  regression (If one outcome variable \eqn{A[m]} is already binary, then immediately call a new instance of \code{BinaryOutModel}). 
+#'  By calling \code{self$fit(data)} and \code{self$predict(newdata)},  where \code{data} and \code{newdata}
 #'  are \code{\link{DatKeepClass}} class objects, it fits \eqn{P(A|W,E)} and predicts \eqn{P(A=1|W=w,E=e)}, where values of \eqn{(w,e)}     
 #'  are from \code{newdata}. Moreover, it predicts likelihood function \eqn{P(A=a| W=w,E=e)} through \code{self$predictAeqa(newdata)},   
-#'  where \eqn{(a,w,e)} are from \code{newdata} (also a \code{\link{DatKeepClass}} class).
+#'  where \eqn{(a,w,e)} are from \code{newdata} (also a \code{DatKeepClass} class).
 #'
 #' @docType class
 #' @format An \code{\link{R6Class}} generator object
