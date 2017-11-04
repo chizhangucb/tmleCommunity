@@ -124,7 +124,7 @@ NULL
 #'   \item{A} {binary exposure that depends on community's baseline covariate values in \code{(E1, E2)}, and the mean of all individuals'
 #'     baseline covariates \code{W1} within the same community}
 #'   \item{Y} {binary outcome that depends on community's baseline covariate and exposure values in \code{(E1, E2, A)}, and all 
-#'     individuals' baseline covariate values in \code{W2, W3}}
+#'     individuals' baseline covariate values in \code{(W2, W3(}}
 #' }
 #' @docType data
 #' @keywords datasets
