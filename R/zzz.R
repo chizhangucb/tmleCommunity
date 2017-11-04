@@ -110,7 +110,7 @@ print_tmleCom_opts <- function() {
 tmleCom_Options <- function(Qestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble", "SuperLearner"),  
                             gestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble", "SuperLearner"),  
                             bin.method = c("equal.mass", "equal.len", "dhist"),
-                            nbins = 10, 
+                            nbins = 5, 
                             maxncats = 10,  
                             maxNperBin = 500,
                             parfit = FALSE,
