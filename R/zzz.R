@@ -63,24 +63,25 @@ print_tmleCom_opts <- function() {
 #'  The default method is \code{"equal.mass"}, which provides a data-adaptive selection of the bins based on equal mass/ area, i.e., 
 #'  each bin will contain approximately the same number of observations as otheres. Method \code{"equal.len"} partitions the range of 
 #'  \code{A} into equal length \code{nbins} intervals. Method \code{"dhist"} uses a combination of the above two approaches. Please
-#'  see Denby and Mallows "Variations on the Histogram" (2009) for more details. Note that argument \code{maxNperBin} will control
+#'  see Denby and Mallows "Variations on the Histogram" (2009) for more details. Note that argument \code{maxNperBin} controls
 #'  the maximum number of observations in each bin.
-#' @param nbins Set the default number of bins when discretizing a continous variable under setting \code{bin.method = "equal.len"}. 
-#'  When method is \code{"equal.mass"}, \code{nbins} will be set as the maximum of the default \code{nbins} and the nearest integer
-#'  of \code{nobs}/\code{maxNperBin}, where \code{nobs} is the total number of observations in the input data. 
-#'  If setting to \code{NA}, \code{nbins} is defined as the nearest integer of \code{nobs}/\code{maxNperBin}. 
-#' @param maxncats Set the maximum number of unique categories a categorical variable \code{A[j]} can have. If \code{A[j]} has more
-#'  unique categories, it is automatically considered a continuous variable. Default to 10.
-#' @param maxNperBin Set the maximum number of observations in each bin when discretizing a continuous variable \code{A[j]} (applies 
-#'  directly when \code{bin.method = "equal.mass"} and indirectly when \code{bin.method = "equal.len"}, but \code{nbins = NA}).
+#' @param nbins When \code{bin.method = "equal.len"}, set to the user-supplied number of bins when discretizing a continous variable/
+#'  If not specified, then default to 5; If setting to as \code{NA}, then set to the nearest integer of \code{nobs/ maxNperBin}, where
+#'  \code{nobs} is the total number of observations in the input data. When method is \code{"equal.mass"}, \code{nbins} will be set as 
+#'  the maximum of the default \code{nbins} and the nearest integer of \code{nobs/ maxNperBin}.
+#' @param maxncats Integer that specifies the maximum number of unique categories a categorical variable \code{A[j]} can have. If 
+#'  \code{A[j]} has more unique categories, it is automatically considered a continuous variable. Default to 10.
+#' @param maxNperBin Integer that specifies the maximum number of observations in each bin when discretizing a continuous variable 
+#'  \code{A[j]} (applies directly when \code{bin.method="equal.mass"} and indirectly when \code{bin.method="equal.len"}, but 
+#'  \code{nbins=NA}).
 #' @param parfit Logical. If \code{TRUE}, perform parallel regression fits and predictions for discretized continuous variables by 
 #'  functions \code{foreach} and \code{dopar} in \code{foreach} package. Default to \code{FALSE}. Note that it requires registering 
 #'  a parallel backend prior to running \code{tmleCommunity} function, e.g., using \code{doParallel} R package and running 
 #'  \code{registerDoParallel(cores = ncores)} for \code{ncores} parallel jobs.
 #' @param poolContinVar Logical. If \code{TRUE}, when fitting a model for binirized continuous variable, pool bin indicators across
 #'  all bins and fit one pooled regression. Default to \code{FALSE}.
-#' @param savetime.fit.hbars Logical. If \code{TRUE}, it will skip exposure mechanism P(A|W,E) under g0 & gstar fits and predictions
-#'  when \code{f.gstar = NULL} and \code{TMLE.targetStep = "tmle.intercept"}, and directly set \code{h_gstar_h_gN = 1} for each 
+#' @param savetime.fit.hbars Logical. If \code{TRUE}, skip estimation and prediction of exposure mechanism P(A|W,E) under g0 & gstar
+#'  when \code{f.gstar=NULL} and \code{TMLE.targetStep="tmle.intercept"}, and then directly set \code{h_gstar_h_gN = 1} for each 
 #'  observation. Default to \code{TRUE}.
 #' @param h2ometalearner A string to pass to \code{\link{h2o.ensemble}}, specifying the prediction algorithm used to learn the optimal 
 #'  combination of the base learners. Supports both h2o and SuperLearner wrapper functions. Default to "h2o.glm.wrapper".  
@@ -91,7 +92,9 @@ print_tmleCom_opts <- function() {
 #' @param SL.library A string or character vector of prediction algorithms to pass to \code{\link{SuperLearner}}. Default to 
 #'  c("SL.glm", "SL.step", "SL.glm.interaction"). For more available algorithms see \code{SuperLearner::listWrappers()} .
 #' @return Invisibly returns a list with old option settings.
-# @seealso \code{\link{print_tmlenet_opts}}
+#' 
+#' @seealso \code{\link{print_tmlenet_opts}}
+#' 
 #' @examples
 #' tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", nbins = 20)
 #'
