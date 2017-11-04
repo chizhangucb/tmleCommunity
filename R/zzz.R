@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# Global State Vars (can be controlled globally with options(stremr.optname = ))
+# Global State Vars (can be controlled globally with options)
 #-----------------------------------------------------------------------------
 gvars <- new.env(parent = emptyenv())
 gvars$verbose <- FALSE      # verbose mode (print all messages)
