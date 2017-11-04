@@ -585,18 +585,18 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  validation selector can be applied to data-adaptively select the candidate number of bins, which minimizes variance and maximizes precision 
 #'  (Don't recommend too many bins due to easily violating the positivity assumption). Then, we need to choose the most convenient locations 
 #'  (cuttoffs) for the bins (for fixed K). There are 3 alternative methods that use the histogram as a graphical descriptive tool to define 
-#'  the bin cutoffs \eqn{\Delta=(\delta_1,...,\delta_K,\delta_{K+1})} for a continuous variable \code{A}. In \pkg{tmleCommunity}, the choice of  
-#'  methods \code{bin.method} together with the other discretization arguments in function \code{tmleCom_Options()} such as \code{nbins} (total  
-#'  number of bins) and \code{maxNperBin} (the maximum number of observations in each bin), can be used to define the values of bin cutoffs. 
-#'  See \code{help(tmleCom_Options)} for more details. 
+#'  the bin cutoffs \eqn{\Delta=(\delta_1,...,\delta_K,\delta_{K+1})} for a continuous variable \code{A}. In \pkg{tmleCommunity} package, the 
+#'  choice of methods \code{bin.method} together with the other discretization arguments in function \code{tmleCom_Options()} such as \code{nbins}  
+#'  (total number of bins) and \code{maxNperBin} (the maximum number of observations in each bin), can be used to define the values of bin  
+#'  cutoffs. See \code{help(tmleCom_Options)} for more details. 
 #' 
 #' \itemize{
 #'  \item \code{equal.mass}: The default discretization method, aka equal-area interval method, set by passing an argument 
-#'.   \code{bin.method="equal.mass"} to \code{tmleCom_Options()} prior to calling \code{tmleCommunity()}. The interval are defined by spanning 
-#'.   the support of \eqn{A} into non-equal length of bins, each containing (approximately) the same number of observations. It's data-adaptive 
-#'    since it tends to be wide where the population density is small, and narrow where the density is large. If \code{nbins} is \code{NA} (or 
-#'    is smaller than \code{n/maxNperBin}), \code{nbins} will be (re)set to the interger value of \code{n/maxNperBin} where \code{n} is the 
-#'    total number of observations in \eqn{A}, and the default setting of \code{maxNperBin} is 500 observations per interval.
+#'    \code{bin.method="equal.mass"} to \code{tmleCom_Options()} prior to calling the main function \code{tmleCommunity()}. The interval are 
+#'    defined by spanning the support of \eqn{A} into non-equal length of bins, each containing (approximately) the same number of observations. 
+#'    It's data-adaptive since it tends to be wide where the population density is small, and narrow where the density is large. If \code{nbins} 
+#'    is \code{NA} (or is smaller than \code{n/maxNperBin}), \code{nbins} will be (re)set to the interger value of \code{n/maxNperBin} where 
+#'    \code{n} is the total number of observations in \eqn{A}, and the default setting of \code{maxNperBin} is 500 observations per interval.
 #'    
 #'  \item \code{equal.len}: equal length interval method, set by passing an argument \code{bin.method="equal.len"}  to \code{tmleCom_Options()}
 #'    prior to calling \code{tmleCommunity()}. The intervals are definde by spanning the support of \eqn{A} into equal length of bins.   
