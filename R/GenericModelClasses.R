@@ -203,15 +203,18 @@ RegressionClass <- R6Class("RegressionClass",
 	
 	
 ## ---------------------------------------------------------------------
-#' Generic R6 class for modeling (fitting and predicting) P(A=a | W=w, E=e) where A can be multivariate (A[1], ..., A[j])
+#' Generic R6 class for modeling (fitting and predicting) \eqn{P(A|W,E)} where \eqn{A} can be multivariate \eqn{(A[1], ..., A[M])}
 #'
-#'  \code{GenericModel} defines and models the conditional density \code{P(A=a|W=w,E=e)}, where \code{a} are generated under \code{g_star}
+#'  \code{GenericModel} defines and models the conditional density \eqn{P(A=a|W=w,E=e)}, where \eqn{a} are generated under \code{g_star}
 #'  or \code{g_0}. By calling \code{self$new(reg)}, it utilizes estimation options defined in \code{\link{RegressionClass}} class, and 
-#'  automatically factorizes \code{P(A|W,E)} into an entire tree of binary regression models, where a new instance of \code{\link{BinaryOutModel}}
-#'  class will be initialized for each binary regression. By calling \code{self$fit(data)} and \code{self$predict(newdata)}, where \code{data} and    
-#'  \code{newdata} are \code{\link{DatKeepClass}} class objects, it fits \code{P(A|W,E)} and predicts \code{P(A=1|W=w,E=e)}, where values of 
-#'  {\code{w}, \code{e}} are from \code{newdata}. Moreover, it predicts likelihood function P(A=a| W=w,E=e) through \code{self$predictAeqa(newdata)},
-#'  where {\code{a}, \code{w}, \code{e}} are from \code{newdata} (also a \code{\link{DatKeepClass}} class).
+#'  automatically factorizes the multivariate conditional probability model \code{P(A|W,E)} into \eqn{M} univariate conditional probability 
+#'  models (can be binary, categorical or continuous) and finally an entire tree of binary regression models (see details in
+#'  \code{\link{RegressionClass} and \code{\link{tmleCommunity}), where a new instance of \code{\link{BinaryOutModel}} class will be  
+#'  initialized for each binary regression (If one outcome variable \eqn{A[m]} is already binary, then immediately call a new instance of 
+#'  \code{\link{BinaryOutModel}}). By calling \code{self$fit(data)} and \code{self$predict(newdata)},  where \code{data} and \code{newdata}
+#'  are \code{\link{DatKeepClass}} class objects, it fits \code{P(A|W,E)} and predicts \code{P(A=1|W=w,E=e)}, where values of \eqn{(w,e)}     
+#'  are from \code{newdata}. Moreover, it predicts likelihood function \eqn{P(A=a| W=w,E=e)} through \code{self$predictAeqa(newdata)},   
+#'  where \eqn{(a,w,e)} are from \code{newdata} (also a \code{\link{DatKeepClass}} class).
 #'
 #' @docType class
 #' @format An \code{\link{R6Class}} generator object
@@ -539,8 +542,9 @@ ContinModel <- R6Class(classname = "ContinModel",
     predict = function(newdata, savespace = TRUE) {
       if (gvars$verbose) print("performing prediction for continuous outcome: " %+% self$outvar)
       if (missing(newdata)) stop("must provide newdata")
-      assert_that(is.DatKeepClass(newdata))      
-      # mat_bin doesn't need to be saved (even though its invisibly returned); mat_bin is automatically saved in DatKeepClass - a potentially dangerous side-effect!!!
+      assert_that(is.DatKeepClass(newdata))   
+      # mat_bin doesn't need to be saved (even though its invisibly returned); 
+      # mat_bin is automatically saved in DatKeepClass - a potentially dangerous side-effect!!!
       newdata$binirize.sVar(name.sVar = self$outvar, intervals = self$intrvls, nbins = self$nbins, bin.nms = self$bin_nms)
       super$predict(newdata, savespace = savespace)
       if (savespace) newdata$emptydat.bin.sVar # wiping out binirized mat in newdata DatKeepClass object...
