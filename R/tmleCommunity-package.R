@@ -113,9 +113,11 @@ NULL
 #' @format A data frame with 1000 independent communities, each containing around 1000 individuals (in total 100,457 observations), 
 #'  and 8 variables (columns):
 #' \describe{
-#'   \item{id} {integer community identifier from 1 to 1000, identical across all invididuals in the same community}
-#'   \item{E1} {continuous uniform community-level baseline covariate with \code{min=0} and \code{max=1} (independent)}
-#'   \item{E2} {discrete uniform community-level baseline covariate with 5 elements (0, 0.2, 0.4, 0.8, 1) (independent)}
+#'   \item{id} {integer (unique) community identifier from 1 to 1000, identical within the same community}
+#'   \item{E1} {continuous uniform community-level baseline covariate with \code{min=0} and \code{max=1} (independent and identical
+#'     across all individuals in the same community)}
+#'   \item{E2} {discrete uniform community-level baseline covariate with 5 elements (0, 0.2, 0.4, 0.8, 1) (independent and identical
+#'     across all individuals in the same community)}
 #'   \item{W1} {binary individual-level baseline covariate that depends on the values of community-level baseline covaries (\code{E1,E2})}
 #'   \item{W2} {binary individual-level baseline covariate, similar to \code{W1} but correlated with \code{W3}}
 #'   \item{W3} {binary individual-level baseline covariate, similar to \code{W1} but correlated with \code{W2}}
