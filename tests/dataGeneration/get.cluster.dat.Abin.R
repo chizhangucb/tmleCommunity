@@ -82,6 +82,7 @@ mean(comPop.wmT.bA.bY$Y0) # 0.4113038
 psi0.Y <- mean(comPop.wmT.bA.bY$Y1) - mean(comPop.wmT.bA.bY$Y0) # 0.103716
 
 comSample.wmT.bA.bY <- get.fullDat.Abin(J = J, n.ind = n.ind, rndseed = rndseed, is.Y.bin = T, working.model = T, n.ind.fix = F)
+comSample.wmT.bA.bY <- comSample.wmT.bA.bY[, c("id", "E1", "E2", "W1", "W2", "W3", "A", "Y")]
 comSample.wmT.bA.bY_list <- list(comSample.wmT.bA.bY = comSample.wmT.bA.bY, psi0.Y = psi0.Y, rndseed = rndseed)
 comSample.wmT.bA.bY_list$psi0.Y  # 0.103716
 save(comSample.wmT.bA.bY_list, file = "comSample.wmT.bA.bY_list.Rda")
