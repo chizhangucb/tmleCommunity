@@ -8,7 +8,7 @@
 get.cluster.dat.Abin <- function(id, n.ind = 10000, rndseed = NULL, is.Y.bin = T, working.model = T) {
   set.seed(rndseed)
   E1 <- runif(n = 1, min = 0, max = 1)
-  E2 <- sample(x = c(0, 0.4, 0.8, 1), size = 1)
+  E2 <- sample(x = c(0, 0.2, 0.4, 0.8, 1), size = 1)
   W1 <- rbinom(n = n.ind, size = 1, prob = plogis(- 0.13 + 1.5 * E1 - 0.6 * E2))
   W2_mean <- - 0.6 + 0.8 * E1 - 0.4 * E2 
   W3_mean <- 0.5 + 0.2 * E1
