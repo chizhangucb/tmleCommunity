@@ -329,7 +329,7 @@ join.Xmat = function(X_mat, sVar_melt_DT, ID) {
 #' R6 class for modeling (fitting and predicting) for a single binary regression model P(B | PredVars)
 #'
 #'  \code{BinaryOutModel} can store and manage the (binarize/ discretized) design matrix Xmat and the outcome Bin for the binary regression 
-#'  P(B|Xmat). It provides argument \code{self$estimator} to include different candidate estimators in the fitting and predicting library,  
+#'  P(Bin|Xmat). It provides argument \code{self$estimator} to include different candidate estimators in the fitting and predicting library,  
 #'  such as data-adaptive super learner algorithms and parametric logistic regression. When fitting one pooled regression across multiple 
 #'  bins, it provides method to convert data from wide to long format when requested (to gain computational efficiency). 
 #'
