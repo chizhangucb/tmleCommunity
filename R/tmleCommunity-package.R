@@ -121,11 +121,11 @@ NULL
 #'   \item{W1} {binary individual-level baseline covariate that depends on the values of community-level baseline covaries (\code{E1,E2})}
 #'   \item{W2} {continuous individual-level baseline covariate, together with \code{W3}, are drawn from a bivariate normal distribution
 #'     with correlation 0.6, depending on the values of community's baseline covaries (\code{E1,E2})}
-#'   \item{W3} {continuous individual-level baseline covariate, see details in \code{W2}}
+#'   \item{W3} {continuous individual-level baseline covariate, see details in \strong{\code{W2}} above}
 #'   \item{A} {binary exposure that depends on community's baseline covariate values in \code{(E1, E2)}, and the mean of all individuals'
 #'     baseline covariates \code{W1} within the same community}
 #'   \item{Y} {binary outcome that depends on community's baseline covariate and exposure values in \code{(E1, E2, A)}, and all 
-#'     individuals' baseline covariate values in \code{(W2, W3(}}
+#'     individuals' baseline covariate values in \code{(W2, W3)}}
 #' }
 #' @docType data
 #' @keywords datasets
