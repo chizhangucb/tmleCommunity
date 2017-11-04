@@ -647,7 +647,14 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  \item \code{iptw} - IPTW (Horvitz-Thompson) estimator based on the \code{TMLE} weights h_gstar/h_gN.
 #'  \item \code{gcomp} - Maximum likelihood based G-computation substitution estimator.
 #' }
-#'
+#' @seealso \code{\link{tmleCommunity-package}} for the general description of the package,
+#'  
+#'  \code{\link{tmleCom_Options}} for additional parameters that control the estimation in \code{tmleCommunity},
+#' 
+#'  \code{\link{DatKeepClass}} for details about storing, managing, subsetting and manipulating the input data
+#' 
+#'  \code{\link{sampleDat_iidcontAContY}} for an example of a continuous exposure and its estimation  
+#' 
 #' @example tests/examples/3_tmleCommunity_examples.R
 #' @export
 tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts = c("equal.within.pop", "equal.within.community"), 
