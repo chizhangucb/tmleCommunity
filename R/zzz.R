@@ -60,9 +60,9 @@ print_tmleCom_opts <- function() {
 #'  it falls back on {"speedglm__glm"}. If \code{"speedglm__glm"} fails, it falls back on {"glm__glm"}.
 #' @param gestimator A string specifying default estimator for exposure mechanism fitting. It has the same options as \code{Qestimator}.
 #' @param bin.method Specify the method for choosing bins when discretizing the conditional continuous exposure variable \code{A}.
-#'  The default method is \code{"equal.len"}, which partitions the range of \code{A} into equal length \code{nbins} intervals.
-#'  Method \code{"equal.mass"} provides a data-adaptive selection of the bins based on equal mass/ area, i.e., each bin will contain 
-#'  approximately the same number of observations as otheres. Method \code{"dhist"} uses a combination of the above two approaches,
+#'  The default method is \code{"equal.mass"}, which provides a data-adaptive selection of the bins based on equal mass/ area, i.e., 
+#'  each bin will contain approximately the same number of observations as otheres. Method \code{"equal.len"} partitions the range of 
+#'  \code{A} into equal length \code{nbins} intervals. Method \code{"dhist"} uses a combination of the above two approaches. Please
 #'  see Denby and Mallows "Variations on the Histogram" (2009) for more details. Note that argument \code{maxNperBin} will control
 #'  the maximum number of observations in each bin.
 #' @param nbins Set the default number of bins when discretizing a continous variable under setting \code{bin.method = "equal.len"}. 
