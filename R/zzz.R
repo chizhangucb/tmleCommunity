@@ -72,11 +72,11 @@ print_tmleCom_opts <- function() {
 #' @param maxncats Integer that specifies the maximum number of unique categories a categorical variable \code{A[j]} can have. If 
 #'  \code{A[j]} has more unique categories, it is automatically considered a continuous variable. Default to 10.
 #' @param maxNperBin Integer that specifies the maximum number of observations in each bin when discretizing a continuous variable 
-#'  \code{A[j]} (applies directly when \code{bin.method="equal.mass"} and indirectly when \code{bin.method="equal.len"}, but 
+#'  \code{A[j]} (applies directly when \code{bin.method=}\code{"equal.mass"} and indirectly when \code{bin.method="equal.len"}, but 
 #'  \code{nbins=NA}).
 #' @param parfit Logical. If \code{TRUE}, perform parallel regression fits and predictions for discretized continuous variables by 
-#'  functions \code{foreach} and \code{dopar} in \code{foreach} package. Default to \code{FALSE}. Note that it requires registering 
-#'  a parallel backend prior to running \code{tmleCommunity} function, e.g., using \code{doParallel} R package and running 
+#'  functions \code{\link{foreach}} and \code{\link{dopar}} in \code{foreach} package. Default to \code{FALSE}. Note that it requires 
+#'  registering a parallel backend prior to running \code{tmleCommunity} function, e.g., using \code{doParallel} R package and running 
 #'  \code{registerDoParallel(cores = ncores)} for \code{ncores} parallel jobs.
 #' @param poolContinVar Logical. If \code{TRUE}, when fitting a model for binirized continuous variable, pool bin indicators across
 #'  all bins and fit one pooled regression. Default to \code{FALSE}.
