@@ -197,3 +197,17 @@ set.misval <- function(gvars, newmisval) {
 }
 gvars$misfun <- testmisfun()
 
+# Allows tmleCommunity functions to use e.g., getOption("tmleCommunity.verbose") to get verbose printing status
+.onLoad <- function(libname, pkgname) {
+  op <- options()
+  op.tmleCommunity <- list(
+    tmleCommunity.verbose = gvars$verbose
+  )
+  # reset all options to their defaults on load:
+  tmleCommunity_options()
+
+  toset <- !(names(op.tmleCommunity) %in% names(op))
+  if(any(toset)) options(op.tmleCommunity[toset])
+
+  invisible()
+}
