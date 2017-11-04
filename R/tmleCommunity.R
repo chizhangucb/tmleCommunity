@@ -519,7 +519,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' The GCOMP estimator is similar to the the TMLE estimator except it uses the untargeted (initial) model \eqn{\hat{\bar{Q}}^c(A|W,E)} instead of 
 #'  its targeted version \eqn{\hat{\bar{Q}}^{c*}(A | W, E)}, for example the community-level GCOMP estimator is given by: 
 #'  \deqn{\psi^{I}_{GCOMP,n}=\frac{1}{J}\sum_{j=1}^{J}\int_{a}\hat{\bar{Q}}^{c}(a, \textbf{W}_j, E_j)g^{c*}(a|\textbf{W}_j, E_j)d\mu(a)}
-# Similary the individual estimator can be written as:
+#  Similary the individual estimator can be written as:
 #  \deqn{\psi^{II}_{GCOMP,n}=\frac{1}{J}\sum_{j=1}^{J}\sum_{i=1}^{n_j}\alpha_{i,j}\int_{a}\hat{\bar{Q}}(a, w_{i,j}, E_j)g^*(a|w_{i,j}, E_j)d\mu(a)}
 #'
 #' @section Modeling \eqn{P(A | W, E)} for covariates \eqn{(A, W, E)}:
@@ -599,12 +599,9 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'    total number of observations in \eqn{A}, and the default setting of \code{maxNperBin} is 500 observations per interval.
 #'    
 #'  \item \code{equal.len}: equal length interval method, set by passing an argument \code{bin.method="equal.len"}  to \code{tmleCom_Options()}
-#'    prior to calling \code{tmleCommunity()}. The intervals are definde by spanning the support of \eqn{A} into equal length of bins. 
-#'    
+#'    prior to calling \code{tmleCommunity()}. The intervals are definde by spanning the support of \eqn{A} into equal length of bins.   
 #' }
 #'
-#'  This is the dafault  method, set by passing an argument \code{bin.method="equal.len"} to
-#'  \code{tmlenet_options} function prior to calling \code{tmleCommunity()}. The intervals will be defined by splitting the
 #'  range of (sa_1,...,sa_N) into \code{nbins} number of equal length intervals, where \code{nbins} is another argument
 #'  of \code{tmleCom_Options()} function. When \code{nbins=NA} (the default setting) the actual value of \code{nbins}
 #'  is computed at run time by taking the integer value (floor) of \code{n/maxNperBin},
