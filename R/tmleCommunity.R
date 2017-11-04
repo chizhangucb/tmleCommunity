@@ -604,10 +604,8 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'    \code{nbins} number of equal length of bins. This method describes the tails of the density and identifies outliers well, but  
 #'    oversmooths in regions of high density and so is poor at identifying sharp peaks.
 #'
-#'  \item \code{dhist}: (for diagonally cut histogram) Combination of equal-area equal length and equal mass method, set by passing an 
-#'    argument \code{bin.method="dhist"} to \code{tmleCom_Options()} prior to calling \code{tmleCommunity()}. We use the slope a = 
-#'    \eqn{5{\times}\text{IQR}(A)} as suggested by Denby and Mallows ("Variations on the Histogram" (2009)). For more details, please  
-#'    also see this paper.
+#'  \item \code{dhist}: (named for diagonally cut histogram) Combination of equal-area equal length and equal mass method, set by passing an 
+#'    
 #' }
 #'
 #' @return \code{tmleCommunity} returns an object of class "\code{tmleCommunity}", which is a named list containing the estimation results
