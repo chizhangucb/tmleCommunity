@@ -572,14 +572,12 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'   \eqn{[\delta_{k},\delta_{k+1})}, given that \eqn{A} doesn't belong to any intervals before \eqn{[\delta_{k}, \delta_{k+1})} and \eqn{W}.
 #'   Then the discrete conditional hazard function for each k is defined as a normalization of the conditional probability using the 
 #'   corresponding interval bandwidth \eqn{bw_{k}}: 
-#'   \eqn{\lambda_k(A,W)=\frac{P(B_k=1|B_{k-1}=0,W)}{bw_k}=\frac{P(A\in [\delta_{k},\delta_{k+1})|A\geq \delta_{k+1},W)}{bw_k}}
+#'   \eqn{\lambda_k(A,W)=\frac{P(B_k=1|B_{k-1}=0,W)}{bw_k}=\frac{P(A\in[\delta_{k},\delta_{k+1})|A\geq \delta_{k+1},W)}{bw_k}}
 #'
-#' \item Finally, for any given observation \code{(a,w)}, the discretized conditional density of \eqn{P(A=a|W=w)} can be evaluated by first
-#'   finding out the interval index \eqn{k} to which \eqn{a} belongs (i.e., \eqn{k=S(a)\in{1,...,K}} and then computing 
-#'   \\prod{j=1,...,k-1}{1-h_j(W))*h_k(W)}
-#'    which is equivalent to the joint conditional probability that \code{a} belongs to the interval (i_k,i_{k+1}) and does not belong
-#'    to any of the intervals 1 to k-1, conditional on sW.
-#'  }
+#' \item Finally, for any given observation \code{(a,w)}, we first find out the interval index \eqn{k} to which \eqn{a} belongs (i.e., 
+#'   \eqn{k=S(a)\in{1,...,K}}). Then the discretized conditional density of \eqn{P(A=a|W=w)} can be evaluated by 
+#'   \eqn{\lambda_k(A, W){\times}[\prod_{j=1}^{k-1}{1-\lambda_j(A, W))}]}
+#' }
 #'
 #' The evaluation above utilizes a discretization of the fact that any continuous density f of random variable X can be written as f_X(x)=S_X(x)*h_X(x),
 #'  for a continuous density f of X where S_X(x):=P(X>x) is the survival function for X, h_X=P(X>x|X>=x) is the hazard function for X; as well as the fact that
