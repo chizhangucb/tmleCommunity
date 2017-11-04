@@ -72,8 +72,8 @@ print_tmleCom_opts <- function() {
 #' @param maxncats Integer that specifies the maximum number of unique categories a categorical variable \code{A[j]} can have. If 
 #'  \code{A[j]} has more unique categories, it is automatically considered a continuous variable. Default to 10.
 #' @param maxNperBin Integer that specifies the maximum number of observations in each bin when discretizing a continuous variable 
-#'  \code{A[j]} (applies directly when \code{bin.method=}\code{"equal.mass"} and indirectly when \code{bin.method="equal.len"}, but 
-#'  \code{nbins=NA}).
+#'  \code{A[j]} (applies directly when \code{bin.method =} \code{"equal.mass"} and indirectly when \code{bin.method = "equal.len"}, but 
+#'  \code{nbins = NA}).
 #' @param parfit Logical. If \code{TRUE}, perform parallel regression fits and predictions for discretized continuous variables by 
 #'  functions \code{\link{foreach}} and \code{\link{dopar}} in \code{foreach} package. Default to \code{FALSE}. Note that it requires 
 #'  registering a parallel backend prior to running \code{tmleCommunity} function, e.g., using \code{doParallel} R package and running 
@@ -81,7 +81,7 @@ print_tmleCom_opts <- function() {
 #' @param poolContinVar Logical. If \code{TRUE}, when fitting a model for binirized continuous variable, pool bin indicators across
 #'  all bins and fit one pooled regression. Default to \code{FALSE}.
 #' @param savetime.fit.hbars Logical. If \code{TRUE}, skip estimation and prediction of exposure mechanism P(A|W,E) under g0 & gstar
-#'  when \code{f.gstar=NULL} and \code{TMLE.targetStep="tmle.intercept"}, and then directly set \code{h_gstar_h_gN = 1} for each 
+#'  when \code{f.gstar = NULL} and \code{TMLE.targetStep = "tmle.intercept"}, and then directly set \code{h_gstar_h_gN = 1} for each 
 #'  observation. Default to \code{TRUE}.
 #' @param h2ometalearner A string to pass to \code{\link{h2o.ensemble}}, specifying the prediction algorithm used to learn the optimal 
 #'  combination of the base learners. Supports both h2o and SuperLearner wrapper functions. Default to "h2o.glm.wrapper".  
