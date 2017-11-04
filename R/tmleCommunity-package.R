@@ -93,3 +93,36 @@ NULL
 #' sampleDat_iidcontAContY$truncBD
 #' sampleDat_iidcontAContY$shift.val
 NULL
+
+#' An example of a hierarchical data containing a cluster-based binary exposure with a individual-level binary outcome.
+#'
+#' Simulated dataset containing measured i.i.d. baseline covariates (\code{W1}, \code{W2}, \code{W3} and \code{W4}), continuous  
+#'  exposure (\code{A}) and continous outcome (\code{Y}). The 10,000 baseline covariates \code{W1}, \code{W2}, \code{W3} and \code{W4}
+#'  were sampled as i.i.d., while the exposure value of \code{A} for each observation \code{i} was sampled conditionally on the value
+#'  of \code{i}'s four baseline covariates, Similarly, the continuous outcome \code{Y} for each observation was generated conditionally 
+#'  on \code{i}'s exposure and baseline covariates values in (\code{W1[i]},\code{W2[i]}, \code{W3[i]}, \code{W4[i]}, \code{A[i]}).
+#'  Individual variables are described below.
+#'
+#' @format A data frame with 10,000 independent observations (rows) and 6 variables:
+#' \describe{
+#'   \item{W1}{binary baseline covariate with \code{P(W1 = 1) = 0.5}}
+#'   \item{W2}{binary baseline covariate with \code{P(W1 = 1) = 0.3}}
+#'   \item{W3}{continuous normal baseline covariate with mean = 0 and \eqn{\mu} = 0.25}
+#'   \item{W4}{continuous uniform baseline covariate with min = 0 and max = 1}
+#'   \item{A}{continuous normal exposure that depends on unit's baseline covariate values in \code{W1}, \code{W2}, \code{W3}, \code{W4}}
+#'   \item{Y}{continuous normal  outcome that depends on unit's baseline covariate values and exposure in \code{W1}, \code{W2}, 
+#'   \code{W3}, \code{W4}, \code{A}}
+#' }
+#' @docType data
+#' @keywords datasets
+#' @name sampleDat_iidcontAContY
+#' @usage data(sampleDat_iidcontAContY)
+#' @examples
+#'
+#' data(sampleDat_iidcontAContY)
+#' dat_iidcontAContY <- sampleDat_iidcontAContY$dat_iidcontAContY
+#' psi0.Y <- sampleDat_iidcontAContY$psi0.Y
+#' psi0.Ygstar <- sampleDat_iidcontAContY$psi0.Ygstar
+#' sampleDat_iidcontAContY$truncBD
+#' sampleDat_iidcontAContY$shift.val
+NULL
