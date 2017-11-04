@@ -651,9 +651,11 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  
 #'  \code{\link{tmleCom_Options}} for additional parameters that control the estimation in \code{tmleCommunity},
 #' 
-#'  \code{\link{DatKeepClass}} for details about storing, managing, subsetting and manipulating the input data
+#'  \code{\link{DatKeepClass}} for details about storing, managing, subsetting and manipulating the input data,
 #' 
-#'  \code{\link{sampleDat_iidcontAContY}} for an example of a continuous exposure and its estimation  
+#'  \code{\link{sampleDat_iidcontAContY}} for an example of a continuous exposure and its estimation,
+#' 
+#'  \code{\link{RegressionClass}}, \code{\link{GenericModel}}, \code{\link{MonteCarloSimClass}}
 #' 
 #' @example tests/examples/3_tmleCommunity_examples.R
 #' @export
