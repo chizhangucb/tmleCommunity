@@ -107,20 +107,20 @@ NULL
 #'  level baseline covariates (\code{E1[j], E2[j]}), together with all invididuals' baseline covariates (\code{W1[i], W2[i], W3[i]})  
 #'  within community \eqn{j} where \eqn{i=1,..,n_j}. Similary, the individual-level binary outcome \code{Y} for each individual  
 #'  \eqn{i} within communty \eqn{j} was sampled conditionally on the value of community \eqn{j}'s baseline covariates and exposure 
-#'  (\code{E1[j], E2[j]}), as well as the value of individual \eqn{i}'s baseline covariates (\code{W1[i], W2[i], W3[i]}). The 
+#'  (\code{E1[j], E2[j], A[j]}), as well as the value of individual \eqn{i}'s baseline covariates (\code{W1[i], W2[i], W3[i]}). The 
 #'  following section provides more details regarding individual variables in simulated data.
 #'
 #' @format A data frame with 1000 independent communities, each containing around 1000 individuals, and 8 variables:
 #' \describe{
-#'   \item{id} {integer (unique) community identifier from 1 to 1000}
-#'   \item{E1} {binary baseline covariate with \code{P(W1 = 1) = 0.5}}
-#'   \item{E2} {binary baseline covariate with \code{P(W1 = 1) = 0.5}}
-#'   \item{W1} {binary baseline covariate with \code{P(W1 = 1) = 0.5}}
+#'   \item{id} {integer (unique) community identifier from 1 to 1000, identical across all invididuals in the same community}
+#'   \item{E1} {continuous uniform community-level baseline covariate with \code{min = 0} and \code{max = 1}}
+#'   \item{E2} {discrete uniform community-level baseline covariate with 5 elements \code{(0, 0.2, 0.4, 0.8, 1)}}
+#'   \item{W1} {binary individual-level baseline covariate with \code{P(W1 = 1) = plogis(- 0.13 + 1.5 * E1 - 0.6 * E2)}}
 #'   \item{W2} {binary baseline covariate with \code{P(W1 = 1) = 0.3}}
 #'   \item{W3} {continuous normal baseline covariate with mean = 0 and \eqn{\mu} = 0.25}
 #'   \item{W4} {continuous uniform baseline covariate with min = 0 and max = 1}
 #'   \item{A} {continuous normal exposure that depends on unit's baseline covariate values in \code{W1}, \code{W2}, \code{W3}, \code{W4}}
-#'   \item{Y} {continuous normal  outcome that depends on unit's baseline covariate values and exposure in \code{W1}, \code{W2}, 
+#'   \item{Y} {continuous normal outcome that depends on unit's baseline covariate values and exposure in \code{W1}, \code{W2}, 
 #'   \code{W3}, \code{W4}, \code{A}}
 #' }
 #' @docType data
