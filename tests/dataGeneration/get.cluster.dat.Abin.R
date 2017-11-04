@@ -9,18 +9,18 @@ get.cluster.dat.Abin <- function(id, n.ind = 10000, rndseed = NULL, is.Y.bin = T
   set.seed(rndseed)
   E1 <- runif(n = 1, min = 0, max = 1)
   E2 <- sample(x = c(0, 0.4, 0.8, 1), size = 1)
-  W1 <- rbinom(n = n.ind, size = 1, prob = plogis(- 0.23 + 1.2 * E1 -  1.8 * E2))
+  W1 <- rbinom(n = n.ind, size = 1, prob = plogis(- 0.13 + 1.5 * E1 - 0.6 * E2))
   W2_mean <- - 0.6 + 0.8 * E1 - 0.4 * E2 
   W3_mean <- 0.5 + 0.2 * E1
   W2W3 <- MASS::mvrnorm(n = n.ind, mu = c(W2_mean, W3_mean), Sigma = matrix(c(1, 0.6, 0.6, 1), ncol = 2))
   W2 <- W2W3[, 1]
   W3 <- W2W3[, 2] 
-  A <- rbinom(n = 1, size = 1, prob = plogis(- 2.3 + 3 * E1 + 0.4 * E2 + 5 * mean(W1)))  # community-level A
+  A <- rbinom(n = 1, size = 1, prob = plogis(- 2.4 + 3 * E1 + 0.4 * E2 + 3 * mean(W1)))  # community-level A
   if (working.model) {  # working.model holds
     if (is.Y.bin) {  # Y binary
-      Y <- rbinom(n = n.ind, size = 1, prob = plogis(- 0.2 + 0.3 * A + 0.5 * E1 + 0.2 * E2 + W2 - 0.2 * W3))
-      Y1 <- rbinom(n = n.ind, size = 1, prob = plogis(- 0.2 + 0.3 * 1 + 0.5 * E1 + 0.2 * E2 + W2 - 0.2 * W3))
-      Y0 <- rbinom(n = n.ind, size = 1, prob = plogis(- 0.2 + 0.3 * 0 + 0.5 * E1 + 0.2 * E2 + W2 - 0.2 * W3))
+      Y <- rbinom(n = n.ind, size = 1, prob = plogis(- 0.2 + 0.5 * A + 0.4 * E1 + 0.2 * E2 + W2 - 0.2 * W3))
+      Y1 <- rbinom(n = n.ind, size = 1, prob = plogis(- 0.2 + 0.5 * 1 + 0.4 * E1 + 0.2 * E2 + W2 - 0.2 * W3))
+      Y0 <- rbinom(n = n.ind, size = 1, prob = plogis(- 0.2 + 0.55 * 0 + 0.4 * E1 + 0.2 * E2 + W2 - 0.2 * W3))
     } else {  # Y continuous 
       Y <- rnorm(n = n.ind, mean = 1 + 0.3 * A - 0.2 * E1 + 0.4 * E2 + 0.4 * W2 + 0.2 * W3, sd = 1)
       Y1 <- rnorm(n = n.ind, mean = 1 + 0.3 * A - 0.2 * E1 + 0.4 * E2 + 0.4 * W2 + 0.2 * W3, sd = 1)
