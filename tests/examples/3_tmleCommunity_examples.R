@@ -1,4 +1,62 @@
 #***************************************************************************************
+# Example 1: Hierarchical example,  with one binary A and bianry Y 
+#***************************************************************************************
+# True ATE of the community-based treatment is approximately 0.103716
+data(comSample.wmT.bA.bY_list)  # load the sample data 
+comSample.wmT.bA.bY <- comSample.wmT.bA.bY_list$comSample.wmT.bA.bY
+Qform.corr <- "Y ~ E1 + E2 + W2 + W3 + A" # correct Q form
+gform.corr <- "A ~ E1 + E2 + W1"  # correct g
+
+### 1.1 Community-level analysis without a pooled individual-level regression on outcome
+## 1.1.1 speed.glm using correctly specified Qform, hform.g0 and hform.gstar
+# Setting global options that may be used in tmleCommunity(), e.g., using speed.glm
+tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", 
+                bin.method = "equal.mass", maxNperBin = nrow(data))
+
+# Two weights choice "equal.within.pop" and "size.community"
+tmleCom_wmT.bA.bY_Qcgc.1a <- 
+  tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), obs.wts = "equal.within.pop",
+                community.step = "community_level", community.wts = "size.community", 
+                communityID = "id", pooled.Q = FALSE, f_gstar1 = 1, f_gstar2 = 0,
+                Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
+
+# examples of estimates under f_gstar1 = 1:
+tmleCom_wmT.bA.bY_Qcgc.1a$EY_gstar1$estimates
+tmleCom_wmT.bA.bY_Qcgc.1a$EY_gstar1$vars
+tmleCom_wmT.bA.bY_Qcgc.1a$EY_gstar1$CIs
+
+# examples of estimates under f_gstar0 = 0:
+tmleCom_wmT.bA.bY_Qcgc.1a$EY_gstar2$estimates
+tmleCom_wmT.bA.bY_Qcgc.1a$EY_gstar2$vars
+tmleCom_wmT.bA.bY_Qcgc.1a$EY_gstar2$CIs
+
+# examples of estimates for ATE under f_gstar1 - f_gstar0:
+tmleCom_wmT.bA.bY_Qcgc.1a$ATE$estimates
+tmleCom_wmT.bA.bY_Qcgc.1a$ATE$vars
+tmleCom_wmT.bA.bY_Qcgc.1a$ATE$CIs
+
+## 1.2.1 SuperLearner using all parent nodes (of Y and A) as regressors (respectively)
+tmleCom_Options(Qestimator = "SuperLearner", gestimator = "SuperLearner", 
+                bin.method = "equal.mass", maxNperBin = nrow(data),
+                SL.library = c("SL.glm", "SL.step", "SL.glm.interaction", "SL.bayesglm"))
+tmleCom_wmT.bA.bY_SL.1a <- 
+  tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), obs.wts = "equal.within.pop",
+                community.step = "community_level", community.wts = "size.community", 
+                communityID = "id", pooled.Q = FALSE, f_gstar1 = 1, f_gstar2 = 0,
+                Qform = NULL, hform.g0 = NULL, hform.gstar = NULL)
+
+# examples of estimates for ATE under f_gstar1 - f_gstar0:
+tmleCom_wmT.bA.bY_SL.1a$ATE$estimates
+tmleCom_wmT.bA.bY_SL.1a$ATE$vars
+
+### 1.2 Community-level analysis with a pooled individual-level regression on outcome
+## 1.2.1 speed.glm using correctly specified Qform, hform.g0 and hform.gstar
+
+
+
+#***************************************************************************************
 data(sampleDat_iidcontABinY)
 dat_iidcontABinY <- sampleDat_iidcontABinY$dat_iidcontABinY
 head(dat_iidcontABinY)
