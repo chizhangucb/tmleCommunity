@@ -64,6 +64,7 @@ tmleCom_wmT.bA.bY.2_sglm$ATE$estimates
 # SuperLearner for both outcome and treatment (clever covariate) regressions
 tmleCom_Options(Qestimator = "SuperLearner", gestimator = "SuperLearner", 
                 maxNperBin = nrow(data), SL.library = c("SL.glm", "SL.step", "SL.bayesglm"))
+require("arm")
 tmleCom_wmT.bA.bY.2_SL <- 
   tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
                 WEnodes = c("E1", "E2", "W1", "W2", "W3"), obs.wts = "equal.within.pop",
