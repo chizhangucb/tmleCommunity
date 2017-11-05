@@ -684,15 +684,17 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
     obs.wts <- rep(as.vector(1/table(data[, communityID])), as.vector(table(data[, communityID])))
   }
   if (is.character(community.step) && (community.step != "NoCommunity") && !is.data.frame(community.wts)) {
-    community.wts.mat <- as.data.frame(matrix(0L, nrow = length(unique(data[, communityID])), ncol = 2))
-    colnames(community.wts.mat) <- c("id", "weights")
-    community.wts.mat[, 1] <- names(table(data[, communityID]))
+    community.wts.df <- as.data.frame(matrix(0L, nrow = length(unique(data[, communityID])), ncol = 2))
+    colnames(community.wts.df) <- c("id", "weights")
+    community.wts.df[, 1] <- names(table(data[, communityID]))
     if (community.wts == "equal.community") { # weigh each community equally
-      community.wts.mat[, 2]  <- rep(1, length(unique(data[, communityID]))) 
+      community.wts.df[, 2]  <- rep(1, length(unique(data[, communityID]))) 
     } else if (community.wts == "size.community") { # weigh each community by its number of observations - The larger community has larger weight
-      community.wts.mat[, 2] <- as.vector(table(data[, communityID]))
+      community.wts.df[, 2] <- as.vector(table(data[, communityID]))
     } 
-    community.wts <- community.wts.mat; community.wts.mat <- NULL
+    community.wts <- community.wts.df; community.wts.df <- NULL
+  } else if (community.step = "NoCommunity") {  # Don't need community.wts later on, just create a dataframe with all 0 to pass CheckInputs()
+    community.wts <- NULL
   }
   if (!is.null(Qform) && !is.null(Ynode)) {
     Qform <- paste(Ynode, substring(Qform, first = as.numeric(gregexpr("~", Qform))))
