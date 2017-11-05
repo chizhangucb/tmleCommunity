@@ -95,7 +95,7 @@ print_tmleCom_opts <- function() {
 #' 
 #' @seealso \code{\link{print_tmlenet_opts}}
 #' 
-#' @examples tests/examples/7_tmleComOptions_examples.R
+#' @examples tests/examples/7_tmleComOptions_examples.R 
 #' @export
 tmleCom_Options <- function(Qestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble", "SuperLearner"),  
                             gestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble", "SuperLearner"),  
