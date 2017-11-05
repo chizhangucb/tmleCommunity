@@ -52,9 +52,15 @@ tmleCom_wmT.bA.bY_SL.1a$ATE$estimates
 tmleCom_wmT.bA.bY_SL.1a$ATE$vars
 
 ### 1.2 Community-level analysis with a pooled individual-level regression on outcome
-## 1.2.1 speed.glm using correctly specified Qform, hform.g0 and hform.gstar
-
-
+## 1.2.1 glm using correctly specified Qform, misspecified hform.g0 and hform.gstar
+tmleCom_Options(Qestimator = "glm__glm", gestimator = "glm__glm", maxNperBin = nrow(data))
+tmleCom_wmT.bA.bY_Qcgm.1a <- 
+  tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), obs.wts = "equal.within.pop",
+                community.step = "community_level", community.wts = "size.community", 
+                communityID = "id", pooled.Q = FALSE, f_gstar1 = 1, f_gstar2 = 0,
+                Qform = Qform.corr, hform.g0 = gform.mis, hform.gstar = gform.mis)
+tmleCom_wmT.bA.bY_Qcgm.1a$ATE$estimates
 
 #***************************************************************************************
 data(sampleDat_iidcontABinY)
