@@ -722,7 +722,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
     message(messageMSg[1] %+% messageMSg[2] %+% messageMSg[3])
     community.step <- "NoCommunity"; pooled.Q <- FALSE
   } 
-  if (!(community.wts %in% c("equal.community", "size.community")) && !is.data.frame(community.wts)) {
+  if (!(community.wts %in% c("equal.community", "size.community")) && !is.data.frame(community.wts) && (community.step != "NoCommunity")) {
     stop("Currently only numeric values, 'equal.community' and 'size.community' are supported for community.wts")
   }
   nodes <- list(Ynode = Ynode, Anodes = Anodes, WEnodes = WEnodes, communityID = communityID)
