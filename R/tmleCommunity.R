@@ -728,7 +728,8 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
   nodes <- list(Ynode = Ynode, Anodes = Anodes, WEnodes = WEnodes, communityID = communityID)
   for (i in unlist(nodes)) {  CheckVarNameExists(data = data, varname = i) }
   if (!CheckInputs(data, nodes, Qform, hform.g0, hform.gstar, fluctuation, Qbounds, obs.wts, community.wts)) stop()
-  colnames(community.wts) <- c("id", "weights")  # ensure that the column names are defined as "id" and "weights"
+  # ensure that the column names are defined as "id" and "weights"
+  if (community.step != "NoCommunity") colnames(community.wts) <- c("id", "weights")  
   maptoYstar <- fluctuation=="logistic"  # if TRUE, cont Y values shifted & scaled to fall b/t (0,1)
   
   #----------------------------------------------------------------------------------
