@@ -693,7 +693,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
       community.wts.df[, 2] <- as.vector(table(data[, communityID]))
     } 
     community.wts <- community.wts.df; community.wts.df <- NULL
-  } else if (community.step = "NoCommunity") {  # Don't need community.wts later on, just create a dataframe with all 0 to pass CheckInputs()
+  } else if (community.step == "NoCommunity") {  # Don't need community.wts later on, just create a dataframe with all 0 to pass CheckInputs()
     community.wts <- NULL
   }
   if (!is.null(Qform) && !is.null(Ynode)) {
