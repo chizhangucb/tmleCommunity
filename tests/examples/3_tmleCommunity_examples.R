@@ -1,68 +1,92 @@
 #***************************************************************************************
 # Example 1: Hierarchical example,  with one binary A and bianry Y 
-#***************************************************************************************
 # True ATE of the community-based treatment is approximately 0.103716
 data(comSample.wmT.bA.bY_list)  # load the sample data 
 comSample.wmT.bA.bY <- comSample.wmT.bA.bY_list$comSample.wmT.bA.bY
 Qform.corr <- "Y ~ E1 + E2 + W2 + W3 + A" # correct Q form
 gform.corr <- "A ~ E1 + E2 + W1"  # correct g
+#***************************************************************************************
 
-### 1.1 Community-level analysis without a pooled individual-level regression on outcome
-## 1.1.1 speed.glm using correctly specified Qform, hform.g0 and hform.gstar
+#***************************************************************************************
+# 1.1 Estimating the additive treatment effect (ATE) for two static interventions
+# (f_gstar1 = 1 vs f_gstar2 = 0) via community-level / individual-level analysis.
+# speed.glm using correctly specified Qform, hform.g0 and hform.gstar;
+# weigh individuals in data equally & weigh community by its number of individuals
+#***************************************************************************************
 # Setting global options that may be used in tmleCommunity(), e.g., using speed.glm
 tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", 
-                bin.method = "equal.mass", maxNperBin = nrow(data))
+                maxNperBin = nrow(data))
 
-# Two weights choice "equal.within.pop" and "size.community"
-tmleCom_wmT.bA.bY_Qcgc.1a <- 
+# Community-level analysis without a pooled individual-level regression on outcome
+tmleCom_wmT.bA.bY.1a_sglm <- 
   tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
                 WEnodes = c("E1", "E2", "W1", "W2", "W3"), obs.wts = "equal.within.pop",
                 community.step = "community_level", community.wts = "size.community", 
                 communityID = "id", pooled.Q = FALSE, f_gstar1 = 1, f_gstar2 = 0,
                 Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
 
-# examples of estimates under f_gstar1 = 1:
-tmleCom_wmT.bA.bY_Qcgc.1a$EY_gstar1$estimates
-tmleCom_wmT.bA.bY_Qcgc.1a$EY_gstar1$vars
-tmleCom_wmT.bA.bY_Qcgc.1a$EY_gstar1$CIs
+# Examples of estimates under f_gstar1 = 1:
+tmleCom_wmT.bA.bY.1a_sglm$EY_gstar1$estimates
+tmleCom_wmT.bA.bY.1a_sglm$EY_gstar1$vars
 
-# examples of estimates under f_gstar0 = 0:
-tmleCom_wmT.bA.bY_Qcgc.1a$EY_gstar2$estimates
-tmleCom_wmT.bA.bY_Qcgc.1a$EY_gstar2$vars
-tmleCom_wmT.bA.bY_Qcgc.1a$EY_gstar2$CIs
+# Examples of estimates under f_gstar0 = 0:
+tmleCom_wmT.bA.bY.1a_sglm$EY_gstar2$estimates
+tmleCom_wmT.bA.bY.1a_sglm$EY_gstar2$vars
 
-# examples of estimates for ATE under f_gstar1 - f_gstar0:
-tmleCom_wmT.bA.bY_Qcgc.1a$ATE$estimates
-tmleCom_wmT.bA.bY_Qcgc.1a$ATE$vars
-tmleCom_wmT.bA.bY_Qcgc.1a$ATE$CIs
+# Examples of estimates for ATE under f_gstar1 - f_gstar0:
+tmleCom_wmT.bA.bY.1a_sglm$ATE$estimates
+tmleCom_wmT.bA.bY.1a_sglm$ATE$vars
 
-## 1.2.1 SuperLearner using all parent nodes (of Y and A) as regressors (respectively)
-tmleCom_Options(Qestimator = "SuperLearner", gestimator = "SuperLearner", 
-                bin.method = "equal.mass", maxNperBin = nrow(data),
-                SL.library = c("SL.glm", "SL.step", "SL.glm.interaction", "SL.bayesglm"))
-tmleCom_wmT.bA.bY_SL.1a <- 
+# Community-level analysis with a pooled individual-level regression on outcome
+tmleCom_wmT.bA.bY.1b_sglm <- 
   tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
                 WEnodes = c("E1", "E2", "W1", "W2", "W3"), obs.wts = "equal.within.pop",
                 community.step = "community_level", community.wts = "size.community", 
-                communityID = "id", pooled.Q = FALSE, f_gstar1 = 1, f_gstar2 = 0,
-                Qform = NULL, hform.g0 = NULL, hform.gstar = NULL)
+                communityID = "id", pooled.Q = TRUE, f_gstar1 = 1, f_gstar2 = 0,
+                Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
+tmleCom_wmT.bA.bY.1b_sglm$ATE$estimates
 
-# examples of estimates for ATE under f_gstar1 - f_gstar0:
-tmleCom_wmT.bA.bY_SL.1a$ATE$estimates
-tmleCom_wmT.bA.bY_SL.1a$ATE$vars
-
-### 1.2 Community-level analysis with a pooled individual-level regression on outcome
-## 1.2.1 glm using correctly specified Qform, misspecified hform.g0 and hform.gstar
-tmleCom_Options(Qestimator = "glm__glm", gestimator = "glm__glm", maxNperBin = nrow(data))
-tmleCom_wmT.bA.bY_Qcgm.1a <- 
+# Individual-level analysis with both individual-level outcome and treatment mechanisms
+tmleCom_wmT.bA.bY.2_sglm <- 
   tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
                 WEnodes = c("E1", "E2", "W1", "W2", "W3"), obs.wts = "equal.within.pop",
-                community.step = "community_level", community.wts = "size.community", 
-                communityID = "id", pooled.Q = FALSE, f_gstar1 = 1, f_gstar2 = 0,
-                Qform = Qform.corr, hform.g0 = gform.mis, hform.gstar = gform.mis)
-tmleCom_wmT.bA.bY_Qcgm.1a$ATE$estimates
+                community.step = "individual_level", community.wts = "size.community", 
+                communityID = "id", f_gstar1 = 1, f_gstar2 = 0,
+                Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
+tmleCom_wmT.bA.bY.2_sglm$ATE$estimates
 
 #***************************************************************************************
+# 1.2 Same as above but for different Qestimator and gestimator through tmleCom_Options()
+# and using all parent nodes (of Y and A) as regressors (respectively),
+# via community-level analysis with a pooled individual-level regression on outcome 
+# (See more details in examples in tmleCom_Options())
+#***************************************************************************************
+# SuperLearner for both outcome and treatment (clever covariate) regressions
+tmleCom_Options(Qestimator = "SuperLearner", gestimator = "SuperLearner", 
+                maxNperBin = nrow(data), SL.library = c("SL.glm", "SL.step", "SL.bayesglm"))
+tmleCom_wmT.bA.bY.2_SL <- 
+  tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), obs.wts = "equal.within.pop",
+                community.step = "community_level", community.wts = "size.community", 
+                communityID = "id", pooled.Q = TRUE, f_gstar1 = 1, f_gstar2 = 0,
+                Qform = NULL, hform.g0 = NULL, hform.gstar = NULL)
+tmleCom_wmT.bA.bY.2_SL$ATE$estimates
+
+# SuperLearner for outcome regressions and glm treatment regressions
+tmleCom_Options(Qestimator = "SuperLearner", gestimator = "glm__glm", 
+                maxNperBin = nrow(data), SL.library = c("SL.mean", "SL.stepAIC", "SL.bayesglm"))
+tmleCom_wmT.bA.bY.2_SL.glm <- 
+  tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), obs.wts = "equal.within.pop",
+                community.step = "community_level", community.wts = "size.community", 
+                communityID = "id", pooled.Q = TRUE, f_gstar1 = 1, f_gstar2 = 0,
+                Qform = NULL, hform.g0 = NULL, hform.gstar = NULL)
+tmleCom_wmT.bA.bY.2_SL.glm$ATE$estimates
+
+#***************************************************************************************
+# 1.3 Evaluating 
+#***************************************************************************************
+
 data(sampleDat_iidcontABinY)
 dat_iidcontABinY <- sampleDat_iidcontABinY$dat_iidcontABinY
 head(dat_iidcontABinY)
