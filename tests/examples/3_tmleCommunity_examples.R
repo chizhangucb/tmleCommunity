@@ -26,14 +26,18 @@ tmleCom_wmT.bA.bY.1a_sglm <-
 # Examples of estimates under f_gstar1 = 1:
 tmleCom_wmT.bA.bY.1a_sglm$EY_gstar1$estimates
 tmleCom_wmT.bA.bY.1a_sglm$EY_gstar1$vars
+tmleCom_wmT.bA.bY.1a_sglm$EY_gstar1$CIs
 
 # Examples of estimates under f_gstar0 = 0:
 tmleCom_wmT.bA.bY.1a_sglm$EY_gstar2$estimates
 tmleCom_wmT.bA.bY.1a_sglm$EY_gstar2$vars
+tmleCom_wmT.bA.bY.1a_sglm$EY_gstar2$CIs
 
 # Examples of estimates for ATE under f_gstar1 - f_gstar0:
 tmleCom_wmT.bA.bY.1a_sglm$ATE$estimates
 tmleCom_wmT.bA.bY.1a_sglm$ATE$vars
+tmleCom_wmT.bA.bY.1a_sglm$ATE$CIs
+head(tmleCom_wmT.bA.bY.1a_sglm$ATE$IC)
 
 # Community-level analysis with a pooled individual-level regression on outcome
 tmleCom_wmT.bA.bY.1b_sglm <- 
@@ -171,6 +175,7 @@ tmleCom_wmT.bA.bY.1a_covTMlE <-
                 community.step = "community_level", communityID = "id", pooled.Q = FALSE, 
                 TMLE.targetStep = "tmle.covariate",  # default as "tmle.intercept"
                 Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
+tmleCom_wmT.bA.bY.1a_covTMlE$ATE$estimates
 
 #***************************************************************************************
 # 1.7 Equivalent ways of specifying the regression formulae 
@@ -255,11 +260,13 @@ tmleind_iid.cA.cY_mis.fgstar$EY_gstar1$estimates
 tmleind_iid.cA.cY_10MC <- 
   tmleCommunity(data = indSample.iid.cA.cY, Ynode = "Y", Anodes = "A", 
                 WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = f.gstar.corr, n_MCsims = 10)
+tmleind_iid.cA.cY_10MC$EY_gstar1$estimates
 
 # A will be sampled 1000 times (for a total sample size of NROW(data)*1000 under f_gstar1)
 tmleind_iid.cA.cY_1000MC <- 
   tmleCommunity(data = indSample.iid.cA.cY, Ynode = "Y", Anodes = "A", 
                 WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = f.gstar.corr, n_MCsims = 1000)
+tmleind_iid.cA.cY_1000MC$EY_gstar1$estimates
 
 #***************************************************************************************
 # 2.4 Same as above but printing out status messages 
@@ -325,3 +332,4 @@ tmleind_iid.cA.cY_own.obsWT <-
                 WEnodes = c("W1", "W2", "W3", "W4"), obs.wts = obs.wts,
                 f_gstar1 = f.gstar_shift0.8, f_gstar2 = f.gstar_shift0.5,
                 Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
+tmleind_iid.cA.cY_own.obsWT$ATE$estimates
