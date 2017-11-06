@@ -1,11 +1,11 @@
 #***************************************************************************************
 # Example 1: using different estimators in estimation of Q and g mechanisms
 #***************************************************************************************
-# 1.1 speed.glm (and glm)
+# 1.1 using speed.glm (and glm)
 tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm")
 tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "glm__glm")
 
-# 1.2 SuperLearner
+# 1.2 using uperLearner
 # library including "SL.glm", "SL.glmnet", "SL.ridge", and "SL.stepAIC"
 require("glmnet")
 tmleCom_Options(Qestimator = "SuperLearner", gestimator = "SuperLearner", CVfolds = 5,
@@ -38,7 +38,7 @@ SL.library <- c(grep("SL.glmnet.", as.vector(lsf.str()), value=TRUE),
 tmleCom_Options(Qestimator = "SuperLearner", gestimator = "SuperLearner", 
                 SL.library = SL.library, CVfolds = 5)            
 
-# 1.3 h2o.ensemble
+# 1.3 using h2o.ensemble
 # h2olearner including "h2o.glm.wrapper" and "h2o.randomForest.wrapper"
 tmleCom_Options(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble", 
                 CVfolds = 10, h2ometalearner = "h2o.glm.wrapper", 
@@ -67,3 +67,15 @@ tmleCom_Options(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble",
 tmleCom_Options(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble",
                 SL.library = c("SL.glm", "SL.glmnet", "SL.ridge", "SL.stepAIC"), CVfolds = 5,
                 h2ometalearner = "h2o.deeplearning.wrapper", h2olearner = h2olearner)
+
+#***************************************************************************************
+# Example 2: Define the values of bin cutoffs for continuous outcome in different ways
+# through three arguments - bin.method, nbins, maxNperBin 
+#***************************************************************************************
+# 2.1 using equal-mass method
+# discretize a continuous outcome variable into 10 bins, no more than 1000 obs in each bin 
+tmleCom_Options(bin.method = "equal.mass", nbins = 10, maxNperBin = 1000)
+
+# 2.2 find a compromise between equal-mass and equal-length method
+# discretize into 5 bins (default), and no more than 5000 obs in each bin
+tmleCom_Options(bin.method = "dhist", nbins = 10, maxNperBin = 1000)
