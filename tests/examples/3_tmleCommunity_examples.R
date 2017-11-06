@@ -248,7 +248,28 @@ tmleind_iid.cA.cY_mis.fgstar <-
 tmleind_iid.cA.cY_mis.fgstar$EY_gstar1$estimates
 
 #***************************************************************************************
-# 2.3 Same as above but defining different values of bin cutoffs 
+# 2.3 Same as above but using larger number of Monte-Carlo simulations
+# using all parent nodes (of Y and A) as regressors (respectively)
+#***************************************************************************************
+# A will be sampled 10 times (for a total sample size of NROW(data)*10 under f_gstar1)
+tmleind_iid.cA.cY_10MC <- 
+  tmleCommunity(data = indSample.iid.cA.cY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = f.gstar.corr, n_MCsims = 10)
+
+# A will be sampled 1000 times (for a total sample size of NROW(data)*1000 under f_gstar1)
+tmleind_iid.cA.cY_1000MC <- 
+  tmleCommunity(data = indSample.iid.cA.cY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = f.gstar.corr, n_MCsims = 1000)
+
+#***************************************************************************************
+# 2.4 Same as above except printing out status messages 
+#***************************************************************************************
+tmleind_iid.cA.cY_10MC <- 
+  tmleCommunity(data = indSample.iid.cA.cY, Ynode = "Y", Anodes = "A", verbose = TRUE, 
+                WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = f.gstar.corr, n_MCsims = 10)
+
+#***************************************************************************************
+# 2.5 Running exactly the same estimator as 2.1 but defining different values of bin cutoffs 
 #***************************************************************************************
 # using equal-length method with 10 bins 
 tmleCom_Options(bin.method = "equal.len", nbins = 10, maxNperBin = N)
@@ -264,20 +285,29 @@ tmleind_iid.cA.cY_dhist <-
                 WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = f.gstar.corr,
                 Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
 
-# EXAMPLES OF Estimators:
 #***************************************************************************************
-
-tmleCom_res <- tmleCommunity(data = dat_iidcontABinY, Ynode = "Y", Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), 
-                             communityInd = NULL, community.step = NULL, f_gstar1 = f.gstar, Qform = Qform.corr, 
-                             hform.g0 = gform.corr, hform.gstar = gform.corr)
-tmleCom_res_same <- tmleCommunity(data = dat_iidcontABinY, Ynode = "Y", Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), 
-                             f_gstar1 = f.gstar, Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
-tmleCom_res_Alt <- tmleSingleStep(data = dat_iidcontABinY, Ynode = "Y", Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), 
-                                  f_gstar1 = f.gstar, Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
-
+# 2.6 Estimating the additive treatment effect (ATE) for two stochastic interventions
 #***************************************************************************************
-tmleCom_Options(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble", maxNperBin = nrow(dat_iidcontABinY),
-                h2olearner = c("h2o.glm.wrapper", "h2o.randomForest.wrapper"), nbins = 10)
-require(h2oEnsemble)
-tmleCom_res <- tmleSingleStep(data = dat_iidcontABinY, Ynode = "Y", Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), 
-                              f_gstar1 = f.gstar, Qform = NULL, hform.g0 = NULL, hform.gstar = NULL)    
+# Intervention function that will shift A by constant rate (shift.rate)
+define_f.gstar <- function(shift.rate) {
+  eval(shift.rate) 
+  f.gstar <- function(data, ...) {
+    print("rate of shift: " %+% shift.rate)
+    data[, "A"] * shift.rate
+  }
+  return(f.gstar)
+}
+f.gstar_shift0.8 <- define_f.gstar(shift.rate = 0.8)
+f.gstar_shift0.5 <- define_f.gstar(shift.rate = 0.5)
+
+tmleCom_Options(bin.method = "equal.mass", nbins = 5, maxNperBin = N)
+tmleind_iid.cA.cY_ATE <- 
+  tmleCommunity(data = indSample.iid.cA.cY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("W1", "W2", "W3", "W4"),
+                f_gstar1 = f.gstar_shift0.8, f_gstar2 = f.gstar_shift0.5,
+                Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
+
+# ATE estimates for f_gstar1-f_gstar2:
+tmleind_iid.cA.cY_ATE$ATE$estimates
+tmleind_iid.cA.cY_ATE$ATE$vars
+tmleind_iid.cA.cY_ATE$ATE$CIs   
