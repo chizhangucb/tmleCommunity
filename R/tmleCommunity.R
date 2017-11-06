@@ -383,7 +383,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  respectively.
 #' @param pooled.Q Logical for incorporating hierarchical data to estimate the outcome mechanism. If \code{TRUE}, use a pooled individual-level
 #'  regression for initial estimation of the mean outcome (i.e., outcome mechanism). Default to be \code{FASLE}. See "Details". 
-#' @param f_g0 Optional function used to specify model knowledge about value of Anodes. It estimates \code{P(A | W, E)} under \code{g0} by 
+#' @param f_g0 Optional function used to specify model knowledge about value of Anodes. It estimates P(A | W, E) under \code{g0} by 
 #'  sampling a large vector/ data frame of Anode (of length \code{nrow(data)*n_MCsims} or number of rows if a data frame) from \code{f_g0} function.
 #' @param f_gstar1 Either a function or a vector or a matrix/ data frame of counterfactual exposures, dependin on the number of exposure variables.
 #'  If a matrix/ data frame, its number of rows must be either \code{nrow(data)} or 1 (constant exposure assigned to all observations), and its number of 
