@@ -21,7 +21,7 @@
 #'  \eqn{A_j} depends on its community-level baseline covariates \eqn{E_j} and individual-level baseline covariates of all 
 #'  individuals belonging to community \eqn{j} (all \eqn{W_{i,j}} such that \eqn{i} belongs to \eqn{j}). Besides, each outcome 
 #'  \eqn{Y_{i,j}} could be affected by its baseline community and individual-level covariates \eqn{(E_j, W_{i,j})} and the baseline
-#'  covariates of other individuals who also belong to community \eqn{j} \eqn{(W_{s,j}: s\inj)}, together with its community-based
+#'  covariates of other individuals within the same community \eqn{(W_{s,j}: s\neq i, s\in j)}, together with its community-based
 #'  intervention \eqn{A_j}.
 #'
 #'  For each community, individual exposure and outcome mechanisms will be estimated, then the ATE across all the 
