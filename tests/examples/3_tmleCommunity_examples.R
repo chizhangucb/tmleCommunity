@@ -262,7 +262,7 @@ tmleind_iid.cA.cY_1000MC <-
                 WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = f.gstar.corr, n_MCsims = 1000)
 
 #***************************************************************************************
-# 2.4 Same as above except printing out status messages 
+# 2.4 Same as above but printing out status messages 
 #***************************************************************************************
 tmleind_iid.cA.cY_10MC <- 
   tmleCommunity(data = indSample.iid.cA.cY, Ynode = "Y", Anodes = "A", verbose = TRUE, 
@@ -291,7 +291,7 @@ tmleind_iid.cA.cY_dhist$EY_gstar1$estimates
 # 2.6 Estimating the additive treatment effect (ATE) for two stochastic interventions
 #***************************************************************************************
 # Intervention function that will shift A by constant rate (shift.rate)
-# A special case of stochastic intervention 
+# (A special case of stochastic intervention with constant shift)
 define_f.gstar <- function(shift.rate) {
   eval(shift.rate) 
   f.gstar <- function(data, ...) {
@@ -301,7 +301,7 @@ define_f.gstar <- function(shift.rate) {
   return(f.gstar)
 }
 f.gstar_shift0.8 <- define_f.gstar(shift.rate = 0.8)
-f.gstar_shift0.5 <- define_f.gstar(shift.rate = 0.5)
+f.gstar_shift0.5 <- define_f.gstar(shift.rate = 0.6)
 
 tmleCom_Options(bin.method = "equal.mass", nbins = 5, maxNperBin = N)
 tmleind_iid.cA.cY_ATE <- 
@@ -314,3 +314,15 @@ tmleind_iid.cA.cY_ATE <-
 tmleind_iid.cA.cY_ATE$ATE$estimates
 tmleind_iid.cA.cY_ATE$ATE$vars
 tmleind_iid.cA.cY_ATE$ATE$CIs   
+
+#***************************************************************************************
+# 2.7 Same as above but using a vector of user-supplied observation weights  
+#***************************************************************************************
+set.seed(12345)
+obs.wts <- runif(n = NROW(indSample.iid.cA.cY), min = 0, max = 1)
+tmleind_iid.cA.cY_own.obsWT <- 
+  tmleCommunity(data = indSample.iid.cA.cY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("W1", "W2", "W3", "W4"), obs.wts = obs.wts,
+                f_gstar1 = f.gstar_shift0.8, f_gstar2 = f.gstar_shift0.5,
+                Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
+
