@@ -22,8 +22,9 @@
 #'  individuals belonging to community \eqn{j} (all \eqn{W_{i,j}} such that \eqn{i} belongs to \eqn{j}). Besides, each outcome 
 #'  \eqn{Y_{i,j}} could be affected by its baseline community and individual-level covariates \eqn{(E_j, W_{i,j})} and the baseline
 #'  covariates of other individuals within the same community \eqn{(W_{s,j}: s\neq i, s\in j)}, together with its community-based
-#'  intervention \eqn{A_j}.
-#'
+#'  intervention \eqn{A_j}. We note that the input data with no hierarchical structure (i.e., no communities and only individuals)
+#'  is a special case of the hierarchical data since it simply treats \eqn{E_j} as \code{NULL}. 
+#' 
 #'  For each community, individual exposure and outcome mechanisms will be estimated, then the ATE across all the 
 #'  communities is calculated as a user-specific average of all community-level estimates (Default to size-weighted). Besides, 
 #'  each exposure A_i is a function of baseline covariates (W_i, E_i), and the outcome Y_i is a function of both baseline and 
@@ -32,7 +33,9 @@
 #' 
 #' @section Documentation:
 #' \itemize{
-#' \item To see the package vignette use: \code{vignette("tmleCommunity_vignette", package="tmleCommunity")}
+#' \item To see the package vignette use: 
+#' 
+#'   \code{vignette("tmleCommunity_vignette", package="tmleCommunity")}
 #' \item To see all available package documentation use: \code{help(package = 'tmleCommunity')}
 #' }
 #'
