@@ -271,7 +271,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   OData.gstar <- fit.hbars.out$OData.gstar
   model.h.fit <- fit.hbars.out$model.h.fit
   h_wts <- fit.hbars.out$h_gstar_h_gN
-  obs.wts <- est_params_list$obs.wts <- OData.gstar$get.obsweights(TRUE)
+  # obs.wts <- est_params_list$obs.wts <- OData.gstar$get.obsweights(TRUE)  # Double check here
   
   #************************************************
   # IPTW_h estimator:
