@@ -81,7 +81,7 @@ print_tmleCom_opts <- function() {
 #' @param poolContinVar Logical. If \code{TRUE}, when fitting a model for binirized continuous variable, pool bin indicators across
 #'  all bins and fit one pooled regression. Default to \code{FALSE}.
 #' @param savetime.fit.hbars Logical. If \code{TRUE}, skip estimation and prediction of exposure mechanism P(A|W,E) under g0 & gstar
-#'  when \code{f.gstar = NULL} and \code{TMLE.targetStep = "tmle.intercept"}, and then directly set \code{h_gstar_h_gN = 1} for each 
+#'  when \code{f.gstar1 = NULL} and \code{TMLE.targetStep = "tmle.intercept"}, and then directly set \code{h_gstar_h_gN = 1} for each 
 #'  observation. Default to \code{TRUE}.
 #' @param h2ometalearner A string to pass to \code{\link{h2o.ensemble}}, specifying the prediction algorithm used to learn the optimal 
 #'  combination of the base learners. Supports both h2o and SuperLearner wrapper functions. Default to "h2o.glm.wrapper".  
