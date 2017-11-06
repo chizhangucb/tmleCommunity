@@ -1,22 +1,28 @@
 #' Targeted Maximum Likelihood Estimation for Community-level Data
 #'
-#' The \pkg{tmleCommunity} package implements the Targeted Maximum Likelihood Estimation (TMLE) for the sample average community-based  
-#'  treatment specific means effects (and can be extended to ATE) in community-independent data structures. In other words, it estimates  
-#'  the marginal treatment effect of single-time point arbitrary interventions on a continuous or binary outcome in community-independent 
-#'  data, adjusting for both community-level and individual-level baseline covariates. The package also provides Inverse-Probability-of-
-#'  Treatment-Weighted estimator (IPTW) and parametric G-computation formula estimator (GCOMP). The statistical inference (Standard errors, 
-#'  p-value and confidence intervals) of both TMLE and IPTW are based on the corresponding influence curve, respectively. Optional data-adaptive 
-#‘  estimation of exposure and outcome mechanisms using the SuperLearner package and h2o package (latter for a large dataset) is strongly 
-#'  recommended, especially when the outcome mechanism and treatment mechnism are unknown. Besides, it allows for panel data transformation, 
-#'  such as with random effects and fixed effects. 
+#' Targeted Maximum Likelihood Estimation (TMLE) for the sample average community-based treatment specific means effects (and can be  
+#'  extended to additive treatment effect) in community-independent data structures. In other words, it estimates the marginal treatment  
+#'  effect of single-time point arbitrary interventions on a continuous or binary outcome in community-independent data, adjusting for
+#'  both community-level and individual-level baseline covariates. The package also provides Inverse-Probability-of-Treatment-Weighted 
+#'  estimator (IPTW) and parametric G-computation formula estimator (GCOMP). The statistical inference (Standard errors, t statistc, 
+#'  p-value and confidence intervals) of both TMLE and IPTW are based on the corresponding influence curve, respectively. Optional 
+#‘  data-adaptive estimation of exposure and outcome mechanisms using the SuperLearner package and h2o package (latter for a large 
+#'  dataset) is strongly recommended, especially when the outcome mechanism and treatment mechnism are unknown. Besides, it allows 
+#'  for panel data transformation, such as with random effects and fixed effects. 
 #' 
-#' The input dataset should be made up of rows of unit-specific observations, each row i includes variables (W_i, E_i, A_i, Y_i), where W_i 
-#'  represents a vector of i’s individual-level baseline covariates, E_i represents a vector of i’s community-level baseline covariates 
-#'  (observations within the same community usually have the same values of E_i), A_i is a vector of i’s interventions (can be univariate 
-#'  or multivariate, can be binary, categorical or continuous), and Y_i is i’s outcome. For each community, individual exposure and outcome
-#'  mechanisms will be estimated, then the ATE across all the communities is calculated as a user-specific average of all community-level 
-#'  estimates (Default to size-weighted). Besides, each exposure A_i is a function of baseline covariates (W_i, E_i), and the outcome Y_i 
-#'  is a function of both baseline and exposure covariates (W_i, E_i, A_i). 
+#' The input dataset should be made up of rows of community-specific and individual-specific observations, for community \eqn{j}, each  
+#'  row \eqn{i} includes random variables \eqn{(W_{i,j}, E_{j}, A_{j}, Y_{i,j})}, where \eqn{E_j} represents a vector of community 
+#'  \eqn{j}’s community-level (environmental) baseline covariates (individuals within the same community share the same values of 
+#'  \eqn{E_j}), \eqn{W_{i,j}} represents a vector of individual \eqn{i}’s individual-level baseline covariates, \eqn{A_j} is the 
+#'  exposure(s) (can be univariate or multivariate, can be binary, categorical or continuous) assigned or naturally occurred in  
+#'  community \eqn{j} (individuals within the same community receive the same value of \eqn{A_j}) and \eqn{Y_{i,j}} is \eqn{i}’s 
+#'  outcome. Each individual's baseline covariates \eqn{(W_{i,j}} depends on the environmental baseline covariates \eqn{E_j} of 
+#'  the community \eqn{j} to which \eqn{i} belongs to. Similarly, each community's e
+#' 
+#'  For each community, individual exposure and outcome mechanisms will be estimated, then the ATE across all the 
+#'  communities is calculated as a user-specific average of all community-level estimates (Default to size-weighted). Besides, 
+#'  each exposure A_i is a function of baseline covariates (W_i, E_i), and the outcome Y_i is a function of both baseline and 
+#'  exposure covariates (W_i, E_i, A_i). 
 #' 
 #' 
 #' @section Documentation:
