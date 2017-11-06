@@ -25,12 +25,15 @@
 #'  intervention \eqn{A_j}. We note that the input data with no hierarchical structure (i.e., no communities and only individuals)
 #'  is a special case of the hierarchical data since it simply treats \eqn{E_j} as \code{NULL}. 
 #' 
-#'  There are currently three methods that  
-#'  For each community, individual exposure and outcome mechanisms will be estimated, then the ATE across all the 
-#'  communities is calculated as a user-specific average of all community-level estimates (Default to size-weighted). Besides, 
-#'  each exposure A_i is a function of baseline covariates (W_i, E_i), and the outcome Y_i is a function of both baseline and 
-#'  exposure covariates (W_i, E_i, A_i). 
-#' 
+#'  There are currently three approaches that can be used in hierarchical data analysis. The first community-level TMLE is developed 
+#'  under a non-parametric causal model that allows for arbitrary interactions between individuals within a community. It estimates  
+#'  the community-level causal effect by aggregating data at a community-level and treating community rather than the individual as 
+#'  the unit of analysis (i.e., both community-level outcome and treatment mechanisms). The second individual-level TMLE is developed 
+#'  under the submodel of the causal model in the first approach, incoporating knowledge of the dependence structure between 
+#'  individual within communities (i.e., both individual-level outcome and treatmnet mechanisms). The third stratified TMLE fits a 
+#'  separate outcome (exposure) mechanism for each community, and then combine those estimates into a (user-specific) average 
+#'  (Default to be community size-weighed). Note that the stratified TMLE naturally controls for the community-level observed  
+#'  covariates and unobserved factors. Namely, there is no \eqn{E} in the regressors for both outcome and treatment mechanisms.  
 #' 
 #' @section Documentation:
 #' \itemize{
@@ -65,7 +68,7 @@
 # }
 #'
 #' @section Datasets:
-#' To learn more about the type of data input required by \code{\link{tmlenet}}, see the following example datasets:
+#' To learn more about the type of data input required by \code{\link{tmleCommunity}}, see the following example datasets:
 #' \itemize{
 #'   \item \code{\link{sampleDat_iidBinABinY}}
 #'   \item \code{\link{sampleDat_iidBinAContY}}
