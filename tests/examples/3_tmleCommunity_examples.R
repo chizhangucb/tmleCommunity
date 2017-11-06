@@ -325,4 +325,3 @@ tmleind_iid.cA.cY_own.obsWT <-
                 WEnodes = c("W1", "W2", "W3", "W4"), obs.wts = obs.wts,
                 f_gstar1 = f.gstar_shift0.8, f_gstar2 = f.gstar_shift0.5,
                 Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
-
