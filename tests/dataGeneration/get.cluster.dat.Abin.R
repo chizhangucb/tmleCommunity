@@ -1,5 +1,5 @@
 # -------------------------------------------------------------------------------------------------------
-# DATA SET 4. TESTS FOR FITTING BINARY EXPOSURE A IN CLUSTER DATA (IID within Cluster)
+# DATA SET 4. TESTS FOR FITTING COMMUNITY-LEVEL BINARY EXPOSURE A IN CLUSTER DATA (IID within Cluster)
 # -------------------------------------------------------------------------------------------------------
 # Fitting binary exposure by logistic regression (One A with Binary/ Continuous Y)
 # individual exposure is normal with mu for each observation being a function of (E1, E2, W1, W2);
