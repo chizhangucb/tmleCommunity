@@ -37,6 +37,6 @@ Suggests: doParallel,
     simcausal,
     SuperLearner,
     testthat,
-    Hmisc，
+    Hmisc,
     knitr
 RoxygenNote: 6.0.1
