@@ -378,9 +378,9 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  \code{community.step}: community-level or individual-level TMLE (See details for \code{community.step}).
 #' @param community.wts Optional choice to provide/ construct a matrix of community-level observation weights (where dimension = \eqn{J\times}2, where 
 #'  J = the number of communities). The first column contains the communities' names (ie., \code{data[, communityID]}) and the second column contains the   
-#'  corresponding non-negative weights. Currently only support a numeric matrix with 2 columns, "equal.community" (Default) and "size.community". 
-#'  If "equal.community", assumed weights to be all 1; If setting community.wts = "size.community", treat the number of individuals within each 
-#'  community as its weight, respectively.
+#'  corresponding non-negative weights. Currently only support a numeric matrix with 2 columns, "size.community" (Default) and "equal.community". 
+#'  If setting community.wts = "size.community", treat the number of individuals within each community as its weight, respectively. 
+#'  If community.wts = "equal.community", assumed weights to be all 1; 
 #' @param pooled.Q Logical for incorporating hierarchical data to estimate the outcome mechanism. If \code{TRUE}, use a pooled individual-level
 #'  regression for initial estimation of the mean outcome (i.e., outcome mechanism). Default to be \code{FASLE}. See "Details". 
 #' @param f_g0 Optional function used to specify model knowledge about value of Anodes. It estimates P(A | W, E) under \code{g0} by 
