@@ -277,6 +277,7 @@ tmleind_iid.cA.cY_len <-
   tmleCommunity(data = indSample.iid.cA.cY, Ynode = "Y", Anodes = "A", 
                 WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = f.gstar.corr,
                 Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
+tmleind_iid.cA.cY_len$EY_gstar1$estimates
 
 # using combination of equal-length and equal-mass method with 20 bins 
 tmleCom_Options(bin.method = "dhist", nbins = 20, maxNperBin = N)
@@ -284,11 +285,13 @@ tmleind_iid.cA.cY_dhist <-
   tmleCommunity(data = indSample.iid.cA.cY, Ynode = "Y", Anodes = "A", 
                 WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = f.gstar.corr,
                 Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
+tmleind_iid.cA.cY_dhist$EY_gstar1$estimates
 
 #***************************************************************************************
 # 2.6 Estimating the additive treatment effect (ATE) for two stochastic interventions
 #***************************************************************************************
 # Intervention function that will shift A by constant rate (shift.rate)
+# A special case of stochastic intervention 
 define_f.gstar <- function(shift.rate) {
   eval(shift.rate) 
   f.gstar <- function(data, ...) {
