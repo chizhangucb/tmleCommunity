@@ -45,15 +45,20 @@ tmleCom_Options(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble",
                 h2olearner = c("h2o.glm.wrapper", "h2o.randomForest.wrapper"))
 
 # Create a sequence of customized h2o glm, randomForest and deeplearning wrappers 
-h2o.glm.1 <- function(..., alpha = 1, prior = NULL) { h2o.glm.wrapper(..., alpha = alpha, , prior=prior) }
-h2o.glm.0.5 <- function(..., alpha = 0.5, prior = NULL) { h2o.glm.wrapper(..., alpha = alpha, , prior=prior) }
+h2o.glm.1 <- function(..., alpha = 1, prior = NULL) { 
+  h2o.glm.wrapper(..., alpha = alpha, , prior=prior) 
+}
+h2o.glm.0.5 <- function(..., alpha = 0.5, prior = NULL) { 
+  h2o.glm.wrapper(..., alpha = alpha, , prior=prior) 
+}
 h2o.randomForest.1 <- function(..., ntrees = 200, nbins = 50, seed = 1) {
   h2o.randomForest.wrapper(..., ntrees = ntrees, nbins = nbins, seed = seed)
 }
 h2o.deeplearning.1 <- function(..., hidden = c(500, 500), activation = "Rectifier", seed = 1) {
   h2o.deeplearning.wrapper(..., hidden = hidden, activation = activation, seed = seed)
 }
-h2olearner <- c("h2o.glm.1", "h2o.glm.0.5", "h2o.randomForest.1", "h2o.deeplearning.1", "h2o.gbm.wrapper")
+h2olearner <- c("h2o.glm.1", "h2o.glm.0.5", "h2o.randomForest.1", 
+                "h2o.deeplearning.1", "h2o.gbm.wrapper")
 tmleCom_Options(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble",
                 SL.library = c("SL.glm", "SL.glmnet", "SL.ridge", "SL.stepAIC"), CVfolds = 5,
                 h2ometalearner = "h2o.deeplearning.wrapper", h2olearner = h2olearner)
