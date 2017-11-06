@@ -1,5 +1,5 @@
 #***************************************************************************************
-# Example 1: Hierarchical example,  with one binary A and bianry Y 
+# Example 1: Hierarchical example, with one binary A and bianry Y 
 # True ATE of the community-based treatment is approximately 0.103716
 data(comSample.wmT.bA.bY_list)  # load the sample data 
 comSample.wmT.bA.bY <- comSample.wmT.bA.bY_list$comSample.wmT.bA.bY
@@ -111,9 +111,9 @@ tmleCom_wmT.bA.bY.1a_w3 <-
 tmleCom_wmT.bA.bY.1a_w3$EY_gstar1$estimates
 
 #***************************************************************************************
-# 1.4 Equivalent ways of specifying user-supplied intervention (f_gstar1 = 1)
+# 1.4 Specifying user-supplied stochastic or deterministic intervention function
 #***************************************************************************************
-# Alternative 1: via intervention functoin that sets every invidual's A to constant 1
+# Intervention function that will sample A with probability P(A=1) = prob.val
 define_f.gstar <- function(prob.val, rndseed = NULL) {
   eval(prob.val) 
   f.gstar <- function(data, ...) {
@@ -122,10 +122,20 @@ define_f.gstar <- function(prob.val, rndseed = NULL) {
   }
   return(f.gstar)
 }
+# Stochastically set 50% of the population to A=1 
+f.gstar_stoch.0.5 <- define_f.gstar(prob.val = 0.5)
+# Deterministically set 100% of the population to A=1 
+f.gstar_determ.1 <- define_f.gstar(prob.val = 1)
+# Deterministically set 100% of the population to A=0
+f.gstar_determ.0 <- define_f.gstar(prob.val = 0)
+
+#***************************************************************************************
+# 1.5 Equivalent ways of specifying user-supplied (static) intervention (f_gstar1 = 1)
+#***************************************************************************************
+# Alternative 1: via intervention functoin that sets every invidual's A to constant 1
 tmleCom_wmT.bA.bY.1a_fgtar1 <- 
   tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
-                WEnodes = c("E1", "E2", "W1", "W2", "W3"), 
-                f_gstar1 = define_f.gstar(prob.val = 1), 
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = f.gstar_determ.1, 
                 community.step = "community_level", communityID = "id")
 tmleCom_wmT.bA.bY.1a_fgtar1$EY_gstar1$estimates
 
@@ -139,11 +149,11 @@ tmleCom_wmT.bA.bY.1a_fgtar1 <-
 tmleCom_wmT.bA.bY.1a_fgtar1 <- 
   tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
                 WEnodes = c("E1", "E2", "W1", "W2", "W3"), 
-                f_gstar1 = rep(1, NROW(data)), 
+                f_gstar1 = rep(1L, NROW(data)), 
                 community.step = "community_level", communityID = "id")
 
 #***************************************************************************************
-# 1.5 Running exactly the same estimator as 1.1 but using h_gstar/h_gN as a coviariate 
+# 1.6 Running exactly the same estimator as 1.1 but using h_gstar/h_gN as a coviariate 
 # in the targeting step (default to use weighted intercept-based TMLE)
 #***************************************************************************************
 # unweighted covariate-based TMLE
@@ -155,7 +165,7 @@ tmleCom_wmT.bA.bY.1a_covTMlE <-
                 Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
 
 #***************************************************************************************
-# 1.6 Equivalent ways of specifying the regression formulae 
+# 1.7 Equivalent ways of specifying the regression formulae 
 # (if Ynode is specified as "Y" and WEnodes = c("E1", "E2", "W1", "W2", "W3"))
 #***************************************************************************************
 # For outcome regression, the left side of Qform will be ignored if Ynode is specified,
@@ -175,18 +185,22 @@ hform.g0 <- "A ~ E1 + E2 + W1"
 hform.gstar <- NULL
 
 #***************************************************************************************
-# Example 2: Non-hierarchical example,  with one continuous A and continuous Y 
-# True ATE of the individual-level treatment is approximately 
+# Example 2: Non-hierarchical example, with one continuous A and continuous Y 
+# True mean population outcome under stochastic intervention （specified below)
+# is approximately 3.50856
 data(indSample.iid.cA.cY_list)  # load the sample data 
 indSample.iid.cA.cY <- indSample.iid.cA.cY_list$indSample.iid.cA.cY
+true.shift <- indSample.iid.cA.cY_list$shift.val  # 2
+true.truncBD <- indSample.iid.cA.cY_list$truncBD  # 10
 N <- NROW(indSample.iid.cA.cY)
-Qform.corr <- "Y ~ E1 + E2 + W2 + W3 + A" # correct Q form
-gform.corr <- "A ~ E1 + E2 + W1"  # correct g
+Qform.corr <- "Y ~ W1 + W2 + W3 + W4 + A" # correct Q form
+gform.corr <- "A ~ W1 + W2 + W3 + W4"  # correct g
 #***************************************************************************************
 
-psi0.Y <- sampleDat_iidcontABinY$psi0.Y  # 0.291398
-psi0.Ygstar <- sampleDat_iidcontABinY$psi0.Ygstar  # 0.316274
-
+#***************************************************************************************
+# 2.1 Specifying stochastic intervention function that could represent the true 
+# shifted version of the current treatment mechanism
+#***************************************************************************************
 define_f.gstar <- function(shift.val, truncBD, rndseed = NULL) {
   shift.const <- shift.val
   trunc.const <- truncBD
@@ -201,16 +215,16 @@ define_f.gstar <- function(shift.val, truncBD, rndseed = NULL) {
   }
   return(f.gstar)
 }
-f.gstar <- define_f.gstar(shift = sampleDat_iidcontABinY$shift.val, truncBD = sampleDat_iidcontABinY$truncBD, 
-                          rndseed = sampleDat_iidcontABinY$rndseed)
-
-Qform.corr <- "Y ~ W1 + W2 + W3 + W4 + A" # correct Q
-Qform.mis <- "Y ~ W3 + A" # incorrect Q
-gform.corr <- "A ~ W1 + W2 + W3 + W4"  # correct g
-gform.mis <- "A ~ W2 + W3"  # correct g
-#***************************************************************************************
+# correctly specified stochastic intervention with true shift value and truncated bound
+f.gstar.corr <- define_f.gstar(shift = true.shift, truncBD = true.truncBD)
+# Misspecified specified stochastic intervention 
+f.gstar.mis <- define_f.gstar(shift = 1, truncBD = 8)
 
 #***************************************************************************************
+# 2.2 
+#***************************************************************************************
+
+
 # EXAMPLES OF Estimators:
 #***************************************************************************************
 tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", maxNperBin = nrow(dat_iidcontABinY))
