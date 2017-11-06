@@ -48,27 +48,26 @@ ndata <- 10000
 rndseed <- 12345
 truncBD <- 10
 
-#### Data 1. One A with Binary Y
+#### Data 1. One continuous A with Binary Y
 shift.val <- 1
-popDat <- get.iid.dat.Acont(ndata = 1000000, rndseed = rndseed, truncBD = truncBD, shift.val = shift.val, is.Y.bin = T)$Odata
-psi0.Y <- mean(popDat$Y)  # 0.291398
-psi0.Ygstar <- mean(popDat$Y.gstar)  # 0.316274
-dat_iidcontABinY <- get.iid.dat.Acont(ndata = ndata, rndseed = rndseed, truncBD = truncBD, shift.val = shift.val, is.Y.bin = T)$Odata
-dat_iidcontABinY <- dat_iidcontABinY[, c("W1", "W2", "W3", "W4", "A", "Y", "Y.gstar", "trunc.A.gstar")]
-sampleDat_iidcontABinY <- list(dat_iidcontABinY = dat_iidcontABinY, psi0.Y = psi0.Y, psi0.Ygstar = psi0.Ygstar,
-                               truncBD = truncBD, shift.val = shift.val, rndseed = rndseed,
-                               call = "get.iid.dat.Acont(ndata=10000, rndseed=12345, truncBD=10, shift.val=1, is.Y.bin=T)$Odata")
-save(sampleDat_iidcontABinY, file="sampleDat_iidcontABinY.Rda")
+indPop.iid.cA.bY <- get.iid.dat.Acont(ndata = 1000000, rndseed = rndseed, truncBD = truncBD, shift.val = shift.val, is.Y.bin = T)$Odata
+psi0.Y <- mean(indPop.iid.cA.bY$Y)  # 0.291398
+psi0.Ygstar <- mean(indPop.iid.cA.bY$Y.gstar)  # 0.316274
+indSample.iid.cA.bY <- get.iid.dat.Acont(ndata = ndata, rndseed = rndseed, truncBD = truncBD, shift.val = shift.val, is.Y.bin = T)$Odata
+indSample.iid.cA.bY <- indSample.iid.cA.bY[, c("W1", "W2", "W3", "W4", "A", "Y", "Y.gstar", "trunc.A.gstar")]
+indSample.iid.cA.bY_list <- list(indSample.iid.cA.bY = indSample.iid.cA.bY, psi0.Y = psi0.Y, psi0.Ygstar = psi0.Ygstar,
+                                 truncBD = truncBD, shift.val = shift.val, rndseed = rndseed)
+save(indSample.iid.cA.bY_list, file="indSample.iid.cA.bY_list.Rda")
 
 
-#### Data 2. One A with Continuous Y
+#### Data 2. One continuous A with Continuous Y
 shift.val <- 2
-popDat <- get.iid.dat.Acont2(ndata = 1000000, rndseed = rndseed, truncBD = truncBD, shift.val = shift.val, is.Y.bin = F)$Odata
-psi0.Y <- mean(popDat$Y)  # 3.309084
-psi0.Ygstar <- mean(popDat$Y.gstar)  # 3.50856
-dat_iidcontAContY <- get.iid.dat.Acont2(ndata = ndata, rndseed = rndseed, truncBD = truncBD, shift.val = shift.val, is.Y.bin = F)$Odata
-dat_iidcontAContY <- dat_iidcontAContY[, c("W1", "W2", "W3", "W4", "A", "Y", "Y.gstar", "trunc.A.gstar")]
-sampleDat_iidcontAContY <- list(dat_iidcontAContY = dat_iidcontAContY, psi0.Y = psi0.Y, psi0.Ygstar = psi0.Ygstar,
-                                truncBD = truncBD, shift.val = shift.val, rndseed = rndseed,
-                                call = "get.iid.dat.Acont(ndata=10000, rndseed=12345, truncBD=10, shift.val=2, is.Y.bin=F)$Odata")
-save(sampleDat_iidcontAContY, file="sampleDat_iidcontAContY.Rda")
+indPop.iid.cA.cY <- get.iid.dat.Acont(ndata = 1000000, rndseed = rndseed, truncBD = truncBD, shift.val = shift.val, is.Y.bin = F)$Odata
+psi0.Y <- mean(indPop.iid.cA.cY$Y)  # 3.309084
+psi0.Ygstar <- mean(indPop.iid.cA.cY$Y.gstar)  # 3.50856
+indSample.iid.cA.cY <- get.iid.dat.Acont(ndata = ndata, rndseed = rndseed, truncBD = truncBD, shift.val = shift.val, is.Y.bin = F)$Odata
+indSample.iid.cA.cY <- indSample.iid.cA.cY[, c("W1", "W2", "W3", "W4", "A", "Y", "Y.gstar", "trunc.A.gstar")]
+indSample.iid.cA.cY_list <- list(indSample.iid.cA.cY = indSample.iid.cA.cY, psi0.Y = psi0.Y, psi0.Ygstar = psi0.Ygstar,
+                                 truncBD = truncBD, shift.val = shift.val, rndseed = rndseed)
+                                 # call = "get.iid.dat.Acont(ndata=10000, rndseed=12345, truncBD=10, shift.val=2, is.Y.bin=F)$Odata")
+save(indSample.iid.cA.cY_list, file="indSample.iid.cA.cY_list.Rda")
