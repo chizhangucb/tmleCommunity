@@ -221,13 +221,17 @@ f.gstar.corr <- define_f.gstar(shift = true.shift, truncBD = true.truncBD)
 f.gstar.mis <- define_f.gstar(shift = 1, truncBD = 8)
 
 #***************************************************************************************
-# 2.2 
+# 2.2 Estimating mean population outcome under stochastic intervention 
 #***************************************************************************************
-
+tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", maxNperBin = N)
+tmleind_iid.cA.cY_sglm <- 
+  tmleCommunity(data = indSample.iid.cA.cY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = f.gstar.corr,
+                Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
 
 # EXAMPLES OF Estimators:
 #***************************************************************************************
-tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", maxNperBin = nrow(dat_iidcontABinY))
+
 tmleCom_res <- tmleCommunity(data = dat_iidcontABinY, Ynode = "Y", Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), 
                              communityInd = NULL, community.step = NULL, f_gstar1 = f.gstar, Qform = Qform.corr, 
                              hform.g0 = gform.corr, hform.gstar = gform.corr)
