@@ -14,7 +14,7 @@ CalcMonteCarloEsts <- function(OData.ObsP0, OData.gstar, MC_fit_params, model.h.
   pooled.Q <- MC_fit_params$pooled.Q
   model.Q.init <- MC_fit_params$model.Q.init
   model.Q.star <- MC_fit_params$model.Q.star
-  communityID <- OData.ObsP0$get.sVar(name.sVar = MC_fit_params$communityID)
+  if (community.step != "NoCommunity") communityID <- OData.ObsP0$get.sVar(name.sVar = MC_fit_params$communityID)
   
   if (gvars$verbose) {
     message("================================================================")
