@@ -51,6 +51,14 @@ tmleCom_wmT.bA.bY.2_sglm <-
                 Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
 tmleCom_wmT.bA.bY.2_sglm$ATE$estimates
 
+# Failing to provide communityID will automatically set community.step to "NoCommunity"
+tmleCom_wmT.bA.bY.NoC_sglm <- 
+  tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1L, f_gstar2 = 0L,
+                community.step = "individual_level", communityID = NULL, 
+                Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
+tmleCom_wmT.bA.bY.NoC_sglm$ATE$estimates
+
 #***************************************************************************************
 # 1.2 Same as above but for different Qestimator and gestimator through tmleCom_Options()
 # via community-level analysis with a pooled individual-level regression on outcome.
@@ -218,13 +226,40 @@ define_f.gstar <- function(shift.val, truncBD, rndseed = NULL) {
 # correctly specified stochastic intervention with true shift value and truncated bound
 f.gstar.corr <- define_f.gstar(shift = true.shift, truncBD = true.truncBD)
 # Misspecified specified stochastic intervention 
-f.gstar.mis <- define_f.gstar(shift = 1, truncBD = 8)
+f.gstar.mis <- define_f.gstar(shift = 5, truncBD = 8)
 
 #***************************************************************************************
-# 2.2 Estimating mean population outcome under stochastic intervention 
+# 2.2 Estimating mean population outcome under different stochastic interventions
+# speed.glm using correctly specified Qform, hform.g0 and hform.gstar
 #***************************************************************************************
 tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", maxNperBin = N)
-tmleind_iid.cA.cY_sglm <- 
+# correctly specified stochastic intervention 
+tmleind_iid.cA.cY_true.fgstar <- 
+  tmleCommunity(data = indSample.iid.cA.cY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = f.gstar.corr,
+                Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
+tmleind_iid.cA.cY_true.fgstar$EY_gstar1$estimates
+
+# misspecified stochastic intervention
+tmleind_iid.cA.cY_mis.fgstar <- 
+  tmleCommunity(data = indSample.iid.cA.cY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = f.gstar.mis,
+                Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
+tmleind_iid.cA.cY_mis.fgstar$EY_gstar1$estimates
+
+#***************************************************************************************
+# 2.3 Same as above but defining different values of bin cutoffs 
+#***************************************************************************************
+# using equal-length method with 10 bins 
+tmleCom_Options(bin.method = "equal.len", nbins = 10, maxNperBin = N)
+tmleind_iid.cA.cY_len <- 
+  tmleCommunity(data = indSample.iid.cA.cY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = f.gstar.corr,
+                Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
+
+# using combination of equal-length and equal-mass method with 20 bins 
+tmleCom_Options(bin.method = "dhist", nbins = 20, maxNperBin = N)
+tmleind_iid.cA.cY_dhist <- 
   tmleCommunity(data = indSample.iid.cA.cY, Ynode = "Y", Anodes = "A", 
                 WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = f.gstar.corr,
                 Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
