@@ -478,7 +478,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' 
 #' \code{TMLE.targetStep} specifies how to use weights \code{h_gstar/h_gN} in the \strong{TMLE} targeting step. If \code{tmle.intercept} (default),   
 #'  it performs the weighted intercept-based TMLE that runs a intercept-only weighted logistic regression using offsets \code{logit(Qstar)} and  
-#'  weights \code{h_gstar/h_gN} and so no covariate. If \code{\code{tmle.intercept}}, it performs tbe unweighted covariate-based TMLE that run a 
+#'  weights \code{h_gstar/h_gN} and so no covariate. If \code{tmle.covariate}, it performs the unweighted covariate-based TMLE that run a 
 #'  unweighted logistic regression using offsets \code{logit(Qstar)} and a clever covariate \code{h_gstar/h_gN}. 
 #' 
 #' @section IPTW estimator:
