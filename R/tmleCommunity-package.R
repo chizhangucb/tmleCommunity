@@ -16,9 +16,14 @@
 #'  \eqn{E_j}), \eqn{W_{i,j}} represents a vector of individual \eqn{i}’s individual-level baseline covariates, \eqn{A_j} is the 
 #'  exposure(s) (can be univariate or multivariate, can be binary, categorical or continuous) assigned or naturally occurred in  
 #'  community \eqn{j} (individuals within the same community receive the same value of \eqn{A_j}) and \eqn{Y_{i,j}} is \eqn{i}’s 
-#'  outcome. Each individual's baseline covariates \eqn{(W_{i,j}} depends on the environmental baseline covariates \eqn{E_j} of 
-#'  the community \eqn{j} to which \eqn{i} belongs to. Similarly, each community's e
-#' 
+#'  outcome (either binary or continuous). Each individual's baseline covariates \eqn{(W_{i,j}} depends on the environmental 
+#'  baseline covariates \eqn{E_j} of the community \eqn{j} to which \eqn{i} belongs to. Similarly, each community's exposure 
+#'  \eqn{A_j} depends on its community-level baseline covariates \eqn{E_j} and individual-level baseline covariates of all 
+#'  individuals belonging to community \eqn{j} (all \eqn{W_{i,j}} such that \eqn{i} belongs to \eqn{j}). Besides, each outcome 
+#'  \eqn{Y_{i,j}} could be affected by its baseline community and individual-level covariates \eqn{(E_j, W_{i,j})} and the baseline
+#'  covariates of other individuals who also belong to community \eqn{j} \eqn{(W_{s,j}: s\inj)}, together with its community-based
+#'  intervention \eqn{A_j}.
+#'
 #'  For each community, individual exposure and outcome mechanisms will be estimated, then the ATE across all the 
 #'  communities is calculated as a user-specific average of all community-level estimates (Default to size-weighted). Besides, 
 #'  each exposure A_i is a function of baseline covariates (W_i, E_i), and the outcome Y_i is a function of both baseline and 
