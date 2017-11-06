@@ -42,3 +42,13 @@ Suggests: doParallel,
     Hmisc,
     knitr
 RoxygenNote: 6.0.1
+Collate: 
+    'GeneralUtilities.R'
+    'BinaryOutModelClass.R'
+    'DatKeepClass.R'
+    'GenericModelClasses.R'
+    'MonteCarloSimClass.R'
+    'hbarDensityModel.R'
+    'tmleCommunity-package.R'
+    'tmleCommunity.R'
+    'zzz.R'
