@@ -684,7 +684,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
   } else if (obs.wts == "equal.within.community") { # weigh individuals in each community equally and weigh communities equally
     obs.wts <- rep(as.vector(1/table(data[, communityID])), as.vector(table(data[, communityID])))
   }
-  jf (is.character(community.step)) community.step <- community.step[1]
+  if (is.character(community.step)) community.step <- community.step[1]
   if (is.character(community.step) && (community.step != "NoCommunity") && !is.data.frame(community.wts)) {
     community.wts.df <- as.data.frame(matrix(0L, nrow = length(unique(data[, communityID])), ncol = 2))
     colnames(community.wts.df) <- c("id", "weights")
