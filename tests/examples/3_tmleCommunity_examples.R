@@ -19,7 +19,7 @@ tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", maxN
 # Community-level analysis without a pooled individual-level regression on outcome
 tmleCom_wmT.bA.bY.1a_sglm <- 
   tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
-                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1, f_gstar2 = 0,
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1L, f_gstar2 = 0L,
                 community.step = "community_level", communityID = "id", pooled.Q = FALSE, 
                 Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
 
@@ -38,7 +38,7 @@ tmleCom_wmT.bA.bY.1a_sglm$ATE$vars
 # Community-level analysis with a pooled individual-level regression on outcome
 tmleCom_wmT.bA.bY.1b_sglm <- 
   tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
-                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1, f_gstar2 = 0,
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1L, f_gstar2 = 0L,
                 community.step = "community_level", communityID = "id", pooled.Q = TRUE, 
                 Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
 tmleCom_wmT.bA.bY.1b_sglm$ATE$estimates
@@ -46,7 +46,7 @@ tmleCom_wmT.bA.bY.1b_sglm$ATE$estimates
 # Individual-level analysis with both individual-level outcome and treatment mechanisms
 tmleCom_wmT.bA.bY.2_sglm <- 
   tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
-                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1, f_gstar2 = 0,
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1L, f_gstar2 = 0L,
                 community.step = "individual_level", communityID = "id", 
                 Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
 tmleCom_wmT.bA.bY.2_sglm$ATE$estimates
@@ -64,7 +64,7 @@ tmleCom_Options(Qestimator = "SuperLearner", gestimator = "SuperLearner",
 require("arm")
 tmleCom_wmT.bA.bY.2_SL <- 
   tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
-                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1, f_gstar2 = 0,
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1L, f_gstar2 = 0L,
                 community.step = "community_level", communityID = "id", pooled.Q = TRUE, 
                 Qform = NULL, hform.g0 = NULL, hform.gstar = NULL)
 tmleCom_wmT.bA.bY.2_SL$ATE$estimates
@@ -76,7 +76,7 @@ tmleCom_Options(Qestimator = "SuperLearner", gestimator = "glm__glm",
                 maxNperBin = N, SL.library = c("SL.mean", "SL.stepAIC", "SL.bayesglm"))
 tmleCom_wmT.bA.bY.2_SL.glm <- 
   tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
-                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1, f_gstar2 = 0,
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1L, f_gstar2 = 0L,
                 community.step = "community_level", communityID = "id", pooled.Q = TRUE,
                 Qform = NULL, hform.g0 = "A ~ W1", hform.gstar = "A ~ E1 + W2")
 tmleCom_wmT.bA.bY.2_SL.glm$ATE$estimates
@@ -84,21 +84,19 @@ tmleCom_wmT.bA.bY.2_SL.glm$ATE$estimates
 #***************************************************************************************
 # 1.3 Evaluating mean population outcome under static intervention A = 0
 # with different community-level and individual-level weight choices 
-# via community-level analysis without a pooled individual-level regression on outcome.
 #***************************************************************************************
 # weigh individuals in data equally & weigh community by its number of individuals
 tmleCom_wmT.bA.bY.1a_w1 <- 
   tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
-                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1, 
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1L, 
                 obs.wts = "equal.within.pop", community.wts = "size.community", 
                 community.step = "community_level", communityID = "id")
 tmleCom_wmT.bA.bY.1a_w1$EY_gstar1$estimates
 
-# weigh individuals within the same community equally
-# & weigh community by its number of individuals
+# same as above but weigh individuals within the same community equally
 tmleCom_wmT.bA.bY.1a_w2 <- 
   tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
-                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1, 
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1L, 
                 obs.wts = "equal.within.community", community.wts = "size.community", 
                 community.step = "community_level", communityID = "id")
 tmleCom_wmT.bA.bY.1a_w2$EY_gstar1$estimates
@@ -106,13 +104,45 @@ tmleCom_wmT.bA.bY.1a_w2$EY_gstar1$estimates
 # weigh individuals within the same community equally & weigh community equally
 tmleCom_wmT.bA.bY.1a_w3 <- 
   tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
-                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1, 
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1L, 
                 obs.wts = "equal.within.community", community.wts = "equal.community", 
                 community.step = "community_level", communityID = "id")
 tmleCom_wmT.bA.bY.1a_w3$EY_gstar1$estimates
 
 #***************************************************************************************
-# 1.4 
+# 1.4 Equivalent ways of specifying user-supplied intervention (f_gstar1 = 1)
+#***************************************************************************************
+# Alternative 1: via intervention functoin that sets every invidual's A to constant 1
+define_f.gstar <- function(prob.val, rndseed = NULL) {
+  eval(prob.val) 
+  f.gstar <- function(data, ...) {
+    print("probability of selection: " %+% prob.val)
+    rbinom(n = NROW(data), size = 1, prob = prob.val)
+  }
+  return(f.gstar)
+}
+tmleCom_wmT.bA.bY.1a_fgtar1 <- 
+  tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), 
+                f_gstar1 = define_f.gstar(prob.val = 1), 
+                community.step = "community_level", communityID = "id")
+tmleCom_wmT.bA.bY.1a_fgtar1$EY_gstar1$estimates
+
+# Alternative 2: by simply setting f_gstar1 to 1
+tmleCom_wmT.bA.bY.1a_fgtar1 <- 
+  tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1L,
+                community.step = "community_level", communityID = "id")
+
+# Alternative 3: by setting f_gstar1 to a vector of 1's of length NROW(data)
+tmleCom_wmT.bA.bY.1a_fgtar1 <- 
+  tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), 
+                f_gstar1 = rep(1, NROW(data)), 
+                community.step = "community_level", communityID = "id")
+
+#***************************************************************************************
+# 1.5 
 #***************************************************************************************
 
 data(sampleDat_iidcontABinY)
