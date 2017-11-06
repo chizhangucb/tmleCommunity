@@ -25,6 +25,7 @@
 #'  intervention \eqn{A_j}. We note that the input data with no hierarchical structure (i.e., no communities and only individuals)
 #'  is a special case of the hierarchical data since it simply treats \eqn{E_j} as \code{NULL}. 
 #' 
+#'  There are currently three methods that  
 #'  For each community, individual exposure and outcome mechanisms will be estimated, then the ATE across all the 
 #'  communities is calculated as a user-specific average of all community-level estimates (Default to size-weighted). Besides, 
 #'  each exposure A_i is a function of baseline covariates (W_i, E_i), and the outcome Y_i is a function of both baseline and 
@@ -41,14 +42,17 @@
 #'
 #' @section Reference(s):
 #' \enumerate{
-#'   \item Muñoz, I. D. and van der Laan, M. (2012). Population intervention causal effects based on stochastic interventions. Biometrics, 
-#'         68(2):541–549.
-#'   \item Sofrygin, O. and van der Laan, M. J. (2015). tmlenet: Targeted Maximum Likelihood Estimation for Network Data. R package version 0.1.0.
-#'   \item van der Laan, Mark J. and Gruber, Susan, "Targeted Minimum Loss Based Estimation of an Intervention Specific Mean Outcome" 
-#'         (August 2011). U.C. Berkeley Division of Biostatistics Working Paper Series. Working Paper 290. 
-#'         http://biostats.bepress.com/ucbbiostat/paper290
-#'   \item van der Laan, Mark J. and Rose, Sherri, "Targeted Learning: Causal Inference for Observational and Experimental Data" New York: 
-#'         Springer, 2011.
+#'   \item Balzer L. B., Zheng W., van der Laan M. J., Petersen M. L. and the SEARCH Collaboration (2017) A New Approach to 
+#'      Hierarchical Data Analysis: Targeted Maximum Likelihood Estimation of Cluster-Based Effects Under Interference
+#'   \item Muñoz, I. D. and van der Laan, M. (2012). Population Intervention Causal Effects Based on Stochastic Interventions.
+#'      Biometrics, 68(2):541–549.
+#'   \item Sofrygin, O. and van der Laan, M. J. (2015). tmlenet: Targeted Maximum Likelihood Estimation for Network Data. 
+#'      R package version 0.1.0.
+#'   \item van der Laan, Mark J. and Gruber, Susan, "Targeted Minimum Loss Based Estimation of an Intervention Specific 
+#'      Mean Outcome" (August 2011). U.C. Berkeley Division of Biostatistics Working Paper Series. Working Paper 290. 
+#'     http://biostats.bepress.com/ucbbiostat/paper290
+#'   \item van der Laan, Mark J. and Rose, Sherri, "Targeted Learning: Causal Inference for Observational and 
+#'      Experimental Data" New York: Springer, 2011.
 #' }
 #'
 # @section Routines:
