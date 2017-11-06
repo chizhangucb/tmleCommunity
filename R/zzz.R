@@ -90,7 +90,9 @@ print_tmleCom_opts <- function() {
 #' @param CVfolds Set the number of splits for the V-fold cross-validation step to pass to \code{\link{SuperLearner}} and 
 #'  \code{\link{h2o.ensemble}}. Default to 5.
 #' @param SL.library A string or character vector of prediction algorithms to pass to \code{\link{SuperLearner}}. Default to 
-#'  c("SL.glm", "SL.step", "SL.glm.interaction"). For more available algorithms see \code{SuperLearner::listWrappers()} .
+#'  c("SL.glm", "SL.step", "SL.glm.interaction"). For more available algorithms see \code{SuperLearner::listWrappers()}.
+#'  Additional wrapper functions available at \href{https://github.com/ecpolley/SuperLearnerExtra}.
+#' 
 #' @return Invisibly returns a list with old option settings.
 #' 
 #' @seealso \code{\link{print_tmlenet_opts}}
