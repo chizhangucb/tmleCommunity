@@ -85,6 +85,7 @@ tmleCom_wmT.bA.bY.2_SL.glm$ATE$estimates
 # 1.3 Evaluating mean population outcome under static intervention A = 0
 # with different community-level and individual-level weight choices 
 #***************************************************************************************
+tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", maxNperBin = N)
 # weigh individuals in data equally & weigh community by its number of individuals
 tmleCom_wmT.bA.bY.1a_w1 <- 
   tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
@@ -142,12 +143,47 @@ tmleCom_wmT.bA.bY.1a_fgtar1 <-
                 community.step = "community_level", communityID = "id")
 
 #***************************************************************************************
-# 1.5 
+# 1.5 Running exactly the same estimator as 1.1 but using h_gstar/h_gN as a coviariate 
+# in the targeting step (default to use weighted intercept-based TMLE)
+#***************************************************************************************
+# unweighted covariate-based TMLE
+tmleCom_wmT.bA.bY.1a_covTMlE <- 
+  tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1L, f_gstar2 = 0L,
+                community.step = "community_level", communityID = "id", pooled.Q = FALSE, 
+                TMLE.targetStep = "tmle.covariate",  # default as "tmle.intercept"
+                Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
+
+#***************************************************************************************
+# 1.6 Equivalent ways of specifying the regression formulae 
+# (if Ynode is specified as "Y" and WEnodes = c("E1", "E2", "W1", "W2", "W3"))
+#***************************************************************************************
+# For outcome regression, the left side of Qform will be ignored if Ynode is specified,
+# with dependent variable being set to Ynode.
+Qform1 <- "Y ~ E1 + E2 + W2 + W3 + A" 
+Qform2 <- "AnythingIsFine ~ E1 + E2 + W2 + W3 + A" 
+Qform3 <- NULL  # since all parent nodes of Y will be used as regressors
+
+# For treatment regressions, if hform.gstar unspecified, it uses the same regression
+# formula as hform.g0 does. 
+# Alternative 1: specify hform.g0 and hform.gstar respectively
+hform.g0 <- "A ~ E1 + E2 + W1"
+hform.gstar <- "A ~ E1 + E2 + W1"
+
+# Alternative 2: specify hform.g0 only
+hform.g0 <- "A ~ E1 + E2 + W1"
+hform.gstar <- NULL
+
+#***************************************************************************************
+# Example 2: Non-hierarchical example,  with one continuous A and continuous Y 
+# True ATE of the individual-level treatment is approximately 
+data(indSample.iid.cA.cY_list)  # load the sample data 
+indSample.iid.cA.cY <- indSample.iid.cA.cY_list$indSample.iid.cA.cY
+N <- NROW(indSample.iid.cA.cY)
+Qform.corr <- "Y ~ E1 + E2 + W2 + W3 + A" # correct Q form
+gform.corr <- "A ~ E1 + E2 + W1"  # correct g
 #***************************************************************************************
 
-data(sampleDat_iidcontABinY)
-dat_iidcontABinY <- sampleDat_iidcontABinY$dat_iidcontABinY
-head(dat_iidcontABinY)
 psi0.Y <- sampleDat_iidcontABinY$psi0.Y  # 0.291398
 psi0.Ygstar <- sampleDat_iidcontABinY$psi0.Ygstar  # 0.316274
 
