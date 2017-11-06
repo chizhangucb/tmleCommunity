@@ -53,8 +53,12 @@ h2o.randomForest.1 <- function(..., ntrees = 200, nbins = 50, seed = 1) {
 h2o.deeplearning.1 <- function(..., hidden = c(500, 500), activation = "Rectifier", seed = 1) {
   h2o.deeplearning.wrapper(..., hidden = hidden, activation = activation, seed = seed)
 }
-learner 
+h2olearner <- c("h2o.glm.1", "h2o.glm.0.5", "h2o.randomForest.1", "h2o.deeplearning.1", "h2o.gbm.wrapper")
 tmleCom_Options(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble",
                 SL.library = c("SL.glm", "SL.glmnet", "SL.ridge", "SL.stepAIC"), CVfolds = 5,
-                h2ometalearner = "h2o.deeplearning.wrapper", 
-                h2olearner = c("h2o.gbm.wrapper", "h2o.randomForest.wrapper"))
+                h2ometalearner = "h2o.deeplearning.wrapper", h2olearner = h2olearner)
+
+# using "h2o.deeplearning.wrapper" for h2ometalearner
+tmleCom_Options(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble",
+                SL.library = c("SL.glm", "SL.glmnet", "SL.ridge", "SL.stepAIC"), CVfolds = 5,
+                h2ometalearner = "h2o.deeplearning.wrapper", h2olearner = h2olearner)
