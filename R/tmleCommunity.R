@@ -678,6 +678,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
   #----------------------------------------------------------------------------------
   if (missing(Ynode)) Ynode <- NULL
   savetime.fit.hbars <- getopt("savetime.fit.hbars")  # One of conditions for skip g0 & gstar fitting procedure and directly set h_gstar_h_gN = 1 
+  if (is.character(obs.wts)) obs.wts <- obs.wts[1]
   if (obs.wts == "equal.within.pop") { # weigh individuals in the entire dataset equally so big community gets bigger total weight
     obs.wts <- rep(1, NROW(data))
   } else if (obs.wts == "equal.within.community") { # weigh individuals in each community equally and weigh communities equally
