@@ -73,10 +73,13 @@ tmleCom_Options(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble",
 # Example 2: Define the values of bin cutoffs for continuous outcome in different ways
 # through three arguments - bin.method, nbins, maxNperBin 
 #***************************************************************************************
-# 2.1 using equal-mass method
+# 2.1 using equal-length method
 # discretize a continuous outcome variable into 10 bins, no more than 1000 obs in each bin 
-tmleCom_Options(bin.method = "equal.mass", nbins = 10, maxNperBin = 1000)
+tmleCom_Options(bin.method = "equal.len", nbins = 10, maxNperBin = 1000)
 
 # 2.2 find a compromise between equal-mass and equal-length method
 # discretize into 5 bins (default), and no more than 5000 obs in each bin
-tmleCom_Options(bin.method = "dhist", nbins = 10, maxNperBin = 1000)
+tmleCom_Options(bin.method = "dhist", nbins = 10, maxNperBin = 5000)
+
+# 2.3 Default to use equal-mass method with 5 bins, no more than 500 obs in each bin
+tmleCom_Options()
