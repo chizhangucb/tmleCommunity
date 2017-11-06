@@ -62,6 +62,7 @@ tmleCom_wmT.bA.bY.2_sglm$ATE$estimates
 # (See more details in examples in tmleCom_Options())
 #***************************************************************************************
 # SuperLearner for both outcome and treatment (clever covariate) regressions
+require("SuperLearner")
 tmleCom_Options(Qestimator = "SuperLearner", gestimator = "SuperLearner", 
                 maxNperBin = nrow(data), SL.library = c("SL.glm", "SL.step", "SL.bayesglm"))
 require("arm")
