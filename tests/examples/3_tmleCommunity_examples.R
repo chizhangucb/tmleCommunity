@@ -186,7 +186,7 @@ hform.gstar <- NULL
 
 #***************************************************************************************
 # Example 2: Non-hierarchical example, with one continuous A and continuous Y 
-# True mean population outcome under stochastic intervention （specified below)
+# True mean population outcome under stochastic intervention (specified below)
 # is approximately 3.50856
 data(indSample.iid.cA.cY_list)  # load the sample data 
 indSample.iid.cA.cY <- indSample.iid.cA.cY_list$indSample.iid.cA.cY
