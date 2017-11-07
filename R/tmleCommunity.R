@@ -761,7 +761,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
   
   ## Create data based on community.step, then based on Qform, hform.g0 and hform.gstar, in case of interaction or higher-order term.
   if (community.step == "community_level" && !pooled.Q) { 
-    f_gstar1.agg <- f_gstar1.agg <- FALSE
+    f_gstar1.agg <- f_gstar2.agg <- FALSE
     # if running entire TMLE algorithm at cluster-level without a pooled individual-level regression on outcome, aggregate data now 
     # Also need to aggregate f_gstar1 and f_gstar2 if they are vectors of length NROW(data) 
     if (is.VecMatDf(f_gstar1) && NROW(as.data.frame(f_gstar1)) == NROW(data)) { f_gstar1.agg <- TRUE; data <- cbind(data, f_gstar1) }
