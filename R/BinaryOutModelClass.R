@@ -389,7 +389,7 @@ join.Xmat = function(X_mat, sVar_melt_DT, ID) {
 #'   \item{\code{getWeight}}{...}
 #' }
 #' @importFrom assertthat assert_that is.flag is.string
-#' @examples tests/examples/4_BinaryOutModel_examples.R
+#' @example tests/examples/4_BinaryOutModel_examples.R
 #' @export
 BinaryOutModel  <- R6Class(classname = "BinaryOutModel",
   cloneable = TRUE, # changing to TRUE to make it easy to clone input h_g0/h_gstar model fits
