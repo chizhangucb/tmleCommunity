@@ -12,10 +12,10 @@
 #' 
 #' The input dataset should be made up of rows of community-specific and individual-specific observations, for community \eqn{j}, each  
 #'  row \eqn{i} includes random variables \eqn{(W_{i,j}, E_{j}, A_{j}, Y_{i,j})}, where \eqn{E_j} represents a vector of community 
-#'  \eqn{j}’s community-level (environmental) baseline covariates (individuals within the same community share the same values of 
-#'  \eqn{E_j}), \eqn{W_{i,j}} represents a vector of individual \eqn{i}’s individual-level baseline covariates, \eqn{A_j} is the 
+#'  \eqn{j}'s community-level (environmental) baseline covariates (individuals within the same community share the same values of 
+#'  \eqn{E_j}), \eqn{W_{i,j}} represents a vector of individual \eqn{i}'s individual-level baseline covariates, \eqn{A_j} is the 
 #'  exposure(s) (can be univariate or multivariate, can be binary, categorical or continuous) assigned or naturally occurred in  
-#'  community \eqn{j} (individuals within the same community receive the same value of \eqn{A_j}) and \eqn{Y_{i,j}} is \eqn{i}’s 
+#'  community \eqn{j} (individuals within the same community receive the same value of \eqn{A_j}) and \eqn{Y_{i,j}} is \eqn{i}'s 
 #'  outcome (either binary or continuous). Each individual's baseline covariates \eqn{(W_{i,j}} depends on the environmental 
 #'  baseline covariates \eqn{E_j} of the community \eqn{j} to which \eqn{i} belongs to. Similarly, each community's exposure 
 #'  \eqn{A_j} depends on its community-level baseline covariates \eqn{E_j} and individual-level baseline covariates of all 
@@ -48,8 +48,8 @@
 #'  \item Balzer L. B., Zheng W., van der Laan M. J., Petersen M. L. and the SEARCH Collaboration (2017). A New Approach to 
 #'    Hierarchical Data Analysis: Targeted Maximum Likelihood Estimation of Cluster-Based Effects Under Interference.
 #'    ArXiv e-prints. 1706.02675.
-#'  \item Muñoz, I. D. and van der Laan, M. (2012). Population Intervention Causal Effects Based on Stochastic Interventions.
-#'    Biometrics, 68(2):541–549.
+#'  \item Mu\eqn{\~n}oz, I. D. and van der Laan, M. (2012). Population Intervention Causal Effects Based on Stochastic Interventions.
+#'    Biometrics, 68(2):541-549.
 #'  \item van der Laan, M. (2014). Causal Inference for a Population of Causally Connected Units. Journal of Causal Inference, 2(1)
 #'  \item Sofrygin, O. and van der Laan, M. J. (2015). tmlenet: Targeted Maximum Likelihood Estimation for Network Data. 
 #'    R package version 0.1.0.
