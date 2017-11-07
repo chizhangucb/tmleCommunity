@@ -1,5 +1,6 @@
 ########### General utilities / Global Vars
 `%+%` <- function(a, b) paste0(a, b)
+is.VecMatDf <- function(x) { is.vector(x) || is.matrix(x) || is.data.frame(x) }
 
 #------------------ function CreateInputs ------------------
 # Purpose: Bound Y by mapping to Ystar if applicable, and
@@ -57,14 +58,14 @@ CheckInputs <- function(data, nodes, Qform, hform.g0, hform.gstar, fluctuation, 
   termwarns <- c("\tInvalid term name in regression formula for 'Qform'" %+% deparse(formulas[[1]]),
                  "\tInvalid term name in regression formula for 'hform.g0'" %+% deparse(formulas[[2]]),
                  "\tInvalid term name in regression formula for 'hform.gstar'" %+% deparse(formulas[[3]]))
-  f_gstar1.part1 <- is.null(f_gstar1) || is.function(f_gstar1) || is.vector(f_gstar1) || is.matrix(f_gstar1) || is.data.frame(f_gstar1)
+  f_gstar1.part1 <- is.null(f_gstar1) || is.function(f_gstar1) || is.VecMatDf(f_gstar1)
   if (!is.null(f_gstar1) && !is.function(f_gstar1)) {
     f_gstar1 <- as.data.frame(f_gstar1)
     f_gstar1.part2 <- NCOL(f_gstar1)==length(nodes$Anodes) && (NROW(f_gstar1)==NROW(data) || NROW(f_gstar1)==1)
   } else {
     f_gstar1.part2 <- TRUE
   }
-  f_gstar2.part1 <- is.null(f_gstar2) || is.function(f_gstar2) || is.vector(f_gstar2) || is.matrix(f_gstar2) || is.data.frame(f_gstar2)
+  f_gstar2.part1 <- is.null(f_gstar2) || is.function(f_gstar2) || is.VecMatDf(f_gstar2)
   if (!is.null(f_gstar2) && !is.function(f_gstar2)) {
     f_gstar2 <- as.data.frame(f_gstar2)
     f_gstar2.part2 <- NCOL(f_gstar2)==length(nodes$Anodes) && (NROW(f_gstar2)==NROW(data) || NROW(f_gstar2)==1)
