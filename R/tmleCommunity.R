@@ -226,11 +226,12 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   community.step <- est_params_list$community.step
   community.wts <- est_params_list$community.wts
   pooled.Q <- est_params_list$pooled.Q
+  f.gstar <- est_params_list$f.gstar
   TMLE.targetStep <- est_params_list$TMLE.targetStep
+  model.Q.init <- est_params_list$model.Q.init
   nodes <- OData.ObsP0$nodes
   Y <- OData.ObsP0$noNA.Ynodevals # actual observed & transformed Y's
   determ.Q <- OData.ObsP0$det.Y
-  model.Q.init <- est_params_list$model.Q.init
   
   # getting all node vals, including deterministic Y and predictions P(Y=1) for non-DET Y under orignal A
   QY.init <- OData.ObsP0$noNA.Ynodevals 
@@ -249,10 +250,9 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
     # aggregate original dataset to the cluster-level & redefine OData.ObsP0
     Y <- aggregate(x = Y, by=list(id = data[, communityID]), mean)[, 2] 
     determ.Q <- rep_len(FALSE, length(Y))  # For aggregated data, YnodeDet is currently unavailable, treat all Y^c as nondeterministic
-    f_gstar1.agg <- f_gstar2.agg <- FALSE
-    # Also need to aggregate f_gstar1 and f_gstar2 if they are vectors of length NROW(data) 
-    if (is.VecMatDf(f_gstar1) && NROW(as.data.frame(f_gstar1)) == NROW(data)) { f_gstar1.agg <- TRUE; data <- cbind(data, f_gstar1) }
-    if (is.VecMatDf(f_gstar2) && NROW(as.data.frame(f_gstar2)) == NROW(data)) { f_gstar2.agg <- TRUE; data <- cbind(data, f_gstar2) }
+    f_gstar.agg <- FALSE
+    # Also need to aggregate f_gstar if they are vectors of length NROW(data) 
+    if (is.VecMatDf(f.gstar) && NROW(as.data.frame(f.gstar)) == NROW(data)) { f_gstar.agg <- TRUE; data <- cbind(data, f.gstar) }
     data <- aggregate(x = data, by=list(newid = data[, communityID]), mean) 
     colname.allNA <- colnames(data)[colSums(is.na(data)) == NROW(data)]  # columns with all NAs after aggregation, due to non-numeric values
     if (length(colname.allNA) != 0) {
@@ -263,9 +263,9 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
     }
     est_params_list$data <- data
     est_params_list$obs.wts <- obs.wts <- community.wts[match(data[, communityID], community.wts[, "id"]), "weights"]  # ensure matching
-    if (f_gstar1.agg) { if (is.vector(f_gstar1)) { f_gstar1 <- data$f_gstar1 } else {f_gstar1 <- data[, names(f_gstar1)]} } 
-    if (f_gstar2.agg) { if (is.vector(f_gstar2)) { f_gstar2 <- data$f_gstar2 } else {f_gstar2 <- data[, names(f_gstar2)]} } 
-    
+    if (f_gstar.agg) { 
+      if (is.vector(f.gstar)) { est_params_list$f.gstar <- data$f.gstar } else {est_params_list$f.gstar <- data[, names(f.gstar)]} 
+    } 
     OData.ObsP0 <- DatKeepClass$new(Odata = data, nodes = nodes, norm.c.sVars = FALSE)
     OData.ObsP0$addYnode(YnodeVals = data[, est_params_list$nodes$Ynode])  # Already bounded Y into Ystar in the beginning step               
     OData.ObsP0$addObsWeights(obs.wts = obs.wts)
