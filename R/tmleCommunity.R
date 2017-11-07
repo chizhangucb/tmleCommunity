@@ -733,7 +733,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
   }
   nodes <- list(Ynode = Ynode, Anodes = Anodes, WEnodes = WEnodes, communityID = communityID)
   for (i in unlist(nodes)) {  CheckVarNameExists(data = data, varname = i) }
-  if (!CheckInputs(data, nodes, Qform, hform.g0, hform.gstar, fluctuation, Qbounds, obs.wts, community.wts)) stop()
+  if (!CheckInputs(data, nodes, Qform, hform.g0, hform.gstar, fluctuation, Qbounds, obs.wts, community.wts, f_gstar1, f_gstar2)) stop()
   # ensure that the column names are defined as "id" and "weights"
   if (community.step != "NoCommunity") colnames(community.wts) <- c("id", "weights")  
   maptoYstar <- fluctuation=="logistic"  # if TRUE, cont Y values shifted & scaled to fall b/t (0,1)
@@ -761,6 +761,13 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
   ## Create data based on community.step, then based on Qform, hform.g0 and hform.gstar, in case of interaction or higher-order term.
   if (community.step == "community_level" && !pooled.Q) { 
     # if running entire TMLE algorithm at cluster-level without a pooled individual-level regression on outcome, aggregate data now 
+    # Also need to aggregate f_gstar1 and f_gstar2 if they are vectors of length NROW(data) 
+    if (is.vector(f_gstar1) || is.matrix(f_gstar1) || is.data.frame(f_gstar1)) {
+      if (NROW(as.data.frame(f_gstar1)) == NROW(data)) data <- cbind(data, f_gstar1)
+    }
+    if (is.vector(f_gstar2) || is.matrix(f_gstar2) || is.data.frame(f_gstar2)) {
+      if (NROW(as.data.frame(f_gstar2)) == NROW(data)) data <- cbind(data, f_gstar2)
+    }
     data <- aggregate(x = data, by=list(newid = data[, communityID]), mean) # [, 2 : (ncol(data)+1)] # Don't keep the extra ID column
     colname.allNA <- colnames(data)[colSums(is.na(data)) == NROW(data)]  # columns with all NAs after aggregation, due to non-numeric values
     if (length(colname.allNA) != 0) {
