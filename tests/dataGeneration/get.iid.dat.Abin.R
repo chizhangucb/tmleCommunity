@@ -5,10 +5,7 @@
 # individual exposure is normal with mu for each observation being a function of (W1, W2, W3, W4), sd = 1;
 # ---------------------------------------------------------------------------------
 
-################################################
-#### FUN 1. One Binary A with binary Y
-################################################
-get.iid.dat.Abin1 <- function(ndata = 100000, rndseed = NULL) {
+get.iid.dat.Abin <- function(ndata = 100000, rndseed = NULL, is.Y.bin = TRUE) {
   require(simcausal)
   D <- DAG.empty()
   D <- D + 
@@ -18,29 +15,47 @@ get.iid.dat.Abin1 <- function(ndata = 100000, rndseed = NULL) {
     node("W4", distr = "runif", min = 0, max = 1) +
     node("W3W4", distr = "rconst", const = W3 * W4) +
     node("A", distr = "rbern", prob = plogis(0.86 * W1 + W2 + 1.32 * W3 - W4 - 0.45 *W3W4 + 0.1)) +
-    node("W2A", distr = "rconst", const = W2 * A) +
-    node("Y", distr = "rbern", prob = plogis(2.8 * A + 2 * W1 + 1.5 * W2 + 0.8 * W2A  + 0.5 * W3 - 3 * W4 - 3.5)) + 
-    node("Y1", distr = "rbern", prob = plogis(2.8 * 1 + 2 * W1 + 1.5 * W2 + 0.8 * W2 * 1  + 0.5 * W3 - 3 * W4 - 3.5)) +
-    node("Y0", distr = "rbern", prob = plogis(2.8 * 0 + 2 * W1 + 1.5 * W2 + 0.8 * W2 * 0  + 0.5 * W3 - 3 * W4 - 3.5))
+    node("W2A", distr = "rconst", const = W2 * A)
+  
+  if (is.Y.bin) {  # Create binary Y
+    D <- D +  
+      node("Y", distr = "rbern", prob = plogis(2.8 * A + 2 * W1 + 1.5 * W2 + 0.8 * W2A  + 0.5 * W3 - 3 * W4 - 3.5)) + 
+      node("Y1", distr = "rbern", prob = plogis(2.8 * 1 + 2 * W1 + 1.5 * W2 + 0.8 * W2 * 1  + 0.5 * W3 - 3 * W4 - 3.5)) +
+      node("Y0", distr = "rbern", prob = plogis(2.8 * 0 + 2 * W1 + 1.5 * W2 + 0.8 * W2 * 0  + 0.5 * W3 - 3 * W4 - 3.5))
+  } else {  # Create continuous Y
+    D <- D +  
+      node("Y", distr = "rnorm", mean = (2.8 * A + 2 * W1 + 1.5 * W2 + 0.5 * W3 - 3 * W4 - 3.5), sd = 1) + 
+      node("Y1", distr = "rnorm", mean = (2.8 * 1 + 2 * W1 + 1.5 * W2 + 0.5 * W3 - 3 * W4 - 3.5), sd = 1) +
+      node("Y0", distr = "rnorm", mean = (2.8 * 0 + 2 * W1 + 1.5 * W2 + 0.5 * W3 - 3 * W4 - 3.5), sd = 1)
+  }
   
   D <- set.DAG(D)
   Odata <- sim(D, n = ndata, rndseed = rndseed)
   psi0.Y <- mean(Odata$Y1) - mean(Odata$Y0)
   print("psi0.Y: " %+% psi0.Y)  
-  
   return(list(psi0.Y = psi0.Y, Odata = Odata))
 }
 
 ndata <- 10000
 rndseed <- 12345
-popDat <- get.iid.dat.Abin1(ndata = 1000000, rndseed = rndseed)$Odata
-psi0.Y <- mean(popDat$Y1) - mean(popDat$Y0) # 0.348242
 
-dat_iidBinABinY <- get.iid.dat.Abin1(ndata = ndata, rndseed = rndseed)$Odata
-dat_iidBinABinY <- dat_iidBinABinY[, c("W1", "W2", "W3", "W4", "A", "Y")]
-sampleDat_iidBinABinY <- list(dat_iidBinABinY = dat_iidBinABinY, psi0.Y = psi0.Y, rndseed = rndseed,
-                              call = "get.iid.dat.Abin1(ndata = 10000, rndseed = 12345)$Odata")
-save(sampleDat_iidBinABinY, file="sampleDat_iidBinABinY.Rda")
+#### Data 1. One binary, individual-level A with binary Y
+indPop.ind.bA.bY <- get.iid.dat.Abin(ndata = 1000000, rndseed = rndseed, is.Y.bin = TRUE)$Odata
+psi0.Y <- mean(indPop.ind.bA.bY$Y1) - mean(indPop.ind.bA.bY$Y0) # 0.348242
+indSample.ind.bA.bY <- get.iid.dat.Abin(ndata = ndata, rndseed = rndseed, is.Y.bin = TRUE)$Odata
+indSample.ind.bA.bY <- indSample.ind.bA.bY[, c("W1", "W2", "W3", "W4", "A", "Y")]
+indSample.ind.bA.bY_list <- list(indSample.ind.bA.bY = indSample.ind.bA.bY, rndseed = rndseed, psi0.Y = psi0.Y,
+                                 psi0.Y1 = mean(indPop.ind.bA.bY$Y1), psi0.Y0 = mean(indPop.ind.bA.bY$Y0))
+save(indSample.ind.bA.bY_list, file="indSample.ind.bA.bY_list.Rda")
+
+#### Data 2. One binary, individual-level A with continuous Y
+indPop.ind.bA.cY <- get.iid.dat.Abin(ndata = 1000000, rndseed = rndseed, is.Y.bin = FALSE)$Odata
+psi0.Y <- mean(indPop.ind.bA.cY$Y1) - mean(indPop.ind.bA.cY$Y0) # 1.800267
+indSample.ind.bA.cY <- get.iid.dat.Abin(ndata = ndata, rndseed = rndseed, is.Y.bin = FALSE)$Odata
+indSample.ind.bA.cY <- indSample.ind.bA.cY[, c("W1", "W2", "W3", "W4", "A", "Y")]
+indSample.ind.bA.cY_list <- list(indSample.ind.bA.cY = indSample.ind.bA.cY, rndseed = rndseed, psi0.Y = psi0.Y,
+                                 psi0.Y1 = mean(indPop.ind.bA.cY$Y1), psi0.Y0 = mean(indPop.ind.bA.cY$Y0))
+save(indSample.ind.bA.cY_list, file="indSample.ind.bA.cY_list.Rda")
 
 
 ################################################
@@ -130,7 +145,7 @@ save(rareSamples_iidBinAY.J2, file = "rareSamples_iidBinAY.J2.Rda")
 get.iid.dat.Abin3 <- function(ndata = 100000, rndseed = NULL) {
   require(simcausal)
   D <- DAG.empty()
-  D <- D + 
+    D <- D + 
     node("W1", distr = "rbern", prob = 0.5) +
     node("W2", distr = "rbern", prob = 0.3) +
     node("W3", distr = "rnorm", mean = 0, sd = 0.3) +
@@ -150,7 +165,7 @@ get.iid.dat.Abin3 <- function(ndata = 100000, rndseed = NULL) {
 
 ndata <- 10000
 rndseed <- 12345
-popDat <- get.iid.dat.Abin3(ndata = 1000000, rndseed = rndseed)$Odata
+popDat <- get.iid.dat.Abin3(ndata = 1000000, rndseed = rndseed, is.Y.bin = TRUE)$Odata
 psi0.Y <- mean(popDat$Y1) - mean(popDat$Y0) # 0.348242
 
 dat_iidBinAContY <- get.iid.dat.Abin3(ndata = ndata, rndseed = rndseed)$Odata
@@ -158,3 +173,5 @@ dat_iidBinAContY <- dat_iidBinAContY[, c("W1", "W2", "W3", "W4", "A", "Y")]
 sampleDat_iidBinAContY <- list(dat_iidBinAContY = dat_iidBinAContY, psi0.Y = psi0.Y, rndseed = rndseed,
                                call = "get.iid.dat.Abin3(ndata = 10000, rndseed = 12345)$Odata")
 save(sampleDat_iidBinAContY, file="sampleDat_iidBinAContY.Rda")
+
+
