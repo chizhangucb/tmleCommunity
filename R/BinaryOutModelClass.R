@@ -352,7 +352,7 @@ join.Xmat = function(X_mat, sVar_melt_DT, ID) {
 #' \item{pool_cont} - Logical. If TRUE, perform pooling of bins.
 #' \item{outvars_to_pool} - Character vector of outcome bin names for pooling.
 #' \item{ReplMisVal0} - Logical. If TRUE, user-supplied gvars$misXreplace (Default to 0) will be used to replace all gvars$misval 
-#'   among predictors (Default to TRUE).
+#'   among predictors. \{ReplMisVal0} in \code{RegressionClass} will be used when instantiating an new object of \code{BinaryOutModel}. 
 #' \item{n} - Number of rows in the input data.
 #' \item{subset_expr} - Vector of length \code{n} that specifies a subset of data to be used in the fitting process. 
 #'   Either logical, expression or indices.
