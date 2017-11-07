@@ -161,7 +161,7 @@ tmleCom_wmT.bA.bY.1a_fgtar1 <-
 tmleCom_wmT.bA.bY.1a_fgtar1 <- 
   tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
                 WEnodes = c("E1", "E2", "W1", "W2", "W3"), 
-                f_gstar1 = rep(1L, NROW(data)), 
+                f_gstar1 = rep(1L, NROW(comSample.wmT.bA.bY)), 
                 community.step = "community_level", communityID = "id")
 
 #***************************************************************************************
