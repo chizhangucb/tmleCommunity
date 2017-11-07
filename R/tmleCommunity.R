@@ -387,9 +387,10 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  sampling a large vector/ data frame of Anode (of length \code{nrow(data)*n_MCsims} or number of rows if a data frame) from \code{f_g0} function.
 #' @param f_gstar1 Either a function or a vector or a matrix/ data frame of counterfactual exposures, dependin on the number of exposure variables.
 #'  If a matrix/ data frame, its number of rows must be either \code{nrow(data)} or 1 (constant exposure assigned to all observations), and its number of 
-#'  columns must be \code{length(Anodes)}. If a vector, it must be of length \code{nrow(data)} or 1. If a function, it must return a vector or a data frame 
-#'  of counterfactual exposures sampled based on Anodes, WEnodes (and possibly communityID) passed as a named argument "data". Thus, the function must 
-#'  include "data" as one of its argument names. The interventions defined by f_gstar1 can be static, dynamic or stochastic. See Exmaples below.
+#'  columns must be \code{length(Anodes)}. Note that the column names should match with the names in \code{Anodes}. If a vector, it must be of length 
+#'  \code{nrow(data)} or 1. If a function, it must return a vector or a data frame of counterfactual exposures sampled based on Anodes, WEnodes
+#'  (and possibly communityID) passed as a named argument "data". Thus, the function must include "data" as one of its argument names. 
+#'  The interventions defined by f_gstar1 can be static, dynamic or stochastic. See Exmaples below.
 #' @param f_gstar2 Either a function or a vector or a matrix/ data frame of counterfactual exposures, dependin on the number of exposure variables.
 #'  It has the same components and requirements as f_gstar1 has.
 #' @param Qform Character vector of regression formula for Ynode. If not specified (i.e., \code{NULL}), the outcome variable is regressed on all 
@@ -731,7 +732,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
   if (!(community.wts %in% c("equal.community", "size.community")) && !is.data.frame(community.wts) && (community.step != "NoCommunity")) {
     stop("Currently only numeric values, 'equal.community' and 'size.community' are supported for community.wts")
   }
-  nodes <- list(Ynode = Ynode, Anodes = Anodes, WEnodes = WEnodes, communityID = communityID)
+  nodes <- list(Ynode = Ynode, Anodes = Anodes, WEnodes = WEnodes, communityID = communityID, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2)
   for (i in unlist(nodes)) {  CheckVarNameExists(data = data, varname = i) }
   if (!CheckInputs(data, nodes, Qform, hform.g0, hform.gstar, fluctuation, Qbounds, obs.wts, community.wts, f_gstar1, f_gstar2)) stop()
   # ensure that the column names are defined as "id" and "weights"
@@ -762,12 +763,8 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
   if (community.step == "community_level" && !pooled.Q) { 
     # if running entire TMLE algorithm at cluster-level without a pooled individual-level regression on outcome, aggregate data now 
     # Also need to aggregate f_gstar1 and f_gstar2 if they are vectors of length NROW(data) 
-    if (is.vector(f_gstar1) || is.matrix(f_gstar1) || is.data.frame(f_gstar1)) {
-      if (NROW(as.data.frame(f_gstar1)) == NROW(data)) data <- cbind(data, f_gstar1)
-    }
-    if (is.vector(f_gstar2) || is.matrix(f_gstar2) || is.data.frame(f_gstar2)) {
-      if (NROW(as.data.frame(f_gstar2)) == NROW(data)) data <- cbind(data, f_gstar2)
-    }
+    if (is.VecMatDf(f_gstar1) && NROW(as.data.frame(f_gstar1)) == NROW(data)) { f_gstar1.agg <- TRUE; data <- cbind(data, f_gstar1) }
+    if (is.VecMatDf(f_gstar2) && NROW(as.data.frame(f_gstar2)) == NROW(data)) { f_gstar2.agg <- TRUE; data <- cbind(data, f_gstar2) }
     data <- aggregate(x = data, by=list(newid = data[, communityID]), mean) # [, 2 : (ncol(data)+1)] # Don't keep the extra ID column
     colname.allNA <- colnames(data)[colSums(is.na(data)) == NROW(data)]  # columns with all NAs after aggregation, due to non-numeric values
     if (length(colname.allNA) != 0) {
@@ -776,7 +773,10 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
       warning(paste(colname.allNA, collapse = ', ') %+% " is(are) removed from the aggregated data due to all NAs in the column(s).")
       warning("Suggestion: convert the non-numeric values to numeric, e.g., create dummy variables for each category/ string/ factor.")
     }
-    obs.wts <- community.wts[match(data[, communityID], community.wts[, "id"]), "weights"]  # ensure that weights match with their corresponding communities
+    # ensure that weights match with their corresponding communities
+    obs.wts <- community.wts[match(data[, communityID], community.wts[, "id"]), "weights"]  
+    if (f_gstar1.agg) { if (is.vector(f_gstar1)) { f_gstar1 <- data$f_gstar1 } else {f_gstar1 <- data[, nodes$f_gstar1]} } 
+    if (f_gstar2.agg) { if (is.vector(f_gstar2)) { f_gstar2 <- data$f_gstar2 } else {f_gstar2 <- data[, nodes$f_gstar2]} } 
   }
   
   if (!is.null(c(Qform, hform.g0, hform.gstar))) {
