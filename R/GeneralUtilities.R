@@ -63,10 +63,10 @@ CheckInputs <- function(data, nodes, Qform, hform.g0, hform.gstar, fluctuation, 
                                        !anyDuplicated(community.wts[,1])),
             is.null(f_gstar1) || is.function(f_gstar1) || is.vector(f_gstar1) || is.matrix(f_gstar1) || is.data.frame(f_gstar1),
             !is.null(f_gstar1) && !is.function(f_gstar1) && (NCOL(as.data.frame(f_gstar1))==length(nodes$Anodes)) && 
-            (NROW(as.data.frame(f_gstar1))==NROW(data) || NROW(as.data.frame(f_gstar1))==1)
+            (NROW(as.data.frame(f_gstar1))==NROW(data) || NROW(as.data.frame(f_gstar1))==1),
             is.null(f_gstar2) || is.function(f_gstar2) || (is.vector(f_gstar2) || is.matrix(f_gstar2) || is.data.frame(f_gstar2),
             !is.null(f_gstar2) && !is.function(f_gstar2) && (NCOL(as.data.frame(f_gstar2))==length(nodes$Anodes)) && 
-            (NROW(as.data.frame(f_gstar2))==NROW(data) || NROW(as.data.frame(f_gstar2))==1)
+            (NROW(as.data.frame(f_gstar2))==NROW(data) || NROW(as.data.frame(f_gstar2))==1),
             validFormula, validTerms, validFluct, is.null(Qbounds) || length(Qbounds)==2)
   warning_messages <- c("\tThe input data must be a data frame",
                         "\tNo factor column(s) allowed in the input data, consider removing or recoding such column(s) as strings: " 
