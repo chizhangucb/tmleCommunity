@@ -35,13 +35,11 @@
 #'  (Default to be community size-weighed). Note that the stratified TMLE naturally controls for the community-level observed  
 #'  covariates and unobserved factors. Namely, there is no \eqn{E} in the regressors for both outcome and treatment mechanisms.  
 #' 
-#' @section Documentation:
-#' \itemize{
-#' \item To see the package vignette use: 
-#' 
-#'   \code{vignette("tmleCommunity_vignette", package="tmleCommunity")}
-#' \item To see all available package documentation use: \code{help(package = 'tmleCommunity')}
-#' }
+# @section Documentation:
+# \itemize{
+# \item To see the package vignette use: \code{vignette("tmleCommunity_vignette", package="tmleCommunity")}
+# \item To see all available package documentation use: \code{help(package = 'tmleCommunity')}
+# }
 #'
 #' @section References:
 #' \enumerate{
@@ -68,14 +66,17 @@
 # }
 #'
 #' @section Datasets:
+#' 
 #' To learn more about the type of data input required by \code{\link{tmleCommunity}}, see the following example datasets:
 #' \itemize{
-#'   \item \code{\link{sampleDat_iidBinABinY}}
-#'   \item \code{\link{sampleDat_iidBinAContY}}
-#'   \item \code{\link{sampleDat_iidcontABinY}}
-#'   \item \code{\link{sampleDat_iidcontAContY}}
+#'   \item \code{\link{comSample.wmT.bA.bY_list}}
+#'   \item \code{\link{indSample.iid.cA.cY_list}}
 #' }
-#'
+#' There are a few other simulated datasets that can be used to test functions in \pkg{tmleCommunity}:
+#' \itemize{
+#'   \item \code{comSample.wmT.cA.cY_list}
+#'   \item \code{indSample.iid.cA.bY_list}
+#' }
 #' @section Updates:
 #' Check for updates and report bugs at \url{https://github.com/chizhangucb/tmleCommunity}.
 #'
@@ -105,12 +106,12 @@ NULL
 #' }
 #' @docType data
 #' @keywords datasets
-#' @name sampleDat_iidcontAContY
-#' @usage data(sampleDat_iidcontAContY)
+#' @name indSample.iid.cA.cY_list
+#' @usage data(indSample.iid.cA.cY_list)
 #' @examples
 #'
-#' data(sampleDat_iidcontAContY)
-#' dat_iidcontAContY <- sampleDat_iidcontAContY$dat_iidcontAContY
+#' data(indSample.iid.cA.cY_list)
+#' indSample.iid.cA.cY <- indSample.iid.cA.cY_list$indSample.iid.cA.cY
 #' psi0.Y <- sampleDat_iidcontAContY$psi0.Y
 #' psi0.Ygstar <- sampleDat_iidcontAContY$psi0.Ygstar
 #' sampleDat_iidcontAContY$truncBD
@@ -120,7 +121,7 @@ NULL
 #' An example of a hierarchical data containing a cluster-based binary exposure with a individual-level binary outcome.
 #'
 #' Simulated hierarchical dataset containing 1000 independent clusters, each (community \eqn{j}) containing \eqn{n_j} (non-fixed) 
-#'  number of individuals where \eqn{n_j} is drawn from a normal with mean 100 and standard deviation 10 and round to the nearest 
+#'  number of individuals where \eqn{n_j} is drawn from a normal with mean 50 and standard deviation 10 and round to the nearest 
 #'  integer. Each communnity include 2 measured community-level baseline covariates (\code{E1, E2}), 3 individual-level baseline 
 #'  covariates (\code{W1, W2, W3}), 1 bianry exposure (\code{A}) and 1 binary outcoem (\code{Y}), along with one unique community  
 #'  identifier (\code{id}). The community-level baseline covariates (\code{E1, E2}) were sampled as i.i.d across all communities, 
@@ -133,7 +134,7 @@ NULL
 #'  (\code{E1[j], E2[j], A[j]}), as well as the value of individual \eqn{i}'s baseline covariates (\code{W1[i], W2[i], W3[i]}). The 
 #'  following section provides more details regarding individual variables in simulated data.
 #'
-#' @format A data frame with 1000 independent communities, each containing around 1000 individuals (in total 100,457 observations), 
+#' @format A data frame with 1000 independent communities, each containing around 50 individuals (in total 50,457 observations), 
 #'  and 8 variables (columns):
 #' \describe{
 #'   \item{id} {integer (unique) community identifier from 1 to 1000, identical within the same community}
