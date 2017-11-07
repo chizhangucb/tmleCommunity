@@ -38,17 +38,18 @@ newsummarymodel.binary <- function(reg, ...) BinaryOutModel$new(reg = reg, ...)
 #' \item{\code{predvars}} - Character vector of regression-specific predictor names or a pool of all available predictor names.
 #' \item{{reg_hazard}} - Logical, hazard fitting method. If TRUE, factorize P(outvar | predvars) into \prod_{j}{P(outvar[j] | predvars)} for each j.
 #' \item{\code{subset_vars}} - Named list for subset variables/ expression (later converted to logical vector).
-#' \item{\code{ReplMisVal0}} - Logical. If TRUE, replace all gvars$misval among predictors with user-supplied gvars$misXreplace (Default to 0).
+#' \item{\code{ReplMisVal0}} - Logical. If TRUE, user-supplied gvars$misXreplace (Default to 0) will be used to replace all gvars$misval 
+#'   among predictors (Default to TRUE).
 #' \item{\code{nbins}} - Number of bins used for estimation of a continuous outvar, defined in ContinModel$new().
 #' \item{\code{estimator}} - Character, one of "speedglm__glm" (default), "glm__glm", "h2o__ensemble", "SuperLearner". The estimator for which to fit 
-#'    regression model. For "h2o__ensemble" and "SuperLearner", users can specify the data-adaptive algorithms through \code{tmleCom_Options}.
+#'   regression model. For "h2o__ensemble" and "SuperLearner", users can specify the data-adaptive algorithms through \code{tmleCom_Options}.
 #' \item{\code{parfit}} - Logical. If TRUE, use parallel computing on binary regressions. See \code{foreach::foreach}.
 #' \item{\code{pool_cont}} - Logical. If TRUE, pool over bins of a continuous outvar and fit one regression, along with bin_ID as an extra variable. 
 #' \item{\code{outvars_to_pool}} - Character vector of bin names of a continuous outvars, should be identical to \code{bin_nms}.
 #' \item{\code{intrvls}} - Numeric vector defining the number and positions of the bins or a named list of numeric vectors if 2 or more outvars.
-#'    If not specified and outvar continuous, intervals will be determined in \code{ContinModel} through \code{DatKeepClass$detect.sVar.intrvls}.
+#'   If not specified and outvar continuous, intervals will be determined in \code{ContinModel} through \code{DatKeepClass$detect.sVar.intrvls}.
 #' \item{\code{intrvls.width}} - Named numeric vector of bin widths for each bin in \code{self$intrvls}. If not specified, default to 1 if
-#'    outvar binary, default to \code{diff(self$intrvls)} if outvar continuous, 
+#'   outvar binary, default to \code{diff(self$intrvls)} if outvar continuous, 
 #' }
 #' @section Methods:
 #' \describe{
