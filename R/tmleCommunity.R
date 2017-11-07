@@ -732,7 +732,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
   if (!(community.wts %in% c("equal.community", "size.community")) && !is.data.frame(community.wts) && (community.step != "NoCommunity")) {
     stop("Currently only numeric values, 'equal.community' and 'size.community' are supported for community.wts")
   }
-  nodes <- list(Ynode = Ynode, Anodes = Anodes, WEnodes = WEnodes, communityID = communityID, f_gstar1 = f_gstar1, f_gstar2 = f_gstar2)
+  nodes <- list(Ynode = Ynode, Anodes = Anodes, WEnodes = WEnodes, communityID = communityID)
   for (i in unlist(nodes)) {  CheckVarNameExists(data = data, varname = i) }
   if (!CheckInputs(data, nodes, Qform, hform.g0, hform.gstar, fluctuation, Qbounds, obs.wts, community.wts, f_gstar1, f_gstar2)) stop()
   # ensure that the column names are defined as "id" and "weights"
@@ -775,8 +775,8 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
     }
     # ensure that weights match with their corresponding communities
     obs.wts <- community.wts[match(data[, communityID], community.wts[, "id"]), "weights"]  
-    if (f_gstar1.agg) { if (is.vector(f_gstar1)) { f_gstar1 <- data$f_gstar1 } else {f_gstar1 <- data[, nodes$f_gstar1]} } 
-    if (f_gstar2.agg) { if (is.vector(f_gstar2)) { f_gstar2 <- data$f_gstar2 } else {f_gstar2 <- data[, nodes$f_gstar2]} } 
+    if (f_gstar1.agg) { if (is.vector(f_gstar1)) { f_gstar1 <- data$f_gstar1 } else {f_gstar1 <- data[, names(f_gstar1)]} } 
+    if (f_gstar2.agg) { if (is.vector(f_gstar2)) { f_gstar2 <- data$f_gstar2 } else {f_gstar2 <- data[, names(f_gstar2)]} } 
   }
   
   if (!is.null(c(Qform, hform.g0, hform.gstar))) {
