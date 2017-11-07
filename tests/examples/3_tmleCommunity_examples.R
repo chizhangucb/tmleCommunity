@@ -63,6 +63,14 @@ tmleCom_wmT.bA.bY.NoC_sglm <-
                 Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
 tmleCom_wmT.bA.bY.NoC_sglm$ATE$estimates
 
+# Stratification analyis that run separate outcome (exposure) mechanism for each community
+tmleCom_wmT.bA.bY.str_sglm <- 
+  tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1L, f_gstar2 = 0L,
+                community.step = "PerCommunity", communityID = "id", 
+                Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
+tmleCom_wmT.bA.bY.str_sglm$ATE$estimates
+
 #***************************************************************************************
 # 1.2 Same as above but for different Qestimator and gestimator through tmleCom_Options()
 # via community-level analysis with a pooled individual-level regression on outcome.
