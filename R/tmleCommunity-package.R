@@ -43,7 +43,7 @@
 #' \item To see all available package documentation use: \code{help(package = 'tmleCommunity')}
 #' }
 #'
-#' @section Reference(s):
+#' @section References:
 #' \enumerate{
 #'  \item Balzer L. B., Zheng W., van der Laan M. J., Petersen M. L. and the SEARCH Collaboration (2017). A New Approach to 
 #'    Hierarchical Data Analysis: Targeted Maximum Likelihood Estimation of Cluster-Based Effects Under Interference.
