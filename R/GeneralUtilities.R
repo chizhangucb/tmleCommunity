@@ -42,7 +42,7 @@ CreateInputs <- function(Y, Qbounds, alpha, maptoYstar){
 #------------------ function CheckInputs ------------------
 # Purpose: initial checks on data passed in
 #----------------------------------------------------------
-CheckInputs <- function(data, nodes, Qform, hform.g0, hform.gstar, fluctuation, Qbounds, obs.wts, community.wts) {
+CheckInputs <- function(data, nodes, Qform, hform.g0, hform.gstar, fluctuation, Qbounds, obs.wts, community.wts, f_gstar1, f_gstar2) {
   datfactor <- CheckExistFactors(data)
   formulas <- list(Qform, hform.g0, hform.gstar) 
   validFormula <- sapply(formulas, function(x) {identical(class(try(as.formula(x))), "formula")})
@@ -57,29 +57,29 @@ CheckInputs <- function(data, nodes, Qform, hform.g0, hform.gstar, fluctuation, 
   termwarns <- c("\tInvalid term name in regression formula for 'Qform'" %+% deparse(formulas[[1]]),
                  "\tInvalid term name in regression formula for 'hform.g0'" %+% deparse(formulas[[2]]),
                  "\tInvalid term name in regression formula for 'hform.gstar'" %+% deparse(formulas[[3]]))
-  
-  if (!is.null(community.wts)) {  # For hierarchical data
-    pass <- c(is.data.frame(data), is.null(datfactor), is.null(obs.wts) || (length(obs.wts)==NROW(data) && all(obs.wts >= 0)),
-              all(dim(community.wts)==c(length(unique(data[, nodes$communityID])), 2) && community.wts[, 2] >= 0),
-              setequal(sort(community.wts[,1]), sort(unique(data[, nodes$communityID]))) && !anyDuplicated(community.wts[,1]),
-              validFormula, validTerms, validFluct, is.null(Qbounds) || length(Qbounds)==2)
-    warning_messages <- c("\tThe input data must be a data frame",
-                          "\tNo factor column(s) allowed in the input data, consider removing or recoding such column(s) as strings: " 
-                          %+% paste0(datfactor, collapse=' , ') %+% "\n", 
-                          "\t'obs.wts', must contain the same number of non-negative observations as 'data' does\n",
-                          "\t'community.wts', must contain the same number of non-negative communities as 'data' does, and has 2 columns\n",
-                          "\t'community.wts', must contain the same community IDs as data doee (diff order is ok but no duplicate allows\n",
-                          formwarns, termwarns, "\tfluctuation should be logistic or linear\n",
-                          "\tQbounds should have length 2\n")
-  } else {  # For non-hierarchical data
-    pass <- c(is.data.frame(data), is.null(datfactor), is.null(obs.wts) || (length(obs.wts)==NROW(data) && all(obs.wts >= 0)),
-              validFormula, validTerms, validFluct, is.null(Qbounds) || length(Qbounds)==2)
-    warning_messages <- c("\tThe input data must be a data frame",
-                          "\tNo factor column(s) allowed in the input data, consider removing or recoding such column(s) as strings: " 
-                          %+% paste0(datfactor, collapse=' , ') %+% "\n", 
-                          "\t'obs.wts', must contain the same number of non-negative observations as 'data' does\n",
-                          formwarns, termwarns, "\tfluctuation should be logistic or linear\n", "\tQbounds should have length 2\n")
-  }
+  pass <- c(is.data.frame(data), is.null(datfactor), is.null(obs.wts) || (length(obs.wts)==NROW(data) && all(obs.wts >= 0)),
+            is.null(community.wts) || (all(dim(community.wts)==c(length(unique(data[, nodes$communityID])), 2) && community.wts[, 2] >= 0)),
+            is.null(community.wts) || (setequal(sort(community.wts[,1]), sort(unique(data[, nodes$communityID]))) && 
+                                       !anyDuplicated(community.wts[,1])),
+            is.null(f_gstar1) || is.function(f_gstar1) || is.vector(f_gstar1) || is.matrix(f_gstar1) || is.data.frame(f_gstar1),
+            !is.null(f_gstar1) && !is.function(f_gstar1) && (NCOL(as.data.frame(f_gstar1))==length(nodes$Anodes)) && 
+            (NROW(as.data.frame(f_gstar1))==NROW(data) || NROW(as.data.frame(f_gstar1))==1)
+            is.null(f_gstar2) || is.function(f_gstar2) || (is.vector(f_gstar2) || is.matrix(f_gstar2) || is.data.frame(f_gstar2),
+            !is.null(f_gstar2) && !is.function(f_gstar2) && (NCOL(as.data.frame(f_gstar2))==length(nodes$Anodes)) && 
+            (NROW(as.data.frame(f_gstar2))==NROW(data) || NROW(as.data.frame(f_gstar2))==1)
+            validFormula, validTerms, validFluct, is.null(Qbounds) || length(Qbounds)==2)
+  warning_messages <- c("\tThe input data must be a data frame",
+                        "\tNo factor column(s) allowed in the input data, consider removing or recoding such column(s) as strings: " 
+                        %+% paste0(datfactor, collapse=' , ') %+% "\n", 
+                        "\t'obs.wts', must contain the same number of non-negative observations as 'data' does\n",
+                        "\t'community.wts', must contain the same number of non-negative communities as 'data' does, and has 2 columns\n",
+                        "\t'community.wts', must contain the same community IDs as data doee (diff order is ok but no duplicate allows\n",
+                        "\t'f_gstar1', should be either a function, or a vector, or a matrix/ data frame\n",
+                        "\tIf 'f_gstar1' is a vector/matrix/data.frame, it should have a length (number of rows) NROW(data)\n",
+                        "\t'f_gstar2', should be either a function, or a vector, or a matrix/ data frame\n",
+                        "\tIf 'f_gstar2' is a vector/matrix/data.frame, it should have a length (number of rows) NROW(data)\n",
+                        formwarns, termwarns, "\tfluctuation should be logistic or linear\n",
+                        "\tQbounds should have length 2\n")
   if(!all(pass)) warning("\n", warning_messages[!pass], immediate.=TRUE)
   return(all(pass))
 }
