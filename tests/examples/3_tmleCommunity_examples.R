@@ -152,17 +152,19 @@ tmleCom_wmT.bA.bY.1a_fgtar1 <-
 tmleCom_wmT.bA.bY.1a_fgtar1$EY_gstar1$estimates
 
 # Alternative 2: by simply setting f_gstar1 to 1
-tmleCom_wmT.bA.bY.1a_fgtar1 <- 
+tmleCom_wmT.bA.bY.1a_fgtar2 <- 
   tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
                 WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1L,
                 community.step = "community_level", communityID = "id")
+tmleCom_wmT.bA.bY.1a_fgtar2$EY_gstar1$estimates
 
 # Alternative 3: by setting f_gstar1 to a vector of 1's of length NROW(data)
-tmleCom_wmT.bA.bY.1a_fgtar1 <- 
+tmleCom_wmT.bA.bY.1a_fgtar3 <- 
   tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
                 WEnodes = c("E1", "E2", "W1", "W2", "W3"), 
                 f_gstar1 = rep(1L, NROW(comSample.wmT.bA.bY)), 
                 community.step = "community_level", communityID = "id")
+tmleCom_wmT.bA.bY.1a_fgtar1$EY_gstar1$estimates
 
 #***************************************************************************************
 # 1.6 Running exactly the same estimator as 1.1 but using h_gstar/h_gN as a coviariate 
