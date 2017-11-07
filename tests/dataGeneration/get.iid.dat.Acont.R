@@ -23,8 +23,8 @@ get.iid.dat.Acont <- function(ndata = 100000, rndseed = NULL, truncBD = 10, shif
     D <- D + 
       node("r.new.A", distr = "rconst", const = exp(0.8 * shift * (untrunc.A.gstar - A.mu - shift / 3))) +
       node("trunc.A.gstar",  distr = "rconst", const = ifelse(r.new.A > trunc.c, A, untrunc.A.gstar)) + 
-      node("Y", distr = "rbern", prob = plogis(-0.22 + 0.12 * A - 0.92 * W1 - 0.36 * W2 + 0.12 * W3 - 0.53 * W4)) +
-      node("Y.gstar", distr = "rbern", prob = plogis(-0.22 + 0.12 *trunc.A.gstar - 0.92 * W1 - 0.36 * W2 + 0.12 * W3 - 0.53 * W4))
+      node("Y", distr = "rbern", prob = plogis(-0.22 + 0.32 * A - 0.92 * W1 - 0.36 * W2 + 0.12 * W3 - 0.53 * W4)) +
+      node("Y.gstar", distr = "rbern", prob = plogis(-0.22 + 0.32 *trunc.A.gstar - 0.92 * W1 - 0.36 * W2 + 0.12 * W3 - 0.53 * W4))
   } else {  # Create continuous Y
     D <- D + 
       node("r.new.A", distr = "rconst", const = exp(0.5 * shift * (untrunc.A.gstar - A.mu - shift / 2))) +
@@ -57,8 +57,7 @@ indSample.iid.cA.bY <- get.iid.dat.Acont(ndata = ndata, rndseed = rndseed, trunc
 indSample.iid.cA.bY <- indSample.iid.cA.bY[, c("W1", "W2", "W3", "W4", "A", "Y", "Y.gstar", "trunc.A.gstar")]
 indSample.iid.cA.bY_list <- list(indSample.iid.cA.bY = indSample.iid.cA.bY, psi0.Y = psi0.Y, psi0.Ygstar = psi0.Ygstar,
                                  truncBD = truncBD, shift.val = shift.val, rndseed = rndseed)
-save(indSample.iid.cA.bY_list, file="indSample.iid.cA.bY_list.Rda")
-
+save(indSample.iid.cA.bY_list, file="indSample.iid.cA.bY_list.rda")
 
 #### Data 2. One continuous A with Continuous Y
 shift.val <- 2
@@ -70,4 +69,4 @@ indSample.iid.cA.cY <- indSample.iid.cA.cY[, c("W1", "W2", "W3", "W4", "A", "Y",
 indSample.iid.cA.cY_list <- list(indSample.iid.cA.cY = indSample.iid.cA.cY, psi0.Y = psi0.Y, psi0.Ygstar = psi0.Ygstar,
                                  truncBD = truncBD, shift.val = shift.val, rndseed = rndseed)
                                  # call = "get.iid.dat.Acont(ndata=10000, rndseed=12345, truncBD=10, shift.val=2, is.Y.bin=F)$Odata")
-save(indSample.iid.cA.cY_list, file="indSample.iid.cA.cY_list.Rda")
+save(indSample.iid.cA.cY_list, file="indSample.iid.cA.cY_list.rda")
