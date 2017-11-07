@@ -251,7 +251,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
     Y <- aggregate(x = Y, by=list(id = data[, communityID]), mean)[, 2] 
     determ.Q <- rep_len(FALSE, length(Y))  # For aggregated data, YnodeDet is currently unavailable, treat all Y^c as nondeterministic
     f_gstar.agg <- FALSE
-    # Also need to aggregate f_gstar if they are vectors of length NROW(data) 
+    # Also need to aggregate f_gstar if it is a vector of length NROW(data) (or a matrix/ data.fram with nrow = NROW(data)) 
     if (is.VecMatDf(f.gstar) && NROW(as.data.frame(f.gstar)) == NROW(data)) { f_gstar.agg <- TRUE; data <- cbind(data, f.gstar) }
     data <- aggregate(x = data, by=list(newid = data[, communityID]), mean) 
     colname.allNA <- colnames(data)[colSums(is.na(data)) == NROW(data)]  # columns with all NAs after aggregation, due to non-numeric values
@@ -900,6 +900,8 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
     QY.communities_gstar1  <- matrix(0L, nrow = 0, ncol = 2)
     colnames(QY.communities_gstar1) <- c("QY.init", "QY.star")
     obs.wts.communities <- c()
+    f_gstar1.splt <- is.VecMatDf(f_gstar1) && NROW(as.data.frame(f_gstar1)) == NROW(data)
+    f_gstar2.splt <- is.VecMatDf(f_gstar2) && NROW(as.data.frame(f_gstar2)) == NROW(data)
     if (!is.null(f_gstar2)) { # Matrices for estimators under f_gstar2
       est.communities_gstar2 <- est.communities_gstar1
       wts.communities_gstar2 <- wts.communities_gstar1
@@ -917,6 +919,8 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
       ## Create an R6 object that stores and manages the subdata for each community, later passed on to estimation algorithm(s)
       subdata <- data[(data[, communityID] == communityList[i]), ]
       sub.obs.wts <- obs.wts[data[, communityID] == communityList[i]]
+      if (f_gstar1.splt) { sub.f_gstar1 <- f_gstar1[data[, communityID] == communityList[i]] } else { sub.f_gstar1 <- f_gstar1 }
+      if (f_gstar2.splt) { sub.f_gstar2 <- f_gstar2[data[, communityID] == communityList[i]] } else { sub.f_gstar2 <- f_gstar2 }
       inputYs <- CreateInputs(subdata[, Ynode], Qbounds, alpha, maptoYstar)
       subdata[, Ynode] <- inputYs$Ystar
       OData.ObsP0 <- DatKeepClass$new(Odata = subdata, nodes = nodes, norm.c.sVars = FALSE)
@@ -971,8 +975,8 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
         savetime.fit.hbars = savetime.fit.hbars,
         n_MCsims = n_MCsims
       ) 
-      estinfo_list_g1 <- append(estinfo_list, list(f.gstar = f_gstar1))
-      if (!is.null(f_gstar2)) { estinfo_list_g2 <- append(estinfo_list, list(f.gstar = f_gstar2)) }
+      estinfo_list_g1 <- append(estinfo_list, list(f.gstar = sub.f_gstar1))
+      if (!is.null(f_gstar2)) { estinfo_list_g2 <- append(estinfo_list, list(f.gstar = sub.f_gstar2)) }
       
       #----------------------------------------------------------------------------------
       # Running MC evaluation for substitution TMLE, MLE and IPTW estsimators
