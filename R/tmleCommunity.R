@@ -238,7 +238,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
   QY.init <- bound(QY.init, est_params_list$Qbounds)
   off <- qlogis(QY.init)  # offset
   
-  if (community.step == "community_level" && pooled.Q == TRUE) { # if we do NOT believe our working model (i.e. estimate under the lareg model)
+  if (community.step == "community_level" && pooled.Q) { # if we do NOT believe our working model (i.e. estimate under the lareg model)
     # if (!is.null(communityID)) {}  # Don't need it here since tmleCommunity takes care of it
     # Since community-level TMLE with pooled individual-level Q requires 'communityID' to aggregate data to the cluster-level in the estimation  
     # of trt mechanism. Lack of 'communityID' pool data over all communities & treat it as non-hierarchical data when fitting clever covariates
@@ -759,8 +759,8 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
   }
   
   ## Create data based on community.step, then based on Qform, hform.g0 and hform.gstar, in case of interaction or higher-order term.
-  if (community.step == "community_level") { # if running entire TMLE algorithm at cluster-level, aggregate data now
-    # if (!is.null(communityID)) {
+  if (community.step == "community_level" && !pooled.Q) { 
+    # if running entire TMLE algorithm at cluster-level without a pooled individual-level regression on outcome, aggregate data now 
     data <- aggregate(x = data, by=list(newid = data[, communityID]), mean) # [, 2 : (ncol(data)+1)] # Don't keep the extra ID column
     colname.allNA <- colnames(data)[colSums(is.na(data)) == NROW(data)]  # columns with all NAs after aggregation, due to non-numeric values
     if (length(colname.allNA) != 0) {
@@ -770,11 +770,6 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
       warning("Suggestion: convert the non-numeric values to numeric, e.g., create dummy variables for each category/ string/ factor.")
     }
     obs.wts <- community.wts[match(data[, communityID], community.wts[, "id"]), "weights"]  # ensure that weights match with their corresponding communities
-    # } else {
-    #   warningMesg <- c("Since community-level TMLE requires communityID to aggregate to the cluster-level. Lack of 'communityID' forces the ",
-    #                    "algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset")
-    #   warning(warningMesg[1] %+% warningMesg[2])
-    # }
   }
   
   if (!is.null(c(Qform, hform.g0, hform.gstar))) {
