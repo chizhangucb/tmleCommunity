@@ -379,7 +379,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  (i.e., 1 / (number of individuals in each community)).
 #' @param community.step Methods to deal with hierarchical data, one of "NoCommunity" (Default), "community_level", "individual_level" and "PerCommunity".  
 #'  If "NoCommunity", claim that no hirerachical structure in data; If "community_level", use community-level TMLE; If "individual_level", use  
-#'  individual-level TMLE cooperating with the assumption of no covariate interference. If "PerCommunity", use stratified TMLE. If \code{communityID} =  
+#'  individual-level TMLE cooperating with the assumption of no covariate interference. If "perCommunity", use stratified TMLE. If \code{communityID} =  
 #'  \code{NULL}, then automatically pool over all communities (i.e., treated it as "NoCommunity"). See "Details".
 #' @param communityID Optional column name or index in \code{data} of community identifier variable. If known, it can support the two options within 
 #'  \code{community.step}: community-level or individual-level TMLE (See details for \code{community.step}).
