@@ -663,7 +663,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' @export
 tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts = c("equal.within.pop", "equal.within.community"), 
                           community.step = c("NoCommunity", "community_level", "individual_level", "perCommunity"),
-                          communityID = NULL, community.wts = c("equal.community", "size.community"), pooled.Q = FALSE, 
+                          communityID = NULL, community.wts = c("size.community", "equal.community"), pooled.Q = FALSE, 
                           f_g0 = NULL, f_gstar1, f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995,                                                      
                           fluctuation = "logistic", hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, 
                           h.g0_GenericModel = NULL, h.gstar_GenericModel = NULL, 
@@ -689,6 +689,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
   if (is.character(community.step)) {
     community.step <- community.step[1]
     if ((community.step != "NoCommunity") && !is.data.frame(community.wts) && !is.null(communityID)) {
+      community.wts <- community.wts[1]
       community.wts.df <- as.data.frame(matrix(0L, nrow = length(unique(data[, communityID])), ncol = 2))
       colnames(community.wts.df) <- c("id", "weights")
       community.wts.df[, 1] <- names(table(data[, communityID]))
