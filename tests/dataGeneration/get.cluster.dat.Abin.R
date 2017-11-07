@@ -73,7 +73,7 @@ get.fullDat.Abin <- function(J, n.ind, rndseed = NULL, is.Y.bin = TRUE, working.
 }
 
 J <- 1000
-n.ind <- 100
+n.ind <- 50
 rndseed <- 12345
 
 #### Data 1. One binary, community-level A with Binary Y, when working model holds
