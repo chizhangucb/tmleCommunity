@@ -361,19 +361,20 @@ join.Xmat = function(X_mat, sVar_melt_DT, ID) {
 #' @section Methods:
 #' \describe{
 #'   \item{\code{new(reg)}}{Use \code{reg} (a \code{\link{RegressionClass}} class object) to instantiate an new object of \code{BinaryOutModel} 
-#'    for a single binary regression.}
+#'     for a single binary regression.}
 #'   \item{\code{newdata(newdata, getoutvar = TRUE, ...)}}{Evaluate subset and perform correct subseting of data to construct 
-#'    X_mat, Yvals & wt_vals.}
+#'     X_mat, Yvals & wt_vals.}
 #'   \item{\code{define.subset.idx(data)}}{Create a logical vector which is converted from subset_expr}
-#'   \item{\code{fit(overwrite = FALSE, data, predict = FALSE, savespace = TRUE, ...)}}{fit a binary regression. Note that savespace is Logical.
-#'    If TRUE, wipe out all internal data when doing many stacked regressions.}
+#'   \item{\code{fit(overwrite = FALSE, data, predict = FALSE, savespace = TRUE, ...)}}{fit a binary regression. Note that \code{overwrite} is 
+#'     Logical. If \code{FALSE} (Default), the previous fitted model cannot be overwritten by new fitting model. \code{savespace} is Logical. 
+#'     If \code{TRUE} (Default), wipe out all internal data when doing many stacked regressions.}
 #'   \item{\code{copy.fit(bin.out.model)}}{Take fitted BinaryOutModel object as an input and save the fit to itself.}
 #'   \item{\code{predict(newdata, savespace = TRUE, ...)}}{Predict the response P(A = 1|W = w, E = e).}
 #'   \item{\code{copy.predict(bin.out.model)}}{Tke BinaryOutModel object that contains the predictions for P(A=1|w,e) and save to itself}
 #'   \item{\code{predictAeqa(newdata, bw.j.sA_diff, savespace = TRUE, wipeProb = TRUE)}}{Predict the response P(A = a|W = w, E = e) for 
-#'    observed A, W, E. Note that wipeProb is logical argument for self$wipe.alldat. If FALSE, vectors of probA1 & probAeqa will be kept.}
+#'     observed A, W, E. Note that wipeProb is logical argument for self$wipe.alldat. If FALSE, vectors of probA1 & probAeqa will be kept.}
 #'   \item{\code{show()}}{Print regression formula, including outcome and predictor names.}
-#' }
+#' } 
 #' @section Active Bindings:
 #' \describe{
 #'   \item{\code{wipe.alldat(wipeProb = TRUE)}}{...}
@@ -478,7 +479,7 @@ BinaryOutModel  <- R6Class(classname = "BinaryOutModel",
 
     fit = function(overwrite = FALSE, data, predict = FALSE, savespace = TRUE, ...) { # Move overwrite to a field? ... self$overwrite
       if (gvars$verbose) print("fitting the model: " %+% self$show())
-      if (!overwrite) assert_that(!self$is.fitted) # do not allow overwrite of prev. fitted model unless explicitely asked  
+      if (!overwrite) assert_that(!self$is.fitted) # do not allow overwrite of previous fitted model unless explicitely asked  
       self$newdata(newdata = data, ...) # populate bindat with X_mat & Y_vals & wt_vals
       private$model.fit <- fit_single_reg(self = self) 
       self$is.fitted <- TRUE
