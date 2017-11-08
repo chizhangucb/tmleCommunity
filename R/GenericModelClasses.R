@@ -55,7 +55,8 @@ newsummarymodel.binary <- function(reg, ...) BinaryOutModel$new(reg = reg, ...)
 #' @section Methods:
 #' \describe{
 #'   \item{\code{new(outvar.class = gvars$sVartypes$bin,
-#'                   outvar, predvars, subset_vars, intrvls, \\
+#'                   outvar, predvars, subset_vars, intrvls,
+#' 
 #'                   ReplMisVal0 = TRUE,
 #'                   estimator = getopt("Qestimator"),
 #'                   parfit = getopt("parfit"),
