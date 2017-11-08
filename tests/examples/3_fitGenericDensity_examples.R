@@ -27,7 +27,9 @@ f.gstar <- define_f.gstar(shift = sampleDat_iidcontABinY$shift.val,
 
 ### Run
 tmleCom_Options(maxNperBin = nrow(dat_iidcontABinY))
-h_gN <- fitGenericDensity(data = dat_iidcontABinY, Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), 
+h_gN <- fitGenericDensity(data = dat_iidcontABinY, Anodes = "A", 
+                          Wnodes = c("W1", "W2", "W3", "W4"), 
                           f_gstar = NULL, lbound = 0)$h_gstar
-h_gstar <- fitGenericDensity(data = dat_iidcontABinY, Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), 
+h_gstar <- fitGenericDensity(data = dat_iidcontABinY, Anodes = "A",
+                             Wnodes = c("W1", "W2", "W3", "W4"), 
                              f_gstar = f.gstar, lbound = 0)$h_gstar
