@@ -131,8 +131,8 @@ NULL
 #'  level baseline covariates (\code{E1[j], E2[j]}), together with all invididuals' baseline covariates (\code{W1[i], W2[i], W3[i]})  
 #'  within community \eqn{j} where \eqn{i=1,..,n_j}. Similary, the individual-level binary outcome \code{Y} for each individual  
 #'  \eqn{i} within communty \eqn{j} was sampled conditionally on the value of community \eqn{j}'s baseline covariates and exposure 
-#'  (\code{E1[j], E2[j], A[j]}), as well as the value of individual \eqn{i}'s baseline covariates (\code{W1[i], W2[i], W3[i]}). The 
-#'  following section provides more details regarding individual variables in simulated data.
+#'  (\code{E1[j], E2[j], A[j]}), as well as the value of individual \eqn{i}'s baseline covariates (\code{W1[i]}, \code{W2[i]}, 
+#'  \code{W3[i]}). The following section provides more details regarding individual variables in simulated data. 
 #'
 #' @format A data frame with 1000 independent communities, each containing around 50 individuals (in total 50,457 observations), 
 #'  and 8 variables (columns):
@@ -148,8 +148,8 @@ NULL
 #'   \item{W3} {continuous normal individual-level baseline covariate, correlated with \code{W2}, see details in above}
 #'   \item{A} {binary exposure that depends on community's baseline covariate values in \code{(E1, E2)}, and the mean of all individuals'
 #'     baseline covariates \code{W1} within the same community}
-#'   \item{Y} {binary outcome that depends on community's baseline covariate and exposure values in \code{(E1, E2, A)}, and all 
-#'     individuals' baseline covariate values in \code{(W2, W3)}}
+#'   \item{Y} {binary outcome that depends on community's baseline covariate and exposure values in (\code{E1}, \code{E2}, \code{A}), 
+#'     and all individuals' baseline covariate values in \code{(W2, W3)}}
 #' }
 #' @docType data
 #' @keywords datasets
@@ -160,5 +160,7 @@ NULL
 #' data(comSample.wmT.bA.bY_list)
 #' comSample.wmT.bA.bY <- comSample.wmT.bA.bY_list$comSample.wmT.bA.bY
 #' head(comSample.wmT.bA.bY)
-#' head(table(comSample.wmT.bA.bY$id))  # summarize the number of individuals within each community
+#' comSample.wmT.bA.bY_list$psi0.Y  # 0.103716, True ATE
+#' # summarize the number of individuals within each community
+#' head(table(comSample.wmT.bA.bY$id))  
 NULL
