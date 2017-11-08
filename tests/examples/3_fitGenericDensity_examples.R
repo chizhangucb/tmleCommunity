@@ -1,6 +1,7 @@
 data(indSample.iid.cA.bY_list)
 indSample.iid.cA.bY <- indSample.iid.cA.bY_list$indSample.iid.cA.bY
-tmleCom_Options(gestimator = "speedglm__glm", maxNperBin = nrow(indSample.iid.cA.bY))
+tmleCom_Options(gestimator = "speedglm__glm", maxNperBin = nrow(indSample.iid.cA.bY),
+                bin.method = "dhist", nbins = 8)
 gvars$verbose <- TRUE  # Print status messages (global setting)
 
 # Define a stochastic intervention
