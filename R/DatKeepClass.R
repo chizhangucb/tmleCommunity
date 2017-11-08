@@ -7,20 +7,31 @@ iqr <- function(x) { return(diff(quantile(x,c(.25, .75),na.rm=T))) }  # interqua
 
 ## Original method code from https://github.com/cran/plm/blob/master/R/plm.R
 ## https://github.com/cran/plm/blob/master/R/pFormula.R
-## Transfer a panel dataset into a fixed-effect/ random-effect transformed data, using individual (and time) indexes
+
 # Discarding missing outcomes (by default).
-panelData.Trans <- function(yvar, xvar, data, effect = "individual", model = "within", index = NULL, transY = TRUE) {
-# Arguments:
-#    yvar     - outcome variable name (Only support univariate now)    
-#    xvar     - Explanatory variable names (Including both individual-level and community-level)
-#    data     - A data frame (will be automatically transferred to panel data frame) or a panel data frame
-#    effect   - one of "individual", "time" and "twoways", depending on which effects we are looking for
-#    model    - one of "pooling" (pooled OLS), "within" (fixed effect), "between" (group mean), "random"(random effect), 
-#               "fd" (first differences) and "ht" (Hausman–Taylor estimator).
-#    index    - A vector of two character strings which contains the names of the individual and of the time indices. 
-#               If only individual index is given, treat each observation within a unit as a time point.
-#               If no index is given, the first two columns will be automatically treated as individual and time indices, sequentially.
-#    transY   - Logical. If True, indicate the outcome variable yvar will also be tranformed. 
+
+#------------------------------------
+#' Transfer a panel dataset into a fixed-effect/ random-effect transformed data, using individual (and time) indexes
+#'
+#' \code{panelData.Trans} provides a wide variety of ways of data transformation for panel datasets. It allows users 
+#'  to only apply transformation on regressors of interests, instead of on the entire dataset. See details in 
+#'  \url{https://github.com/cran/plm/blob/master/R/plm.R}.
+#' @param data A data frame (will be automatically transferred to panel data frame) or a panel data frame
+#' @param yvar Column names in \code{data} of outcome variable (Currently only support univariate).    
+#' @param xvar Column names in \code{data} of explanatory variables (Including \eqn{(A, W, E)}).
+#' @param effect The effects introduced in the model, one of "individual" (Default), "time", "twoways" and "nested".
+#' @param model Model of estimation, one of "pooling" (pooled OLS), "within" (fixed effect), "between" (group mean), 
+#'  "random"(random effect), "fd" (first differences) and "ht" (Hausman–Taylor estimator).
+#' @param index A vector of two character strings which contains the names of the individual and of the time indices. 
+#'  If only individual index is given, treat each observation within a unit as a time point.
+#'  If no index is given, the first two columns will be automatically treated as individual and time indices, sequentially.
+#' @param transY Logical. If \code{TRUE} (Default), indicate the outcome variable \code{yvar} will also be tranformed. 
+#' @return 
+#' \itemize{
+#'   \item \code{newdata} Transformed panel data
+#' }
+#' @export
+panelData.Trans <- function(data, yvar, xvar, effect = "individual", model = "within", index = NULL, transY = TRUE) {
   formula <- as.formula(yvar %+% " ~ " %+% paste(xvar, collapse=" + "))
   # Check whether data is a pdata.frame and if not create it
   orig_rownames <- row.names(data)
