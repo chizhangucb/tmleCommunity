@@ -25,6 +25,7 @@ define_f.gstar <- function(data, ...) {
 # Don't normalize continous covariates by setting norm.c.sVars = FALSE
 OData_R6 <- DatKeepClass$new(Odata = subset(indSample.iid.cA.cY, select=-Y), 
                              nodes = nodes[c("Anodes", "WEnodes")], norm.c.sVars = FALSE)  
+OData_R6$nodes <- nodes
 # names of all variables that are in input data and specified in nodes
 OData_R6$names.sVar  # "A"  "W1" "W3" "W4" 
 # names of all continuous variables that are in input data and specified in nodes
