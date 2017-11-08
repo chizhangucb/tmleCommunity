@@ -23,28 +23,32 @@ define_f.gstar <- function(data, ...) {
 # 1.2 Creating an R6 object of DatKeepClass (to store the input data)
 #***************************************************************************************
 # Don't normalize continous covariates by setting norm.c.sVars = FALSE
-OData_R6 <- DatKeepClass$new(Odata = indSample.iid.cA.bY, 
-                             nodes = nodes, norm.c.sVars = FALSE)  
+OData_R6 <- DatKeepClass$new(Odata = subset(indSample.iid.cA.bY, select=-Y), 
+                             nodes = nodes[c("Anodes", "WEnodes")], norm.c.sVars = FALSE)  
 # names of all variables that are in input data and specified in nodes
-OData_R6$names.sVar  # "Y"  "A"  "W1" "W3" "W4" 
+OData_R6$names.sVar  # "A"  "W1" "W3" "W4" 
 # names of all continuous variables that are in input data and specified in nodes
-OData_R6$names.c.sVar  # "A"  "W3" "W4" 
+OData_R6$names.c.sVar  # "A" "W3" "W4" 
 # a sub dataframe of the input data, including all variables in nodes
 head(OData_R6$dat.sVar) 
 # the number of observations of the input data
 OData_R6$nobs  # 10000
 OData_R6$get.sVar.type("A")  # "contin"
-OData_R6$get.sVar.type()  # Provide a list of types of all variables
+OData_R6$get.sVar.type()  # Provide a list of types of all variables 
 
 #***************************************************************************************
 # 1.3 Manipulating the input data by adding observed outcomes and observation weights
 #***************************************************************************************
 # Add YnodeVals (a vector of outcomes) to both public and private field 
 OData_R6$addYnode(YnodeVals = indSample.iid.cA.bY[, nodes$Ynode], det.Y = FALSE)  
-head(OData_R6$YnodeVals)  # set YnodeVals[det.Y=TRUE] to NA in public field
-head(OData_R6$noNA.Ynodevals)  # YnodeVals in private field is protected (without NAs)  
-OData_R6$addObsWeights(obs.wts = rep(c(1,2), 5000))  # Add a vector of sampling weights
-ODaOData_R6ta$addObsWeights(obs.wts = 1)  # Assumed to be all 1 (i.e., equally weighted)
+# set YnodeVals[det.Y=TRUE] to NA in public field (with NAs)
+head(OData_R6$YnodeVals)  
+# protect YnodeVals from being set to NA in private field (without NAs)  
+head(OData_R6$noNA.Ynodevals)  
+# Add a vector of observation (sampling) weights
+OData_R6$addObsWeights(obs.wts = rep(c(1,2), 5000))  
+# Assume all weights to be 1 (i.e., equally weighted)
+OData_R6$addObsWeights(obs.wts = 1)  
 
 #***************************************************************************************
 # 1.4 Creating an new R6 object of DatKeepClass under stochastic intervention g.star
