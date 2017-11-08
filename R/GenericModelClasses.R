@@ -441,12 +441,12 @@ def_regs_subset <- function(self) {
 #' R6 class for modeling (fitting and predicting) joint probability for a univariate continuous outcome \code{A[m]}
 #'
 #'  \code{ContinModel} inherits from \code{\link{GenericModel}} class, defining and modeling a joint conditional density 
-#'  \eqn{P(A[m]|W,E,...)} where \eqn{A[m]} is univariate and continuous. By calling \code{self$new()}, \code{A[m]} will be 
+#'  \eqn{P(A[m]|W,E,...)} where \code{A[m]} is univariate and continuous. By calling \code{self$new()}, \code{A[m]} will be 
 #'  discretized into \code{nbins} bins via one of the 3 bin cutoff approaches (See Details for \code{\link{tmleCommunity}}). 
 #'  By calling \code{self$fit()}, it fits hazard regressoin \code{Bin_A[m][k] ~ W + E} on \code{data} (a \code{\link{DatKeepClass}} 
-#'  class), which is the hazard probaility of the the observation of \eqn{A[m]} belongs to bin \code{Bin_A[j][k]}, given covariates 
-#'  \eqn{(W, E)} and that observation doesn't belong to any precedent bins \code{Bin_A[j][1]}, \code{Bin_A[j][2]}, ..., 
-#'  \code{Bin_A[j][k-1]}.
+#'  class), which is the hazard probaility of the the observation of \code{A[m]} belongs to bin \code{Bin_A[m][k]}, given covariates 
+#'  \eqn{(W, E)} and that observation doesn't belong to any precedent bins \code{Bin_A[m][1]}, \code{Bin_A[m][2]}, ..., 
+#'  \code{Bin_A[m][k-1]}.
 #' 
 #' @docType class
 #' @format An \code{\link{R6Class}} generator object
@@ -463,7 +463,8 @@ def_regs_subset <- function(self) {
 #' }
 #' @section Methods:
 #' \describe{
-#'   \item{\code{new(reg, DataStorageClass.g0, DataStorageClass.gstar, ...)}}{Instantiate an new instance of \code{ContinModel} for a univariate continuous outcome A[j]}
+#'   \item{\code{new(reg, DataStorageClass.g0, DataStorageClass.gstar, ...)}} 
+#' 	{Instantiate an new instance of \code{ContinModel} for a univariate continuous outcome \code{A[m]}}
 #'   \item{\code{fit(data, savespace = TRUE)}}{...}
 #'   \item{\code{predict(newdata, savespace = TRUE)}}{...}
 #'   \item{\code{predictAeqa(newdata, savespace = TRUE, wipeProb = TRUE)}}{...}
@@ -479,11 +480,12 @@ ContinModel <- R6Class(classname = "ContinModel",
   class = TRUE,
   public = list(
     reg = NULL,
-    outvar = character(),        # The name of the continous outcome var (A[j])
+    outvar = character(),        # The name of the continous outcome var (A[m])
     nbins = NULL,                # Actual nbins used, for cont. outvar
     bin_nms = character(),       # Column names for bin indicators
-    intrvls = numeric(),         # Vector of numeric cutoffs defining the bins or a named list of numeric intervals (for length(self$outvar) > 1)
-    intrvls.width = NULL,        # Named vector of bin-widths (bw_j : j=1,...,M) for each each bin in self$intrvls
+    intrvls = numeric(),         # Vector of numeric cutoffs defining the bins or a named list of numeric intervals 
+	                         # (for length(self$outvar) > 1)
+    intrvls.width = NULL,        # Named vector of bin-widths (bw_k : k=1,...,K) for each each bin in self$intrvls
     bin_weights = NULL,
     # Define settings for fitting contin A and then call $new for super class (GenericModel)
     initialize = function(reg, DatKeepClass.g0, DatKeepClass.gstar, ...) {
@@ -582,14 +584,14 @@ ContinModel <- R6Class(classname = "ContinModel",
 
 
 ## ---------------------------------------------------------------------
-#' R6 class for modeling (fitting and predicting) joint probability for a univariate categorical outcome A[j]
+#' R6 class for modeling (fitting and predicting) joint probability for a univariate categorical outcome \code{A[m]}
 #'
-#'  \code{CategorModel} inherits from \code{\link{GenericModel}} class, defining and modeling a conditional density \code{P(A[j]|W,E...)}
-#'  where \code{A[j]} is univariate and categorical. By calling \code{self$new()}, \code{A[j]} will be redefined into number of bins 
-#'  \code{length(levels)} (i.e., number of unique categories in \code{A[j]}). By calling \code{self$fit()}, it fits hazard regressoin
-#'  \code{Bin_A[j][t] ~ W + E} on \code{data} (a \code{\link{DatKeepClass}} class), which is the hazard probaility of the observation 
-#'  of A[j] belongs to bin \code{Bin_A[j][t]}, given covariates \code{(W, E)} and that observation doesn't belong to any precedent bins 
-#'  \code{Bin_A[j][1]}, \code{Bin_A[j][2]}, ..., \code{Bin_A[j][t-1]}.
+#'  \code{CategorModel} inherits from \code{\link{GenericModel}} class, defining and modeling a conditional density \eqn{P(A[m]|W,E...)}
+#'  where \code{A[m]} is univariate and categorical. By calling \code{self$new()}, \code{A[m]} will be redefined into number of bins 
+#'  \code{length(levels)} (i.e., number of unique categories in \code{A[m]}). By calling \code{self$fit()}, it fits hazard regressoin
+#'  \code{Bin_A[m][k] ~ W + E} on \code{data} (a \code{\link{DatKeepClass}} class), which is the hazard probaility of the observation 
+#'  of A[m] belongs to bin \code{Bin_A[j][t]}, given covariates \eqn{(W, E)} and that observation doesn't belong to any precedent bins 
+#'  \code{Bin_A[m][1]}, \code{Bin_A[m][2]}, ..., \code{Bin_A[m][k-1]}.
 #'
 #' @docType class
 #' @format An \code{\link{R6Class}} generator object
@@ -604,7 +606,8 @@ ContinModel <- R6Class(classname = "ContinModel",
 #' }
 #' @section Methods:
 #' \describe{
-#'   \item{\code{new(reg, DatKeepClass.g0, ...)}}{Instantiate an new instance of \code{CategorModel} for a univariate categorical outcome A[j]}
+#'   \item{\code{new(reg, DatKeepClass.g0, ...)}}
+#'     {Instantiate an new instance of \code{CategorModel} for a univariate categorical outcome \code{A[m]}}
 #'   \item{\code{fit(data)}}{...}
 #'   \item{\code{predict(newdata)}}{...}
 #'   \item{\code{predictAeqa(newdata)}}{...}
@@ -620,7 +623,7 @@ CategorModel <- R6Class(classname = "CategorModel",
   class = TRUE,
   public = list(
     reg = NULL,
-    outvar = character(),     # the name of the categorical outcome var (A[j])
+    outvar = character(),     # the name of the categorical outcome var (A[m])
     levels = numeric(),       # all unique values for A[j] sorted in increasing order
     nbins = integer(),
     bin_nms = character(),
@@ -642,7 +645,7 @@ CategorModel <- R6Class(classname = "CategorModel",
       bin_regs <- def_regs_subset(self = self)
       super$initialize(reg = bin_regs, ...)
     },
-    # Transforms data for categorical outcome to bin indicators A[j] -> BinA[1], ..., BinA[M] and calls $super$fit on that transformed data
+    # Transforms data for categorical outcome to bin indicators A[m] -> BinA[1], ..., BinA[K] and calls $super$fit on that transformed data
     # Gets passed redefined subsets that exclude degenerate Bins (prev subset is defined for names in A - names have changed though)
     fit = function(data, savespace = TRUE) {
       assert_that(is.DatKeepClass(data))
@@ -672,7 +675,7 @@ CategorModel <- R6Class(classname = "CategorModel",
     },
 
     # Invisibly return cumm. prob P(A=a|W=w)
-    # P(A=a|W=w) - calculating the likelihood for obsdat.A[i] (n vector of a's):
+    # P(A=a|W=w) - calculating the likelihood for obsdat.A[m] (n vector of a's):
     predictAeqa = function(newdata, savespace = TRUE, wipeProb = TRUE) {
       if (gvars$verbose) print("performing prediction for categorical outcome: " %+% self$outvar)
       assert_that(is.DatKeepClass(newdata))
