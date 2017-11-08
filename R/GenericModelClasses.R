@@ -438,15 +438,16 @@ def_regs_subset <- function(self) {
 	      
 	      
 ## -------------------------------------------------------------------------------------------
-#' R6 class for modeling (fitting and predicting) joint probability for a univariate continuous outcome A[j]
+#' R6 class for modeling (fitting and predicting) joint probability for a univariate continuous outcome \code{A[m]}
 #'
-#'  \code{ContinModel} inherits from \code{\link{GenericModel}} class, defining and modeling a conditional density \code{P(A[j]|W,E,...)}
-#'  where \code{A[j]} is univariate and continuous. By calling \code{self$new()}, \code{A[j]} will be discretized into \code{nbins} bins 
-#'  via one of the 3 bin cutoff approaches (See Details for \code{\link{tmleCommunity}}). By calling \code{self$fit()}, it fits hazard 
-#'  regressoin \code{Bin_A[j][t] ~ W + E} on \code{data} (a \code{\link{DatKeepClass}} class), which is the hazard probaility of the 
-#'  the observation of A[j] belongs to bin \code{Bin_A[j][t]}, given covariates \code{(W, E)} and that observation doesn't belong to any
-#'  precedent bins \code{Bin_A[j][1]}, \code{Bin_A[j][2]}, ..., \code{Bin_A[j][t-1]}.
-#'
+#'  \code{ContinModel} inherits from \code{\link{GenericModel}} class, defining and modeling a joint conditional density 
+#'  \eqn{P(A[m]|W,E,...)} where \eqn{A[m]} is univariate and continuous. By calling \code{self$new()}, \code{A[m]} will be 
+#'  discretized into \code{nbins} bins via one of the 3 bin cutoff approaches (See Details for \code{\link{tmleCommunity}}). 
+#'  By calling \code{self$fit()}, it fits hazard regressoin \code{Bin_A[m][k] ~ W + E} on \code{data} (a \code{\link{DatKeepClass}} 
+#'  class), which is the hazard probaility of the the observation of \eqn{A[m]} belongs to bin \code{Bin_A[j][k]}, given covariates 
+#'  \eqn{(W, E)} and that observation doesn't belong to any precedent bins \code{Bin_A[j][1]}, \code{Bin_A[j][2]}, ..., 
+#'  \code{Bin_A[j][k-1]}.
+#' 
 #' @docType class
 #' @format An \code{\link{R6Class}} generator object
 #' @keywords R6 class
