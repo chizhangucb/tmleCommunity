@@ -24,7 +24,7 @@ get.iid.dat.Acont <- function(ndata = 100000, rndseed = NULL, truncBD = 10, shif
       node("r.new.A", distr = "rconst", const = exp(0.8 * shift * (untrunc.A.gstar - A.mu - shift / 3))) +
       node("trunc.A.gstar",  distr = "rconst", const = ifelse(r.new.A > trunc.c, A, untrunc.A.gstar)) + 
       node("Y", distr = "rbern", prob = plogis(-0.22 + 0.32 * A - 0.92 * W1 - 0.36 * W2 + 0.12 * W3 - 0.53 * W4)) +
-      node("Y.gstar", distr = "rbern", prob = plogis(-0.22 + 0.32 *trunc.A.gstar - 0.92 * W1 - 0.36 * W2 + 0.12 * W3 - 0.53 * W4))
+      node("Y.gstar", distr = "rbern", prob = plogis(-0.22 + 0.32 * trunc.A.gstar - 0.92 * W1 - 0.36 * W2 + 0.12 * W3 - 0.53 * W4))
   } else {  # Create continuous Y
     D <- D + 
       node("r.new.A", distr = "rconst", const = exp(0.5 * shift * (untrunc.A.gstar - A.mu - shift / 2))) +
