@@ -99,12 +99,12 @@ RegressionClass <- R6Class("RegressionClass",
     pool_cont = logical(),         # Pool binned cont outvar obs into long format (adding bin_ID as a covaraite)
     outvars_to_pool = character(), # Names of the binned continuous sVars, should match bin_nms
     intrvls = numeric(),           # Vector of numeric cutoffs defining the bins or a named list of numeric intervals (for length(self$outvar) > 1)
-    intrvls.width = 1L,            # Named vector of bin-widths (bw_j : j=1,...,M) for each each bin in self$intrvls
+    intrvls.width = 1L,            # Named vector of bin-widths (bw_k : k=1,...,M) for each each bin in self$intrvls
 	                           # When A is not continuous, intrvls.width IS SET TO 1.
                                    # When A is continuous, intrvls.width is SET TO self$intrvls.width 
     initialize = function(outvar.class = gvars$sVartypes$bin,
                           outvar, predvars, subset_vars, intrvls,
-                          ReplMisVal0 = TRUE, # add ReplMisVal0 = TRUE for case sA = (netA, sA[j]) with sA[j] continuous, causing an error otherwise:
+                          ReplMisVal0 = TRUE, # add ReplMisVal0 = TRUE 
                           estimator = getopt("Qestimator"),  # By defautl, g and Q use the same estimator
                           parfit = getopt("parfit"),
 			  nbins = getopt("nbins"),
