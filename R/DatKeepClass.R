@@ -19,14 +19,13 @@ iqr <- function(x) { return(diff(quantile(x,c(.25, .75),na.rm=T))) }  # interqua
 #' @param data A data frame (will be automatically transferred to panel data frame) or a panel data frame
 #' @param yvar Column names in \code{data} of outcome variable (Currently only support univariate).    
 #' @param xvar Column names in \code{data} of explanatory variables (Including \eqn{(A, W, E)}).
-#' @param effect The effects introduced in the model, one of "individual", "time", "twoways" and "nested". 
-#'  Default to "individual" effect.
+#' @param effect The effects introduced in the model, one of "individual", "time", "twoways" and "nested". Default to "individual".
 #' @param model Model of estimation, one of "pooling" (pooled OLS), "within" (fixed effect), "between" (group mean), 
-#'  "random"(random effect), "fd" (first differences) and "ht" (Hausman-Taylor estimator).
+#'  "random"(random effect), "fd" (first differences) and "ht" (Hausman-Taylor estimator). Default to "within".
 #' @param index A vector of two character strings which contains the names of the individual and of the time indices. 
 #'  If only individual index is given, treat each observation within a unit as a time point.
 #'  If no index is given, the first two columns will be automatically treated as individual and time indices, sequentially.
-#' @param transY Logical. If \code{TRUE} (Default), indicate the outcome variable \code{yvar} will also be tranformed. 
+#' @param transY Logical. If \code{TRUE}, indicate the outcome variable \code{yvar} will also be tranformed. Default to \code{TRUE}.
 #' @return 
 #' \itemize{
 #'   \item \code{newdata} Transformed panel data
