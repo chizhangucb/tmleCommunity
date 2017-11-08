@@ -410,6 +410,7 @@ is.DatKeepClass <- function(DatKeepClass) "DatKeepClass" %in% class(DatKeepClass
 #'    \item{\code{type.sVar}}{...}
 #' }
 #' @importFrom assertthat assert_that is.count
+#' @seealso \code{\link{tmleCom_Options}}, \code{\link{tmleCommunity}}
 #' @example tests/examples/2_DatKeepClass_examples.R                                                        
 #' @export
 DatKeepClass <- R6Class(classname = "DatKeepClass",
