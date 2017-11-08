@@ -226,6 +226,8 @@ RegressionClass <- R6Class("RegressionClass",
 #' \describe{
 #'   \item{\code{wipe.alldat(wipeProb = TRUE)}}{...}
 #' }
+#' @seealso \code{\link{DatKeepClass}}, \code{\link{RegressionClass}}, \code{\link{ContinModel}}, 
+#'  \code{\link{CategorModel}}, \code{\link{BinaryOutModel}}
 #' @example tests/examples/4_GenericModel_examples.R
 #' @export
 GenericModel <- R6Class(classname = "GenericModel",
@@ -460,6 +462,7 @@ def_regs_subset <- function(self) {
 #' \describe{
 #'   \item{\code{cats}}{...}
 #' }
+#' @seealso \code{\link{DatKeepClass}}, \code{\link{RegressionClass}}, \code{\link{GenericModel}}, \code{\link{BinaryOutModel}}
 #' @export
 ContinModel <- R6Class(classname = "ContinModel",
   inherit = GenericModel,
@@ -603,6 +606,7 @@ ContinModel <- R6Class(classname = "ContinModel",
 #' \describe{
 #'   \item{\code{cats}}{...}
 #' }
+#' @seealso \code{\link{DatKeepClass}}, \code{\link{RegressionClass}}, \code{\link{GenericModel}}, \code{\link{BinaryOutModel}}
 #' @export
 CategorModel <- R6Class(classname = "CategorModel",
   inherit = GenericModel,
