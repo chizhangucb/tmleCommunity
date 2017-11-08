@@ -66,6 +66,7 @@ newsummarymodel.binary <- function(reg, ...) BinaryOutModel$new(reg = reg, ...)
 #'   \item{\code{S3class(newclass)}}{...}
 #'   \item{\code{get.reg}}{...}
 #' }
+#' @seealso \code{\link{DatKeepClass}}, \code{\link{GenericModel}}, \code{\link{ContinModel}}, \code{\link{CategorModel}}
 #' @example tests/examples/5_RegressionClass_examples.R
 #' @export
 RegressionClass <- R6Class("RegressionClass",
