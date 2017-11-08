@@ -103,20 +103,24 @@ NULL
 #'   \item{W4} {continuous uniform baseline covariate with \code{min=0} and \code{max=1}}
 #'   \item{A} {continuous normal exposure where its mean depends on individual's baseline covariate values in \code{(W1, W2, W3, W4)}}
 #      \code{W2}, \code{W3}, \code{W4}}
-#'   \item{Y} {continuous normal outcome where its mean depends on individual's baseline covariate and exposure values in \code{W1}, 
-#'     \code{W2}, \code{W3}, \code{W4}, \code{A}}
+#'   \item{Y} {continuous normal outcome where its mean depends on individual's baseline covariate and exposure values in (\code{W1}, 
+#'     \code{W2}, \code{W3}, \code{W4}, \code{A})}
 #' }
 #' @docType data
 #' @keywords datasets
 #' @name indSample.iid.cA.cY_list
 #' @usage data(indSample.iid.cA.cY_list)
+#' 
 #' @examples
-#'
 #' data(indSample.iid.cA.cY_list)
 #' indSample.iid.cA.cY <- indSample.iid.cA.cY_list$indSample.iid.cA.cY
-#' psi0.Y <- sampleDat_iidcontAContY$psi0.Y
-#' psi0.Ygstar <- sampleDat_iidcontAContY$psi0.Ygstar
-#' sampleDat_iidcontAContY$truncBD
+#' # True mean of outcome under intervention g0
+#' psi0.Y <- indSample.iid.cA.cY_list$psi0.Y  
+#' # True mean of outcoem under stochastic intervention gstar
+#' psi0.Ygstar <- indSample.iid.cA.cY_list$psi0.Ygstar  
+#' # truncated bound used in sampling A* under gstar (in data generating mechanism)
+#' sampleDat_iidcontAContY$truncBD  
+#' # shift value used in sampling A* under gstar 
 #' sampleDat_iidcontAContY$shift.val
 NULL
 
