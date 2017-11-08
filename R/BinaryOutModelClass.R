@@ -390,6 +390,7 @@ join.Xmat = function(X_mat, sVar_melt_DT, ID) {
 #'   \item{\code{getWeight}}{...}
 #' }
 #' @importFrom assertthat assert_that is.flag is.string
+#' @seealso \code{\link{DatKeepClass}}, \code{\link{RegressionClass}}, \code{\link{tmleCom_Options}}
 #' @example tests/examples/1_BinaryOutModel_examples.R
 #' @export
 BinaryOutModel  <- R6Class(classname = "BinaryOutModel",
