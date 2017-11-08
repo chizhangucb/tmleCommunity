@@ -33,13 +33,14 @@ Q.sVars5 <- define_regform(regform = Qform.interact2)
 # 1.2 Fit and predict a regression model for outcome mechanism Qbar(A, W)
 #***************************************************************************************
 # Create a new object of DatKeepClass that can store and munipulate the input data
-OData <- DatKeepClass$new(Odata = indSample.iid.cA.bY, nodes = nodes, norm.c.sVars = FALSE)
+OData_R6 <- DatKeepClass$new(Odata = indSample.iid.cA.bY, 
+                             nodes = nodes, norm.c.sVars = FALSE)
 # Create a new object of RegressionClass that defines regression models
 Qreg <- RegressionClass$new(outvar = Q.sVars1$outvars, predvars = Q.sVars1$predvars, 
                             subset_vars = (!rep_len(FALSE, nrow(indSample.iid.cA.bY))))
 
 # Set savespace=FALSE to save all productions during fitting, including models and data
-m.Q.init <- BinaryOutModel$new(reg = Qreg)$fit(data = OData, savespace = FALSE)
+m.Q.init <- BinaryOutModel$new(reg = Qreg)$fit(data = OData_R6, savespace = FALSE)
 length(m.Q.init$getY)  # 10000, the outcomes haven't been erased since savespace = FALSE
 head(m.Q.init$getXmat)  # the predictor matrix is kept since savespace = FALSE
 m.Q.init$getfit$coef  # Provide cofficients from the fitting regression
@@ -47,11 +48,11 @@ m.Q.init$is.fitted  # TRUE
 
 # Now fit the same regression model but set savespace to TRUE (only fitted model left)
 # Need to set overwrite to TRUE to avoid error when m.Q.init is already fitted
-m.Q.init <- m.Q.init$fit(overwrite = TRUE, data = OData, savespace = TRUE)
+m.Q.init <- m.Q.init$fit(overwrite = TRUE, data = OData_R6, savespace = TRUE)
 all(is.null(m.Q.init$getXmat), is.null(m.Q.init$getY))  # TRUE, all wiped out
 
 # Set savespace = TRUE to wipe out any traces of saved data in predict step
-m.Q.init$predict(newdata = OData, savespace = TRUE)
+m.Q.init$predict(newdata = OData_R6, savespace = TRUE)
 is.null(m.Q.init$getXmat)  # TRUE, the covariates matrix has been erased to save RAM space
 mean(m.Q.init$getprobA1)  # 0.3351
 
@@ -66,6 +67,6 @@ gvars$opts$g.SL.library <- c("SL.glm", "SL.glm.interaction", "SL.randomForest")
 
 set.seed(12345)
 library(SuperLearner)
-m.Q.init <- BinaryOutModel$new(reg = Qreg)$fit(data = OData, savespace = TRUE)
-m.Q.init$predict(newdata = OData, savespace = TRUE)
+m.Q.init <- BinaryOutModel$new(reg = Qreg)$fit(data = OData_R6, savespace = TRUE)
+m.Q.init$predict(newdata = OData_R6, savespace = TRUE)
 mean(m.Q.init$getprobA1)  # 0.3351
