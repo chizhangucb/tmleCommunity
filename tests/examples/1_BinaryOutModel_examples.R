@@ -1,5 +1,5 @@
 #***************************************************************************************
-# Example 1. Estimate a outcome regression directly through BinaryOutModel
+# Example: Estimate a outcome regression directly through BinaryOutModel
 data(indSample.iid.cA.bY_list)
 indSample.iid.cA.bY <- indSample.iid.cA.bY_list$indSample.iid.cA.bY
 # speed.glm to fit regressions (it's GLMs to medium-large datasets)
