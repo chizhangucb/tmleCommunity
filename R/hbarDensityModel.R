@@ -17,7 +17,7 @@
 #' @param f_gstar Either a function or a vector or a matrix/ data frame of counterfactual exposures. See details in function argument 
 #'  \code{f_gstar1} in \code{\link{tmleCommunity}}.
 #' @param h.gstar_GenericModel ...
-#' @param lbound ...
+#' @param lbound lower bounds on estimated cumulative probabilities for \code{P(A=a|W=w)}, default to 0.01
 #' @param n_MCsims ...
 #' @param obs.wts ...
 #' @param rndseed ...
@@ -32,7 +32,7 @@
 #' @example tests/examples/3_fitGenericDensity_examples.R
 #' @export
 fitGenericDensity <- function(data, Anodes, Wnodes, gform = NULL, f_gstar, h.gstar_GenericModel = NULL, 
-                              lbound = 0.025, n_MCsims = 1, obs.wts = NULL, 
+                              lbound = 0.01, n_MCsims = 1, obs.wts = NULL, 
                               rndseed = NULL, verbose = TRUE) {
   
   #----------------------------------------------------------------------------------
@@ -118,7 +118,7 @@ fitGenericDensity <- function(data, Anodes, Wnodes, gform = NULL, f_gstar, h.gst
   
   h_gstar <- genericmodels.gstar$predictAeqa(newdata = OData.ObsP0)
   h_gstar[is.nan(h_gstar)] <- 0     # 0/0 detection
-  h_gstar <- bound(h_gstar, c(0, 1/lbound))
+  h_gstar <- bound(h_gstar, c(lbound, 1))
 
   return(list(h_gstar = h_gstar, OData.gstar = OData.gstar, genericmodels.gstar = genericmodels.gstar))
 }
