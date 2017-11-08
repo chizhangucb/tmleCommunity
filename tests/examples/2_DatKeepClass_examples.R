@@ -19,7 +19,7 @@ define_f.gstar <- function(data, ...) {
 }
 
 #***************************************************************************************
-# 1.2 Creating an R6 object that stores and manages the input data
+# 1.2 Creating an R6 object of DatKeepClass (to store the input data)
 #***************************************************************************************
 # Don't normalize continous covariates by setting norm.c.sVars = FALSE
 OData <- DatKeepClass$new(Odata = indSample.iid.cA.bY, nodes = nodes, norm.c.sVars = FALSE)  
@@ -34,16 +34,22 @@ OData$nobs  # 10000
 OData$get.sVar.type("A")  # "contin"
 OData$get.sVar.type()  # Provide a list of types of all variables
 
+#***************************************************************************************
+# 1.3 Manipulating the input data by adding observed outcome and observation weights
+#***************************************************************************************
 OData$addYnode(YnodeVals = indSample.iid.cA.bY[, nodes$Ynode], det.Y = FALSE)  
 head(OData$YnodeVals)  # Adding public YnodeVals & setting det.Y values to NA
 head(OData$noNA.Ynodevals)  # Adding actual observed Y as protected (without NAs)
 OData$addObsWeights(obs.wts = rep(c(1,2), 5000))  # Add a vectopr of observation (sampling) weights
 OData$addObsWeights(obs.wts = 1)  # If not specified, assumed to be all 1 (i.e., equally weighted)
 
-OData.gstar <- DatKeepClass$new(Odata = dat_iidcontAContY, nodes = nodes, norm.c.sVars = FALSE)
+#***************************************************************************************
+# 1.4 
+#***************************************************************************************
+OData.gstar <- DatKeepClass$new(Odata = indSample.iid.cA.bY, nodes = nodes, norm.c.sVars = FALSE)
 # Create (p=) 1 new Odata (nobs obs at a time) and replace A under g0 in Odata with A^* under g.star
 # Generate new exposures under user-specific arbitrary intervention f.g_fun.
-OData.gstar$make.dat.sVar(p = 1, f.g_fun = f.gstar) 
-dim(OData.gstar$dat.sVar)  # 10000     5
-OData.gstar$make.dat.sVar(p = 3, f.g_fun = f.gstar) 
-dim(OData.gstar$dat.sVar)  # 30000     5
+OData.gstar$make.dat.sVar(p = 1, f.g_fun = define_f.gstar) 
+dim(OData.gstar$dat.sVar)  # 10000     4
+OData.gstar$make.dat.sVar(p = 3, f.g_fun = define_f.gstar) 
+dim(OData.gstar$dat.sVar)  # 30000     4
