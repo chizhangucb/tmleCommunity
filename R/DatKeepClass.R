@@ -342,8 +342,7 @@ is.DatKeepClass <- function(DatKeepClass) "DatKeepClass" %in% class(DatKeepClass
 #' R6 class for storing, managing, subsetting and manipulating the input data.
 #'
 #'  \code{DatKeepClass} allows user to access the input data. The processed covariates from sVar.object are stored as a matrix in
-#'  (\code{private$.mat.sVar}). This class could subset, combine, normalize, discretize and binarize covariates in (A, W, E). For 
-#'                                                           
+#'  (\code{private$.mat.sVar}). This class could subset, combine, normalize, discretize and binarize covariates in (A, W, E). 
 #'  For disretization of continous and categorical variables, it can automatically detect / set covariates type (binary, categor, 
 #'  contin), detect / set bin intervals, and construct bin indicators. Besides, it provides methods for generating new exposures under 
 #'  user-specific arbitrary intervention \eqn{g^{*}} through \code{self$make.dat.sVar}, and allows user to replace missing values with                                                 
