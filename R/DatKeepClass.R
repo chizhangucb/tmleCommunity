@@ -9,7 +9,7 @@ iqr <- function(x) { return(diff(quantile(x,c(.25, .75),na.rm=T))) }  # interqua
 #------------------------------------
 #' Transfer a panel dataset into a fixed-effect/ random-effect transformed data, using individual (and time) indexes
 #'
-#' \code{panelData.Trans} provides a wide variety of ways of data transformation for panel datasets. It allows users 
+#' \code{panelData_Trans} provides a wide variety of ways of data transformation for panel datasets. It allows users 
 #'  to only apply transformation on regressors of interests, instead of on the entire dataset. See details in 
 #'  \url{https://github.com/cran/plm/blob/master/R/plm.R}.
 #   and \url{https://github.com/cran/plm/blob/master/R/pFormula.R}
@@ -28,7 +28,7 @@ iqr <- function(x) { return(diff(quantile(x,c(.25, .75),na.rm=T))) }  # interqua
 #'   \item \code{newdata} Transformed panel data
 #' }
 #' @export
-panelData.Trans <- function(data, yvar, xvar, effect = "individual", model = "within", index = NULL, transY = TRUE) {
+panelData_Trans <- function(data, yvar, xvar, effect = "individual", model = "within", index = NULL, transY = TRUE) {
   formula <- as.formula(yvar %+% " ~ " %+% paste(xvar, collapse=" + "))
   # Check whether data is a pdata.frame and if not create it
   orig_rownames <- row.names(data)
