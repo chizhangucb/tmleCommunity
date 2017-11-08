@@ -101,7 +101,7 @@ NULL
 #'   \item{W2} {binary baseline covariate with \eqn{P(W2=1) = 0.3}}
 #'   \item{W3} {continuous normal baseline covariate with \eqn{\mu} = 0 and \eqn{\sigma} = 0.25}
 #'   \item{W4} {continuous uniform baseline covariate with \code{min=0} and \code{max=1}}
-#'   \item{A} {continuous normal exposure where its mean depends on individual's baseline covariate values in \code{(W1, W2, W3, W4)}
+#'   \item{A} {continuous normal exposure where its mean depends on individual's baseline covariate values in \code{(W1, W2, W3, W4)}}
 #      \code{W2}, \code{W3}, \code{W4}}
 #'   \item{Y} {continuous normal outcome where its mean depends on individual's baseline covariate and exposure values in \code{W1}, 
 #'     \code{W2}, \code{W3}, \code{W4}, \code{A}}
