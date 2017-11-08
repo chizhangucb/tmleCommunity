@@ -227,10 +227,10 @@ RegressionClass <- R6Class("RegressionClass",
 #' }
 #' @section Methods:
 #' \describe{
-#'   \item{\code{new(reg, ...)}}{Use \code{reg} (a \code{\link{RegressionClass}} class object) to instantiate an new object of \code{GenericModel}}
+#'   \item{\code{new(reg, ...)}}{Use \code{reg} (a \code{\link{RegressionClass}} object) to instantiate an new object of \code{GenericModel}}
 #'   \item{\code{length}}{Get the number of regression models (i.e., the number of exposure viarables)}
-#'   \item{\code{getPsAsW.models}}{Get all model objects (one model object per outcome var A[j])}
-#'   \item{\code{getcumprodAeqa}}{Get joint prob as a vector of the cumulative prod over j for P(A[j]=a[j]|W,E)}
+#'   \item{\code{getPsAsW.models}}{Get all model objects (one model object per outcome var \code{A[m]})}
+#'   \item{\code{getcumprodAeqa}}{Get joint prob as a vector of the cumulative prod over j for \code{P(A[m]=a[m]|W,E)}}
 #'   \item{\code{fit(data, savespace = TRUE)}}{...}
 #'   \item{\code{copy.fit(Generic.Model)}}{...}
 #'   \item{\code{predict(newdata, savespace = TRUE)}}{...}
@@ -591,7 +591,7 @@ ContinModel <- R6Class(classname = "ContinModel",
 #'  where \code{A[m]} is univariate and categorical. By calling \code{self$new()}, \code{A[m]} will be redefined into number of bins 
 #'  \code{length(levels)} (i.e., number of unique categories in \code{A[m]}). By calling \code{self$fit()}, it fits hazard regressoin
 #'  \code{Bin_A[m][k] ~ W + E} on \code{data} (a \code{\link{DatKeepClass}} class), which is the hazard probaility of the observation 
-#'  of A[m] belongs to bin \code{Bin_A[j][t]}, given covariates \eqn{(W, E)} and that observation doesn't belong to any precedent bins 
+#'  of A[m] belongs to bin \code{Bin_A[m][t]}, given covariates \eqn{(W, E)} and that observation doesn't belong to any precedent bins 
 #'  \code{Bin_A[m][1]}, \code{Bin_A[m][2]}, ..., \code{Bin_A[m][k-1]}.
 #'
 #' @docType class
