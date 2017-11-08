@@ -13,7 +13,8 @@ tmleCom_Options(nbins = 10, maxNperBin = nrow(indSample.iid.cA.bY))
 #***************************************************************************************
 # Interested in the effect of a shift of delta(W1, W3, W4) of the current treatment
 define_f.gstar <- function(data, ...) {
-  shift.val <- 0.3 * data[,"W1"] + 0.6 * data[,"W3"] - 0.14 * data[,"W4"]
+  shift.mu <- 0.3 * data[,"W1"] + 0.6 * data[,"W3"] - 0.14 * data[,"W4"]
+  shift.val <- rnorm(n = NROW(data), mean = shift.mu, sd = 0.5)
   shifted.new.A <- data[, "A"] - shift.val
   return(shifted.new.A)
 }
@@ -36,7 +37,7 @@ OData_R6$get.sVar.type("A")  # "contin"
 OData_R6$get.sVar.type()  # Provide a list of types of all variables
 
 #***************************************************************************************
-# 1.3 Manipulating the input data by adding observed outcome and observation weights
+# 1.3 Manipulating the input data by adding observed outcomes and observation weights
 #***************************************************************************************
 # Add YnodeVals (a vector of outcomes) to both public and private field 
 OData_R6$addYnode(YnodeVals = indSample.iid.cA.bY[, nodes$Ynode], det.Y = FALSE)  
@@ -47,12 +48,16 @@ ODaOData_R6ta$addObsWeights(obs.wts = 1)  # Assumed to be all 1 (i.e., equally w
 
 #***************************************************************************************
 # 1.4 Creating an new R6 object of DatKeepClass under stochastic intervention g.star
-# Generate new exposures under user-specific arbitrary intervention f.g_fun
+# Generate new exposures under user-specific intervention f.g_fun
 #***************************************************************************************
 OData.gstar_R6 <- DatKeepClass$new(Odata = indSample.iid.cA.bY, nodes = nodes)
-# Create 1 new Odata and replace A under g0 in Odata with A* under g.star 
+# Create 1 new Odata and replace A under g0 in Odata with A* under g.star
+set.seed(12345)
 OData.gstar_R6$make.dat.sVar(p = 1, f.g_fun = define_f.gstar) 
 dim(OData.gstar_R6$dat.sVar)  # 10000     4
 # Create 3 new Odatas and repalce A with A*
 OData.gstar_R6$make.dat.sVar(p = 3, f.g_fun = define_f.gstar) 
 dim(OData.gstar_R6$dat.sVar)  # 30000     4
+# Since A* is stochastically generated, each p may produce different values of A*
+head(OData.gstar_R6$dat.sVar[1:10000, ])
+head(OData.gstar_R6$dat.sVar[10001:20000, ])
