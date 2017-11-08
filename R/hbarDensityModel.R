@@ -6,14 +6,14 @@
 #------------------------------------
 #' Define and fit the multivariate conditional density under the user-specified arbitrary intervention function.
 #'
-#' Defines and fits regression models for the conditional density \code{P(A=a|W=w, E=e)} where a is generated under the user-specified
-#' arbitrary (can be static, dynamic or stochastic) intervention function \code{f_gstar}. Note that A can be multivariate 
-#' \code{(A[1], ..., A[j])} and each of the compoenents A[i] can be either binary, categorical or continuous. See detailed description
-#' in \code{\link{RegressionClass}}.
+#' Defines and fits regression models for the conditional density \code{P(A=a|W=w)} where \code{a} is generated under the user-
+#' specified arbitrary (can be static, dynamic or stochastic) intervention function \code{f_gstar}. Note that \code{A} can be 
+#' multivariate \code{(A[1], ..., A[j])} and each of the compoenents A[i] can be either binary, categorical or continuous. 
+#' See detailed description in \code{\link{RegressionClass}}.
 #' @param data \code{data.frame} with named columns, containing \code{Wnodes}, \code{Anode} and \code{Ynode}.
 #' @param Anodes Column names or indices in \code{data} of outcome variables; exposures can be either binary, categorical or continuous.
 #' @param Wndoes Column names or indices in \code{data} of baseline covariates. Factors are not currently allowed.
-#' @param gform Character vector of regression formula for estimating the conditional density of P(A | W, E)
+#' @param gform Character vector of regression formula for estimating the conditional density of P(A | W)
 #' @param f_gstar Either a function or a vector or a matrix/ data frame of counterfactual exposures. See details in function argument 
 #'  \code{f_gstar1} in \code{\link{tmleCommunity}}.
 #' @param h.gstar_GenericModel ...
@@ -24,10 +24,10 @@
 #' @param verbose ...
 #' @return A named list with 3 items containing the estimation results for:
 #'  \itemize{
-#'  \item \code{h_gstar} - A vector of likelihood prediction for \code{P(A=a|W=w, E=e)} where a is generated under the 
+#'  \item \code{h_gstar} - A vector of likelihood prediction for \code{P(A=a|W=w)} where a is generated under the 
 #'   user-specified intervention.
 #'  \item \code{OData.gstar} - A \code{DatKeepClassclass} object,where outcomes are generated under intervention \code{f_gstar}.
-#'  \item \code{genericmodels.gstar} - A \code{GenericModel} class object that defines and models \code{P(A=a|W=w, E=e)}.
+#'  \item \code{genericmodels.gstar} - A \code{GenericModel} class object that defines and models \code{P(A=a|W=w)}.
 #' }
 #' @example tests/examples/3_fitGenericDensity_examples.R
 #' @export
@@ -45,14 +45,14 @@ fitGenericDensity <- function(data, Anodes, Wnodes, gform = NULL, f_gstar, h.gst
   if (is.null(obs.wts)) obs.wts <- rep(1, nrow(data))
   
   ## Check if any unexpected inputs
-  nodes <- list(Anodes = Anodes, Wnodes = Wnodes, Crossnodes = NULL)
+  nodes <- list(Anodes = Anodes, WEnodes = Wnodes)
   for (i in unlist(nodes)) {  CheckVarNameExists(data = data, varname = i) }
   if (!CheckInputs(data, nodes, NULL, gform, NULL, "logistic", NULL, obs.wts)) stop()
   
   #----------------------------------------------------------------------------------
   # DEFINING (OPTIONAL) REGRESSION FORMS 
   #----------------------------------------------------------------------------------
-  h.gstar.sVars <- define_regform(as.formula(gform), Anodes.lst = nodes$Anodes, Wnodes.lst = nodes$Wnodes)
+  h.gstar.sVars <- define_regform(as.formula(gform), Anodes.lst = nodes$Anodes, Wnodes.lst = nodes$WEnodes)
   
   if (verbose) {
     print("Input regression gform (P(A|W) under g.star): " %+% gform)
@@ -97,8 +97,8 @@ fitGenericDensity <- function(data, Anodes, Wnodes, gform = NULL, f_gstar, h.gst
   OData.gstar$make.dat.sVar(p = n_MCsims, f.g_fun = f_gstar, regform = merged.form)
   
   if (gvars$verbose) {
-    print("Generated new exposure covariates by sampling A from f_gstar (OData.gstar): "); print(class(OData.gstar$dat.sVar))
-    print(dim(OData.gstar$dat.sVar)); print(head(OData.gstar$dat.sVar));
+    print("Generated new exposure covariates by sampling A from f_gstar (OData.gstar): "); 
+    print(class(OData.gstar$dat.sVar)); print(dim(OData.gstar$dat.sVar)); print(head(OData.gstar$dat.sVar));
   }
   
   regclass.gstar <- RegressionClass$new(outvar.class = As_classes,
