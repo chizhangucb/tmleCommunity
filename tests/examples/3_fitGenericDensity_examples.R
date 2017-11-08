@@ -1,5 +1,6 @@
-### Load data
-# A is normal with mu for each observation being a function of (W1, W2, W3, W4), sd = 1;
+#***************************************************************************************
+# Example 1: 
+#***************************************************************************************
 data(sampleDat_iidcontABinY)
 dat_iidcontABinY <- sampleDat_iidcontABinY$dat_iidcontABinY
 psi0.Y <- sampleDat_iidcontABinY$psi0.Y  # 0.291398
