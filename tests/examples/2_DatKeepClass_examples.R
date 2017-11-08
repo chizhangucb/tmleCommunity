@@ -1,5 +1,5 @@
 #***************************************************************************************
-# Example: storing, managing, subsetting and manipulating a data with continuous A
+# Example 1: storing, managing, subsetting and manipulating a data with continuous A
 data(indSample.iid.cA.cY_list)
 indSample.iid.cA.bY <- indSample.iid.cA.bY_list$indSample.iid.cA.bY
 psi0.Y <- indSample.iid.cA.bY_list$psi0.Y  # 0.333676
