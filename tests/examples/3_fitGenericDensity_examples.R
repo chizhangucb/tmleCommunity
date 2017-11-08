@@ -11,10 +11,11 @@ define_f.gstar <- function(data, shift.rate, ...) {
 }
 f.gstar <- define_f.gstar(shift.rate = 0.5)
 
-# Run
+# Under current treatment mechanism g0
 h_gN <- fitGenericDensity(data = indSample.iid.cA.bY, Anodes = "A", 
                           Wnodes = c("W1", "W2", "W3", "W4"), 
                           f_gstar = NULL, lbound = 0)$h_gstar
+# Under stochastic intervention gstar
 h_gstar <- fitGenericDensity(data = indSample.iid.cA.bY, Anodes = "A",
                              Wnodes = c("W1", "W2", "W3", "W4"), 
                              f_gstar = f.gstar, lbound = 0)$h_gstar
