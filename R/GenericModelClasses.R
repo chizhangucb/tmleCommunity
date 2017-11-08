@@ -54,13 +54,9 @@ newsummarymodel.binary <- function(reg, ...) BinaryOutModel$new(reg = reg, ...)
 #' }
 #' @section Methods:
 #' \describe{
-#'   \item{\code{new(outvar.class = gvars$sVartypes$bin,
-#'                   outvar, predvars, subset_vars, intrvls,
-#' 
-#'                   ReplMisVal0 = TRUE,
-#'                   estimator = getopt("Qestimator"),
-#'                   parfit = getopt("parfit"),
-#'                   pool_cont = getopt("poolContinVar")}}{Instantiate an new instance of \code{RegressionClass}}
+#'   \item{\code{new(outvar.class = gvars$sVartypes$bin, outvar, predvars, subset_vars, intrvls,}
+#'     \code{ReplMisVal0 = TRUE, estimator = getopt("Qestimator"), parfit = getopt("parfit"),              
+#'     pool_cont = getopt("poolContinVar")}} {Instantiate an new instance of \code{RegressionClass}}
 #'   \item{\code{ChangeManyToOneRegresssion(k_i, reg)}}{Clone the parent \code{RegressionClass} (\code{reg}) that include \code{length(self$outvar)} 
 #'   regressions, and reset self to a single univariate \code{k_i} regression for outcome \code{self$outvar[[k_i]]}.}
 #'   \item{\code{resetS3class()}}{Reset the object class to "RegressionClass" and "R6".}
