@@ -29,7 +29,7 @@
 #'  \item \code{OData.gstar} - A \code{DatKeepClassclass} object,where outcomes are generated under intervention \code{f_gstar}.
 #'  \item \code{genericmodels.gstar} - A \code{GenericModel} class object that defines and models \code{P(A=a|W=w, E=e)}.
 #' }
-#' @example tests/examples/2_fitGenericDensity_examples.R
+#' @example tests/examples/3_fitGenericDensity_examples.R
 #' @export
 fitGenericDensity <- function(data, Anodes, Wnodes, gform = NULL, f_gstar, h.gstar_GenericModel = NULL, 
                               lbound = 0.025, n_MCsims = 1, obs.wts = NULL, 
