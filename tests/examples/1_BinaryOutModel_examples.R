@@ -1,5 +1,5 @@
 #***************************************************************************************
-# Example 1. Fit a outcome regression directly through BinaryOutModel
+# Example 1. Estimate a outcome regression directly through BinaryOutModel
 data(indSample.iid.cA.bY_list)
 indSample.iid.cA.bY <- indSample.iid.cA.bY_list$indSample.iid.cA.bY
 # speed.glm to fit regressions (it's GLMs to medium-large datasets)
@@ -19,7 +19,7 @@ Q.sVars1 <- define_regform(regform = Qform.corr)
 # Equivalent way to define Q.sVars is to provide Anodes.lst (outcomes) & Wnodes.lst 
 # (predictors) (No need for regform)
 Q.sVars2 <- define_regform(regform = NULL, Anodes.lst = nodes$Ynode, 
-                          Wnodes.lst = nodes[c("Anodes", "WEnodes")])
+                           Wnodes.lst = nodes[c("Anodes", "WEnodes")])
 
 # Also allows to include interaction terms in regression formula
 Qform.interact <- Y ~ W1 + W3 * A
@@ -30,7 +30,7 @@ Qform.interact2 <- Y ~ W1 + W3 + A + W3:A
 Q.sVars5 <- define_regform(regform = Qform.interact2)
 
 #***************************************************************************************
-# 1.2 Fit a regression model for outcome mechanism Qbar(A, W)
+# 1.2 Fit and predict a regression model for outcome mechanism Qbar(A, W)
 #***************************************************************************************
 # Create a new object of DatKeepClass that can store and munipulate the input data
 OData <- DatKeepClass$new(Odata = indSample.iid.cA.bY, nodes = nodes, norm.c.sVars = FALSE)
@@ -38,7 +38,7 @@ OData <- DatKeepClass$new(Odata = indSample.iid.cA.bY, nodes = nodes, norm.c.sVa
 Qreg <- RegressionClass$new(outvar = Q.sVars1$outvars, predvars = Q.sVars1$predvars, 
                             subset_vars = (!rep_len(FALSE, nrow(indSample.iid.cA.bY))))
 
-# Set savespace=FALSE to save all info regarding fitted models, including models and data
+# Set savespace=FALSE to save all productions during fitting, including models and data
 m.Q.init <- BinaryOutModel$new(reg = Qreg)$fit(data = OData, savespace = FALSE)
 length(m.Q.init$getY)  # 10000, the outcomes haven't been erased since savespace = FALSE
 head(m.Q.init$getXmat)  # the predictor matrix is kept since savespace = FALSE
@@ -47,21 +47,25 @@ m.Q.init$is.fitted  # TRUE
 
 # Now fit the same regression model but set savespace to TRUE (only fitted model left)
 # Need to set overwrite to TRUE to avoid error when m.Q.init is already fitted
-m.Q.init2 <- BinaryOutModel$new(reg = Qreg)$fit(overwrite = TRUE, data = OData, savespace = TRUE)
-length(m.Q.init$getY)  # 0, the vector of observed outcomes is wiped out
+m.Q.init <- m.Q.init$fit(overwrite = TRUE, data = OData, savespace = TRUE)
+all(is.null(m.Q.init$getXmat), is.null(m.Q.init$getY))  # TRUE, all wiped out
 
-# Here, wipe out any traces of saved data in predict step by setting savespace = TRUE
+# Set savespace = TRUE to wipe out any traces of saved data in predict step
 m.Q.init$predict(newdata = OData, savespace = TRUE)
-is.null(m.Q.init$getXmat)  # TRUE, the matrix of covariates has been erased to save space
-mean(m.Q.init$getprobA1)  # 0.2976
+is.null(m.Q.init$getXmat)  # TRUE, the covariates matrix has been erased to save RAM space
+mean(m.Q.init$getprobA1)  # 0.3351
 
-# Now, use Super Learner (data-adaptive algorithms) to fit and predict regression models
-library(SuperLearner)
+#***************************************************************************************
+# 1.3 Same as above but using Super Learner (data-adaptive algorithms)
+#***************************************************************************************
+# Instead of starting over from tmleCom_Options(), there is a more direct way to 
+# specify the estimator used in Qreg and SuperLearner library
 Qreg$estimator <- "SuperLearner"
-gvars$opts$g.SL.library <- c("SL.glm", "SL.step", "SL.glm.interaction", "SL.randomForest")
-set.seed(1)
+# Another way to specify the prediction algorithms in SL library
+gvars$opts$g.SL.library <- c("SL.glm", "SL.glm.interaction", "SL.randomForest")
 
-# To save (RAM) space, wipe out all internal data when doing many stacked fitting regressions
-m.Q.init <- BinaryOutModel$new(reg = Qreg)$fit(overwrite = FALSE, data = OData, savespace = TRUE)
+set.seed(12345)
+library(SuperLearner)
+m.Q.init <- BinaryOutModel$new(reg = Qreg)$fit(data = OData, savespace = TRUE)
 m.Q.init$predict(newdata = OData, savespace = TRUE)
-mean(m.Q.init$getprobA1)  # 0.2976
+mean(m.Q.init$getprobA1)  # 0.3351
