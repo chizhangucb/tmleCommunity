@@ -16,18 +16,18 @@ newsummarymodel.binary <- function(reg, ...) BinaryOutModel$new(reg = reg, ...)
 #' R6 class for defining regression models that evaluate multivariate joint conditional density \eqn{P(A|W,E)} 
 #'  (or \eqn{P(A|W)} if non-hierarchical structure)
 #'
-#'  \code{RegressionClass} provides multiple options used when estimating a joint conditional density \code{P(A|W,E)}. Note that \code{A} 
+#'  \code{RegressionClass} provides multiple options used when estimating a conditional density \eqn{P(A|W,E)}. Note that \code{A} 
 #'  can be multivariate, if so, hazard specification will factorize \code{P(A|W,E) = P(A[1],...,} \code{A[M]|W,E)} as a sequence
-#'  \code{P(A[1]|W,E)} * \code{P(A[2]|W, E, A[1])} * ... * \code{P(A[M]|W, E, A[1],...,A[M-1])}, where each of the compoenents \code{A[m]}               
-#'  can be either binary, categorical or continuous, and each of the conditional densities \code{P(A[m]|W, E, A[1],...,A[m-1])} will be 
-#'  controlled  by a new instance of \code{\link{GenericModel}} class. If \code{A[m]} binary, \code{P(A[m]|W, E, A[1],...,A[m-1])} will be 
-#'  esimtated by a user-specific library of candidate algorithms, including parametric estimators such as logistic model with only main 
-#'  terms, and data-adaptive estimator such as super-learner algorithms. If \code{A[m]} continuous (or categorical), 
-#'  \code{P(A[m]|W, E, A[1],...,A[m-1])} will then be controlled by a new instance of \code{\link{ContinModel}} class (or 
-#'  \code{\link{CategorModel}} class). Note that each \code{GenericModel}, \code{ContinModel} and \code{CategorModel} class will accompany 
-#'  with an adjunctive clone of a parent \code{RegressionClass} class. The automatically recursive process of defining new instances of 
-#'  \code{GenericModel} and cloning \code{RegressionClass} classes won't stop until the entire sequence of binary regressions that 
-#'  represents \code{P(A|W,E)} is constructed.
+#'  \code{P(A[1]|W,E)} * \code{P(A[2]|W, E, A[1])} * ... * \code{P(A[M]|W, E, A[1],...,}\code{A[M-1])}, where each of the compoenents
+#'  \code{A[m]} can be either binary, categorical or continuous, and each of the conditional densities 
+#'  \code{P(A[m]|W, E, A[1],...,A[m-1])} will be controlled  by a new instance of \code{\link{GenericModel}} class. If \code{A[m]}
+#'  binary, \code{P(A[m]|W, E, A[1],...,A[m-1])} will be esimtated by a user-specific library of candidate algorithms, including 
+#'  parametric estimators such as logistic model with only main terms, and data-adaptive estimator such as super-learner algorithms. 
+#'  If \code{A[m]} continuous (or categorical), \code{P(A[m]|W, E, A[1],...,A[m-1])} will then be controlled by a new instance of 
+#'  \code{\link{ContinModel}} class (or \code{\link{CategorModel}} class). Note that each \code{GenericModel}, \code{ContinModel} 
+#'  and \code{CategorModel} class will accompany with an adjunctive clone of a parent \code{RegressionClass} class. The automatically 
+#'  recursive process of defining new instances of \code{GenericModel} and cloning \code{RegressionClass} classes won't stop until 
+#'  the entire sequence of binary regressions that represents \code{P(A|W,E)} is constructed.
 #'
 #' @docType class
 #' @format An \code{\link{R6Class}} generator object
@@ -54,9 +54,9 @@ newsummarymodel.binary <- function(reg, ...) BinaryOutModel$new(reg = reg, ...)
 #' }
 #' @section Methods:
 #' \describe{
-#'   \item{\code{new(outvar.class = gvars$sVartypes$bin, outvar, predvars, subset_vars, intrvls,}
-#'     \code{ReplMisVal0 = TRUE, estimator = getopt("Qestimator"), parfit = getopt("parfit"),              
-#'     pool_cont = getopt("poolContinVar")}} {Instantiate an new instance of \code{RegressionClass}}
+#'   \item{\code{new(outvar.class = gvars$sVartypes$bin, outvar, predvars, subset_vars, intrvls,
+#'                   ReplMisVal0 = TRUE, estimator = getopt("Qestimator"), parfit = getopt("parfit"),
+#'                   pool_cont = getopt("poolContinVar")}}{Instantiate an new instance of \code{RegressionClass}} 
 #'   \item{\code{ChangeManyToOneRegresssion(k_i, reg)}}{Clone the parent \code{RegressionClass} (\code{reg}) that include \code{length(self$outvar)} 
 #'   regressions, and reset self to a single univariate \code{k_i} regression for outcome \code{self$outvar[[k_i]]}.}
 #'   \item{\code{resetS3class()}}{Reset the object class to "RegressionClass" and "R6".}
