@@ -60,7 +60,7 @@ OData_R6$addObsWeights(obs.wts = 1)
 # 1.4 Creating an new R6 object of DatKeepClass under stochastic intervention g.star
 # Generate new exposures under user-specific intervention f.g_fun
 #***************************************************************************************
-OData.gstar_R6 <- DatKeepClass$new(Odata = indSample.iid.cA.bY, nodes = nodes)
+OData.gstar_R6 <- DatKeepClass$new(Odata = indSample.iid.cA.cY, nodes = nodes)
 # Create 1 new Odata and replace A under g0 in Odata with A* under g.star
 set.seed(12345)
 OData.gstar_R6$make.dat.sVar(p = 1, f.g_fun = define_f.gstar) 
