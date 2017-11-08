@@ -47,7 +47,7 @@ fitGenericDensity <- function(data, Anodes, Wnodes, gform = NULL, f_gstar, h.gst
   ## Check if any unexpected inputs
   nodes <- list(Anodes = Anodes, WEnodes = Wnodes)
   for (i in unlist(nodes)) {  CheckVarNameExists(data = data, varname = i) }
-  if (!CheckInputs(data, nodes, NULL, gform, NULL, "logistic", NULL, obs.wts, f_gstar, NULL)) stop()
+  if (!CheckInputs(data, nodes, NULL, gform, NULL, "logistic", NULL, obs.wts, NULL, f_gstar, NULL)) stop()
   
   #----------------------------------------------------------------------------------
   # DEFINING (OPTIONAL) REGRESSION FORMS 
