@@ -19,7 +19,8 @@ iqr <- function(x) { return(diff(quantile(x,c(.25, .75),na.rm=T))) }  # interqua
 #' @param data A data frame (will be automatically transferred to panel data frame) or a panel data frame
 #' @param yvar Column names in \code{data} of outcome variable (Currently only support univariate).    
 #' @param xvar Column names in \code{data} of explanatory variables (Including \eqn{(A, W, E)}).
-#' @param effect The effects introduced in the model, one of "individual" (Default), "time", "twoways" and "nested".
+#' @param effect The effects introduced in the model, one of "individual", "time", "twoways" and "nested". 
+#'  Default to "individual" effect.
 #' @param model Model of estimation, one of "pooling" (pooled OLS), "within" (fixed effect), "between" (group mean), 
 #'  "random"(random effect), "fd" (first differences) and "ht" (Hausman-Taylor estimator).
 #' @param index A vector of two character strings which contains the names of the individual and of the time indices. 
