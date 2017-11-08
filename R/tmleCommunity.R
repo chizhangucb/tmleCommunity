@@ -667,7 +667,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' 
 #'  \code{\link{BinaryOutModel}}, \code{\link{RegressionClass}}, \code{\link{GenericModel}}, \code{\link{MonteCarloSimClass}}
 #' 
-#' @example tests/examples/3_tmleCommunity_examples.R
+#' @example tests/examples/5_tmleCommunity_examples.R
 #' @export
 tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts = c("equal.within.pop", "equal.within.community"), 
                           community.step = c("NoCommunity", "community_level", "individual_level", "perCommunity"),
