@@ -240,6 +240,7 @@ RegressionClass <- R6Class("RegressionClass",
 #' \describe{
 #'   \item{\code{wipe.alldat(wipeProb = TRUE)}}{...}
 #' }
+#' @example tests/examples/4_GenericModel_examples.R
 #' @export
 GenericModel <- R6Class(classname = "GenericModel",
   portable = TRUE,
