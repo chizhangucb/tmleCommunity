@@ -174,7 +174,7 @@ NULL
 #' sampleDat_iidcontAContY$shift.val
 NULL
 
-#' An Example of a Non-Hierarchical Data Containing a Binary Exposure with a Rare Binary Outcome
+#' An Example of a Non-Hierarchical Data Containing a Binary Exposure with a Rare Binary Outcome (Independent Case-Control)
 #'
 #' Simulated (non-hierarchical) dataset containing 2,000 i.i.d. observations, with each row \code{i} consisting of 4 measured baseline 
 #'  covariates (\code{W1}, \code{W2}, \code{W3} and \code{W4}), 1 binary exposure (\code{A}) and 1 binary outcome (\code{Y}) that
