@@ -65,7 +65,7 @@ panelData_Trans <- function(data, yvar, xvar, effect = "individual", model = "wi
   
   # extract the model.matrix and the model.response (Transformation related)
   if (model == "random") {
-    theta <- ercomp(formula, data, index = index, effect = effect, method = "swar")$theta
+    theta <- plm::ercomp(formula, data, index = index, effect = effect, method = "swar")$theta
   } else {
     theta <- NULL
   }
