@@ -101,6 +101,7 @@ CalcMonteCarloEsts <- function(OData.ObsP0, OData.gstar, MC_fit_params, model.h.
 #'   \item{\code{get.fiW()}}{Get an estimate of fiW (hold ALL W's fixed).}
 #' }
 #' @import data.table
+#' @seealso \code{\link{tmleCom_Options}}, \code{\link{DatKeepClass}}, \code{\link{RegressionClass}}, \code{\link{tmleCommunity}}
 #' @export
 MonteCarloSimClass <- R6Class(classname = "MonteCarloSimClass",
   portable = TRUE,
