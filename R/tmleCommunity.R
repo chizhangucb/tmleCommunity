@@ -4,6 +4,7 @@
 
 #' @useDynLib tmleCommunity
 #' @import R6
+#' @import SuperLearner
 #' @importFrom grDevices nclass.FD nclass.Sturges nclass.scott
 #' @importFrom graphics axis barplot hist par text
 #' @importFrom methods is
