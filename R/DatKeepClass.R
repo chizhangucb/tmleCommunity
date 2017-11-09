@@ -7,26 +7,26 @@ iqr <- function(x) { return(diff(quantile(x,c(.25, .75),na.rm=T))) }  # interqua
 
 # Discarding missing outcomes (by default).
 #------------------------------------
-#' Transfer a panel dataset into a fixed-effect/ random-effect transformed data, using individual (and time) indexes
-#'
-#' \code{panelData_Trans} provides a wide variety of ways of data transformation for panel datasets. It allows users 
-#'  to only apply transformation on regressors of interests, instead of on the entire dataset. See details in 
-#'  \url{https://github.com/cran/plm/blob/master/R/plm.R}.
-#   and \url{https://github.com/cran/plm/blob/master/R/pFormula.R}
+#' Panel Dataset Transformation, Using Individual (and Time) Indexes
+
+#' \code{panelData_Trans} provides a wide variety of ways of data transformation for panel datasets, such as fixid 
+#'  effect and pooling model. It allows users to only apply transformation on regressors of interests, instead of
+#'  on the entire dataset. Notice that "swar" 
+#' is chosen as the method of estimation for the variance components in the random effects model. See details in 
+#'  \url{https://cran.r-project.org/web/packages/plm/plm.pdf}.
+#   and \url{https://github.com/cran/plm/blob/master/R/pFormula.R} & \url{https://github.com/cran/plm/blob/master/R/plm.R}
 #' @param data A data frame (will be automatically transferred to panel data frame) or a panel data frame
-#' @param yvar Column names in \code{data} of outcome variable (Currently only support univariate).    
+#' @param yvar Column name in \code{data} of outcome variable (Currently only support univariate).    
 #' @param xvar Column names in \code{data} of explanatory variables (Including \eqn{(A, W, E)}).
 #' @param effect The effects introduced in the model, one of "individual", "time", "twoways" and "nested". Default to "individual".
 #' @param model Model of estimation, one of "pooling" (pooled OLS), "within" (fixed effect), "between" (group mean), 
 #'  "random"(random effect), "fd" (first differences) and "ht" (Hausman-Taylor estimator). Default to "within".
-#' @param index A vector of two character strings which contains the names of the individual and of the time indices. 
+#' @param index A vector of two character strings which contains the names of the individual and of the time indices, sequentially. 
 #'  If only individual index is given, treat each observation within a unit as a time point.
 #'  If no index is given, the first two columns will be automatically treated as individual and time indices, sequentially.
 #' @param transY Logical. If \code{TRUE}, indicate the outcome variable \code{yvar} will also be tranformed. Default to \code{TRUE}.
 #' @return 
-#' \itemize{
-#'   \item \code{newdata} Transformed panel data
-#' }
+#' \item \code{newdata} Transformed panel data
 #' @export
 panelData_Trans <- function(data, yvar, xvar, effect = "individual", model = "within", index = NULL, transY = TRUE) {
   formula <- as.formula(yvar %+% " ~ " %+% paste(xvar, collapse=" + "))
@@ -65,15 +65,20 @@ panelData_Trans <- function(data, yvar, xvar, effect = "individual", model = "wi
   args <- list(model = model, effect = effect)
   
   # extract the model.matrix and the model.response (Transformation related)
-  X <- plm:::model.matrix.pFormula(object = formula, data, model = model, effect = effect, rhs = 1, theta = NULL)
+  if (model == "random") {
+    theta <- ercomp(formula, data, index = index, effect = effect, method = "swar")$theta
+  } else {
+    theta <- NULL
+  }
+  X <- plm:::model.matrix.pFormula(object = formula, data, model = model, effect = effect, rhs = 1, theta = theta)
   if (ncol(X) == 0) stop("empty model")
   if (transY) {
-    y <- plm:::pmodel.response(object = formula, data, model = model, effect = effect, theta = NULL)
+    Y <- plm:::pmodel.response(object = formula, data, model = model, effect = effect, theta = NULL)
   } else {
-    y <- data[, yvar]
+    Y <- data[, yvar]
   }
   
-  newdata <- as.data.frame(cbind(y, X))
+  newdata <- as.data.frame(cbind(Y, X))
   colnames(newdata) <- c(yvar, colnames(X))
   return(newdata)
 }
@@ -339,7 +344,7 @@ is.DatKeepClass <- function(DatKeepClass) "DatKeepClass" %in% class(DatKeepClass
 
 
 ## ---------------------------------------------------------------------
-#' R6 class for storing, managing, subsetting and manipulating the input data.
+#' R6 class for Storing, Managing, Subsetting and Manipulating the Input Data.
 #'
 #'  \code{DatKeepClass} allows user to access the input data. The processed covariates from sVar.object are stored as a matrix in
 #'  (\code{private$.mat.sVar}). This class could subset, combine, normalize, discretize and binarize covariates in (A, W, E). 
