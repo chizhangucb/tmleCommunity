@@ -8,7 +8,7 @@ iqr <- function(x) { return(diff(quantile(x,c(.25, .75),na.rm=T))) }  # interqua
 # Discarding missing outcomes (by default).
 #------------------------------------
 #' Panel Dataset Transformation, Using Individual (and Time) Indexes
-
+#'
 #' \code{panelData_Trans} provides a wide variety of ways of data transformation for panel datasets, such as fixid 
 #'  effect and pooling model. It allows users to only apply transformation on regressors of interests, instead of
 #'  on the entire dataset. See details in \url{https://cran.r-project.org/web/packages/plm/plm.pdf}.
