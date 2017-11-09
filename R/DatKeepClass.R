@@ -11,16 +11,15 @@ iqr <- function(x) { return(diff(quantile(x,c(.25, .75),na.rm=T))) }  # interqua
 
 #' \code{panelData_Trans} provides a wide variety of ways of data transformation for panel datasets, such as fixid 
 #'  effect and pooling model. It allows users to only apply transformation on regressors of interests, instead of
-#'  on the entire dataset. Notice that "swar" 
-#' is chosen as the method of estimation for the variance components in the random effects model. See details in 
-#'  \url{https://cran.r-project.org/web/packages/plm/plm.pdf}.
+#'  on the entire dataset. See details in \url{https://cran.r-project.org/web/packages/plm/plm.pdf}.
 #   and \url{https://github.com/cran/plm/blob/master/R/pFormula.R} & \url{https://github.com/cran/plm/blob/master/R/plm.R}
 #' @param data A data frame (will be automatically transferred to panel data frame) or a panel data frame
 #' @param yvar Column name in \code{data} of outcome variable (Currently only support univariate).    
 #' @param xvar Column names in \code{data} of explanatory variables (Including \eqn{(A, W, E)}).
 #' @param effect The effects introduced in the model, one of "individual", "time", "twoways" and "nested". Default to "individual".
 #' @param model Model of estimation, one of "pooling" (pooled OLS), "within" (fixed effect), "between" (group mean), 
-#'  "random"(random effect), "fd" (first differences) and "ht" (Hausman-Taylor estimator). Default to "within".
+#'  "random"(random effect), "fd" (first differences) and "ht" (Hausman-Taylor estimator). Default to "within". Notice that when 
+#'  \code{model} = "random", "swar" is chosen as the method of estimation for the variance components
 #' @param index A vector of two character strings which contains the names of the individual and of the time indices, sequentially. 
 #'  If only individual index is given, treat each observation within a unit as a time point.
 #'  If no index is given, the first two columns will be automatically treated as individual and time indices, sequentially.
