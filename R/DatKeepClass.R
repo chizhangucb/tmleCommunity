@@ -24,8 +24,7 @@ iqr <- function(x) { return(diff(quantile(x,c(.25, .75),na.rm=T))) }  # interqua
 #'  If only individual index is given, treat each observation within a unit as a time point.
 #'  If no index is given, the first two columns will be automatically treated as individual and time indices, sequentially.
 #' @param transY Logical. If \code{TRUE}, indicate the outcome variable \code{yvar} will also be tranformed. Default to \code{TRUE}.
-#' @return 
-#' \item \code{newdata} Transformed panel data
+#' @return \item \code{newdata} Transformed panel data
 #' @example tests/examples/8_panelData_Trans_examples.R
 #' @export
 panelData_Trans <- function(data, yvar, xvar, effect = "individual", model = "within", index = NULL, transY = TRUE) {
