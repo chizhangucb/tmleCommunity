@@ -72,7 +72,7 @@ panelData_Trans <- function(data, yvar, xvar, effect = "individual", model = "wi
   X <- plm:::model.matrix.pFormula(object = formula, data, model = model, effect = effect, rhs = 1, theta = theta)
   if (ncol(X) == 0) stop("empty model")
   if (transY) {
-    Y <- plm:::pmodel.response(object = formula, data, model = model, effect = effect, theta = NULL)
+    Y <- plm:::pmodel.response(object = formula, data, model = model, effect = effect, theta = theta)
   } else {
     Y <- data[, yvar]
   }
