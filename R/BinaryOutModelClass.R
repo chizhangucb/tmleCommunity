@@ -389,6 +389,7 @@ join.Xmat = function(X_mat, sVar_melt_DT, ID) {
 #'   \item{\code{getY}}{...}
 #'   \item{\code{getWeight}}{...}
 #' }
+#' @import SuperLearner
 #' @importFrom assertthat assert_that is.flag is.string
 #' @seealso \code{\link{DatKeepClass}}, \code{\link{RegressionClass}}, \code{\link{tmleCom_Options}}
 #' @example tests/examples/1_BinaryOutModel_examples.R
