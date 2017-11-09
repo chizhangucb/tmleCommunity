@@ -33,6 +33,8 @@ Imports: assertthat,
     Matrix,
     R6,
     speedglm,
+    methods,
+    Hmisc,
     SuperLearner
 Suggests: doParallel,
     foreach,
@@ -40,7 +42,6 @@ Suggests: doParallel,
     h2oEnsemble,
     simcausal,
     testthat,
-    Hmisc,
     knitr
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1
