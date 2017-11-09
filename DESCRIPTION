@@ -32,13 +32,13 @@ Imports: assertthat,
     data.table,
     Matrix,
     R6,
-    speedglm
+    speedglm,
+    SuperLearner
 Suggests: doParallel,
     foreach,
     h2o,
     h2oEnsemble,
     simcausal,
-    SuperLearner,
     testthat,
     Hmisc,
     knitr
