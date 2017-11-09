@@ -71,11 +71,13 @@
 #' \itemize{
 #'   \item \code{\link{comSample.wmT.bA.bY_list}}
 #'   \item \code{\link{indSample.iid.cA.cY_list}}
+#'   \item \code{\link{indSample.ind.bA.bY.rareJ1_list}}
 #' }
 #' There are a few other simulated datasets that can be used to test functions in \pkg{tmleCommunity}:
 #' \itemize{
 #'   \item \code{comSample.wmT.cA.cY_list}
 #'   \item \code{indSample.iid.cA.bY_list}
+#'   \item \code{\link{indSample.ind.bA.bY.rareJ2_list}}
 #' }
 #' @section Updates:
 #' Check for updates and report bugs at \url{https://github.com/chizhangucb/tmleCommunity}.
