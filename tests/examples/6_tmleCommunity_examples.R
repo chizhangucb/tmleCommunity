@@ -337,13 +337,33 @@ tmleind_iid.cA.cY_ATE$ATE$vars
 tmleind_iid.cA.cY_ATE$ATE$CIs   
 
 #***************************************************************************************
-# 2.7 Same as above but using a vector of user-supplied observation weights  
+# Example 3: Non-Hierarchical example, with one binary A and one rare bianry Y 
+# (Independent case-control)  True ATE is approximately 0.012662
+data(indSample.ind.bA.bY.rareJ1_list)
+indSample.ind.bA.bY.rareJ1 <- indSample.ind.bA.bY.rareJ1_list$indSample.ind.bA.bY.rareJ1
+obs.wt.J1 <- indSample.ind.bA.bY.rareJ1_list$obs.wt.J1
+Qform.corr <- "Y ~ W1 + W2*A + W3 + W4" # correct Q form
+gform.corr <- "A ~ W1 + W2 + W3 + W4"  # correct g
+tmleCom_Options(maxNperBin = NROW(indSample.ind.bA.bY.rareJ1))
 #***************************************************************************************
-set.seed(12345)
-obs.wts <- runif(n = NROW(indSample.iid.cA.cY), min = 0, max = 1)
-tmleind_iid.cA.cY_own.obsWT <- 
-  tmleCommunity(data = indSample.iid.cA.cY, Ynode = "Y", Anodes = "A", 
-                WEnodes = c("W1", "W2", "W3", "W4"), obs.wts = obs.wts,
-                f_gstar1 = f.gstar_shift0.8, f_gstar2 = f.gstar_shift0.5,
-                Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
-tmleind_iid.cA.cY_own.obsWT$ATE$estimates
+
+#***************************************************************************************
+# 1.1 Estimating ATE for f_gstar1 = 1 vs f_gstar2 = 0
+# using correct observation weights and correctly specified Qform & gform 
+#***************************************************************************************
+tmleind_iid.bA.bY_corrWT <- 
+  tmleCommunity(data = indSample.ind.bA.bY.rareJ1, Ynode = "Y", Anodes = "A",
+                WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = 1, f_gstar2 = 0,
+                Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr,
+                obs.wts = obs.wt.J1, verbose = TRUE)
+tmleind_iid.bA.bY_corrWT$ATE$estimates["tmle", ]  # 0.01220298, good estimate
+
+#***************************************************************************************
+# 1.2 Same as above but not specifying the observation weights
+#***************************************************************************************
+tmleind_iid.bA.bY_misWT <- 
+  tmleCommunity(data = indSample.ind.bA.bY.rareJ1, Ynode = "Y", Anodes = "A",
+                WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = 1, f_gstar2 = 0,
+                Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr,
+                obs.wts = NULL, verbose = TRUE)
+tmleind_iid.bA.bY_misWT$ATE$estimates["tmle", ]  # 0.2466575, bad estimate
