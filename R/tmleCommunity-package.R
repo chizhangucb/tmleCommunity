@@ -48,14 +48,16 @@
 #'    ArXiv e-prints. 1706.02675.
 #'  \item Mu\eqn{\~n}oz, I. D. and van der Laan, M. (2012). Population Intervention Causal Effects Based on Stochastic Interventions.
 #'    Biometrics, 68(2):541-549.
-#'  \item van der Laan, M. (2014). Causal Inference for a Population of Causally Connected Units. Journal of Causal Inference, 2(1)
 #'  \item Sofrygin, O. and van der Laan, M. J. (2015). tmlenet: Targeted Maximum Likelihood Estimation for Network Data. 
 #'    R package version 0.1.0.
+#'  \item van der Laan, M. (2014). Causal Inference for a Population of Causally Connected Units. Journal of Causal Inference, 2(1)
 #'  \item van der Laan, Mark J. and Gruber, Susan (2011). "Targeted Minimum Loss Based Estimation of an Intervention Specific 
 #'    Mean Outcome". U.C. Berkeley Division of Biostatistics Working Paper Series. Working Paper 290. 
 #'    http://biostats.bepress.com/ucbbiostat/paper290
 #'  \item van der Laan, Mark J. and Rose, Sherri, "Targeted Learning: Causal Inference for Observational and 
 #'    Experimental Data" New York: Springer, 2011.
+#'  \item Yves Croissant, Giovanni Millo (2008). Panel Data Econometrics in R: The plm Package. Journal of Statistical
+#'.   Software 27(2). URL http://www.jstatsoft.org/v27/i02/.
 #' }
 #'
 # @section Routines:
