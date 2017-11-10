@@ -110,18 +110,18 @@ NULL
 #' @format A data frame with 1000 independent communities, each containing around 50 individuals (in total 50,457 observations 
 #'  (rows)), and 8 variables (columns):
 #' \describe{
-#'   \item{id} {integer (unique) community identifier from 1 to 1000, identical within the same community}
-#'   \item{E1} {continuous uniform community-level baseline covariate with \code{min=0} and \code{max=1} (independent and identical
+#'   \item{id}{integer (unique) community identifier from 1 to 1000, identical within the same community}
+#'   \item{E1}{continuous uniform community-level baseline covariate with \code{min=0} and \code{max=1} (independent and identical
 #'     across all individuals in the same community)}
-#'   \item{E2} {discrete uniform community-level baseline covariate with 5 elements (0, 0.2, 0.4, 0.8, 1) (independent and identical
+#'   \item{E2}{discrete uniform community-level baseline covariate with 5 elements (0, 0.2, 0.4, 0.8, 1) (independent and identical
 #'     across all individuals in the same community)}
-#'   \item{W1} {binary individual-level baseline covariate that depends on the values of community-level baseline covaries (\code{E1,E2})}
-#'   \item{W2} {continuous individual-level baseline covariate, together with \code{W3}, are drawn from a bivariate normal distribution
+#'   \item{W1}{binary individual-level baseline covariate that depends on the values of community-level baseline covaries (\code{E1,E2})}
+#'   \item{W2}{continuous individual-level baseline covariate, together with \code{W3}, are drawn from a bivariate normal distribution
 #'     with correlation 0.6, depending on the values of community's baseline covaries (\code{E1, E2})}
-#'   \item{W3} {continuous normal individual-level baseline covariate, correlated with \code{W2}, see details in above}
-#'   \item{A} {binary exposure that depends on community's baseline covariate values in \code{(E1, E2)}, and the mean of all individuals'
+#'   \item{W3}{continuous normal individual-level baseline covariate, correlated with \code{W2}, see details in above}
+#'   \item{A}{binary exposure that depends on community's baseline covariate values in \code{(E1, E2)}, and the mean of all individuals'
 #'     baseline covariates \code{W1} within the same community}
-#'   \item{Y} {binary outcome that depends on community's baseline covariate and exposure values in (\code{E1}, \code{E2}, \code{A}), 
+#'   \item{Y}{binary outcome that depends on community's baseline covariate and exposure values in (\code{E1}, \code{E2}, \code{A}), 
 #'     and all individuals' baseline covariate values in \code{(W2, W3)}}
 #' }
 #' @docType data
@@ -151,13 +151,13 @@ NULL
 #'
 #' @format A data frame with 10,000 independent observations (rows) and 6 variables:
 #' \describe{
-#'   \item{W1} {binary baseline covariate with \eqn{P(W1=1) = 0.5}}
-#'   \item{W2} {binary baseline covariate with \eqn{P(W2=1) = 0.3}}
-#'   \item{W3} {continuous normal baseline covariate with \eqn{\mu} = 0 and \eqn{\sigma} = 0.25}
-#'   \item{W4} {continuous uniform baseline covariate with \code{min=0} and \code{max=1}}
-#'   \item{A} {continuous normal exposure where its mean depends on individual's baseline covariate values in \code{(W1, W2, W3, W4)}}
+#'   \item{W1}{binary baseline covariate with \eqn{P(W1=1) = 0.5}}
+#'   \item{W2}{binary baseline covariate with \eqn{P(W2=1) = 0.3}}
+#'   \item{W3}{continuous normal baseline covariate with \eqn{\mu} = 0 and \eqn{\sigma} = 0.25}
+#'   \item{W4}{continuous uniform baseline covariate with \code{min=0} and \code{max=1}}
+#'   \item{A}{continuous normal exposure where its mean depends on individual's baseline covariate values in \code{(W1, W2, W3, W4)}}
 #      \code{W2}, \code{W3}, \code{W4}}
-#'   \item{Y} {continuous normal outcome where its mean depends on individual's baseline covariate and exposure values in (\code{W1}, 
+#'   \item{Y}{continuous normal outcome where its mean depends on individual's baseline covariate and exposure values in (\code{W1}, 
 #'     \code{W2}, \code{W3}, \code{W4}, \code{A})}
 #' }
 #' @docType data
@@ -194,12 +194,12 @@ NULL
 #'
 #' @format A data frame with 2,000 independent observations (rows), containing 1000 cases and 1000 controls, and 6 variables, :
 #' \describe{
-#'   \item{W1} {continuous uniform baseline covariate with \code{min=0} and \code{max=1}}
-#'   \item{W2} {continuous normal baseline covariate with \eqn{\mu} = 0 and \eqn{\sigma} = 0.3}
-#'   \item{W3} {binary baseline covariate with \eqn{P(W2=1) = 0.5}}
-#'   \item{W4} {binary baseline covariate with \eqn{P(W2=1) = 0.5}}
-#'   \item{A} {binary exposure that depends on baseline covariate values in \code{(W1, W2, W3, W4)}}
-#'   \item{Y} {binary outcome that depends on baseline covariate and exposure values in (\code{W1, W2, W3, W4, A})}
+#'   \item{W1}{continuous uniform baseline covariate with \code{min=0} and \code{max=1}}
+#'   \item{W2}{continuous normal baseline covariate with \eqn{\mu} = 0 and \eqn{\sigma} = 0.3}
+#'   \item{W3}{binary baseline covariate with \eqn{P(W2=1) = 0.5}}
+#'   \item{W4}{binary baseline covariate with \eqn{P(W2=1) = 0.5}}
+#'   \item{A}{binary exposure that depends on baseline covariate values in \code{(W1, W2, W3, W4)}}
+#'   \item{Y}{binary outcome that depends on baseline covariate and exposure values in (\code{W1, W2, W3, W4, A})}
 #'     
 #' }
 #' @docType data
