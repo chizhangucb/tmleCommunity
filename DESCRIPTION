@@ -44,7 +44,10 @@ Suggests: doParallel,
     foreach,
     simcausal,
     testthat,
-    knitr
+    knitr,
+    glmnet,
+    randomForest,
+    gam
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1
 Collate: 
