@@ -12,7 +12,8 @@ options(tmleCommunity.verbose = FALSE)  # Don't print status messages
 # 1.1 Defining new R6 objects of DatKeepClass and RegressionClass and GenericModel
 #***************************************************************************************
 OData.g0 <- DatKeepClass$new(Odata = indSample.iid.cA.cY, nodes = nodes)
-h.g0.sVars <- define_regform(NULL, Anodes.lst = nodes$Anodes, Wnodes.lst = nodes$WEnodes)
+h.g0.sVars <- tmleCommunity:::define_regform(NULL, Anodes.lst = nodes$Anodes, 
+                                             Wnodes.lst = nodes$WEnodes)
 subsets_expr <- lapply(h.g0.sVars$outvars, function(var) {var}) 
 regclass.g0 <- RegressionClass$new(outvar = h.g0.sVars$outvars,
                                    predvars = h.g0.sVars$predvars,
