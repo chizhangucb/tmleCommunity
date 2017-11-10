@@ -76,11 +76,9 @@
 #'   \item \code{\link{indSample.iid.bA.bY.rareJ1_list}}
 #'   \item \code{\link{indSample.iid.bA.bY.rareJ2_list}}
 #' }
-#' There are a few other simulated datasets that can be used to test functions in \pkg{tmleCommunity}:
-#' \itemize{
-#'   \item \code{comSample.wmT.cA.cY_list}
-#'   \item \code{indSample.iid.cA.bY_list}
-#' }
+#' For more simulated data and the corresponding R code, please check 
+#' \url{https://github.com/chizhangucb/tmleCommunity/tree/master/tests/dataGeneration}
+#' 
 #' @section Updates:
 #' Check for updates and report bugs at \url{https://github.com/chizhangucb/tmleCommunity}.
 #'
