@@ -96,7 +96,7 @@ print_tmleCom_opts <- function() {
 #' 
 #' @return Invisibly returns a list with old option settings.
 #' 
-#' @seealso \code{\link{print_tmlenet_opts}}
+#' @seealso \code{\link{print_tmleCom_opts}}
 #' 
 #' @example tests/examples/7_tmleComOptions_examples.R 
 #' @export
