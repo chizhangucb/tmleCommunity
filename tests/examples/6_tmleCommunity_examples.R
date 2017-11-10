@@ -232,7 +232,7 @@ define_f.gstar <- function(shift.val, truncBD, rndseed = NULL) {
   shift.const <- shift.val
   trunc.const <- truncBD
   f.gstar <- function(data, ...) {
-    print("shift.const: " %+% shift.const)
+    paste0("shift.const: ", shift.const)
     set.seed(rndseed)
     A.mu <- 0.86 * data[,"W1"] + 0.41 * data[,"W2"] - 0.34 * data[,"W3"] + 0.93 * data[,"W4"]
     untrunc.A <- rnorm(n = nrow(data), mean = A.mu + shift.const, sd = 1)
@@ -316,7 +316,7 @@ tmleind_iid.cA.cY_dhist$EY_gstar1$estimates
 define_f.gstar <- function(shift.rate) {
   eval(shift.rate) 
   f.gstar <- function(data, ...) {
-    print("rate of shift: " %+% shift.rate)
+    print(paste0("rate of shift: ", shift.rate))
     data[, "A"] * shift.rate
   }
   return(f.gstar)
