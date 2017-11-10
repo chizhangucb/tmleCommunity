@@ -427,7 +427,8 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  simulation and stochastic intervention could use more simulation times such as 10 (Default to 1). 
 #' @param CI_alpha Significance level (alpha) used in constructing a confidence interval. Default to 0.05.
 #' @param rndseed Random seed for controlling sampling A under f_gstar1 or f_gstar2 (for reproducibility of Monte-Carlo simulations)
-#' @param verbose Flag. If \code{TRUE}, print status messages. Default to \code{FALSE}.
+#' @param verbose Flag. If \code{TRUE}, print status messages. Default to \code{getOption("tmleCommunity.verbose")} (Default to \code{FALSE}). It 
+#'  can be turned on by setting \code{options(tmleCommunity.verbose = TRUE)}.
 #' 
 #' @details
 #' The estimates returned by \code{tmleCommunity} are of a treatment-specific mean, \eqn{E[Y_{g^*}]}, the expected community-level outcome if all 
@@ -678,8 +679,10 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
                           fluctuation = "logistic", hform.g0 = NULL, hform.gstar = NULL, lbound = 0.005, 
                           h.g0_GenericModel = NULL, h.gstar_GenericModel = NULL, 
                           TMLE.targetStep = c("tmle.intercept", "tmle.covariate"),
-                          n_MCsims = 1, CI_alpha = 0.05, rndseed = NULL, verbose = FALSE) {
+                          n_MCsims = 1, CI_alpha = 0.05, rndseed = NULL, verbose = getOption("tmleCommunity.verbose")) {
   if (!is.null(rndseed))  set.seed(rndseed)  # make stochastic intervention trackable
+  oldverboseopt <- getOption("tmleCommunity.verbose")
+  options(tmlenet.verbose = verbose)
   gvars$verbose <- verbose
   if (verbose) { message("Running tmleCommunity with the following settings from tmleCom_Options(): "); str(gvars$opts) }
   
