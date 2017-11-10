@@ -232,7 +232,7 @@ define_f.gstar <- function(shift.val, truncBD, rndseed = NULL) {
   shift.const <- shift.val
   trunc.const <- truncBD
   f.gstar <- function(data, ...) {
-    paste0("shift.const: ", shift.const)
+    print(paste0("shift.const: ", shift.const))
     set.seed(rndseed)
     A.mu <- 0.86 * data[,"W1"] + 0.41 * data[,"W2"] - 0.34 * data[,"W3"] + 0.93 * data[,"W4"]
     untrunc.A <- rnorm(n = nrow(data), mean = A.mu + shift.const, sd = 1)
