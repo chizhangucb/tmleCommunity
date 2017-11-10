@@ -596,8 +596,8 @@ ContinModel <- R6Class(classname = "ContinModel",
 #' }
 #' @section Methods:
 #' \describe{
-#'   \item{\code{new(reg, DatKeepClass.g0, ...)}}
-#'     {Instantiate an new instance of \code{CategorModel} for a univariate categorical outcome \code{A[m]}}
+#'   \item{\code{new(reg, DatKeepClass.g0, ...)}}{Instantiate an new instance of \code{CategorModel} 
+#'     for a univariate categorical outcome \code{A[m]}}
 #'   \item{\code{fit(data)}}{...}
 #'   \item{\code{predict(newdata)}}{...}
 #'   \item{\code{predictAeqa(newdata)}}{...}
