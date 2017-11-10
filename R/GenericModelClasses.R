@@ -442,13 +442,13 @@ def_regs_subset <- function(self) {
 #' @keywords R6 class
 #' @details
 #' \itemize{
-#' \item{\code{reg}} - .
-#' \item{\code{outvar}} - .
-#' \item{\code{nbins}} - 
-#' \item{\code{bin_nms}} - Character vector of column names of bin indicators.
-#' \item{\code{intrvls}} - 
-#' \item{\code{intrvls.width}} - 
-#' \item{\code{bin_weights}} - .
+#'  \item{\code{reg}} - .
+#'  \item{\code{outvar}} - .
+#'  \item{\code{nbins}} - 
+#'  \item{\code{bin_nms}} - Character vector of column names of bin indicators.
+#'  \item{\code{intrvls}} - 
+#'  \item{\code{intrvls.width}} - 
+#'  \item{\code{bin_weights}} - .
 #' }
 #' @section Methods:
 #' \describe{
