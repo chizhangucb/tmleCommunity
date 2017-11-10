@@ -187,6 +187,32 @@ set.misval <- function(gvars, newmisval) {
 }
 gvars$misfun <- testmisfun()
 
+.onLoad <- function(libname, pkgname) {
+  op <- options()
+  op.tmleCommunity <- list(
+    tmleCommunity.verbose = gvars$verbose
+  )
+  # reset all options to their defaults on load:
+  tmleCom_Options()
+
+  toset <- !(names(op.tmleCommunity) %in% names(op))
+  if(any(toset)) options(op.tmleCommunity[toset])
+
+  invisible()
+}
+
+.onAttach <- function(...) {
+  packageStartupMessage('tmleCommunity')
+  packageStartupMessage('The tmleCommunity package is still in beta testing. Interpret results with caution.')
+  #   packageStartupMessage('Version: ', utils::packageDescription('tmlenet')$Version)
+  #   packageStartupMessage('Package created on ', utils::packageDescription('tmlenet')$Date, '\n')
+  #   packageStartupMessage('Please note this package is still in its early stages of development.
+   # Check for updates and report bugs at http://github.com/osofr/tmlenet.', '\n')
+  #   packageStartupMessage('To see the vignette use vignette("tmlenet_vignette", package="tmlenet").
+  # To see all available package documentation use help(package = "tmlenet") and ?tmlenet.', '\n')
+  #   packageStartupMessage('To see the latest updates for this version, use news(package = "tmlenet").', '\n')
+}
+
 # Allows tmleCommunity functions to use e.g., getOption("tmleCommunity.verbose") to get verbose printing status
 #.onLoad <- function(libname, pkgname) {
 #  op <- options()
