@@ -26,7 +26,7 @@ iqr <- function(x) { return(diff(quantile(x,c(.25, .75),na.rm=T))) }  # interqua
 #' @param transY Logical. If \code{TRUE}, indicate the outcome variable \code{yvar} will also be tranformed. Default to \code{TRUE}.
 #' @return \item{\code{newdata}}{Transformed panel data}
 #' @example tests/examples/8_panelData_Trans_examples.R
-#' @importFrom plm pdata.frame pFormula ercomp pmodel.response model.matrix.pFormula
+#' @importFrom plm pdata.frame pFormula ercomp pmodel.response
 #' @export
 panelData_Trans <- function(data, yvar, xvar, effect = "individual", model = "within", index = NULL, transY = TRUE) {
   formula <- as.formula(yvar %+% " ~ " %+% paste(xvar, collapse=" + "))
