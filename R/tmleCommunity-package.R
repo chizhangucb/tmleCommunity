@@ -228,7 +228,7 @@ NULL
 #'
 #' @usage data(indSample.ind.bA.bY.rareJ2_list)
 #'
-#' @format A data frame with 3,000 independent observations (rows), containing 1000 cases and 2000 controls, and 6 variables:
+#' @format A data frame with 3,000 independent observations (rows), containing 1000 cases and 2000 controls, and 6 variables
 #' @docType data
 #' @keywords datasets
 #' @name indSample.ind.bA.bY.rareJ2_list
