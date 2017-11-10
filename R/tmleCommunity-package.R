@@ -73,8 +73,8 @@
 #' \itemize{
 #'   \item \code{\link{comSample.wmT.bA.bY_list}}
 #'   \item \code{\link{indSample.iid.cA.cY_list}}
-#'   \item \code{\link{indSample.ind.bA.bY.rareJ1_list}}
-#'   \item \code{\link{indSample.ind.bA.bY.rareJ2_list}}
+#'   \item \code{\link{indSample.iid.bA.bY.rareJ1_list}}
+#'   \item \code{\link{indSample.iid.bA.bY.rareJ2_list}}
 #' }
 #' There are a few other simulated datasets that can be used to test functions in \pkg{tmleCommunity}:
 #' \itemize{
@@ -194,7 +194,7 @@ NULL
 #'  \eqn{J=nC/nCo}, where \eqn{J} can be used effectively in observation weights. The following section provides more details
 #'  regarding individual variables in simulated data.
 #'
-#' @usage data(indSample.ind.bA.bY.rareJ1_list)
+#' @usage data(indSample.iid.bA.bY.rareJ1_list)
 #'
 #' @format A data frame with 2,000 independent observations (rows), containing 1000 cases and 1000 controls, and 6 variables:
 #' \describe{
@@ -208,28 +208,28 @@ NULL
 #' }
 #' @docType data
 #' @keywords datasets
-#' @name indSample.ind.bA.bY.rareJ1_list
+#' @name indSample.iid.bA.bY.rareJ1_list
 #' @source \url{https://github.com/chizhangucb/tmleCommunity/blob/master/tests/dataGeneration/get.iid.dat.Acont.R}
 #'
 #' @examples
-#' data(indSample.ind.bA.bY.rareJ1_list)
-#' indSample.ind.bA.bY.rareJ1 <- indSample.ind.bA.bY.rareJ1_list$indSample.ind.bA.bY.rareJ1
-#' head(indSample.ind.bA.bY.rareJ1_list$obs.wt.J1)  # Assigned weights to each observations
-#' indSample.ind.bA.bY.rareJ1_list$q0  # 0.013579 True prevalence probability
-#' indSample.ind.bA.bY.rareJ1_list$psi0.Y  # 0.012662 True ATE
-#' indSample.ind.bA.bY.rareJ1_list$J  # 1 The ratio of number of controls to cases
+#' data(indSample.iid.bA.bY.rareJ1_list)
+#' indSample.iid.bA.bY.rareJ1 <- indSample.iid.bA.bY.rareJ1_list$indSample.iid.bA.bY.rareJ1
+#' head(indSample.iid.bA.bY.rareJ1_list$obs.wt.J1)  # Assigned weights to each observations
+#' indSample.iid.bA.bY.rareJ1_list$q0  # 0.013579 True prevalence probability
+#' indSample.iid.bA.bY.rareJ1_list$psi0.Y  # 0.012662 True ATE
+#' indSample.iid.bA.bY.rareJ1_list$J  # 1 The ratio of number of controls to cases
 NULL
 
 #' An Example of a Non-Hierarchical Data Containing a Binary Exposure with a Rare Outcome (Independent Case-Control J = 2)
 #'
-#' Simulated (non-hierarchical) dataset containing 3,000 i.i.d. observations. The data structure of \code{indSample.ind.bA.bY.rareJ2}
-#' is identical to this of \code{indSample.ind.bA.bY.rareJ1}, except that now the ratio of the number of controls to the number of 
+#' Simulated (non-hierarchical) dataset containing 3,000 i.i.d. observations. The data structure of \code{indSample.iid.bA.bY.rareJ2}
+#' is identical to this of \code{indSample.iid.bA.bY.rareJ1}, except that now the ratio of the number of controls to the number of 
 #' case \eqn{J} is 2. 
 #'
-#' @usage data(indSample.ind.bA.bY.rareJ2_list)
+#' @usage data(indSample.iid.bA.bY.rareJ2_list)
 #'
 #' @format A data frame with 3,000 independent observations (rows), containing 1000 cases and 2000 controls, and 6 variables
 #' @docType data
 #' @keywords datasets
-#' @name indSample.ind.bA.bY.rareJ2_list
+#' @name indSample.iid.bA.bY.rareJ2_list
 NULL
