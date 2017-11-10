@@ -1,9 +1,9 @@
-data(indSample.iid.cA.bY_list)
-indSample.iid.cA.bY <- indSample.iid.cA.bY_list$indSample.iid.cA.bY
+data(indSample.iid.cA.cY_list)
+indSample.iid.cA.cY <- indSample.iid.cA.cY_list$indSample.iid.cA.cY
 nodes <- list(Ynode = "Y", Anodes = "A", WEnodes = c("W1", "W2", "W3", "W4"))
-tmleCom_Options(maxNperBin = nrow(indSample.iid.cA.bY))
+tmleCom_Options(maxNperBin = nrow(indSample.iid.cA.cY))
 
-OData.g0 <- DatKeepClass$new(Odata = indSample.iid.cA.bY, nodes = nodes)
+OData.g0 <- DatKeepClass$new(Odata = indSample.iid.cA.cY, nodes = nodes)
 h.g0.sVars <- define_regform(A ~ W1 + W2 + W3 + W4) 
 A.nms.g0 <- h.g0.sVars$outvars
 regclass.g0 <- RegressionClass$new(outvar = A.nms.g0, predvars = h.g0.sVars$predvars,
