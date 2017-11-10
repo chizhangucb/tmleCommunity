@@ -5,7 +5,7 @@
 tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm")
 tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "glm__glm")
 
-# 1.2 using uperLearner
+# 1.2 using SuperLearner
 library(SuperLearner)
 # library including "SL.glm", "SL.glmnet", "SL.ridge", and "SL.stepAIC"
 tmleCom_Options(Qestimator = "SuperLearner", gestimator = "SuperLearner", CVfolds = 5,
