@@ -664,7 +664,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' 
 #'  \code{\link{DatKeepClass}} for details about storing, managing, subsetting and manipulating the input data,
 #' 
-#'  \code{\link{sampleDat_iidcontAContY}} for an example of a continuous exposure and its estimation,
+#'  \code{\link{indSample.iid.cA.cY_list}} for an example of a continuous exposure and its estimation,
 #' 
 #'  \code{\link{BinaryOutModel}}, \code{\link{RegressionClass}}, \code{\link{GenericModel}}, \code{\link{MonteCarloSimClass}}
 #' 
