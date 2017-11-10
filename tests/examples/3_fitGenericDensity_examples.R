@@ -2,7 +2,7 @@ data(indSample.iid.cA.cY_list)
 indSample.iid.cA.cY <- indSample.iid.cA.cY_list$indSample.iid.cA.cY
 tmleCom_Options(gestimator = "speedglm__glm", maxNperBin = nrow(indSample.iid.cA.cY),
                 bin.method = "dhist", nbins = 8)
-gvars$verbose <- TRUE  # Print status messages (global setting)
+options(tmleCommunity.verbose = TRUE)  # Print status messages 
 
 # Define a stochastic intervention
 define_f.gstar <- function(shift.rate, ...) {
