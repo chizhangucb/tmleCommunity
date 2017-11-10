@@ -74,12 +74,12 @@
 #'   \item \code{\link{comSample.wmT.bA.bY_list}}
 #'   \item \code{\link{indSample.iid.cA.cY_list}}
 #'   \item \code{\link{indSample.ind.bA.bY.rareJ1_list}}
+#'   \item \code{\link{indSample.ind.bA.bY.rareJ2_list}}
 #' }
 #' There are a few other simulated datasets that can be used to test functions in \pkg{tmleCommunity}:
 #' \itemize{
 #'   \item \code{comSample.wmT.cA.cY_list}
 #'   \item \code{indSample.iid.cA.bY_list}
-#'   \item \code{indSample.ind.bA.bY.rareJ2_list}
 #' }
 #' @section Updates:
 #' Check for updates and report bugs at \url{https://github.com/chizhangucb/tmleCommunity}.
@@ -180,7 +180,7 @@ NULL
 #' indSample.iid.cA.cY_list$shift.val
 NULL
 
-#' An Example of a Non-Hierarchical Data Containing a Binary Exposure with a Rare Binary Outcome (Independent Case-Control)
+#' An Example of a Non-Hierarchical Data Containing a Binary Exposure with a Rare Outcome (Independent Case-Control J = 1)
 #'
 #' Simulated (non-hierarchical) dataset containing 2,000 i.i.d. observations, with each row \code{i} consisting of 4 measured baseline 
 #'  covariates (\code{W1}, \code{W2}, \code{W3} and \code{W4}), 1 binary exposure (\code{A}) and 1 binary outcome (\code{Y}) that
@@ -196,7 +196,7 @@ NULL
 #'
 #' @usage data(indSample.ind.bA.bY.rareJ1_list)
 #'
-#' @format A data frame with 2,000 independent observations (rows), containing 1000 cases and 1000 controls, and 6 variables, :
+#' @format A data frame with 2,000 independent observations (rows), containing 1000 cases and 1000 controls, and 6 variables:
 #' \describe{
 #'   \item{W1}{continuous uniform baseline covariate with \code{min=0} and \code{max=1}}
 #'   \item{W2}{continuous normal baseline covariate with \eqn{\mu} = 0 and \eqn{\sigma} = 0.3}
@@ -219,3 +219,16 @@ NULL
 #' indSample.ind.bA.bY.rareJ1_list$psi0.Y  # 0.012662 True ATE
 #' indSample.ind.bA.bY.rareJ1_list$J  # 1 The ratio of number of controls to cases
 NULL
+
+#' An Example of a Non-Hierarchical Data Containing a Binary Exposure with a Rare Outcome (Independent Case-Control J = 2)
+#'
+#' Simulated (non-hierarchical) dataset containing 3,000 i.i.d. observations. The data structure of \code{indSample.ind.bA.bY.rareJ2}
+#' is identical to this of \code{indSample.ind.bA.bY.rareJ1}, except that now the ratio of the number of controls to the number of 
+#' case \eqn{J} is 2. 
+#'
+#' @usage data(indSample.ind.bA.bY.rareJ2_list)
+#'
+#' @format A data frame with 3,000 independent observations (rows), containing 1000 cases and 2000 controls, and 6 variables:
+#' @docType data
+#' @keywords datasets
+#' @name indSample.ind.bA.bY.rareJ2_list
