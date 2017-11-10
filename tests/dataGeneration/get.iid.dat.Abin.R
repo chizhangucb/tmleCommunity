@@ -111,30 +111,30 @@ drawSamples <- function(nCa, nCo, Cohort, rndseed = NULL, replace = FALSE) {
 }
 
 rndseed <- 12345 
-indPop.ind.bA.bY.rare <- get.iid.dat.Abin.Rare(ndata = 1000000, rndseed = rndseed)$Odata
-q0 <- mean(indPop.ind.bA.bY.rare$Y)  # 0.013579 Rare outcome!!
-psi0.Y <- mean(indPop.ind.bA.bY.rare$Y1) - mean(indPop.ind.bA.bY.rare$Y0) # 0.012662
+indPop.iid.bA.bY.rare <- get.iid.dat.Abin.Rare(ndata = 1000000, rndseed = rndseed)$Odata
+q0 <- mean(indPop.iid.bA.bY.rare$Y)  # 0.013579 Rare outcome!!
+psi0.Y <- mean(indPop.iid.bA.bY.rare$Y1) - mean(indPop.iid.bA.bY.rare$Y0) # 0.012662
 
 # ------------------------------
 # Sample set 1. J = 1
 # ------------------------------
 drawSamples.J1 <- drawSamples(nCa = 1000, nCo = 1000, rndseed = rndseed, replace = FALSE,
-                              Cohort = indPop.ind.bA.bY.rare[, c("W1", "W2", "W3", "W4", "A", "Y")])
-indSample.ind.bA.bY.rareJ1 <- drawSamples.J1$samples
+                              Cohort = indPop.iid.bA.bY.rare[, c("W1", "W2", "W3", "W4", "A", "Y")])
+indSample.iid.bA.bY.rareJ1 <- drawSamples.J1$samples
 obs.wt.J1 <- drawSamples.J1$obs.wt
-indSample.ind.bA.bY.rareJ1_list <- 
-  list(indSample.ind.bA.bY.rareJ1 = indSample.ind.bA.bY.rareJ1, obs.wt.J1 = obs.wt.J1,
+indSample.iid.bA.bY.rareJ1_list <- 
+  list(indSample.iid.bA.bY.rareJ1 = indSample.iid.bA.bY.rareJ1, obs.wt.J1 = obs.wt.J1,
        J = drawSamples.J1$J, q0 = q0, psi0.Y = psi0.Y, rndseed = rndseed)
-save(indSample.ind.bA.bY.rareJ1_list, file = "indSample.ind.bA.bY.rareJ1_list.rda")
+save(indSample.iid.bA.bY.rareJ1_list, file = "indSample.iid.bA.bY.rareJ1_list.rda")
 
 # ------------------------------
 # Sample set 1. J = 2
 # ------------------------------
 drawSamples.J2 <- drawSamples(nCa = 1000, nCo = 2000, rndseed = rndseed, replace = FALSE,
-                              Cohort = indPop.ind.bA.bY.rare[, c("W1", "W2", "W3", "W4", "A", "Y")])
-indSample.ind.bA.bY.rareJ2 <- drawSamples.J2$samples
+                              Cohort = indPop.iid.bA.bY.rare[, c("W1", "W2", "W3", "W4", "A", "Y")])
+indSample.iid.bA.bY.rareJ2 <- drawSamples.J2$samples
 obs.wt.J2 <- drawSamples.J2$obs.wt
-indSample.ind.bA.bY.rareJ2_list <- 
-  list(indSample.ind.bA.bY.rareJ2 = indSample.ind.bA.bY.rareJ2, obs.wt.J2 = obs.wt.J2,
+indSample.iid.bA.bY.rareJ2_list <- 
+  list(indSample.iid.bA.bY.rareJ2 = indSample.iid.bA.bY.rareJ2, obs.wt.J2 = obs.wt.J2,
        J = drawSamples.J2$J, q0 = q0, psi0.Y = psi0.Y, rndseed = rndseed)
-save(indSample.ind.bA.bY.rareJ2_list, file = "indSample.ind.bA.bY.rareJ2_list.rda")
+save(indSample.iid.bA.bY.rareJ2_list, file = "indSample.iid.bA.bY.rareJ2_list.rda")
