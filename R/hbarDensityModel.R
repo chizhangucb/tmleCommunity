@@ -147,7 +147,6 @@ predict.hbars <- function(newdatnet = NULL, model.h.fit) {
 
 # @title Defining and fitting the clever covariate h under g_0 and g_star, i.e. models P(A[j] | W, E, A[j-1])
 # @name fit.hbars
-# @importFrom assertthat assert_that is.count
 # @export
 # fit models for m_gAi
 fit.hbars <- function(OData.ObsP0, est_params_list) {
