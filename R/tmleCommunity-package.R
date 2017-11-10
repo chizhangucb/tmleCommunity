@@ -173,9 +173,9 @@ NULL
 #' # True mean of outcoem under stochastic intervention gstar
 #' psi0.Ygstar <- indSample.iid.cA.cY_list$psi0.Ygstar  
 #' # truncated bound used in sampling A* under gstar (in data generating mechanism)
-#' sampleDat_iidcontAContY$truncBD  
+#' indSample.iid.cA.cY_list$truncBD  
 #' # shift value used in sampling A* under gstar 
-#' sampleDat_iidcontAContY$shift.val
+#' indSample.iid.cA.cY_list$shift.val
 NULL
 
 #' An Example of a Non-Hierarchical Data Containing a Binary Exposure with a Rare Binary Outcome (Independent Case-Control)
