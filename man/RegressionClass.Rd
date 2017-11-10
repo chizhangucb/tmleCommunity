@@ -71,7 +71,7 @@ nodes <- list(Ynode = "Y", Anodes = "A", WEnodes = c("W1", "W2", "W3", "W4"))
 tmleCom_Options(maxNperBin = nrow(indSample.iid.cA.cY))
 
 OData.g0 <- DatKeepClass$new(Odata = indSample.iid.cA.cY, nodes = nodes)
-h.g0.sVars <- define_regform(A ~ W1 + W2 + W3 + W4) 
+h.g0.sVars <- tmleCommunity:::define_regform(A ~ W1 + W2 + W3 + W4) 
 A.nms.g0 <- h.g0.sVars$outvars
 regclass.g0 <- RegressionClass$new(outvar = A.nms.g0, predvars = h.g0.sVars$predvars,
                                    subset_vars = lapply(A.nms.g0, function(var) {var}),
