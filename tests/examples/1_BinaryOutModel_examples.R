@@ -5,7 +5,7 @@ indSample.iid.bA.bY.rareJ2 <- indSample.iid.bA.bY.rareJ2_list$indSample.iid.bA.b
 N <- nrow(indSample.iid.bA.bY.rareJ2)
 # speed.glm to fit regressions (it's GLMs to medium-large datasets)
 tmleCom_Options(Qestimator = "speedglm__glm", maxNperBin = N)
-tmleCommunity:::gvars$verbose <- TRUE  # Print status messages (global setting)
+# gvars$verbose <- TRUE  # Print status messages (global setting)
 #***************************************************************************************
 
 #***************************************************************************************
