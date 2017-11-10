@@ -75,7 +75,7 @@ print_tmleCom_opts <- function() {
 #'  \code{A[j]} (applies directly when \code{bin.method =} \code{"equal.mass"} and indirectly when \code{bin.method = "equal.len"}, but 
 #'  \code{nbins = NA}).
 #' @param parfit Logical. If \code{TRUE}, perform parallel regression fits and predictions for discretized continuous variables by 
-#'  functions \code{\link{foreach}} and \code{\link{dopar}} in \code{foreach} package. Default to \code{FALSE}. Note that it requires 
+#'  functions \code{foreach} and \code{dopar} in \code{foreach} package. Default to \code{FALSE}. Note that it requires 
 #'  registering a parallel backend prior to running \code{tmleCommunity} function, e.g., using \code{doParallel} R package and running 
 #'  \code{registerDoParallel(cores = ncores)} for \code{ncores} parallel jobs.
 #' @param poolContinVar Logical. If \code{TRUE}, when fitting a model for binirized continuous variable, pool bin indicators across
