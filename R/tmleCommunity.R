@@ -10,6 +10,7 @@
 #' @importFrom stats terms var aggregate weighted.mean as.formula pnorm pt qt reformulate model.matrix gaussian 
 #' @importFrom utils data head str
 #' @importFrom Hmisc wtd.var
+#' @importFrom assertthat assert_that is.flag is.string is.count
 
 # ------------------------------------ define_regform ----------------------------------------- 
 # Purpose: Parse the formulae for actual covariate names in A & W
