@@ -46,8 +46,9 @@ Suggests: doParallel,
     testthat,
     knitr,
     glmnet,
-    randomForest,
-    gam
+    gam,
+    arm,
+    randomForest
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1
 Collate: 
