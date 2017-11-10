@@ -58,7 +58,7 @@ options(tmleCommunity.verbose = TRUE)  # Print status messages
 define_f.gstar <- function(shift.rate, ...) {
   eval(shift.rate)
   f.gstar <- function(data, ...) {
-    print("rate of shift: " \%+\% shift.rate)
+    print(paste0("rate of shift: ", shift.rate))
     shifted.new.A <- data[, "A"] - mean(data[, "A"]) * shift.rate
     return(shifted.new.A)
   }
