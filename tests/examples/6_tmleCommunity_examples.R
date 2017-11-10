@@ -85,7 +85,7 @@ tmleCom_wmT.bA.bY.str_sglm$ATE$estimates
 require("SuperLearner")
 tmleCom_Options(Qestimator = "SuperLearner", gestimator = "SuperLearner", 
                 maxNperBin = N, SL.library = c("SL.glm", "SL.step", "SL.bayesglm"))
-require("arm")
+# require("arm") 
 tmleCom_wmT.bA.bY.2_SL <- 
   tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
                 WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1L, f_gstar2 = 0L,
