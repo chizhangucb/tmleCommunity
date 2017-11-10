@@ -425,6 +425,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  or f_g0 (if specified), with a sample size of nrow(data). Then these generated expsosures are used when fitting the conditional densities P(A | W, E).
 #'  and estimating for \strong{IPTW} and \strong{GCOMP} under intervention f_gstar1 or f_gstar2. Note that deterministic intervention only needs one 
 #'  simulation and stochastic intervention could use more simulation times such as 10 (Default to 1). 
+#' @param CI_alpha Significance level (alpha) used in constructing a confidence interval. Default to 0.05.
 #' @param rndseed Random seed for controlling sampling A under f_gstar1 or f_gstar2 (for reproducibility of Monte-Carlo simulations)
 #' @param verbose Flag. If \code{TRUE}, print status messages. Default to \code{FALSE}.
 #' 
