@@ -43,22 +43,22 @@ ndata <- 10000
 rndseed <- 12345
 
 #### Data 1. One binary, individual-level A with binary Y
-indPop.ind.bA.bY <- get.iid.dat.Abin(ndata = 1000000, rndseed = rndseed, is.Y.bin = TRUE)$Odata
-psi0.Y <- mean(indPop.ind.bA.bY$Y1) - mean(indPop.ind.bA.bY$Y0) # 0.348242
-indSample.ind.bA.bY <- get.iid.dat.Abin(ndata = ndata, rndseed = rndseed, is.Y.bin = TRUE)$Odata
-indSample.ind.bA.bY <- indSample.ind.bA.bY[, c("W1", "W2", "W3", "W4", "A", "Y")]
-indSample.ind.bA.bY_list <- list(indSample.ind.bA.bY = indSample.ind.bA.bY, rndseed = rndseed, psi0.Y = psi0.Y,
-                                 psi0.Y1 = mean(indPop.ind.bA.bY$Y1), psi0.Y0 = mean(indPop.ind.bA.bY$Y0))
-save(indSample.ind.bA.bY_list, file="indSample.ind.bA.bY_list.Rda")
+indPop.iid.bA.bY <- get.iid.dat.Abin(ndata = 1000000, rndseed = rndseed, is.Y.bin = TRUE)$Odata
+psi0.Y <- mean(indPop.iid.bA.bY$Y1) - mean(indPop.iid.bA.bY$Y0) # 0.348242
+indSample.iid.bA.bY <- get.iid.dat.Abin(ndata = ndata, rndseed = rndseed, is.Y.bin = TRUE)$Odata
+indSample.iid.bA.bY <- indSample.iid.bA.bY[, c("W1", "W2", "W3", "W4", "A", "Y")]
+indSample.iid.bA.bY_list <- list(indSample.iid.bA.bY = indSample.iid.bA.bY, rndseed = rndseed, psi0.Y = psi0.Y,
+                                 psi0.Y1 = mean(indPop.iid.bA.bY$Y1), psi0.Y0 = mean(indPop.iid.bA.bY$Y0))
+save(indSample.iid.bA.bY_list, file="indSample.iid.bA.bY_list.Rda")
 
 #### Data 2. One binary, individual-level A with continuous Y
-indPop.ind.bA.cY <- get.iid.dat.Abin(ndata = 1000000, rndseed = rndseed, is.Y.bin = FALSE)$Odata
-psi0.Y <- mean(indPop.ind.bA.cY$Y1) - mean(indPop.ind.bA.cY$Y0) # 1.800267
-indSample.ind.bA.cY <- get.iid.dat.Abin(ndata = ndata, rndseed = rndseed, is.Y.bin = FALSE)$Odata
+indPop.iid.bA.cY <- get.iid.dat.Abin(ndata = 1000000, rndseed = rndseed, is.Y.bin = FALSE)$Odata
+psi0.Y <- mean(indPop.iid.bA.cY$Y1) - mean(indPop.iid.bA.cY$Y0) # 1.800267
+indSample.iid.bA.cY <- get.iid.dat.Abin(ndata = ndata, rndseed = rndseed, is.Y.bin = FALSE)$Odata
 indSample.ind.bA.cY <- indSample.ind.bA.cY[, c("W1", "W2", "W3", "W4", "A", "Y")]
 indSample.ind.bA.cY_list <- list(indSample.ind.bA.cY = indSample.ind.bA.cY, rndseed = rndseed, psi0.Y = psi0.Y,
-                                 psi0.Y1 = mean(indPop.ind.bA.cY$Y1), psi0.Y0 = mean(indPop.ind.bA.cY$Y0))
-save(indSample.ind.bA.cY_list, file="indSample.ind.bA.cY_list.Rda")
+                                 psi0.Y1 = mean(indPop.iid.bA.cY$Y1), psi0.Y0 = mean(indPop.iid.bA.cY$Y0))
+save(indSample.iid.bA.cY_list, file="indSample.iid.bA.cY_list.Rda")
 
 
 #**************************************************************
