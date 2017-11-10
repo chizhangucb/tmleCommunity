@@ -6,6 +6,7 @@ tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm")
 tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "glm__glm")
 
 # 1.2 using uperLearner
+library(Superlearner)
 # library including "SL.glm", "SL.glmnet", "SL.ridge", and "SL.stepAIC"
 tmleCom_Options(Qestimator = "SuperLearner", gestimator = "SuperLearner", CVfolds = 5,
                 SL.library = c("SL.glm", "SL.glmnet", "SL.ridge", "SL.stepAIC"))
@@ -36,8 +37,8 @@ tmleCom_Options(Qestimator = "SuperLearner", gestimator = "SuperLearner",
                 SL.library = SL.library, CVfolds = 5)            
 
 # 1.3 using h2o.ensemble
+library("h2o"); library("h2oEnsemble")
 # h2olearner including "h2o.glm.wrapper" and "h2o.randomForest.wrapper"
-require("h2oEnsemble")
 tmleCom_Options(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble", 
                 CVfolds = 10, h2ometalearner = "h2o.glm.wrapper", 
                 h2olearner = c("h2o.glm.wrapper", "h2o.randomForest.wrapper"))
