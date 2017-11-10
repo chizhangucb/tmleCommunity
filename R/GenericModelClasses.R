@@ -452,8 +452,7 @@ def_regs_subset <- function(self) {
 #' }
 #' @section Methods:
 #' \describe{
-#'   \item{\code{new(reg, DataStorageClass.g0, DataStorageClass.gstar, ...)}} 
-#' 	{Instantiate an new instance of \code{ContinModel} for a univariate continuous outcome \code{A[m]}}
+#'   \item{\code{new(reg, DataStorageClass.g0, DataStorageClass.gstar, ...)}}{Instantiate an new instance of \code{ContinModel} for a univariate continuous outcome \code{A[m]}}
 #'   \item{\code{fit(data, savespace = TRUE)}}{...}
 #'   \item{\code{predict(newdata, savespace = TRUE)}}{...}
 #'   \item{\code{predictAeqa(newdata, savespace = TRUE, wipeProb = TRUE)}}{...}
@@ -596,8 +595,7 @@ ContinModel <- R6Class(classname = "ContinModel",
 #' }
 #' @section Methods:
 #' \describe{
-#'   \item{\code{new(reg, DatKeepClass.g0, ...)}}{Instantiate an new instance of \code{CategorModel} 
-#'     for a univariate categorical outcome \code{A[m]}}
+#'   \item{\code{new(reg, DatKeepClass.g0, ...)}}{Instantiate an new instance of \code{CategorModel} for a univariate categorical outcome \code{A[m]}}
 #'   \item{\code{fit(data)}}{...}
 #'   \item{\code{predict(newdata)}}{...}
 #'   \item{\code{predictAeqa(newdata)}}{...}
