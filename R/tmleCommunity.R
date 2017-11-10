@@ -2,7 +2,6 @@
 # @docType package
 # @author Chi Zhang, Oleg Sofrygin, Mark J. van der Laan
 
-#' @useDynLib tmleCommunity
 #' @import R6
 #' @importFrom grDevices nclass.FD nclass.Sturges nclass.scott
 #' @importFrom graphics axis barplot hist par text
