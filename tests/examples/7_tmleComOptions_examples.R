@@ -7,12 +7,11 @@ tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "glm__glm")
 
 # 1.2 using uperLearner
 # library including "SL.glm", "SL.glmnet", "SL.ridge", and "SL.stepAIC"
-require("glmnet")
 tmleCom_Options(Qestimator = "SuperLearner", gestimator = "SuperLearner", CVfolds = 5,
                 SL.library = c("SL.glm", "SL.glmnet", "SL.ridge", "SL.stepAIC"))
 
 # library including "SL.bayesglm", "SL.gam", and "SL.randomForest", and split to 10 CV folds
-require("gam"); require("randomForest")
+# require("gam"); require("randomForest")
 tmleCom_Options(Qestimator = "SuperLearner", gestimator = "SuperLearner", CVfolds = 10,
                 SL.library = c("SL.bayesglm", "SL.gam", "SL.randomForest"))
 
@@ -31,8 +30,6 @@ create.SL.rf <- create.Learner("SL.randomForest", list(ntree = 100))
 # Create a sequence of 3 customized KNN learners 
 # set the number of nearest neighbors as 8 and 12 rather than the default of 10
 create.SL.Knn <- create.Learner("SL.kernelKnn", detailed_names = T, tune = list(k = c(8, 12)))
-
-require("class"); require("randomForest"); require("glmnet")
 SL.library <- c(grep("SL.glmnet.", as.vector(lsf.str()), value=TRUE), 
                 create.SL.rf$names, create.SL.Knn$names)
 tmleCom_Options(Qestimator = "SuperLearner", gestimator = "SuperLearner", 
