@@ -64,12 +64,13 @@ mean(m.Q.init$getprobA1)  # 0.02175083, bad estimate since misspecified Qform
 # 1.3 Same as above but using Super Learner (data-adaptive algorithms)
 #***************************************************************************************
 # Specifying the SuperLearner library in tmleCom_Options() 
-tmleCom_Options(SL.library = c("SL.glm", "SL.glm.interaction", "SL.randomForest"), 
-                maxNperBin = N)
-# S
-Qreg$estimator <- "SuperLearner"
-set.seed(12345)
 library(SuperLearner)
+tmleCom_Options(SL.library = c("SL.glm", "SL.randomForest"), maxNperBin = N)
+# Instead of reinitiating a RegressionClass object, change estimator directly in Qreg 
+# so don't need to redefine Qestimator in tmleCom_Options()
+Qreg$estimator <- "SuperLearner"
+
+set.seed(12345)
 m.Q.init <- BinaryOutModel$new(reg = Qreg)$fit(data = OData_R6, savespace = TRUE)
 m.Q.init$predict(newdata = OData_R6, savespace = TRUE)
 mean(m.Q.init$getprobA1)
