@@ -1,9 +1,9 @@
 #***************************************************************************************
 # Example 1: Defining and modeling P(A | W) with continuous A
-data(indSample.iid.cA.bY_list)
-indSample.iid.cA.bY <- indSample.iid.cA.bY_list$indSample.iid.cA.bY
+data(indSample.iid.cA.cY_list)
+indSample.iid.cA.cY <- indSample.iid.cA.cY_list$indSample.iid.cA.cY
 nodes <- list(Ynode = "Y", Anodes = "A", WEnodes = c("W1", "W2", "W3", "W4"))
-tmleCom_Options(gestimator = "speedglm__glm", maxNperBin = nrow(indSample.iid.cA.bY),
+tmleCom_Options(gestimator = "speedglm__glm", maxNperBin = nrow(indSample.iid.cA.cY),
                 bin.method = "equal.mass", nbins = 10)
 gvars$verbose <- TRUE  # Print status messages (global setting)
 #***************************************************************************************
@@ -11,7 +11,7 @@ gvars$verbose <- TRUE  # Print status messages (global setting)
 #***************************************************************************************
 # 1.1 Defining new R6 objects of DatKeepClass and RegressionClass and GenericModel
 #***************************************************************************************
-OData.g0 <- DatKeepClass$new(Odata = indSample.iid.cA.bY, nodes = nodes)
+OData.g0 <- DatKeepClass$new(Odata = indSample.iid.cA.cY, nodes = nodes)
 h.g0.sVars <- define_regform(NULL, Anodes.lst = nodes$Anodes, Wnodes.lst = nodes$WEnodes)
 subsets_expr <- lapply(h.g0.sVars$outvars, function(var) {var}) 
 regclass.g0 <- RegressionClass$new(outvar = h.g0.sVars$outvars,
