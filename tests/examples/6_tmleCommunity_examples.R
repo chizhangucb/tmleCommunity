@@ -71,7 +71,7 @@ tmleCom_Options(Qestimator = "glm__glm", gestimator = "glm__glm", maxNperBin = N
 tmleCom_wmT.bA.bY.str_sglm <- 
   tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
                 WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1L, f_gstar2 = 0L,
-                community.step = "PerCommunity", communityID = "id", verbose = TRUE,
+                community.step = "perCommunity", communityID = "id", verbose = TRUE,
                 Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
 tmleCom_wmT.bA.bY.str_sglm$ATE$estimates
 
@@ -85,7 +85,6 @@ tmleCom_wmT.bA.bY.str_sglm$ATE$estimates
 require("SuperLearner")
 tmleCom_Options(Qestimator = "SuperLearner", gestimator = "SuperLearner", 
                 maxNperBin = N, SL.library = c("SL.glm", "SL.step", "SL.bayesglm"))
-# require("arm") 
 tmleCom_wmT.bA.bY.2_SL <- 
   tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
                 WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1L, f_gstar2 = 0L,
