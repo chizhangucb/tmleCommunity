@@ -37,7 +37,7 @@ newsummarymodel.binary <- function(reg, ...) BinaryOutModel$new(reg = reg, ...)
 #' \item{\code{outvar.class}} - Character vector of outcome variable classes (of length(outvar)): one of \code{bin}, \code{cont}, \code{cat}.
 #' \item{\code{outvar}} - Character vector of regression outcome variable names.
 #' \item{\code{predvars}} - Character vector of regression-specific predictor names or a pool of all available predictor names.
-#' \item{{reg_hazard}} - Logical, hazard fitting method. If TRUE, factorize P(outvar | predvars) into \prod_{j}{P(outvar[j] | predvars)} for each j.
+#' \item{{reg_hazard}} - Logical, hazard fitting method. If TRUE, factorize P(outvar | predvars) into \\prod_{j}{P(outvar[j] | predvars)} for each j.
 #' \item{\code{subset_vars}} - Named list for subset variables/ expression (later converted to logical vector).
 #' \item{\code{ReplMisVal0}} - Logical. If TRUE, user-supplied gvars$misXreplace (Default to 0) will be used to replace all gvars$misval 
 #'   among predictors (Default to TRUE).
