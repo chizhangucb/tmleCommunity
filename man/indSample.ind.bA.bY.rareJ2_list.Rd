@@ -4,7 +4,7 @@
 \name{indSample.ind.bA.bY.rareJ2_list}
 \alias{indSample.ind.bA.bY.rareJ2_list}
 \title{An Example of a Non-Hierarchical Data Containing a Binary Exposure with a Rare Outcome (Independent Case-Control J = 2)}
-\format{A data frame with 3,000 independent observations (rows), containing 1000 cases and 2000 controls, and 6 variables:}
+\format{A data frame with 3,000 independent observations (rows), containing 1000 cases and 2000 controls, and 6 variables}
 \usage{
 data(indSample.ind.bA.bY.rareJ2_list)
 }
