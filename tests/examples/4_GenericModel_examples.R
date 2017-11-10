@@ -34,7 +34,7 @@ OData.g0$binirize.sVar(name.sVar = genericmodels.g0.A1$outvar,
                        nbins = genericmodels.g0.A1$reg$nbins, 
                        bin.nms = genericmodels.g0.A1$bin_nms)  
 bin.ind.mat <- OData.g0$dat.bin.sVar
-colSums(bin.ind.mat, na.rm = T)   # Each bin has 1000 obs since "equal.mass" with 10 bins
+colSums(bin.ind.mat, na.rm = TRUE)   # Each bin has 1000 obs as "equal.mass" with 10 bins
 
 #***************************************************************************************
 # 1.3 Fitting regression models for the first exposure variable  
