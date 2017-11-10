@@ -76,7 +76,7 @@
 #'   \item \code{\link{indSample.iid.bA.bY.rareJ1_list}}
 #'   \item \code{\link{indSample.iid.bA.bY.rareJ2_list}}
 #' }
-#' For more simulated data and the corresponding R code, please check 
+#' For R code that can simulate more data with different structures, please check 
 #'
 #' \url{https://github.com/chizhangucb/tmleCommunity/tree/master/tests/dataGeneration}
 #' 
