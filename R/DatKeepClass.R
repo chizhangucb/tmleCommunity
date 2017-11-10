@@ -405,8 +405,7 @@ is.DatKeepClass <- function(DatKeepClass) "DatKeepClass" %in% class(DatKeepClass
 #'    \item{\code{nobs}}{Return the number of observations of the input data.}
 #'    \item{\code{dat.sVar}}{Return a data frame object that stores the entire dataset (including all \code{sVar}.).}
 #'    \item{\code{dat.bin.sVar}}{Return a stored matrix for bin indicators on currently binarized continous \code{sVar}.}
-#'    \item{\code{active.bin.sVar}}
-#'      {Return name(s) of active binarized continous sVar(s), changing when \code{fit} or \code{predict} is called.}
+#'    \item{\code{active.bin.sVar}}{Return name(s) of active binarized continous sVar(s), changing when \code{fit} or \code{predict} is called.}
 #'    \item{\code{emptydat.sVar}}{Wipe out \code{dat.sVar}.}
 #'    \item{\code{emptydat.bin.sVar}}{Wipe out \code{dat.bin.sVar}.}
 #'    \item{\code{noNA.Ynodevals}}{Return the observed Y without any missing values.}
