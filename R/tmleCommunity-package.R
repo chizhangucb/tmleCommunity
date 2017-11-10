@@ -104,8 +104,9 @@ NULL
 #'  the individual-level binary outcome \code{Y} for each individual \eqn{i} within communty \eqn{j} was sampled conditionally 
 #'  covariates and exposure (\code{E1[j], E2[j], A[j]}), as well as the value of individual \eqn{i}'s baseline covariates 
 #'  on the value of community \eqn{j}'s baseline (\code{W1[i]}, \code{W2[i]}, \code{W3[i]}). The following section provides more 
-#'  details regarding individual variables in simulated data.  R code for simulation of this dataset is at
-#'  \url{https://github.com/chizhangucb/tmleCommunity/blob/master/tests/dataGeneration/get.cluster.dat.Abin.R}
+#'  details regarding individual variables in simulated data. 
+#'
+#' @usage data(comSample.wmT.bA.bY_list)
 #'
 #' @format A data frame with 1000 independent communities, each containing around 50 individuals (in total 50,457 observations 
 #'  (rows)), and 8 variables (columns):
@@ -127,7 +128,7 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @name comSample.wmT.bA.bY_list
-#' @usage data(comSample.wmT.bA.bY_list)
+#' @source \url{https://github.com/chizhangucb/tmleCommunity/blob/master/tests/dataGeneration/get.cluster.dat.Abin.R}
 #'
 #' @examples
 #' data(comSample.wmT.bA.bY_list)
@@ -146,9 +147,10 @@ NULL
 #'  for each observation \code{i} was drawn conditionally on the value of \code{i}'s four baseline covariates. Besides, the continuous
 #'  outcome \code{Y} for each observation depends on \code{i}'s baseline covariates and exposure values in (\code{W1[i]},\code{W2[i]},
 #'  \code{W3[i]}, \code{W4[i]}, \code{A[i]}). The following section provides more details regarding individual variables in simulated 
-#'  data. R code for simulation of this dataset is at 
-#'  \url{https://github.com/chizhangucb/tmleCommunity/blob/master/tests/dataGeneration/get.iid.dat.Acont.R}
-#'
+#'  data.
+#'  
+#' @usage data(indSample.iid.cA.cY_list)
+#' 
 #' @format A data frame with 10,000 independent observations (rows) and 6 variables:
 #' \describe{
 #'   \item{W1}{binary baseline covariate with \eqn{P(W1=1) = 0.5}}
@@ -163,7 +165,7 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @name indSample.iid.cA.cY_list
-#' @usage data(indSample.iid.cA.cY_list)
+#' @source \url{https://github.com/chizhangucb/tmleCommunity/blob/master/tests/dataGeneration/get.iid.dat.Acont.R}
 #' 
 #' @examples
 #' data(indSample.iid.cA.cY_list)
@@ -192,6 +194,8 @@ NULL
 #'  \eqn{J=nC/nCo}, where \eqn{J} can be used effectively in observation weights. The following section provides more details
 #'  regarding individual variables in simulated data.
 #'
+#' @usage data(indSample.ind.bA.bY.rareJ1_list)
+#'
 #' @format A data frame with 2,000 independent observations (rows), containing 1000 cases and 1000 controls, and 6 variables, :
 #' \describe{
 #'   \item{W1}{continuous uniform baseline covariate with \code{min=0} and \code{max=1}}
@@ -205,7 +209,7 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @name indSample.ind.bA.bY.rareJ1_list
-#' @usage data(indSample.ind.bA.bY.rareJ1_list)
+#' @source \url{https://github.com/chizhangucb/tmleCommunity/blob/master/tests/dataGeneration/get.iid.dat.Acont.R}
 #'
 #' @examples
 #' data(indSample.ind.bA.bY.rareJ1_list)
