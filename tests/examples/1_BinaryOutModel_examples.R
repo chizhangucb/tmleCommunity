@@ -13,21 +13,21 @@ tmleCom_Options(Qestimator = "speedglm__glm", maxNperBin = N)
 #***************************************************************************************
 # Y depends on all its parent nodes (A, W1, W2, W3, W4) 
 Qform.all <- Y ~ W1 + W2 + W3 + W4 + A
-Q.sVars1 <- define_regform(regform = Qform.all)
+Q.sVars1 <- tmleCommunity:::define_regform(regform = Qform.all)
 
 # Equivalent way to define Q.sVars: use Anodes.lst (outcomes) & Wnodes.lst (predictors)
 # node can only contain one or more of Ynode, Anodes, WEnodes, communityID and Crossnodes
 nodes <- list(Ynode = "Y", Anodes = "A", WEnodes = c("W1", "W2", "W3", "W4"))
-Q.sVars2 <- define_regform(regform = NULL, Anodes.lst = nodes$Ynode, 
-                           Wnodes.lst = nodes[c("Anodes", "WEnodes")])
+Q.sVars2 <- tmleCommunity:::define_regform(regform = NULL, Anodes.lst = nodes$Ynode, 
+                                           Wnodes.lst = nodes[c("Anodes", "WEnodes")])
 
 # Also allows to include interaction terms in regression formula  (Correct Qform)
 Qform.interact <- Y ~ W1 + W2*A + W3 + W4
-Q.sVars3 <- define_regform(regform = Qform.interact)
+Q.sVars3 <- tmleCommunity:::define_regform(regform = Qform.interact)
 
 # Alternative way to define Qform.interact 
 Qform.interact2 <- Y ~ W1 + W2 + W3 + W4 + A + W2:A
-Q.sVars4 <- define_regform(regform = Qform.interact2)
+Q.sVars4 <- tmleCommunity:::define_regform(regform = Qform.interact2)
 
 #***************************************************************************************
 # 1.2 Fit and predict a regression model for outcome mechanism Qbar(A, W)
