@@ -30,7 +30,7 @@ create.SL.glmnet(seq(0, 1, length.out=3))  # 3 glmnet wrappers with alpha = 0, 0
 create.SL.rf <- create.Learner("SL.randomForest", list(ntree = 100))
 # Create a sequence of 3 customized KNN learners 
 # set the number of nearest neighbors as 8 and 12 rather than the default of 10
-create.SL.Knn <- create.Learner("SL.kernelKnn", detailed_names = T, tune = list(k = c(8, 12)))
+create.SL.Knn <- create.Learner("SL.kernelKnn", detailed_names = TRUE, tune = list(k = c(8, 12)))
 SL.library <- c(grep("SL.glmnet.", as.vector(lsf.str()), value=TRUE), 
                 create.SL.rf$names, create.SL.Knn$names)
 tmleCom_Options(Qestimator = "SuperLearner", gestimator = "SuperLearner", 
