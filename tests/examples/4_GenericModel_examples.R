@@ -5,7 +5,7 @@ indSample.iid.cA.cY <- indSample.iid.cA.cY_list$indSample.iid.cA.cY
 nodes <- list(Ynode = "Y", Anodes = "A", WEnodes = c("W1", "W2", "W3", "W4"))
 tmleCom_Options(gestimator = "speedglm__glm", maxNperBin = nrow(indSample.iid.cA.cY),
                 bin.method = "equal.mass", nbins = 10)
-gvars$verbose <- TRUE  # Print status messages (global setting)
+options(tmleCommunity.verbose = FALSE)  # Don't print status messages
 #***************************************************************************************
 
 #***************************************************************************************
