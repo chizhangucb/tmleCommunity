@@ -195,10 +195,8 @@ gvars$misfun <- testmisfun()
   )
   # reset all options to their defaults on load:
   tmleCom_Options()
-
   toset <- !(names(op.tmleCommunity) %in% names(op))
   if(any(toset)) options(op.tmleCommunity[toset])
-
   invisible()
 }
 
