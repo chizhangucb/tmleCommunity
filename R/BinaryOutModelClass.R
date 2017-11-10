@@ -1,5 +1,3 @@
-#' @importFrom assertthat assert_that is.flag is.string
-
 logit_linkinv <- function(x) { plogis(x) }
 
 #----------------------------------------------------------------------------------
