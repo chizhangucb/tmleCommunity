@@ -13,6 +13,8 @@ fitGenericDensity(data, Anodes, Wnodes, gform = NULL, f_gstar,
 
 \item{Anodes}{Column names or indices in \code{data} of outcome variables; exposures can be either binary, categorical or continuous.}
 
+\item{Wnodes}{Column names or indices in \code{data} of baseline covariates. Factors are not currently allowed.}  
+
 \item{gform}{Character vector of regression formula for estimating the conditional density of P(A | W)}
 
 \item{f_gstar}{Either a function or a vector or a matrix/ data frame of counterfactual exposures. See details in function argument 
@@ -29,8 +31,6 @@ fitGenericDensity(data, Anodes, Wnodes, gform = NULL, f_gstar,
 \item{rndseed}{...}
 
 \item{verbose}{...}
-
-\item{Wndoes}{Column names or indices in \code{data} of baseline covariates. Factors are not currently allowed.}
 }
 \value{
 A named list with 3 items containing the estimation results for:
