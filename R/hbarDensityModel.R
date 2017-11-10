@@ -12,7 +12,7 @@
 #' See detailed description in \code{\link{RegressionClass}}.
 #' @param data \code{data.frame} with named columns, containing \code{Wnodes}, \code{Anode} and \code{Ynode}.
 #' @param Anodes Column names or indices in \code{data} of outcome variables; exposures can be either binary, categorical or continuous.
-#' @param Wndoes Column names or indices in \code{data} of baseline covariates. Factors are not currently allowed.
+#' @param Wnodes Column names or indices in \code{data} of baseline covariates. Factors are not currently allowed.
 #' @param gform Character vector of regression formula for estimating the conditional density of P(A | W)
 #' @param f_gstar Either a function or a vector or a matrix/ data frame of counterfactual exposures. See details in function argument 
 #'  \code{f_gstar1} in \code{\link{tmleCommunity}}.
