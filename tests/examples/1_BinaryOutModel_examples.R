@@ -67,7 +67,7 @@ mean(m.Q.init$getprobA1)  # 0.02175083, bad estimate since misspecified Qform
 # specify the estimator used in Qreg and SuperLearner library
 Qreg$estimator <- "SuperLearner"
 # Another way to specify the prediction algorithms in SL library
-gvars$opts$g.SL.library <- c("SL.glm", "SL.glm.interaction", "SL.randomForest")
+tmleCommunity:::gvars$opts$g.SL.library <- c("SL.glm", "SL.glm.interaction", "SL.randomForest")
 
 set.seed(12345)
 library(SuperLearner)
