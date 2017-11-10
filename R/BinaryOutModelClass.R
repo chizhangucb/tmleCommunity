@@ -1,3 +1,5 @@
+#' @importFrom assertthat assert_that is.flag is.string
+
 logit_linkinv <- function(x) { plogis(x) }
 
 #----------------------------------------------------------------------------------
@@ -64,7 +66,7 @@ predict_single_reg.h2o <- function(self) {
   pAout <- rep.int(gvars$misval, self$n)
   if ( any(class(model.fit) %in% "h2o.ensemble")) {
     if (sum(self$subset_idx > 0)) {
-      test <- as.h2o(Xmat)
+      test <- h2o::as.h2o(Xmat)
       predictions <- predict(model.fit, newdata = test)
       if (model.fit$family == "gaussian") { 
         pAout[self$subset_idx] <-  as.vector(predictions$pred)
@@ -389,8 +391,6 @@ join.Xmat = function(X_mat, sVar_melt_DT, ID) {
 #'   \item{\code{getY}}{...}
 #'   \item{\code{getWeight}}{...}
 #' }
-#' @import SuperLearner
-#' @importFrom assertthat assert_that is.flag is.string
 #' @seealso \code{\link{DatKeepClass}}, \code{\link{RegressionClass}}, \code{\link{tmleCom_Options}}
 #' @example tests/examples/1_BinaryOutModel_examples.R
 #' @export
