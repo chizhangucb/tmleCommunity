@@ -6,7 +6,7 @@
 #' @importFrom grDevices nclass.FD nclass.Sturges nclass.scott
 #' @importFrom graphics axis barplot hist par text
 #' @importFrom methods is
-#' @importFrom stats approx quasibinomial binomial coef glm.control glm.fit plogis predict qlogis qnorm quantile rnorm runif terms var
+#' @importFrom stats approx quasibinomial binomial coef glm.control glm.fit plogis predict qlogis qnorm quantile rnorm runif terms var aggregate weighted.mean as.formula
 #' @importFrom utils data head str
 #' @importFrom Hmisc wtd.var
 
