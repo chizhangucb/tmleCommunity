@@ -63,3 +63,24 @@ test_that("f_gstar must contain a length (number of rows) 1 or NROW(data)", {
     "If 'f_gstar1' is a vector/matrix/data.frame, it should have a " %+% 
       "length \\(number of rows\\) 1 or NROW\\(data\\)")
 })
+
+data("comSample.wmT.bA.bY_list", package = "tmleCommunity")
+comSample.wmT.bA.bY <- comSample.wmT.bA.bY_list$comSample.wmT.bA.bY
+nodes <- list(Ynode = "Y", Anodes = "A", WEnodes = c("E1", "E2", "W1", "W2", "W3"))
+Qform <- "Y ~ E1 + E2 + W2 + W3 + A"
+hform.g0 <- hform.gstar <- "A ~ E1 + E2 + W1" 
+obs.wts <- rep(1, NROW(comSample.wmT.bA.bY))
+community.wts <- 
+  as.data.frame(matrix(0L, nrow = length(unique(comSample.wmT.bA.bY[, "id"])), ncol = 2))
+community.wts[, 2] <-  as.vector(table(comSample.wmT.bA.bY[, "id"]))
+
+test_that("community.wts must contain the same number of communities & same IDs as data", {
+  warns <- capture_warnings(
+    tmleCommunity:::CheckInputs(data = comSample.wmT.bA.bY, nodes, Qform, 
+                                hform.g0, hform.gstar, fluctuation, Qbounds, obs.wts, 
+                                community.wts[1:10, ], f_gstar1, f_gstar2))
+  expect_match(warns, "'community.wts', must contain the same number of non-negative" %+% 
+                 " communities as 'data' does, and has 2 columns", all = FALSE)
+  expect_match(warns, "'community.wts', must contain the same community IDs as data" %+% 
+                 " does \\(diff order is ok but no duplicate allows\\)", all = FALSE)
+})
