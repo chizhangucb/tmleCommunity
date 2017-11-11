@@ -55,11 +55,11 @@ test_that("obs.wts must contain the same number of non-negative obs as data does
     "'obs.wts', must contain the same number of non-negative observations as 'data' does")
 })
 
-test_that("f_gstar must contain a length (number of rows) NROW(data)", {
+test_that("f_gstar must contain a length (number of rows) 1 or NROW(data)", {
   expect_warning(
     tmleCommunity:::CheckInputs(data = indSample.iid.bA.bY.rareJ1, nodes, Qform, 
                                 hform.g0, hform.gstar, fluctuation, Qbounds, obs.wts,
                                 community.wts, f_gstar1 = 1:10, f_gstar2),
     "If 'f_gstar1' is a vector/matrix/data.frame, it should have a " %+% 
-      "length 1 or \\(number of rows\\) NROW\\(data\\)")
+      "length \\(number of rows\\) 1 or NROW\\(data\\)")
 })
