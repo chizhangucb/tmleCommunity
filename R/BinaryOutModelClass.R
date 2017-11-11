@@ -32,6 +32,7 @@ predict_single_reg.glm <- function(self) {  # Does not handle cases with determi
 }
 
 predict_single_reg.glm.long <- function(self) {
+  ID <- NULL
   model.fit <- self$getfit
   Xmat <- self$getXmat  
   Y_vals <- self$getY
