@@ -211,6 +211,22 @@ hform.g0 <- "A ~ E1 + E2 + W1"
 hform.gstar <- NULL
 
 #***************************************************************************************
+# 1.8 Equivalent ways of allowing printing status message
+#***************************************************************************************
+# Controlling the global setting 
+options(tmleCommunity.verbose = TRUE)
+tmleCom_wmT.bA.bY.print1 <- 
+  tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1L, f_gstar2 = 0L,
+                community.step = "community_level", communityID = "id")
+
+# Alternative: using the verbose argument in tmleCommunity()
+tmleCom_wmT.bA.bY.print2 <- 
+  tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1L, f_gstar2 = 0L,
+                community.step = "community_level", communityID = "id", verbose = TRUE)
+
+#***************************************************************************************
 # Example 2: Non-hierarchical example, with one continuous A and continuous Y 
 # True mean population outcome under stochastic intervention (specified below)
 # is approximately 3.50856
@@ -275,21 +291,8 @@ tmleind_iid.cA.cY_10MC <-
                 WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = f.gstar.corr, n_MCsims = 10)
 tmleind_iid.cA.cY_10MC$EY_gstar1$estimates
 
-# A will be sampled 1000 times (for a total sample size of NROW(data)*1000 under f_gstar1)
-tmleind_iid.cA.cY_1000MC <- 
-  tmleCommunity(data = indSample.iid.cA.cY, Ynode = "Y", Anodes = "A", 
-                WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = f.gstar.corr, n_MCsims = 1000)
-tmleind_iid.cA.cY_1000MC$EY_gstar1$estimates
-
 #***************************************************************************************
-# 2.4 Same as above but printing out status messages 
-#***************************************************************************************
-tmleind_iid.cA.cY_10MC <- 
-  tmleCommunity(data = indSample.iid.cA.cY, Ynode = "Y", Anodes = "A", verbose = TRUE, 
-                WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = f.gstar.corr, n_MCsims = 10)
-
-#***************************************************************************************
-# 2.5 Running exactly the same estimator as 2.1 but defining different values of bin cutoffs 
+# 2.4 Running exactly the same estimator as 2.1 but defining different values of bin cutoffs 
 #***************************************************************************************
 # using equal-length method with 10 bins 
 tmleCom_Options(bin.method = "equal.len", nbins = 10, maxNperBin = N)
@@ -308,7 +311,7 @@ tmleind_iid.cA.cY_dhist <-
 tmleind_iid.cA.cY_dhist$EY_gstar1$estimates
 
 #***************************************************************************************
-# 2.6 Estimating the additive treatment effect (ATE) for two stochastic interventions
+# 2.5 Estimating the additive treatment effect (ATE) for two stochastic interventions
 #***************************************************************************************
 # Intervention function that will shift A by constant rate (shift.rate)
 # (A special case of stochastic intervention with constant shift)
@@ -347,7 +350,7 @@ tmleCom_Options(maxNperBin = NROW(indSample.iid.bA.bY.rareJ1))
 #***************************************************************************************
 
 #***************************************************************************************
-# 1.1 Estimating ATE for f_gstar1 = 1 vs f_gstar2 = 0
+# 3.1 Estimating ATE for f_gstar1 = 1 vs f_gstar2 = 0
 # using correct observation weights and correctly specified Qform & gform 
 #***************************************************************************************
 tmleind_iid.bA.bY_corrWT <- 
@@ -358,7 +361,7 @@ tmleind_iid.bA.bY_corrWT <-
 tmleind_iid.bA.bY_corrWT$ATE$estimates["tmle", ]  # 0.01220298, good estimate
 
 #***************************************************************************************
-# 1.2 Same as above but not specifying the observation weights
+# 3.2 Same as above but not specifying the observation weights
 #***************************************************************************************
 tmleind_iid.bA.bY_misWT <- 
   tmleCommunity(data = indSample.iid.bA.bY.rareJ1, Ynode = "Y", Anodes = "A",
