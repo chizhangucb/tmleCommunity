@@ -52,12 +52,12 @@ CheckInputs <- function(data, nodes, Qform, hform.g0, hform.gstar, fluctuation, 
   validTerms[validFormula] <- sapply(formulas[which(validFormula)], function(x) {
     is.null(x) || all(all.names(as.formula(x), functions=FALSE) %in% validNames)})
   validFluct <- fluctuation %in% c("logistic", "linear")
-  formwarns <- c("\tInvalid regression formula for 'Qform'" %+% deparse(formulas[[1]]),
-                 "\tInvalid regression formula for 'hform.g0'" %+% deparse(formulas[[2]]),
-                 "\tInvalid regression formula for 'hform.gstar'" %+% deparse(formulas[[3]]))
-  termwarns <- c("\tInvalid term name in regression formula for 'Qform'" %+% deparse(formulas[[1]]),
-                 "\tInvalid term name in regression formula for 'hform.g0'" %+% deparse(formulas[[2]]),
-                 "\tInvalid term name in regression formula for 'hform.gstar'" %+% deparse(formulas[[3]]))
+  formwarns <- c("\tInvalid regression formula for 'Qform' " %+% deparse(formulas[[1]]),
+                 "\tInvalid regression formula for 'hform.g0' " %+% deparse(formulas[[2]]),
+                 "\tInvalid regression formula for 'hform.gstar' " %+% deparse(formulas[[3]]))
+  termwarns <- c("\tInvalid term name in regression formula for 'Qform' " %+% deparse(formulas[[1]]),
+                 "\tInvalid term name in regression formula for 'hform.g0' " %+% deparse(formulas[[2]]),
+                 "\tInvalid term name in regression formula for 'hform.gstar' " %+% deparse(formulas[[3]]))
   f_gstar1.part1 <- is.null(f_gstar1) || is.function(f_gstar1) || is.VecMatDf(f_gstar1)
   if (!is.null(f_gstar1) && !is.function(f_gstar1)) {
     f_gstar1 <- as.data.frame(f_gstar1)
