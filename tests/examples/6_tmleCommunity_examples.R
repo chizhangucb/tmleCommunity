@@ -286,10 +286,10 @@ tmleind_iid.cA.cY_mis.fgstar$EY_gstar1$estimates
 # using all parent nodes (of Y and A) as regressors (respectively)
 #***************************************************************************************
 # A will be sampled 10 times (for a total sample size of NROW(data)*10 under f_gstar1)
-tmleind_iid.cA.cY_10MC <- 
-  tmleCommunity(data = indSample.iid.cA.cY, Ynode = "Y", Anodes = "A", 
-                WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = f.gstar.corr, n_MCsims = 10)
-tmleind_iid.cA.cY_10MC$EY_gstar1$estimates
+#tmleind_iid.cA.cY_10MC <- 
+#  tmleCommunity(data = indSample.iid.cA.cY, Ynode = "Y", Anodes = "A", 
+#                WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = f.gstar.corr, n_MCsims = 10)
+#tmleind_iid.cA.cY_10MC$EY_gstar1$estimates
 
 #***************************************************************************************
 # 2.4 Running exactly the same estimator as 2.1 but defining different values of bin cutoffs 
