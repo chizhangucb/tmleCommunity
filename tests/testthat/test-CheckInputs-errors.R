@@ -14,7 +14,7 @@ community.wts <- NULL
 f_gstar1 <- NULL
 f_gstar2 <- NULL
 
-test_that("Invalid term name in regression formula", {
+test_that("1. Invalid term name in regression formula", {
   Qform.bad <- "blabla ~ W1 + A"
   expect_warning(
     tmleCommunity:::CheckInputs(data = indSample.iid.bA.bY.rareJ1, nodes, Qform.bad, 
@@ -30,7 +30,7 @@ test_that("Invalid term name in regression formula", {
     "Invalid term name in regression formula for 'hform.gstar'")
 })
 
-test_that("The input data must be a data frame", {
+test_that("2. The input data must be a data frame", {
   expect_warning(
     tmleCommunity:::CheckInputs(data = as.matrix(indSample.iid.bA.bY.rareJ1), nodes, Qform, 
                                 hform.g0, hform.gstar, fluctuation, Qbounds, obs.wts, 
@@ -38,16 +38,17 @@ test_that("The input data must be a data frame", {
     "The input data must be a data frame")
 })
 
-test_that("No factor column(s) allowed in the input data", {
+test_that("3. No factor column(s) allowed in the input data", {
   indSample.iid.bA.bY.rareJ1$W3 <- as.factor(indSample.iid.bA.bY.rareJ1$W3)
   expect_warning(
     tmleCommunity:::CheckInputs(data = indSample.iid.bA.bY.rareJ1, nodes, Qform, 
                                 hform.g0, hform.gstar, fluctuation, Qbounds, obs.wts, 
                                 community.wts, f_gstar1, f_gstar2),
-    "No factor column(s) allowed in the input data")
+    "No factor column\\(s\\) allowed in the input data, " %+% 
+      "consider removing or recoding such column\\(s\\) as strings: W3")
 })
 
-test_that("obs.wts must contain the same number of non-negative obs as data does", {
+test_that("4. obs.wts must contain the same number of non-negative obs as data does", {
   expect_warning(
     tmleCommunity:::CheckInputs(data = indSample.iid.bA.bY.rareJ1, nodes, Qform, 
                                 hform.g0, hform.gstar, fluctuation, Qbounds, 
@@ -55,13 +56,21 @@ test_that("obs.wts must contain the same number of non-negative obs as data does
     "'obs.wts', must contain the same number of non-negative observations as 'data' does")
 })
 
-test_that("f_gstar must contain a length (number of rows) 1 or NROW(data)", {
+test_that("5. f_gstar must contain a length (number of rows) 1 or NROW(data)", {
   expect_warning(
     tmleCommunity:::CheckInputs(data = indSample.iid.bA.bY.rareJ1, nodes, Qform, 
                                 hform.g0, hform.gstar, fluctuation, Qbounds, obs.wts,
                                 community.wts, f_gstar1 = 1:10, f_gstar2),
     "If 'f_gstar1' is a vector/matrix/data.frame, it should have a " %+% 
       "length \\(number of rows\\) 1 or NROW\\(data\\)")
+})
+
+test_that("6. Qbounds should have length 2", {
+  expect_warning(
+    tmleCommunity:::CheckInputs(data = indSample.iid.bA.bY.rareJ1, nodes, Qform, 
+                                hform.g0, hform.gstar, fluctuation, Qbounds = 0.05, 
+                                obs.wts, community.wts, f_gstar1, f_gstar2),
+    "Qbounds should have length 2")
 })
 
 data("comSample.wmT.bA.bY_list", package = "tmleCommunity")
@@ -74,7 +83,7 @@ community.wts <-
   as.data.frame(matrix(0L, nrow = length(unique(comSample.wmT.bA.bY[, "id"])), ncol = 2))
 community.wts[, 2] <-  as.vector(table(comSample.wmT.bA.bY[, "id"]))
 
-test_that("community.wts must contain the same number of communities & same IDs as data", {
+test_that("7. community.wts must contain the same number of communities & same IDs as data", {
   warns <- capture_warnings(
     tmleCommunity:::CheckInputs(data = comSample.wmT.bA.bY, nodes, Qform, 
                                 hform.g0, hform.gstar, fluctuation, Qbounds, obs.wts, 
