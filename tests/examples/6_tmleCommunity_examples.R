@@ -362,6 +362,7 @@ tmleind_iid.bA.bY_corrWT$ATE$estimates["tmle", ]  # 0.01220298, good estimate
 
 #***************************************************************************************
 # 3.2 Same as above but not specifying the observation weights
+# obs.wts = NULL is equivalent to obs.wts = "equal.within.pop"
 #***************************************************************************************
 tmleind_iid.bA.bY_misWT <- 
   tmleCommunity(data = indSample.iid.bA.bY.rareJ1, Ynode = "Y", Anodes = "A",
