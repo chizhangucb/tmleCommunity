@@ -1,4 +1,3 @@
-#***************************************************************************************
 context("Test CheckInput Error Handling")
 
 `%+%` <- function(a, b) paste0(a, b)
@@ -20,7 +19,8 @@ test_that("1. Invalid term name in regression formula", {
     tmleCommunity:::CheckInputs(data = indSample.iid.bA.bY.rareJ1, nodes, Qform.bad, 
                                 hform.g0, hform.gstar, fluctuation, Qbounds, 
                                 obs.wts, community.wts, f_gstar1, f_gstar2),
-    "Invalid term name in regression formula for 'Qform'")
+    "Invalid term name in regression formula for 'Qform' \"blabla ~ W1 ")
+  # Coudn't figure out why \"blabla ~ W1 + A\" doesn't work, so just leave it here.
   
   hform.gstar.bad <- "A ~ E1 + W5"
   expect_warning(
