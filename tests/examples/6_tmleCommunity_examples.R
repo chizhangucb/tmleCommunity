@@ -140,7 +140,7 @@ tmleCom_wmT.bA.bY.1a_w3$EY_gstar1$estimates
 define_f.gstar <- function(prob.val, rndseed = NULL) {
   eval(prob.val) 
   f.gstar <- function(data, ...) {
-    print("probability of selection: " %+% prob.val)
+    print(paste0("probability of selection: ", prob.val))
     rbinom(n = NROW(data), size = 1, prob = prob.val)
   }
   return(f.gstar)
