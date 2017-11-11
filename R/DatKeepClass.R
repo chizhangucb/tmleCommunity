@@ -94,6 +94,7 @@ dhist <- function(x, a = 5*iqr(x), nbins=nclass.Sturges(x), rx = range(x, na.rm=
 #    xlab       - label for the x axis
 #    plot       - Logical, if TRUE produces the plot, if FALSE returns the heights, breaks and counts
 #    lab.spikes - Logical, if TRUE labels the % of data in the spikes
+txt <- NULL  # To fix problem of no visible binding for global variable ‘txt’
 if (is.character(nbins)) {
     nbins <- switch(casefold(nbins),
                     sturges = nclass.Sturges(x),
