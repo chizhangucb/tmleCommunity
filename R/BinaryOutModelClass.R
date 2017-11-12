@@ -291,7 +291,7 @@ summary.BinaryOutModel <- function(binaryoutmodel) {
 # -------------------------------------------------------------------------------------------
 binirized.to.DTlong <- function(BinsDat_wide, binID_seq, ID, bin_names, pooled_bin_name, name.sVar) {
   # Convert Bin matrix into a data.table (without data.frame as intermediate), with new row ID column:
-  DT_BinsDat_wide <- data.table::as.data.table(BinsDat_wide)[, c("ID") := ID, with = FALSE]
+  DT_BinsDat_wide <- data.table::as.data.table(BinsDat_wide)[, c("ID") := ID]
   data.table::setcolorder(DT_BinsDat_wide, c("ID", names(DT_BinsDat_wide)[-ncol(DT_BinsDat_wide)]))
   # melt into long format:
   sVar_melt_DT <- melt(DT_BinsDat_wide,
