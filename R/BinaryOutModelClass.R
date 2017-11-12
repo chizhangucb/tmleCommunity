@@ -319,7 +319,7 @@ binirized.to.DTlong <- function(BinsDat_wide, binID_seq, ID, bin_names, pooled_b
 join.Xmat = function(X_mat, sVar_melt_DT, ID) {
   nIDs <- length(unique(sVar_melt_DT[["ID"]]))
   assert_that(nIDs == nrow(X_mat))
-  X_mat_DT <- data.table::as.data.table(X_mat)[, c("ID") := ID, with = FALSE]
+  X_mat_DT <- data.table::as.data.table(X_mat)[, c("ID") := ID]
   data.table::setkeyv(X_mat_DT, c("ID")) # sort by ID
   sVar_melt_DT <- sVar_melt_DT[X_mat_DT] # Merge long format (self$pooled_bin_name, binIDs) with predictors (W)
   return(sVar_melt_DT)
