@@ -58,3 +58,22 @@ test_that("Three binning methods for continuous/ categorical sVar", {
                               bin.nms = OData_R6.copy$bin.nms.sVar("A", eval(5 + 2)))
   expect_equal(sum(OData_R6.copy$dat.bin.sVar, na.rm = TRUE), N)
 })
+
+test_that("Making a new dataframe under stochastic intervention f.g_fun", {
+  OData_R6.copy <- DatKeepClass$new(Odata = indSample.iid.cA.cY, nodes = nodes)
+  define_f.gstar <- function(shift.rate) {
+    eval(shift.rate)
+    f.gstar <- function(data, ...) { data[, "A"] * shift.rate }
+    return(f.gstar)
+  }
+  OData_R6.copy$make.dat.sVar(p = 1, f.g_fun = define_f.gstar(0.4))
+  # Baseline covariates doesn't change
+  expect_equal(OData_R6.copy$get.dat.sVar(covars = nodes$WEnodes), 
+               OData_R6$get.dat.sVar(covars = nodes$WEnodes))
+  # Exposure values change via stochastic intervention function
+  expect_equal(OData_R6.copy$get.sVar("A"), OData_R6$get.sVar("A") * 0.4)
+    
+  # f.g_fun should be a vector of length of 1 or NROW(data)
+  expect_error(OData_R6.copy$make.dat.sVar(p = 1, f.g_fun = 1:2), 
+               "f_gstar1/f_gstar2 must be either a function or a vector of length nrow\\(data\\) or 1")
+})
