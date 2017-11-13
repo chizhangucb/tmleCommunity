@@ -5,6 +5,7 @@ data("indSample.iid.cA.cY_list", package = "tmleCommunity")
 indSample.iid.cA.cY <- indSample.iid.cA.cY_list$indSample.iid.cA.cY
 tmleCom_Options(maxNperBin = nrow(indSample.iid.cA.cY))
 nodes <- list(Ynode = "Y", Anodes = "A", WEnodes = c("W1", "W2", "W3", "W4"))
+OData_R6 <- DatKeepClass$new(Odata = indSample.iid.cA.cY, nodes = nodes)
 
 test_that("nodes' name can only be one or more of Ynode, Anodes, WEnodes, communityID and Crossnodes", {
   nodes.bad <- list(Ynode = "Y", Anodes = "A", badnodes = c("W1", "W2", "W3", "W4"))
