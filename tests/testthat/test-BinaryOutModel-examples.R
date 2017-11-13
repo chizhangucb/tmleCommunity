@@ -78,6 +78,6 @@ test_that("Using h2o & h2oEnsemble when setting gestimator = 'h2o__ensemble'", {
   for (i in 1:length(genericmodels.g0.A1$getPsAsW.models())) {
     expect_equal(genericmodels.g0.A1$getPsAsW.models()[[i]]$estimator, "h2o__ensemble")
   }
-  # For the first (& last) bin, no much obs in it, so h2o fails & downgrade to speedglm 
-  expect_equal(genericmodels.g0.A1$getPsAsW.models()[[1]]$getfit$fitfunname, "speedglm")
+  # For the last (& first) bin, no much obs in it, so h2o fails & downgrade to speedglm 
+  expect_equal(genericmodels.g0.A1$getPsAsW.models()[[7]]$getfit$fitfunname, "speedglm")
 })
