@@ -18,7 +18,7 @@ test_that("The length of observation weights should be the same as nrow(data)", 
     "The length of observation weights should be the same as nrow\\(data\\)")
 })
 
-test_that("Assign/ return the class type of a variable.", {
+test_that("Assign/ return/ check the class type of a variable.", {
   # Return the class types of variables
   expect_equal(OData_R6$get.sVar.type("A"), "contin")
   expect_equal(OData_R6$get.sVar.type("W1"), "binary")
@@ -28,4 +28,33 @@ test_that("Assign/ return the class type of a variable.", {
   OData_R6.copy <- OData_R6
   OData_R6.copy$set.sVar.type(name.sVar = "W1", new.type = "contin")
   expect_equal(OData_R6.copy$get.sVar.type("W1"), "contin")
+    
+  # Check the class types of variables
+  expect_true(OData_R6$is.sVar.cont("A"))
+  expect_true(OData_R6$is.sVar.bin("W1"))
+  expect_false(OData_R6$is.sVar.cat("W3"))
+})
+
+test_that("Three binning methods for continuous/ categorical sVar", {
+  OData_R6.copy <- OData_R6
+  
+  # "equal.mass" will create bins with (approximately) the same number of obs
+  intrvls <- OData_R6.copy$detect.sVar.intrvls(
+    name.sVar = "A", nbins = 5, bin_bymass = TRUE, bin_bydhist = FALSE, max_nperbin = N)
+  OData_R6.copy$binirize.sVar(name.sVar = "A", intervals = intrvls, nbins = eval(5 + 2), 
+    bin.nms = OData_R6.copy$bin.nms.sVar("A", eval(5 + 2)))
+  expect_equal(
+    as.vector(colSums(OData_R6.copy$dat.bin.sVar, na.rm = TRUE)[2:6]), rep(N/5, 5))
+  
+  # "equal.len" will create bins with the same length
+  intrvls <- OData_R6.copy$detect.sVar.intrvls(
+    name.sVar = "A", nbins = 5, bin_bymass = FALSE, bin_bydhist = FALSE, max_nperbin = N)
+  expect_true(isTRUE(all.equal(max(diff(intrvls)[2:5]), min(diff(intrvls)[2:5]))))
+  
+  # "dhist" is a compromise between "equal.mass" and "equal.len"
+  intrvls <- OData_R6.copy$detect.sVar.intrvls(
+    name.sVar = "A", nbins = 5, bin_bymass = FALSE, bin_bydhist = TRUE, max_nperbin = N)
+  OData_R6.copy$binirize.sVar(name.sVar = "A", intervals = intrvls, nbins = eval(5 + 2), 
+                              bin.nms = OData_R6.copy$bin.nms.sVar("A", eval(5 + 2)))
+  expect_equal(sum(OData_R6.copy$dat.bin.sVar, na.rm = TRUE), N)
 })
