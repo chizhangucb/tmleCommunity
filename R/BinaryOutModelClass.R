@@ -156,7 +156,9 @@ fit_single_reg.h2oS3 <- function(self) {
   Xmat <- self$getXmat
   Y_vals <- self$getY
   wt_vals <- self$getWeight  # Cannot implement it since no weight argument in h2oEnsemble
-  message("Choose other estimators if want to implement obs.wt since h2o.ensemble does NOT have weight argument.")
+  if (length(unique(wt_vals)) > 1) {
+    message("Choose other estimators if want to implement obs.wt since h2o.ensemble does NOT have weight argument.")
+  }
   h2olearner <- getopt("h2olearner")
   h2ometalearner <- getopt("h2ometalearner")
   CVfolds <- getopt("CVfolds")
