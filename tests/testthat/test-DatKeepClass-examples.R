@@ -17,3 +17,15 @@ test_that("The length of observation weights should be the same as nrow(data)", 
   expect_error(OData_R6$addObsWeights(1:10),
     "The length of observation weights should be the same as nrow\\(data\\)")
 })
+
+test_that("Assign/ return the class type of a variable.", {
+  # Return the class types of variables
+  expect_equal(OData_R6$get.sVar.type("A"), "contin")
+  expect_equal(OData_R6$get.sVar.type("W1"), "binary")
+  expect_true(all(unique(unlist(OData_R6$get.sVar.type())) %in% c("binary", "categor", "contin")))
+  
+  # Assign a new class type to one variable that belongs to the input data
+  OData_R6.copy <- OData_R6
+  OData_R6.copy$set.sVar.type(name.sVar = "W1", new.type = "contin")
+  expect_equal(OData_R6.copy$get.sVar.type("W1"), "contin")
+})
