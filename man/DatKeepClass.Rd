@@ -19,7 +19,7 @@ DatKeepClass
 }
 \details{
 \itemize{
-   \item{\code{norm.c.sVars}} - \code{flag} if \code{TRUE} normalize continous covariates.
+   \item{\code{norm.c.sVars}} - \code{flag} if \code{TRUE} normalize continuous covariates.
    \item{\code{mat.bin.sVar}} - Matrix of the binary indicators created from discretization of continuous covariate \code{active.bin.sVar}.
    \item{\code{ord.sVar}} - Ordinal (categorical) transformation of a continous covariate \code{sVar}.
    \item{\code{obs.wts}} - Vectopr of observation (sampling) weights (of length \code{ndat.sVar}). If NULL, assumed to be all 1. 
