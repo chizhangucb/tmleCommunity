@@ -26,7 +26,7 @@ test_that("Assign/ return/ check the class type of a variable.", {
   expect_true(all(unique(unlist(OData_R6$get.sVar.type())) %in% c("binary", "categor", "contin")))
   
   # Assign a new class type to one variable that belongs to the input data
-  OData_R6.copy <- OData_R6
+  OData_R6.copy <- DatKeepClass$new(Odata = indSample.iid.cA.cY, nodes = nodes)
   OData_R6.copy$set.sVar.type(name.sVar = "W1", new.type = "contin")
   expect_equal(OData_R6.copy$get.sVar.type("W1"), "contin")
     
@@ -37,7 +37,7 @@ test_that("Assign/ return/ check the class type of a variable.", {
 })
 
 test_that("Three binning methods for continuous/ categorical sVar", {
-  OData_R6.copy <- OData_R6
+  OData_R6.copy <- DatKeepClass$new(Odata = indSample.iid.cA.cY, nodes = nodes)
   
   # "equal.mass" will create bins with (approximately) the same number of obs
   intrvls <- OData_R6.copy$detect.sVar.intrvls(
