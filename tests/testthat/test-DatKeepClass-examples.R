@@ -73,7 +73,11 @@ test_that("Making a new dataframe under stochastic intervention f.g_fun", {
   # Exposure values change via stochastic intervention function
   expect_equal(OData_R6.copy$get.sVar("A"), OData_R6$get.sVar("A") * 0.4)
     
-  # f.g_fun should be a vector of length of 1 or NROW(data)
+  # If f.g_fun is a vector or dataframe/ matrix, its length (nrow) should be 1 or NROW(data)
   expect_error(OData_R6.copy$make.dat.sVar(p = 1, f.g_fun = 1:2), 
                "f_gstar1/f_gstar2 must be either a function or a vector of length nrow\\(data\\) or 1")
+    
+  # If f.g_fun is a function, it must contain a named argument 'data'
+  expect_error(OData_R6.copy$make.dat.sVar(p = 1, f.g_fun = mean), 
+               "functions f_gstar1 / f_gstar2 must have a named argument 'data'")
 })
