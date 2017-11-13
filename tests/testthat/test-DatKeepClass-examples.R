@@ -12,3 +12,8 @@ test_that("nodes' name can only be one or more of Ynode, Anodes, WEnodes, commun
     expect_message(DatKeepClass$new(Odata = indSample.iid.cA.cY, nodes = nodes.bad), "Don't recognize badnodes"), 
     "It should be a list & its names can only be one or more of Ynode, Anodes, WEnodes, communityID and Crossnodes.")
 })
+
+test_that("The length of observation weights should be the same as nrow(data)", {
+  expect_error(OData_R6$addObsWeights(1:10),
+    "The length of observation weights should be the same as nrow\\(data\\)")
+})
