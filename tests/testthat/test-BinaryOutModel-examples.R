@@ -6,6 +6,9 @@ indSample.iid.bA.bY.rareJ1 <- indSample.iid.bA.bY.rareJ1_list$indSample.iid.bA.b
 N <- nrow(indSample.iid.bA.bY.rareJ1)
 nodes <- list(Ynode = "Y", Anodes = "A", WEnodes = c("W1", "W2", "W3", "W4"))
 Q.sVars <- tmleCommunity:::define_regform(regform = Y ~ W1 + W2 + W3 + W4 + A)
+h.g0.sVars <- tmleCommunity:::define_regform(A ~ W1 + W2 + W3 + W4)
+subsets_expr <- lapply(h.g0.sVars$outvars, function(var) {var})
+OData.g0 <- DatKeepClass$new(Odata = indSample.iid.cA.cY, nodes = nodes)
 
 test_that("Using glm when setting Qestimator = 'glm__glm'", {
   # Use glm without pooling of bins
