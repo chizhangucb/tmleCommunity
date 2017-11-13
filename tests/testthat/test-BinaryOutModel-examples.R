@@ -1,9 +1,9 @@
 context("Test BinaryOutModel using different estimators")
 
 `%+%` <- function(a, b) paste0(a, b)
-data("indSample.iid.bA.bY.rareJ1_list", package = "tmleCommunity")
-indSample.iid.bA.bY.rareJ1 <- indSample.iid.bA.bY.rareJ1_list$indSample.iid.bA.bY.rareJ1
-N <- nrow(indSample.iid.bA.bY.rareJ1)
+data("indSample.iid.cA.cY_list", package = "tmleCommunity")
+indSample.iid.cA.cY <- indSample.iid.cA.cY_list$indSample.iid.cA.cY
+N <- nrow(indSample.iid.cA.cY)
 nodes <- list(Ynode = "Y", Anodes = "A", WEnodes = c("W1", "W2", "W3", "W4"))
 Q.sVars <- tmleCommunity:::define_regform(regform = Y ~ W1 + W2 + W3 + W4 + A)
 h.g0.sVars <- tmleCommunity:::define_regform(A ~ W1 + W2 + W3 + W4)
