@@ -3,7 +3,8 @@ context("Test DatKeepClass")
 `%+%` <- function(a, b) paste0(a, b)
 data("indSample.iid.cA.cY_list", package = "tmleCommunity")
 indSample.iid.cA.cY <- indSample.iid.cA.cY_list$indSample.iid.cA.cY
-tmleCom_Options(maxNperBin = nrow(indSample.iid.cA.cY))
+N <- nrow(indSample.iid.cA.cY)
+tmleCom_Options(maxNperBin = N, nbins = 5, bin.method = "equal.mass")
 nodes <- list(Ynode = "Y", Anodes = "A", WEnodes = c("W1", "W2", "W3", "W4"))
 OData_R6 <- DatKeepClass$new(Odata = indSample.iid.cA.cY, nodes = nodes)
 
