@@ -8,7 +8,7 @@ tmleCom_Options(maxNperBin = N, nbins = 5, bin.method = "equal.mass")
 nodes <- list(Ynode = "Y", Anodes = "A", WEnodes = c("W1", "W2", "W3", "W4"))
 OData_R6 <- DatKeepClass$new(Odata = indSample.iid.cA.cY, nodes = nodes)
 
-test_that("nodes' name can only be one or more of Ynode, Anodes, WEnodes, communityID and Crossnodes", {
+test_that("'nodes' name can only be one or more of Ynode, Anodes, WEnodes, communityID and Crossnodes", {
   nodes.bad <- list(Ynode = "Y", Anodes = "A", badnodes = c("W1", "W2", "W3", "W4"))
   expect_error(
     expect_message(DatKeepClass$new(Odata = indSample.iid.cA.cY, nodes = nodes.bad), "Don't recognize badnodes"), 
