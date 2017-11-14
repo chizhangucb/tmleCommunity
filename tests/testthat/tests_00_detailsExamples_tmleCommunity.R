@@ -1,32 +1,15 @@
 # ---------------------------------------------------------------------------------
 # TEST SET 0. SHOWING SOME DETAILS IN tmleCommunity 
-# ---------------------------------------------------------------------------------
-library(assertthat)
-library(testthat)
-library(R6)
-library(RUnit)
-library(h2o)
-library(h2oEnsemble)
 library(data.table)
-library(simcausal)
-
-source("tmleCommunity/R/GeneralUtilities.R")
-source("tmleCommunity/R/DatKeepClass.R")
-source("tmleCommunity/R/GenericModelClasses.R")
-source("tmleCommunity/R/BinaryOutModelClass.R")
-source("tmleCommunity/R/tmleCommunity.R")
-source("tmleCommunity/R/hbarDensityModel.R")
-source("tmleCommunity/R/MonteCarloSimClass.R")
-source("tmleCommunity/R/zzz.R")
-gvars$verbose <- TRUE
-
+# ---------------------------------------------------------------------------------
 # A is normal with mu for each observation being a function of (W1, W2, W3, W4), sd = 1;
-data(sampleDat_iidcontABinY)
-dat_iidcontABinY <- sampleDat_iidcontABinY$dat_iidcontABinY
-head(dat_iidcontABinY)
-psi0.Y <- mean(dat_iidcontABinY$Y)  # 0.291398
-psi0.Ygstar <- mean(dat_iidcontABinY$Y.gstar)  # 0.316274
-nodes <- list(Ynode = "Y", Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), Enodes = NULL, Crossnodes = NULL)
+data("indSample.iid.cA.cY_list", package = "tmleCommunity")
+indSample.iid.cA.cY <- indSample.iid.cA.cY_list$indSample.iid.cA.cY
+N <- nrow(indSample.iid.cA.cY)
+head(indSample.iid.cA.cY)
+psi0.Y <- mean(indSample.iid.cA.cY$Y)  # 0.291398
+psi0.Ygstar <- mean(indSample.iid.cA.cY$Y.gstar)  # 0.316274
+nodes <- list(Ynode = "Y", Anodes = "A", WEnodes = c("W1", "W2", "W3", "W4"))
 
 define_f.gstar <- function(shift.val, truncBD, rndseed = NULL) {
   shift.const <- shift.val
@@ -42,17 +25,20 @@ define_f.gstar <- function(shift.val, truncBD, rndseed = NULL) {
   }
   return(f.gstar)
 }
-f.gstar <- define_f.gstar(shift = sampleDat_iidcontABinY$shift.val, truncBD = sampleDat_iidcontABinY$truncBD, 
-                          rndseed = sampleDat_iidcontABinY$rndseed)
+f.gstar <- define_f.gstar(shift = indSample.iid.cA.cY_list$shift.val, truncBD = indSample.iid.cA.cY_list$truncBD)
 
 # ---------------------------------------------------------
 # Step 1. Create an R6 object that stores and manages the input data, later passed on to estimation algorithm(s)
 # ---------------------------------------------------------
-tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", maxNperBin = nrow(dat_iidcontABinY))
-OData <- DatKeepClass$new(Odata = dat_iidcontABinY, nodes = nodes, norm.c.sVars = FALSE)
+tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", maxNperBin = N, nbins = 10)
+OData <- DatKeepClass$new(Odata = subset(indSample.iid.cA.cY, select=-Y), 
+                          nodes = nodes[c("Anodes", "WEnodes")], norm.c.sVars = FALSE)
+OData$nodes <- nodes
 head(OData$dat.sVar)  # a subset data.frame of Odata that includes all variables in nodes
 nobs <- OData$nobs
-obsYvals <- dat_iidcontABinY[, nodes$Ynode]
+obsYvals <- indSample.iid.cA.cY[, nodes$Ynode]
+ab <- range(obsYvals, na.rm=TRUE)
+obsYvals <- (obsYvals-ab[1]) / diff(ab)
 OData$addYnode(YnodeVals = obsYvals)
 sum(OData$noNA.Ynodevals == obsYvals) == nobs  # TRUE
 sum(OData$det.Y) == 0  # TRUE (No deterministic Y in input data)
@@ -62,7 +48,7 @@ OData$names.c.sVar  # "A"  "W3" "W4" (names of all continuous variables in input
 # ---------------------------------------------------------
 # Step 2. Defining and estimating outcome mechanism E(Y|A, E, W)
 # ---------------------------------------------------------
-Q.sVars <- define_regform(NULL, Anodes.lst = nodes$Ynode, Wnodes.lst = nodes[c("Anodes", "Wnodes", "Enodes")])
+Q.sVars <- tmleCommunity:::define_regform(NULL, Anodes.lst = nodes$Ynode, Wnodes.lst = nodes[c("Anodes", "WEnodes")])
 Qreg <- RegressionClass$new(outvar = Q.sVars$outvars, predvars = Q.sVars$predvars, subset_vars = (!rep_len(FALSE, nobs)))
 Qreg$estimator  # "speedglm__glm"
 Qreg$pool_cont  # FALSE (Don't pool across all bins of a continuous exposure)
@@ -71,12 +57,12 @@ Qreg$S3class    # "RegressionClass" "R6"
 m.Q.init <- BinaryOutModel$new(reg = Qreg)$fit(overwrite = FALSE, data = OData)
 m.Q.init$getfit$coef
 m.Q.init$predict(newdata = OData)
-mean(m.Q.init$getprobA1)  # 0.29154
+mean(m.Q.init$getprobA1 * diff(ab) + ab[1])  # 3.324724
 
 # ---------------------------------------------------------
 # Step 3. Defining and estimating treatment mechanism P(A|E, W) under g0
 # ---------------------------------------------------------
-h.g0.sVars <- define_regform(NULL, Anodes.lst = nodes$Anodes, Wnodes.lst = nodes[c("Wnodes", "Enodes")])
+h.g0.sVars <- tmleCommunity:::define_regform(NULL, Anodes.lst = nodes$Anodes, Wnodes.lst = nodes["WEnodes"])
 sA_nms_g0 <- h.g0.sVars$outvars
 subsets_expr <- lapply(sA_nms_g0, function(var) {var}) 
 regclass.g0 <- RegressionClass$new(outvar = h.g0.sVars$outvars,
@@ -115,7 +101,7 @@ reg_i$ChangeManyToOneRegresssion(k_i, regclass.g0)
 genericmodels.g0.A1.alt <- ContinModel$new(reg = reg_i, DatKeepClass.g0 = OData.g0)
 
 # Define subset evaluation for new bins - used to initialize new GenericModel
-subset_eval.A1 <- def_regs_subset(genericmodels.g0.A1.alt)
+subset_eval.A1 <- tmleCommunity:::def_regs_subset(genericmodels.g0.A1.alt)
 subset_eval.A1$outvar.class  # a list of "binary", named as A_B.1, A_B.2, ..., A_B.12
 subset_eval.A1$predvars  # "W1" "W2" "W3" "W4"
 subset_eval.A1$subset_vars  #  a list of ("A_B.1", "A"), ("A_B.2", "A"), ..., ("A_B.12", "A"), named as A_B.1, A_B.2, ..., A_B.12
@@ -129,7 +115,7 @@ dim(genericmodels.g0.A1.alt.B2$getXmat)  # 10000 5
 dim(genericmodels.g0.A1.alt.B3$getXmat)  # 9000 5
 genericmodels.g0.A1.alt.B1$getfit$coef
 #  Intercept            W1            W2            W3            W4 
-# -2.656607e+01  4.545570e-12  3.432323e-12  1.820108e-13  1.261369e-11
+# -2.656607e+01 -8.204045e-13 -1.361453e-13 -2.641735e-14 -2.408317e-12 
 genericmodels.g0.A1.alt.B2$getfit$coef
 #  Intercept         W1         W2         W3         W4 
 # -0.6758011 -1.6536866 -0.7941279  0.5959984 -1.6902898 
@@ -143,7 +129,7 @@ genericmodels.g0.A1.alt.Generic <- GenericModel$new(reg = subset_eval.A1)
 genericmodels.g0.A1.alt.Generic$getPsAsW.models()[[1]]$fit(data = OData.g0, savespace = F)
 genericmodels.g0.A1.alt.Generic$getPsAsW.models()[[1]]$getfit$coef  # the same as genericmodels.g0.A1.alt$getfit$coef
 #  Intercept            W1            W2            W3            W4 
-# -2.656607e+01  4.545570e-12  3.432323e-12  1.820108e-13  1.261369e-11
+# -2.656607e+01 -8.204045e-13 -1.361453e-13 -2.641735e-14 -2.408317e-12 
 
 # The 2nd bin (Real "first" bin)
 genericmodels.g0.A1.alt.Generic$getPsAsW.models()[[2]]$fit(data = OData.g0, savespace = F)
@@ -189,10 +175,11 @@ datX_mat <- OData.new$get.dat.sVar(rowsubset = TRUE, covars = (genericmodels.g0.
 pooled_bin_name <- OData.new$pooled.bin.nm.sVar(reg_i$outvar)  # "A_allB.j"
 genericmodels.g0.A1.alt <- ContinModel$new(reg = reg_i, DatKeepClass.g0 = OData.new)
 # Convert Bin matrix for continuous exposure into long format data.table
-BinsDat_long <- binirized.to.DTlong(BinsDat_wide = datX_mat, binID_seq = (1L:reg_i$nbins), ID = as.integer(1:nrow(datX_mat)),
-                                    bin_names = genericmodels.g0.A1$bin_names, pooled_bin_name = pooled_bin_name, name.sVar = reg_i$outvar)
-sVar_melt_DT <- join.Xmat(X_mat = OData.new$get.dat.sVar(TRUE, covars = reg_i$predvars), 
-                          sVar_melt_DT = BinsDat_long, ID = as.integer(1:nrow(datX_mat)))
+BinsDat_long <- tmleCommunity:::binirized.to.DTlong(
+  BinsDat_wide = datX_mat, binID_seq = (1L:reg_i$nbins), ID = as.integer(1:nrow(datX_mat)),
+  bin_names = genericmodels.g0.A1$bin_names, pooled_bin_name = pooled_bin_name, name.sVar = reg_i$outvar)
+sVar_melt_DT <- tmleCommunity:::join.Xmat(X_mat = OData.new$get.dat.sVar(TRUE, covars = reg_i$predvars), 
+                                          sVar_melt_DT = BinsDat_long, ID = as.integer(1:nrow(datX_mat)))
 X_mat <- sVar_melt_DT[,c("bin_ID", reg_i$predvars), with=FALSE][, c("Intercept") := 1] # select bin_ID + predictors, add intercept column
 setcolorder(X_mat, c("Intercept", "bin_ID", reg_i$predvars)) # re-order columns by reference (no copy)
 dim(X_mat)  # 65000  6
@@ -239,7 +226,7 @@ regclass.gstar <- RegressionClass$new(outvar = sA_nms_gstar,
                                       predvars = h.gstar.sVars$predvars,
                                       subset_vars = subsets_expr,
                                       outvar.class = OData$type.sVar[sA_nms_gstar])
-OData.gstar <- DatKeepClass$new(Odata = dat_iidcontABinY, nodes = nodes, norm.c.sVars = FALSE)
+OData.gstar <- DatKeepClass$new(Odata = indSample.iid.cA.cY, nodes = nodes, norm.c.sVars = FALSE)
 OData.gstar$make.dat.sVar(p = 1, f.g_fun = f.gstar)
 
 # -------------------------------------------------------------------------------------------
