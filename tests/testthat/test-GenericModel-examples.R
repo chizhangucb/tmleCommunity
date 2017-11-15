@@ -87,3 +87,25 @@ test_that("Pool bin indicators across all bins and fit one pooled regression", {
   # Only the bin where the obs falls into receives 1, others receive 0
   expect_equal(sort(unique(Y_vals)), c(0, 1))  
 })
+
+test_that("Test if predictAeqa() provides the same results as the cumulative prob * bin weights", {
+  intrvls.width <- diff(genericmodels.g0.A1$intrvls)
+  bws <- OData.g0$get.sVar.bw(name.sVar = genericmodels.g0.A1$outvar, 
+                              intervals = genericmodels.g0.A1$intrvls)
+  bin_weights <- (1 / bws)  
+  genericmodels.g0.A1.B2 <- genericmodels.g0.A1$getPsAsW.models()[[2]]
+  genericmodels.g0.A1.B2$newdata(newdata = OData.g0, getoutvar = TRUE)
+  probA1 <- tmleCommunity:::predict_single_reg(self = genericmodels.g0.A1.B2)
+  probA1 <- probA1[genericmodels.g0.A1.B2$subset_idx]
+  indA <- OData.g0$get.outvar(genericmodels.g0.A1.B2$subset_idx, var = genericmodels.g0.A1.B2$outvar)
+  probAeqa <- rep.int(1L, OData.g0$nobs) 
+  probAeqa[genericmodels.g0.A1.B2$subset_idx] <- probA1^(indA) * (1 - probA1)^(1L - indA)
+  genericmodels.g0.A1$predictAeqa(newdata = OData.g0, wipeProb = FALSE)
+  expect_equal(mean(probAeqa), mean(genericmodels.g0.A1.B2$getprobAeqa))
+  
+  cumprodAeqa <- 1
+  for (i in 1:length(genericmodels.g0.A1$getPsAsW.models())) {
+    cumprodAeqa <- cumprodAeqa * genericmodels.g0.A1$getPsAsW.models()[[i]]$getprobAeqa
+  }
+  expect_equal(mean(cumprodAeqa * bin_weights), mean(genericmodels.g0.A1$getcumprodAeqa()))
+})
