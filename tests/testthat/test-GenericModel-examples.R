@@ -56,3 +56,28 @@ test_that("Different entrances to fit regression bin(s) and get the same results
   expect_equal(genericmodels.g0.A1.B2$getfit$coef, genericmodels.g0.A1.cont.B2$getfit$coef)
   expect_equal(genericmodels.g0.A1.B2$getfit$coef, genericmodels.g0.A1.cont.Gen.B2$getfit$coef)
 })
+
+test_that("The first bin contains all zeros and so produce tiny coefficients; " %+%  
+            "The last bin should contain nothing and so produce NA coefficients", {
+  genericmodels.g0 <- GenericModel$new(reg = regclass.g0, DatKeepClass.g0 = OData.g0)
+  genericmodels.g0$fit(data = OData.g0)
+  lastB.Ind <- eval(regclass.g0$nbins + 2)          
+  genericmodels.g0.A1.B1 <- genericmodels.g0$getPsAsW.models()[[1]]$getPsAsW.models()[[1]]
+  genericmodels.g0.A1.Bend <- genericmodels.g0$getPsAsW.models()[[1]]$getPsAsW.models()[[lastB.Ind]]          
+  expect_true(all(genericmodels.g0.A1.B1$getfit$coef[-1] < 10e-8))
+  expect_true(all(is.na(genericmodels.g0.A1.Bend$getfit$coef)))          
+})
+
+test_that("Binarized bins contain the (approximately) same number of obs if 'equal.mass'", {
+  genericmodels.g0 <- GenericModel$new(reg = regclass.g0, DatKeepClass.g0 = OData.g0)
+  genericmodels.g0$fit(data = OData.g0)
+  genericmodels.g0.A1 <- genericmodels.g0$getPsAsW.models()[[1]]
+  OData.new <- OData.g0
+  OData.new$binirize.sVar(name.sVar = genericmodels.g0.A1$outvar, intervals = genericmodels.g0.A1$intrvls, 
+                          nbins = genericmodels.g0.A1$nbins, bin.nms = genericmodels.g0.A1$bin_nms)
+  ord.sVar <- tmleCommunity:::make.ordinal(x = OData.new$get.sVar(genericmodels.g0.A1$outvar), 
+                                           intervals = genericmodels.g0.A1$intrvls)
+  expect_true(all(table(ord.sVar) == N / regclass.g0$nbins))
+  expect_equal(sum(ord.sVar == 1), 0)
+  expect_equal(sum(ord.sVar == eval(regclass.g0$nbins + 2)), 0)
+})
