@@ -309,7 +309,8 @@ binirized.to.DTlong <- function(BinsDat_wide, binID_seq, ID, bin_names, pooled_b
     class(sVar_melt_DT)
     stop("sVar_melt_DT is not a data.table")
   }
-  sVar_melt_DT <- sVar_melt_DT[, c("bin_ID") := list(nbin_rep)][, name.sVar := NULL][!is.na(get(pooled_bin_name))]
+  # Remove column named as name.sVar; Remove rows who have NA under column named as pooled_bin_name
+  sVar_melt_DT <- sVar_melt_DT[, c("bin_ID") := list(nbin_rep)][, (name.sVar) := NULL][!is.na(get(pooled_bin_name))]
   data.table::setkeyv(sVar_melt_DT, c("ID", "bin_ID"))  # sort by ID, bin_ID to prepare for merge with predictors (W)
   return(sVar_melt_DT)
 }
