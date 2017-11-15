@@ -296,10 +296,11 @@ binirized.to.DTlong <- function(BinsDat_wide, binID_seq, ID, bin_names, pooled_b
   DT_BinsDat_wide <- data.table::as.data.table(BinsDat_wide)[, c("ID") := ID]
   data.table::setcolorder(DT_BinsDat_wide, c("ID", names(DT_BinsDat_wide)[-ncol(DT_BinsDat_wide)]))
   # melt into long format:
+  # Only the bin where the obs falls into receives 1, others receive 0
   sVar_melt_DT <- melt(DT_BinsDat_wide,
                       id.vars = "ID",
                       measure.vars = bin_names,
-                      value.name = pooled_bin_name,
+                      value.name = pooled_bin_name,  
                       variable.name = name.sVar,
                       variable.factor = FALSE,
                       na.rm = FALSE)
