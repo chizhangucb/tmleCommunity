@@ -3,6 +3,7 @@
 library(data.table)
 # ---------------------------------------------------------------------------------
 # A is normal with mu for each observation being a function of (W1, W2, W3, W4), sd = 1;
+`%+%` <- function(a, b) paste0(a, b)
 data("indSample.iid.cA.cY_list", package = "tmleCommunity")
 indSample.iid.cA.cY <- indSample.iid.cA.cY_list$indSample.iid.cA.cY
 N <- nrow(indSample.iid.cA.cY)
@@ -152,7 +153,8 @@ OData.new <- OData
 OData.new$binirize.sVar(name.sVar = genericmodels.g0.A1$outvar, intervals = genericmodels.g0.A1$intrvls, 
                         nbins = genericmodels.g0.A1$nbins, bin.nms = genericmodels.g0.A1$bin_nms)
 # Create a vector of ordinal (categorical) vars out of cont. sVar vector
-ord.sVar <- make.ordinal(x = OData.new$get.sVar(genericmodels.g0.A1$outvar), intervals = genericmodels.g0.A1$intrvls)
+ord.sVar <- tmleCommunity:::make.ordinal(x = OData.new$get.sVar(genericmodels.g0.A1$outvar), 
+                                         intervals = genericmodels.g0.A1$intrvls)
 head(ord.sVar, 10)
 table(ord.sVar)
 #    2    3    4    5    6    7    8    9   10   11 
@@ -192,16 +194,16 @@ Y_vals <- sVar_melt_DT[, pooled_bin_name, with = FALSE][[1]]
 genericmodels.g0.A1.B2 <- genericmodels.g0.A1$getPsAsW.models()[[2]]
 genericmodels.g0.A1.B2$newdata(newdata = OData, getoutvar = TRUE)
 genericmodels.g0.A1.B2$getfit$fitfunname  # "speedglm"
-probA1 <- predict_single_reg(self = genericmodels.g0.A1.B2)
+probA1 <- tmleCommunity:::predict_single_reg(self = genericmodels.g0.A1.B2)
 indA <- OData.new$get.outvar(genericmodels.g0.A1.B2$subset_idx, var = genericmodels.g0.A1.B2$outvar)
 probAeqa <- rep.int(1L, nobs) 
 probA1 <- probA1[genericmodels.g0.A1.B2$subset_idx]
 probAeqa[genericmodels.g0.A1.B2$subset_idx] <- probA1^(indA) * (1 - probA1)^(1L - indA)
-mean(probAeqa)  # 0.8347299
+mean(probAeqa)  # 0.7192802
 
 ## Test if the cumulative probability * bin weights will be the same result as $getcumprodAeqa() provides
 genericmodels.g0.A1$predictAeqa(newdata = OData, wipeProb = FALSE)
-mean(genericmodels.g0.A1$getcumprodAeqa())  # 0.2682866
+mean(genericmodels.g0.A1$getcumprodAeqa())  # 0.2345022
 cumprodAeqa <- 1
 for (i in 1:length(genericmodels.g0.A1$getPsAsW.models())) {
   cumprodAeqa <- cumprodAeqa * genericmodels.g0.A1$getPsAsW.models()[[i]]$getprobAeqa
@@ -210,11 +212,11 @@ mean(cumprodAeqa * bin_weights) == mean(genericmodels.g0.A1$getcumprodAeqa())  #
 
 genericmodels.g0.A1.B2 <- genericmodels.g0.A1$getPsAsW.models()[[2]]
 head(genericmodels.g0.A1.B2$getprobA1); head(genericmodels.g0.A1.B2$getprobAeqa)
-mean(genericmodels.g0.A1.B2$getprobAeqa)  # 0.8347299
+mean(genericmodels.g0.A1.B2$getprobAeqa)  # 0.7192802
 sapply(1:length(genericmodels.g0.A1$getPsAsW.models()), FUN = function(x) {
   mean(genericmodels.g0.A1$getPsAsW.models()[[x]]$getprobAeqa)
 })  # Provide every cumulative probability for each bin
-# 1.0000000 0.8347299 0.8324691 0.8318014 0.8356529 0.8391936 0.8459151 0.8556383 0.8703422 0.9041029 1.0000000 1.0000000
+#  1.0000000 0.7192802 0.7213857 0.7501958 0.8099905 1.0000000 1.0000000
 
 
 # ---------------------------------------------------------
