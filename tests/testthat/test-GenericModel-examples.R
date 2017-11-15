@@ -13,28 +13,13 @@ regclass.g0 <- RegressionClass$new(outvar = h.g0.sVars$outvars,
                                    predvars = h.g0.sVars$predvars,
                                    subset_vars = subsets_expr,
                                    outvar.class = OData.g0$type.sVar[h.g0.sVars$outvars])
-
-define_f.gstar <- function(shift.val, truncBD, rndseed = NULL) {
-  shift.const <- shift.val
-  trunc.const <- truncBD
-  f.gstar <- function(data, ...) {
-    print("shift.const: " %+% shift.const)
-    set.seed(rndseed)
-    A.mu <- 0.86 * data[,"W1"] + 0.41 * data[,"W2"] - 0.34 * data[,"W3"] + 0.93 * data[,"W4"]
-    untrunc.A <- rnorm(n = nrow(data), mean = A.mu + shift.const, sd = 1)
-    r.new.A <- exp(0.8 * shift.const * (untrunc.A - A.mu - shift.const / 3))
-    trunc.A <- ifelse(r.new.A > trunc.const, untrunc.A - shift.const, untrunc.A)
-    return(trunc.A)
-  }
-  return(f.gstar)
-}
-f.gstar.corr <- define_f.gstar(shift = 2, truncBD = 10)
+genericmodels.g0 <- GenericModel$new(reg = regclass.g0, DatKeepClass.g0 = OData.g0)
+genericmodels.g0$fit(data = OData.g0)
+genericmodels.g0.A1 <- genericmodels.g0$getPsAsW.models()[[1]]
 
 test_that("Different entrances to fit regression bin(s) and get the same results", {
   # Fit GenericModel directly through the parent RegressionClass
-  genericmodels.g0 <- GenericModel$new(reg = regclass.g0, DatKeepClass.g0 = OData.g0)
-  genericmodels.g0$fit(data = OData.g0)
-  genericmodels.g0.A1.B2 <- genericmodels.g0$getPsAsW.models()[[1]]$getPsAsW.models()[[2]]
+  genericmodels.g0.A1.B2 <- genericmodels.g0.A1$getPsAsW.models()[[2]]
   # genericmodels.g0.A1.B2$getfit$coef
   
   # Fit ContinModel through the clone of a parent RegressionClass 
@@ -43,8 +28,8 @@ test_that("Different entrances to fit regression bin(s) and get the same results
   reg_i$ChangeManyToOneRegresssion(k_i, regclass.g0)
   genericmodels.g0.A1.cont <- ContinModel$new(reg = reg_i, DatKeepClass.g0 = OData.g0)
   genericmodels.g0.A1.cont$fit(data = OData.g0, savespace = FALSE)
-  genericmodels.g0.A1.cont.B2 <- genericmodels.g0.A1.alt$getPsAsW.models()[[2]]
-  # genericmodels.g0.A1.alt.B2$getfit$coef
+  genericmodels.g0.A1.cont.B2 <- genericmodels.g0.A1.cont$getPsAsW.models()[[2]]
+  # genericmodels.g0.A1.cont.B2$getfit$coef
   
   # Fit GenericModel directly from genericmodels.g0.A1.alt (The first exposure node)
   subset_eval.A1 <- tmleCommunity:::def_regs_subset(genericmodels.g0.A1.cont)
@@ -59,23 +44,17 @@ test_that("Different entrances to fit regression bin(s) and get the same results
 
 test_that("The first bin contains all zeros and so produce tiny coefficients; " %+%  
             "The last bin should contain nothing and so produce NA coefficients", {
-  genericmodels.g0 <- GenericModel$new(reg = regclass.g0, DatKeepClass.g0 = OData.g0)
-  genericmodels.g0$fit(data = OData.g0)
-  lastB.Ind <- eval(regclass.g0$nbins + 2)          
-  genericmodels.g0.A1.B1 <- genericmodels.g0$getPsAsW.models()[[1]]$getPsAsW.models()[[1]]
-  genericmodels.g0.A1.Bend <- genericmodels.g0$getPsAsW.models()[[1]]$getPsAsW.models()[[lastB.Ind]]          
-  expect_true(all(genericmodels.g0.A1.B1$getfit$coef[-1] < 10e-8))
-  expect_true(all(is.na(genericmodels.g0.A1.Bend$getfit$coef)))          
-})
+              lastB.Ind <- eval(regclass.g0$nbins + 2)          
+              genericmodels.g0.A1.B1 <- genericmodels.g0.A1$getPsAsW.models()[[1]]
+              genericmodels.g0.A1.Bend <- genericmodels.g0.A1$getPsAsW.models()[[lastB.Ind]]          
+              expect_true(all(genericmodels.g0.A1.B1$getfit$coef[-1] < 10e-8))
+              expect_true(all(is.na(genericmodels.g0.A1.Bend$getfit$coef)))          
+            })
 
 test_that("Binarized bins contain the (approximately) same number of obs if 'equal.mass'", {
-  genericmodels.g0 <- GenericModel$new(reg = regclass.g0, DatKeepClass.g0 = OData.g0)
-  genericmodels.g0$fit(data = OData.g0)
-  genericmodels.g0.A1 <- genericmodels.g0$getPsAsW.models()[[1]]
-  OData.new <- OData.g0
-  OData.new$binirize.sVar(name.sVar = genericmodels.g0.A1$outvar, intervals = genericmodels.g0.A1$intrvls, 
-                          nbins = genericmodels.g0.A1$nbins, bin.nms = genericmodels.g0.A1$bin_nms)
-  ord.sVar <- tmleCommunity:::make.ordinal(x = OData.new$get.sVar(genericmodels.g0.A1$outvar), 
+  OData.g0$binirize.sVar(name.sVar = genericmodels.g0.A1$outvar, intervals = genericmodels.g0.A1$intrvls, 
+                         nbins = genericmodels.g0.A1$nbins, bin.nms = genericmodels.g0.A1$bin_nms)
+  ord.sVar <- tmleCommunity:::make.ordinal(x = OData.g0$get.sVar(genericmodels.g0.A1$outvar), 
                                            intervals = genericmodels.g0.A1$intrvls)
   expect_true(all(table(ord.sVar) == N / regclass.g0$nbins))
   expect_equal(sum(ord.sVar == 1), 0)  # NO obs falls beyond the minimum bound
@@ -83,17 +62,11 @@ test_that("Binarized bins contain the (approximately) same number of obs if 'equ
 })
 
 test_that("Pool bin indicators across all bins and fit one pooled regression", {
-  genericmodels.g0 <- GenericModel$new(reg = regclass.g0, DatKeepClass.g0 = OData.g0)
-  genericmodels.g0$fit(data = OData.g0)
-  genericmodels.g0.A1 <- genericmodels.g0$getPsAsW.models()$`P(A|W).1`
-  OData.new <- OData.g0
-  OData.new$binirize.sVar(name.sVar = genericmodels.g0.A1$outvar, intervals = genericmodels.g0.A1$intrvls, 
-                          nbins = genericmodels.g0.A1$nbins, bin.nms = genericmodels.g0.A1$bin_nms)
   k_i <- 1  # The first exposure node
   reg_i <- regclass.g0$clone()
   reg_i$ChangeManyToOneRegresssion(k_i, regclass.g0)
-  datX_mat <- OData.new$get.dat.sVar(rowsubset = TRUE, covars = (genericmodels.g0.A1$bin_nms))
-  pooled_bin_name <- OData.new$pooled.bin.nm.sVar(reg_i$outvar)  # "A_allB.j"
+  datX_mat <- OData.g0$get.dat.sVar(rowsubset = TRUE, covars = (genericmodels.g0.A1$bin_nms))
+  pooled_bin_name <- OData.g0$pooled.bin.nm.sVar(reg_i$outvar)  # "A_allB.j"
   expect_warning(  # Expect no warning when pooling across all bins
     BinsDat_long <- 
       tmleCommunity:::binirized.to.DTlong(BinsDat_wide = datX_mat, binID_seq = (1L:eval(reg_i$nbins + 2)), 
@@ -102,7 +75,7 @@ test_that("Pool bin indicators across all bins and fit one pooled regression", {
                                           pooled_bin_name = pooled_bin_name, name.sVar = reg_i$outvar),
     regexp = NA)
   sVar_melt_DT <- 
-    tmleCommunity:::join.Xmat(X_mat = OData.new$get.dat.sVar(TRUE, covars = reg_i$predvars), 
+    tmleCommunity:::join.Xmat(X_mat = OData.g0$get.dat.sVar(TRUE, covars = reg_i$predvars), 
                               sVar_melt_DT = BinsDat_long, ID = as.integer(1:nrow(datX_mat)))
   # select bin_ID + predictors, add intercept column
   X_mat <- sVar_melt_DT[,c("bin_ID", reg_i$predvars), with=FALSE][, c("Intercept") := 1]
