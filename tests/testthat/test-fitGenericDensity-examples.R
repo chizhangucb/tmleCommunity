@@ -1,23 +1,16 @@
-# ---------------------------------------------------------------------------------
-# TEST SET 4. TESTS FOR FITTING CONTINUOUS EXPOSURE A IN IID DATA
-# ---------------------------------------------------------------------------------
-# FOCUS ON using function fitGenericDensity in hbarDensityModel.R
-# Fitting continuous exposure by  binning, conditional on covariates
-# ---------------------------------------------------------------------------------
-library(testthat)
-library(h2o)
-gvars$verbose <- TRUE
+context("Test fitGenericDensity")
 
 # ---------------------------------------------------------------------------------
-# Test 1. The IPTW estimator that fits onr continuous A density
-# ---------------------------------------------------------------------------------
+# Focus on testing the IPTW estimator that fits on continuous A density
 # A is normal with mu for each observation being a function of (W1, W2, W3, W4), sd = 1;
-data(sampleDat_iidcontABinY)
-dat_iidcontABinY <- sampleDat_iidcontABinY$dat_iidcontABinY
-head(dat_iidcontABinY)
-psi0.Y <- sampleDat_iidcontABinY$psi0.Y  # 0.291398
-psi0.Ygstar <- sampleDat_iidcontABinY$psi0.Ygstar  # 0.316274
-nodes <- list(Ynode = "Y", Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), Enodes = NULL)
+# ---------------------------------------------------------------------------------
+`%+%` <- function(a, b) paste0(a, b)
+data("indSample.iid.cA.cY_list", package = "tmleCommunity")
+indSample.iid.cA.cY <- indSample.iid.cA.cY_list$indSample.iid.cA.cY
+N <- nrow(indSample.iid.cA.cY)
+psi0.Y <- indSample.iid.cA.cY_list$psi0.Y  # 0.291398
+psi0.Ygstar <- indSample.iid.cA.cY_list$psi0.Ygstar  # 0.316274
+nodes <- list(Ynode = "Y", Anodes = "A", WEnodes = c("W1", "W2", "W3", "W4"))
 
 define_f.gstar <- function(shift.val, truncBD, rndseed = NULL) {
   shift.const <- shift.val
@@ -33,21 +26,21 @@ define_f.gstar <- function(shift.val, truncBD, rndseed = NULL) {
   }
   return(f.gstar)
 }
-f.gstar <- define_f.gstar(shift = sampleDat_iidcontABinY$shift.val, truncBD = sampleDat_iidcontABinY$truncBD, 
-                          rndseed = sampleDat_iidcontABinY$rndseed)
+f.gstar <- define_f.gstar(shift = indSample.iid.cA.cY_list$shift.val,
+                          truncBD = indSample.iid.cA.cY_list$truncBD)
 
-test.fitGeneric.density <- function(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", 
+test.fitGeneric.density <- function(data, killh2o.atEnd = TRUE, estimator = "speedglm__glm", 
                                     h2olearner = "h2o.glm.wrapper", h2ometalearner = "h2o.glm.wrapper", 
-                                    g.SL.library = c("SL.glm", "SL.step", "SL.glm.interaction"), data,
-                                    killh2o.atlast = TRUE) {
-  tmleCom_Options(Qestimator = Qestimator, gestimator = gestimator, bin.method = "equal.mass", maxNperBin = nrow(data),
-                  h2olearner = h2olearner, h2ometalearner = h2ometalearner, g.SL.library = g.SL.library)
+                                    SL.library = c("SL.glm", "SL.step", "SL.glm.interaction")) {
+  tmleCom_Options(gestimator = estimator, bin.method = "equal.mass", 
+                  maxNperBin = NROW(data), nbins = 10, h2olearner = h2olearner, 
+                  h2ometalearner = h2ometalearner, SL.library = SL.library)
   
   # -------------------------------------------------------------------------------------------
   # estimating h_g0 and h_gstar without bounding
   # -------------------------------------------------------------------------------------------
-  h_gN <- fitGenericDensity(data, Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), f_gstar = NULL, lbound = 0)$h_gstar
-  h_gstar <- fitGenericDensity(data, Anodes = "A", Wnodes = c("W1", "W2", "W3", "W4"), f_gstar = f.gstar, lbound = 0)$h_gstar
+  h_gN <- fitGenericDensity(data, Anodes = nodes$Anodes, Wnodes = nodes$WEnodes, f_gstar = NULL, lbound = 0)$h_gstar
+  h_gstar <- fitGenericDensity(data, Anodes = nodes$Anodes, Wnodes = nodes$WEnodes, f_gstar = f.gstar, lbound = 0)$h_gstar
   
   # -------------------------------------------------------------------------------------------
   max(h_gN); min(h_gN); print(max(h_gN)); print(min(h_gN))
@@ -68,37 +61,33 @@ test.fitGeneric.density <- function(Qestimator = "speedglm__glm", gestimator = "
   print("iptw (untrimmed): " %+% round(iptw_untrimmed, 6))
   print("iptw (wts trimmed by " %+% trim_wt %+% "): " %+% round(iptw_trimmed, 6))
   
-  if (any(c(getopt("Qestimator"), getopt("gestimator")) %in% "h2o__ensemble")) {
-    if (killh2o.atlast) { h2o.shutdown(prompt = FALSE) }
+  if (tmleCommunity:::getopt("Qestimator") %in% "h2o__ensemble") {
+    if (killh2o.atEnd) { h2o.shutdown(prompt = FALSE) }
   }
   # test 1:
-  # checkTrue(abs(psi0 - 0.24023) < 10^-6)
+  # expect_true(abs(psi0 - 3.497218) < 10^-6)
   # test 2:
-  # checkTrue(abs(iptw_untrimmed - 0.243353) < 10^-6) 
+  # expect_true(abs(iptw_untrimmed - 3.444627) < 10^-6) 
   # test 3:
-  # checkTrue(abs(iptw_trimmed - 0.243353) < 10^-6)
+  # expect_true(abs(iptw_trimmed - 3.444627) < 10^-6)
   return(list(psi0 = psi0, iptw_untrimmed = iptw_untrimmed, iptw_trimmed = iptw_trimmed))
 }
 
-############################# 
-## Test 1.1 speedglm__glm
-#############################
-# test.fitGeneric.density(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", data = Odata)
-test_that("fit iptw estimator for continuous A with speedglm", {  # psi0 = 0.3196
-  iptw_res <- test.fitGeneric.density(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", data = dat_iidcontABinY)
-  expect_equal(iptw_res$iptw_untrimmed, 0.327871, tolerance = 0.001)
-  expect_equal(iptw_res$iptw_trimmed, 0.327871, tolerance = 0.001)
+test_that("fit iptw estimator for continuous A with speedglm", {  # psi0 = 3.497218
+  iptw_res <- test.fitGeneric.density(data = indSample.iid.cA.cY, estimator = "speedglm__glm")
+  expect_equal(iptw_res$iptw_untrimmed, 3.442462, tolerance = 0.001)
+  expect_equal(iptw_res$iptw_trimmed, 3.442462, tolerance = 0.001)
 })
+
 # ------------------------------------------------------
 # Benchmark for using speed.glm
 # ------------------------------------------------------
-# >   # summeas.gstar$getPsAsW.models()[[1]]$intrvls.width
 # >   max(h_gN); min(h_gN)
 # [1] 0.5227538
 # [1] 0.0008420795
 # >   max(h_gstar); min(h_gstar);
-# [1] 0.4969672
-# [1] 6.514282e-05
+# [1] 0.8020679
+# [1] 4.706653e-13
 # > 
 # >   wts <- h_gstar / h_gN
 # >   wts[is.nan(wts)] <- 0
@@ -106,27 +95,24 @@ test_that("fit iptw estimator for continuous A with speedglm", {  # psi0 = 0.319
 # > 
 # >   summary(h_gstar/h_gN)
 #      Min.   1st Qu.    Median      Mean   3rd Qu.      Max.
-#   0.03416   0.29970   0.57810   1.00300   1.17800   17.57000 
+#   0.00000   0.04042   0.41496   0.99700   1.55943   5.50000
 # >   summary(wts)
 #      Min.   1st Qu.    Median      Mean   3rd Qu.      Max.
-#   0.03416   0.29970   0.57810   1.00300   1.17800   17.57000 
+#   0.00000   0.04042   0.41496   0.99700   1.55943   5.50000
 # >   (iptw <- mean(datO[,"Y"] * (wts)))
-# [1] "true psi0: 0.3196"
-# [1] "iptw (untrimmed): 0.327871"
-# [1] "iptw (wts trimmed by 200): 0.327871"
+# [1] "true psi0: 3.497218"
+# [1] "iptw (untrimmed): 3.440935"
+# [1] "iptw (wts trimmed by 200): 3.440935"
 
-############################# 
-## Test 1.2 h2o
-#############################
-# test.fitGeneric.density(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble", h2olearner = "h2o.glm.wrapper", 
-#                         data = Odata, killh2o.atlast = TRUE)
-test_that("fit iptw estimator for continuous A with only h2o.glm.wrapper algorithm in h2oEnsemble", {  # dat_iidcontABinY
-  iptw_res <- test.fitGeneric.density(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble", 
-                                      h2olearner = "h2o.glm.wrapper", data = dat_iidcontABinY, killh2o.atlast = TRUE)
+test_that("fit iptw estimator for continuous A with only h2o.glm.wrapper algorithm in h2oEnsemble", {
   require(h2oEnsemble)
-  expect_equal(iptw_res$iptw_untrimmed, 0.324769, tolerance = 0.001)
-  expect_equal(iptw_res$iptw_trimmed, 0.324769, tolerance = 0.001)
+  iptw_res <- test.fitGeneric.density(data = indSample.iid.cA.cY, estimator = "h2o__ensemble", 
+                                      h2olearner = "h2o.glm.wrapper")
+  
+  expect_equal(iptw_res$iptw_untrimmed, 3.431435, tolerance = 0.001)
+  expect_equal(iptw_res$iptw_trimmed, 3.431435, tolerance = 0.001)
 })
+
 # ------------------------------------------------------
 # Benchmark for h2olearner = "h2o.glm.wrapper" 
 # ------------------------------------------------------
@@ -134,23 +120,24 @@ test_that("fit iptw estimator for continuous A with only h2o.glm.wrapper algorit
 # [1] 0.6031307
 # [1] 0.0005458943
 # >   max(h_gstar); min(h_gstar);  
-# [1] 0.5520781  
-# [1] 0.002283248  
+# [1] 1  
+# [1] 0.0002339631  
 # >   
 # >   wts <- h_gstar / h_gN  
 # >   wts[is.nan(wts)] <- 0  
 # >   # wts[wts > 200] <- 200  
 # >   
 # >   summary(h_gstar/h_gN)  
-#      Min.   1st Qu.    Median      Mean   3rd Qu.      Max.  
-#   0.1119     0.3038   0.5821    1.0010    1.1380    15.5500 
+#      Min.     1st Qu.    Median      Mean      3rd Qu.     Max.  
+#   0.006624   0.072140   0.393611   0.998215   1.386371   7.326124 
 # >   summary(wts)  
-#      Min.   1st Qu.    Median      Mean   3rd Qu.      Max.  
-#   0.1119     0.3038   0.5821    1.0010    1.1380    15.5500  
+#      Min.     1st Qu.    Median      Mean      3rd Qu.     Max.  
+#   0.006624   0.072140   0.393611   0.998215   1.386371   7.326124 
 # >   (iptw <- mean(datO[,"Y"] * (wts)))  
-# [1] "true psi0: 0.3196"  
-# [1] "iptw (untrimmed): 0.324769"  
-# [1] "iptw (wts trimmed by 200): 0.324769"  
+# [1] "true psi0: 3.497218"  
+# [1] "iptw (untrimmed): 3.431435"  
+# [1] "iptw (wts trimmed by 200): 3.431435"  
+
 
 # test.fitGeneric.density(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble", 
 #                         h2olearner = c("h2o.glm.wrapper", "h2o.randomForest.wrapper"), data = Odata, killh2o.atlast = TRUE)
