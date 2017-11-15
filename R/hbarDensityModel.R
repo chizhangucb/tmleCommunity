@@ -41,6 +41,8 @@ fitGenericDensity <- function(data, Anodes, Wnodes, gform = NULL, f_gstar, h.gst
   # INITIALIZE PARAMETERS
   #----------------------------------------------------------------------------------
   if (!is.null(rndseed))  set.seed(rndseed)  # make stochastic intervention trackable
+  oldverboseopt <- getOption("tmleCommunity.verbose")
+  options(tmleCommunity.verbose = verbose)
   gvars$verbose <- verbose
   message("Running fitGenericDensity with the following settings from tmleCom_Options(): "); str(gvars$opts)
   
