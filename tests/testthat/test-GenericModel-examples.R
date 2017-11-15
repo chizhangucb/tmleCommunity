@@ -78,6 +78,39 @@ test_that("Binarized bins contain the (approximately) same number of obs if 'equ
   ord.sVar <- tmleCommunity:::make.ordinal(x = OData.new$get.sVar(genericmodels.g0.A1$outvar), 
                                            intervals = genericmodels.g0.A1$intrvls)
   expect_true(all(table(ord.sVar) == N / regclass.g0$nbins))
-  expect_equal(sum(ord.sVar == 1), 0)
-  expect_equal(sum(ord.sVar == eval(regclass.g0$nbins + 2)), 0)
+  expect_equal(sum(ord.sVar == 1), 0)  # NO obs falls beyond the minimum bound
+  expect_equal(sum(ord.sVar == eval(regclass.g0$nbins + 2)), 0)  # NO obs falls beyond the max bound
+})
+
+test_that("Pool bin indicators across all bins and fit one pooled regression", {
+  genericmodels.g0 <- GenericModel$new(reg = regclass.g0, DatKeepClass.g0 = OData.g0)
+  genericmodels.g0$fit(data = OData.g0)
+  genericmodels.g0.A1 <- genericmodels.g0$getPsAsW.models()$`P(A|W).1`
+  OData.new <- OData.g0
+  OData.new$binirize.sVar(name.sVar = genericmodels.g0.A1$outvar, intervals = genericmodels.g0.A1$intrvls, 
+                          nbins = genericmodels.g0.A1$nbins, bin.nms = genericmodels.g0.A1$bin_nms)
+  k_i <- 1  # The first exposure node
+  reg_i <- regclass.g0$clone()
+  reg_i$ChangeManyToOneRegresssion(k_i, regclass.g0)
+  datX_mat <- OData.new$get.dat.sVar(rowsubset = TRUE, covars = (genericmodels.g0.A1$bin_nms))
+  pooled_bin_name <- OData.new$pooled.bin.nm.sVar(reg_i$outvar)  # "A_allB.j"
+  expect_warning(  # Expect no warning when pooling across all bins
+    BinsDat_long <- 
+      tmleCommunity:::binirized.to.DTlong(BinsDat_wide = datX_mat, binID_seq = (1L:eval(reg_i$nbins + 2)), 
+                                          ID = as.integer(1:nrow(datX_mat)), 
+                                          bin_names = genericmodels.g0.A1$bin_names, 
+                                          pooled_bin_name = pooled_bin_name, name.sVar = reg_i$outvar),
+    regexp = NA)
+  sVar_melt_DT <- 
+    tmleCommunity:::join.Xmat(X_mat = OData.new$get.dat.sVar(TRUE, covars = reg_i$predvars), 
+                              sVar_melt_DT = BinsDat_long, ID = as.integer(1:nrow(datX_mat)))
+  # select bin_ID + predictors, add intercept column
+  X_mat <- sVar_melt_DT[,c("bin_ID", reg_i$predvars), with=FALSE][, c("Intercept") := 1]
+  # re-order columns by reference (no copy)
+  setcolorder(X_mat, c("Intercept", "bin_ID", reg_i$predvars)) 
+  Y_vals <- sVar_melt_DT[, pooled_bin_name, with = FALSE][[1]]
+  expect_equal(names(X_mat), c("Intercept", "bin_ID", nodes$WEnodes))
+  expect_true(all(X_mat$bin_ID %in% (1 : eval(reg_i$nbins + 2))))
+  # Only the bin where the obs falls into receives 1, others receive 0
+  expect_equal(sort(unique(Y_vals)), c(0, 1))  
 })
