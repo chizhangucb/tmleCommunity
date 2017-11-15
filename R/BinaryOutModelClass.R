@@ -648,7 +648,8 @@ BinaryOutModel  <- R6Class(classname = "BinaryOutModel",
       X_mat.addwt <- cbind(data$get.dat.sVar(self$subset_idx, covars = self$predvars), weights = data$get.obsweights(self$subset_idx))
       sVar_melt_DT <- join.Xmat(X_mat = X_mat.addwt, sVar_melt_DT = BinsDat_long, ID = self$ID)
       # prepare design matrix for modeling w/ glm.fit or speedglm.wfit:
-      X_mat <- sVar_melt_DT[, c("bin_ID", self$predvars), with=FALSE][, c("Intercept") := 1] # select bin_ID + predictors, add intercept column
+      # select bin_ID + predictors, add intercept column
+      X_mat <- sVar_melt_DT[, c("bin_ID", self$predvars), with=FALSE][, c("Intercept") := 1] 
       setcolorder(X_mat, c("Intercept", "bin_ID", self$predvars)) # re-order columns by reference (no copy)
       self$ID <- sVar_melt_DT[["ID"]]
       private$X_mat <- as.matrix(X_mat)
