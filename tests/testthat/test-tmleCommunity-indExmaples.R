@@ -27,6 +27,8 @@ get.iid.dat.Abin <- function(ndata = 100000, rndseed = NULL, is.Y.bin = TRUE) {
 `%+%` <- function(a, b) paste0(a, b)
 ndata <- 10000
 rndseed <- 12345
+indPop.iid.bA.cY <- get.iid.dat.Abin(ndata = 1000000, rndseed = rndseed, is.Y.bin = FALSE)$Odata
+psi0.Y <- mean(indPop.iid.bA.cY$Y1) - mean(indPop.iid.bA.cY$Y0) # 2.80026
 indSample.iid.bA.cY <- get.iid.dat.Abin(ndata = ndata, rndseed = rndseed)$Odata
 N <- NROW(indSample.iid.bA.cY)
 indSample.iid.bA.cY <- indSample.iid.bA.cY[, c("W1", "W2", "W3", "W4", "A", "Y")]
@@ -39,7 +41,7 @@ gform.mis <- "A ~ W1 + W3"  # incorrect g
 #******************************
 # Test 1.1 speedglm & glm 
 #******************************
-## Test 1.1.1 Correctly specified Qform & gform (+ tmle.intercept + equal.mass + 5 nbins)
+## Test 1.1.1 Correctly specified Qform & gform (+ tmle.intercept)
 test_that("fit TMLE for binary A with speedglm, with correctly specified Qform & gform", {
   tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", maxNperBin = N)
   tmleCom_res <- 
@@ -55,7 +57,7 @@ test_that("fit TMLE for binary A with speedglm, with correctly specified Qform &
   expect_type(tmleCom_res$EY_gstar1$h.g0_GenericModel, "environment") 
 })
 
-## Test 1.1.2 Misspecified Qform (+ tmle.intercept + equal.mass + 5 nbins)
+## Test 1.1.2 Misspecified Qform (+ tmle.intercept)
 test_that("fit TMLE for binary A with speedglm, with misspecified Qform", {
   tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", maxNperBin = N)
   tmleCom_res <- 
@@ -69,7 +71,7 @@ test_that("fit TMLE for binary A with speedglm, with misspecified Qform", {
   expect_lt(abs(estimates["tmle", ] - psi0.Y), abs(estimates["gcomp", ] - psi0.Y))
 })
 
-## Test 1.1.3 Misspecified gform (+ tmle.intercept + equal.mass + 5 nbins)
+## Test 1.1.3 Misspecified gform (+ tmle.intercept)
 test_that("fit TMLE for binary A with speedglm, with misspecified gform", {
   tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", maxNperBin = N)
   tmleCom_res <- 
@@ -83,23 +85,10 @@ test_that("fit TMLE for binary A with speedglm, with misspecified gform", {
   expect_lt(abs(estimates["tmle", ] - psi0.Y), abs(estimates["iptw", ] - psi0.Y))
 })
 
-## Test 1.1.4 Misspecified gform (+ tmle.intercept + equal.mass + 20 nbins)
-test_that("fit TMLE for binary A with speedglm, with misspecified gform (20 bins)", {
-  tmleCom_Options(maxNperBin = N, nbins = 20)
-  tmleCom_res <- 
-    tmleCommunity(data = indSample.iid.bA.cY, Ynode = "Y", Anodes = "A", 
-                  WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = 1, f_gstar2 = 0, 
-                  Qform = Qform.corr, hform.g0 = gform.mis, hform.gstar = gform.mis)
-  estimates <- tmleCom_res$ATE$estimates  # psi0 = 2.80026 
-  expect_equal(estimates["tmle", ], 2.777445, tolerance = 1e-6) 
-  expect_equal(estimates["iptw", ], 3.307761, tolerance = 1e-6) 
-  expect_equal(estimates["gcomp", ], 2.779068, tolerance = 1e-6) 
-})
-
 #******************************
 ## Test 1.2 SuperLearner
 #******************************
-## Test 1.2.1 SuperLearners with only main terms (+ tmle.intercept + equal.mass + 5 nbins)
+## Test 1.2.1 SuperLearners with only main terms (+ tmle.intercept)
 test_that("fit TMLE for binary A with SuperLearner, using SL.glm, SL.step, SL.glm.interaction,
           when both Qform and gform only use main terms", {
   require("SuperLearner")
@@ -118,7 +107,7 @@ test_that("fit TMLE for binary A with SuperLearner, using SL.glm, SL.step, SL.gl
 #******************************
 # Test 1.3 h2o
 #******************************
-## Test 1.3.1 h2o.glm.wrapper with only main terms (+ tmle.intercept + equal.mass + 10 nbins)
+## Test 1.3.1 h2o.glm.wrapper with only main terms (+ tmle.intercept)
 test_that("fit TMLE estimator for binary A with h2o, using h2o.glm.wrapper and main term formulae", {
   require("h2oEnsemble")           
   tmleCom_Options(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble", maxNperBin = N,
@@ -136,3 +125,93 @@ test_that("fit TMLE estimator for binary A with h2o, using h2o.glm.wrapper and m
 # ---------------------------------------------------------------------------------
 # TEST SET 2. TESTS FOR FITTING CONTINUOUS EXPOSURE A IN IID DATA
 # --------------------------------------------------------------------------------- 
+`%+%` <- function(a, b) paste0(a, b)
+data("indSample.iid.cA.cY_list", package = "tmleCommunity")
+indSample.iid.cA.cY <- indSample.iid.cA.cY_list$indSample.iid.cA.cY
+N <- nrow(indSample.iid.cA.cY)
+psi0.Y <- indSample.iid.cA.cY_list$psi0.Y
+psi0.Ygstar <- indSample.iid.cA.cY_list$psi0.Ygstar
+
+define_f.gstar <- function(shift.val, truncBD, rndseed = NULL) {
+  shift.const <- shift.val
+  trunc.const <- truncBD
+  f.gstar <- function(data, ...) {
+    print("shift.const: " %+% shift.const)
+    set.seed(rndseed)
+    A.mu <- 0.86 * data[,"W1"] + 0.41 * data[,"W2"] - 0.34 * data[,"W3"] + 0.93 * data[,"W4"]
+    untrunc.A <- rnorm(n = nrow(data), mean = A.mu + shift.const, sd = 1)
+    r.new.A <- exp(0.8 * shift.const * (untrunc.A - A.mu - shift.const / 3))
+    trunc.A <- ifelse(r.new.A > trunc.const, untrunc.A - shift.const, untrunc.A)
+    return(trunc.A)
+  }
+  return(f.gstar)
+}
+f.gstar <- define_f.gstar(shift = indSample.iid.cA.cY_list$shift.val, 
+                          truncBD = indSample.iid.cA.cY_list$truncBD)
+
+Qform.corr <- "Y ~ W1 + W2 + W3 + W4 + A" # correct Q
+Qform.mis <- "Y ~ W3 + A" # incorrect Q
+gform.corr <- "A ~ W1 + W2 + W3 + W4"  # correct g
+gform.mis <- "A ~ W3"  # incorrect g
+
+#******************************
+# Test 1.1 speedglm & glm 
+#******************************
+## Test 1.1.1 Correctly specified Qform & gform (+ tmle.intercept + equal.mass + 5 nbins)
+test_that("fit TMLE for cont A with speedglm, with correctly specified Qform & gform (5 bins)", {
+  tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", maxNperBin = N)
+  tmleCom_res <- 
+    tmleCommunity(data = indSample.iid.cA.cY, Ynode = "Y", Anodes = "A", 
+                  WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = f.gstar, rndseed = 12345,
+                  Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
+  estimates <- tmleCom_res$EY_gstar1$estimates  # psi0 = 3.50856 
+  expect_equal(estimates["tmle", ], 3.452077, tolerance = 0.005)  
+  expect_equal(estimates["iptw", ], 3.435237, tolerance = 0.005)  
+  expect_equal(estimates["gcomp", ], 3.453169, tolerance = 0.005) 
+  expect_equal(tmleCom_res$EY_gstar2, NULL) 
+})
+
+## Test 1.1.2 Misspecified gform (+ tmle.intercept + equal.mass + 5 nbins)
+test_that("fit TMLE for cont A with speedglm, with misspecified gform (5 bins)", {
+  tmleCom_Options(maxNperBin = N)
+  tmleCom_res <- 
+    tmleCommunity(data = indSample.iid.cA.cY, Ynode = "Y", Anodes = "A", 
+                  WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = f.gstar, rndseed = 12345,
+                  Qform = Qform.corr, hform.g0 = gform.mis, hform.gstar = gform.mis)
+  estimates <- tmleCom_res$EY_gstar1$estimates  # psi0 = 3.50856 
+  expect_equal(estimates["tmle", ], 3.453457, tolerance = 0.005)
+  expect_equal(estimates["iptw", ], 3.311372, tolerance = 0.005)
+  expect_equal(estimates["gcomp", ], 3.454157, tolerance = 0.005)
+  expect_lt(abs(estimates["tmle", ] - psi0.Ygstar), abs(estimates["iptw", ] - psi0.Ygstar))
+})
+
+## Test 1.1.3 Misspecified gform (+ tmle.intercept + equal.mass + 20 nbins)
+test_that("fit TMLE for cont A with speedglm, with misspecified gform (20 bins)", {
+  tmleCom_Options(maxNperBin = N, nbins = 20)
+  tmleCom_res <- 
+    tmleCommunity(data = indSample.iid.cA.cY, Ynode = "Y", Anodes = "A", 
+                  WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = f.gstar, rndseed = 12345,
+                  Qform = Qform.corr, hform.g0 = gform.mis, hform.gstar = gform.mis)
+  estimates <- tmleCom_res$EY_gstar1$estimates  # psi0 = 3.50856 
+  expect_equal(estimates["tmle", ], 3.450999, tolerance = 0.005)
+  expect_equal(estimates["iptw", ], 3.306703, tolerance = 0.005)
+  expect_equal(estimates["gcomp", ], 3.454069, tolerance = 0.005)
+  expect_lt(abs(estimates["tmle", ] - psi0.Ygstar), abs(estimates["iptw", ] - psi0.Ygstar))
+})
+
+#******************************
+## Test 1.2 SuperLearner
+#******************************
+## Test 1.2.1 SL.glm, SL.step, SL.glm.interaction (+ tmle.intercept + equal.mass + 10 nbins)
+test_that("fit TMLE for cont A with SuperLearner, using SL.glm, SL.bayesglm, SL.gam", {
+  require("SuperLearner")
+  tmleCom_Options(Qestimator = "SuperLearner", gestimator = "SuperLearner", maxNperBin = N,
+                  SL.library = c("SL.glm", "SL.bayesglm", "SL.gam"), nbins = 10)
+  tmleCom_res <- 
+    tmleCommunity(data = indSample.iid.cA.cY, Ynode = "Y", Anodes = "A", 
+                  WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = f.gstar, rndseed = 12345)
+  estimates <- tmleCom_res$EY_gstar1$estimates  # psi0 = 3.50856 
+  expect_equal(estimates["tmle", ], 3.454295, tolerance = 0.005) 
+  expect_equal(estimates["iptw", ], 3.447997, tolerance = 0.005)  
+  expect_equal(estimates["gcomp", ], 3.453953, tolerance = 0.005) 
+})
