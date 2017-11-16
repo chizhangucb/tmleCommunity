@@ -5,7 +5,7 @@
 # individual exposure is normal with mu for each observation being a function of (E1, E2, W1, W2);
 # -------------------------------------------------------------------------------------------------------
 
-get.cluster.dat.Abin <- function(id, n.ind = 10000, rndseed = NULL, is.Y.bin = T, working.model = T) {
+get.cluster.dat.Abin <- function(id, n.ind = 10000, rndseed = NULL, is.Y.bin = TRUE, working.model = TRUE) {
   set.seed(rndseed)
   E1 <- runif(n = 1, min = 0, max = 1)
   E2 <- sample(x = c(0, 0.2, 0.4, 0.8, 1), size = 1)
