@@ -53,7 +53,7 @@ save(indSample.iid.bA.bY_list, file="indSample.iid.bA.bY_list.Rda")
 
 #### Data 2. One binary, individual-level A with continuous Y
 indPop.iid.bA.cY <- get.iid.dat.Abin(ndata = 1000000, rndseed = rndseed, is.Y.bin = FALSE)$Odata
-psi0.Y <- mean(indPop.iid.bA.cY$Y1) - mean(indPop.iid.bA.cY$Y0) # 1.800267
+psi0.Y <- mean(indPop.iid.bA.cY$Y1) - mean(indPop.iid.bA.cY$Y0) # 2.80026
 indSample.iid.bA.cY <- get.iid.dat.Abin(ndata = ndata, rndseed = rndseed, is.Y.bin = FALSE)$Odata
 indSample.ind.bA.cY <- indSample.ind.bA.cY[, c("W1", "W2", "W3", "W4", "A", "Y")]
 indSample.ind.bA.cY_list <- list(indSample.ind.bA.cY = indSample.ind.bA.cY, rndseed = rndseed, psi0.Y = psi0.Y,
