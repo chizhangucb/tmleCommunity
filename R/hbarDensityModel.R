@@ -300,7 +300,7 @@ fit.hbars <- function(OData.ObsP0, est_params_list) {
     } else {
       genericmodels.gstar <- NULL
     }
-   
+    h_gN <- h_gstar <- NULL
     h_gstar_h_gN <- rep_len(1, OData.gstar$nobs)
   }
   model.h.fit <- list(genericmodels.g0 = genericmodels.g0, genericmodels.gstar = genericmodels.gstar, lbound = lbound)
