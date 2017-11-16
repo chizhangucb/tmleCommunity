@@ -2,9 +2,8 @@
 # TEST SET 1. TESTS FOR FITTING BINARY EXPOSURE A IN IID DATA
 # ---------------------------------------------------------------------------------
 # Fitting binary exposure by logistic regression
-# ---------------------------------------------------------------------------------
-library(testthat)
-gvars$verbose <- TRUE
+
+
 
 # ---------------------------------------------------------------------------------
 # Test 1. The TMLE/ IPTW/ GCOMP estimator for binary Y 
