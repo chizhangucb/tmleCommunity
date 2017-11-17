@@ -736,7 +736,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
   if (!(community.step %in% c("NoCommunity", "community_level", "individual_level", "perCommunity"))) 
     stop("community.step argument must be one of 'NoCommunity', 'community_level', 'individual_level' and 'perCommunity'")
   if ((community.step %in% c("community_level", "individual_level", "perCommunity")) & is.null(communityID)) {
-    messageMSg <- c("'communityID' is needed when using 'community_level', 'individual_level' and 'perCommunity'. Lack of 'communityID'",
+    messageMSg <- c("'communityID' is needed when using 'community_level', 'individual_level' and 'perCommunity'. Lack of 'communityID' ",
                     "forces the algorithm to automatically pool data over all communities and treat it as non-hierarchical dataset. \n",
                     "In other words, we simply treat community.step = 'NoCommunity' and pooled.Q = FALSE")
     message(messageMSg[1] %+% messageMSg[2] %+% messageMSg[3])
