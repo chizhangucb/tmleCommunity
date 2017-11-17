@@ -28,9 +28,12 @@ get.cluster.dat.Abin <- function(id, n.ind = 10000, rndseed = NULL, is.Y.bin = T
     }
   } else {  # working.model fails
     if (is.Y.bin) {  # Y binary
-      Y <- rbinom(n = n.ind, size = 1, prob = plogis(- 0.2 + 0.3 * A + 0.5 * E1 + 0.2 * E2 + 0.3 * W1 - 0.15 * W3 + 0.75 * mean(W2) + 0.4 * mean(W3)))
-      Y1 <- rbinom(n = n.ind, size = 1, prob = plogis(- 0.2 + 0.3 * 1 + 0.5 * E1 + 0.2 * E2 + 0.3 * W1 - 0.15 * W3 + 0.75 * mean(W2) + 0.4 * mean(W3)))
-      Y0 <- rbinom(n = n.ind, size = 1, prob = plogis(- 0.2 + 0.3 * 0 + 0.5 * E1 + 0.2 * E2 + 0.3 * W1 - 0.15 * W3 + 0.75 * mean(W2) + 0.4 * mean(W3)))
+      Y <- rbinom(n = n.ind, size = 1, prob = plogis(- 0.2 + 0.8 * A + 0.5 * E1 + 0.2 * E2 + 0.3 * W1 
+                                                     - 0.15 * W3 + 0.75 * mean(W2) + 0.4 * mean(W3)))
+      Y1 <- rbinom(n = n.ind, size = 1, prob = plogis(- 0.2 + 0.8 * 1 + 0.5 * E1 + 0.2 * E2 + 0.3 * W1 
+                                                      - 0.15 * W3 + 0.75 * mean(W2) + 0.4 * mean(W3)))
+      Y0 <- rbinom(n = n.ind, size = 1, prob = plogis(- 0.2 + 0.8 * 0 + 0.5 * E1 + 0.2 * E2 + 0.3 * W1 
+                                                      - 0.15 * W3 + 0.75 * mean(W2) + 0.4 * mean(W3)))
     } else {  # Y continuous 
       Y <- rnorm(n = n.ind, mean = 1 + 0.3 * A - 0.2 * E1 + 0.4 * E2 + 0.3 * W1 - 0.15 * W3 + 0.75 * mean(W2) + 0.4 * mean(W3), sd = 1)
       Y1 <- rnorm(n = n.ind, mean = 1 + 0.3 * A - 0.2 * E1 + 0.4 * E2 + 0.3 * W1 - 0.15 * W3 + 0.75 * mean(W2) + 0.4 * mean(W3), sd = 1)
@@ -98,6 +101,6 @@ mean(comPop.wmF.bA.bY$Y0) #
 psi0.Y <- mean(comPop.wmF.bA.bY$Y1) - mean(comPop.wmF.bA.bY$Y0) # 
 
 comSample.wmF.bA.bY <- get.fullDat.Abin(J = J, n.ind = n.ind, rndseed = rndseed, is.Y.bin = TRUE, working.model = FALSE)
-omSample.wmF.bA.bY <- comSample.wmF.bA.bY[, c("id", "E1", "E2", "W1", "W2", "W3", "A", "Y")]
+comSample.wmF.bA.bY <- comSample.wmF.bA.bY[, c("id", "E1", "E2", "W1", "W2", "W3", "A", "Y")]
 comSample.wmF.bA.bY_list <- list(comSample.wmF.bA.bY = comSample.wmF.bA.bY, psi0.Y = psi0.Y, rndseed = rndseed)
 save(comSample.wmF.bA.bY_list, file = "comSample.wmF.bA.bY_list.rda")
