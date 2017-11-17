@@ -77,23 +77,26 @@ n.ind <- 50
 rndseed <- 12345
 
 #### Data 1. One binary, community-level A with Binary Y, when working model holds
-comPop.wmT.bA.bY <- get.fullDat.Abin(J = 4000, n.ind = 4000, rndseed = NULL, is.Y.bin = T, working.model = T, n.ind.fix = F, onlyYkeep = T)
+comPop.wmT.bA.bY <- get.fullDat.Abin(J = 4000, n.ind = 4000, rndseed = NULL, is.Y.bin = TRUE, 
+                                     working.model = TRUE, n.ind.fix = FALSE, onlyYkeep = TRUE)
 mean(comPop.wmT.bA.bY$Y1) # 0.5150197
 mean(comPop.wmT.bA.bY$Y0) # 0.4113038
 psi0.Y <- mean(comPop.wmT.bA.bY$Y1) - mean(comPop.wmT.bA.bY$Y0) # 0.103716
 
-comSample.wmT.bA.bY <- get.fullDat.Abin(J = J, n.ind = n.ind, rndseed = rndseed, is.Y.bin = T, working.model = T, n.ind.fix = F)
+comSample.wmT.bA.bY <- get.fullDat.Abin(J = J, n.ind = n.ind, rndseed = rndseed, is.Y.bin = TRUE, working.model = TRUE)
 comSample.wmT.bA.bY <- comSample.wmT.bA.bY[, c("id", "E1", "E2", "W1", "W2", "W3", "A", "Y")]
 comSample.wmT.bA.bY_list <- list(comSample.wmT.bA.bY = comSample.wmT.bA.bY, psi0.Y = psi0.Y, rndseed = rndseed)
 comSample.wmT.bA.bY_list$psi0.Y  # 0.103716
 save(comSample.wmT.bA.bY_list, file = "comSample.wmT.bA.bY_list.rda")
 
 #### Data 2. One binary, community-level A with Binary Y, when working model fails
-comPop.wmF.bA.bY <- get.fullDat.Abin(J = 4000, n.ind = 4000, rndseed = NULL, is.Y.bin = T, working.model = F, n.ind.fix = F, onlyYkeep = T)
+comPop.wmF.bA.bY <- get.fullDat.Abin(J = 4000, n.ind = 4000, rndseed = NULL, is.Y.bin = TRUE, 
+                                     working.model = FALSE, n.ind.fix = FALSE, onlyYkeep = TRUE)
 mean(comPop.wmF.bA.bY$Y1) # 
 mean(comPop.wmF.bA.bY$Y0) # 
 psi0.Y <- mean(comPop.wmF.bA.bY$Y1) - mean(comPop.wmF.bA.bY$Y0) # 
 
-comSample.wmF.bA.bY <- get.fullDat.Abin(J = J, n.ind = n.ind, rndseed = rndseed, is.Y.bin = T, working.model = T, n.ind.fix = F)
+comSample.wmF.bA.bY <- get.fullDat.Abin(J = J, n.ind = n.ind, rndseed = rndseed, is.Y.bin = TRUE, working.model = FALSE)
+omSample.wmF.bA.bY <- comSample.wmF.bA.bY[, c("id", "E1", "E2", "W1", "W2", "W3", "A", "Y")]
 comSample.wmF.bA.bY_list <- list(comSample.wmF.bA.bY = comSample.wmF.bA.bY, psi0.Y = psi0.Y, rndseed = rndseed)
 save(comSample.wmF.bA.bY_list, file = "comSample.wmF.bA.bY_list.rda")
