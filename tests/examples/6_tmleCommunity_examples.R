@@ -64,7 +64,7 @@ tmleCom_wmT.bA.bY.NoC_sglm <-
 tmleCom_wmT.bA.bY.NoC_sglm$ATE$estimates
 
 # Stratification analysis that run separate outcome (exposure) mechanism for each community
-# use glm since only around 100 observations per community, speed.glm easily fails
+# use glm since only around 50 observations per community, speed.glm easily fails
 # takes longer time than the tests above since doing 1000 TMLEs (one TMLE per community)
 # so set verbose to TRUE to track running progress
 tmleCom_Options(Qestimator = "glm__glm", gestimator = "glm__glm", maxNperBin = N)
