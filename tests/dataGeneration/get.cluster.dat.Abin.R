@@ -42,6 +42,7 @@ get.cluster.dat.Abin <- function(id, n.ind = 10000, rndseed = NULL, is.Y.bin = T
 
 get.fullDat.Abin <- function(J, n.ind, rndseed = NULL, is.Y.bin = TRUE, working.model = TRUE, 
                              n.ind.fix = FALSE, onlyYkeep = FALSE, verbose = TRUE) {
+  `%+%` <- function(a, b) paste0(a, b)
   set.seed(rndseed)
   if (n.ind.fix) {
     n.ind <- rep(n.ind, J)
