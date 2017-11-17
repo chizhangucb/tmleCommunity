@@ -72,6 +72,8 @@ test_that("fit TMLE for binary A with speedglm, with misspecified Qform", {
 })
 
 ## Test 1.1.3 Misspecified gform (+ tmle.intercept)
+# No big influence on the IPTW estimator since only the consistence estimation of
+# the weights h_gstar / h_gN is required, even if g0 is misspecified
 test_that("fit TMLE for binary A with speedglm, with misspecified gform", {
   tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", maxNperBin = N)
   tmleCom_res <- 
