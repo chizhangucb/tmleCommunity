@@ -1,5 +1,6 @@
 context("Test GenericModel")
 
+library(data.table)
 `%+%` <- function(a, b) paste0(a, b)
 data("indSample.iid.cA.cY_list", package = "tmleCommunity")
 indSample.iid.cA.cY <- indSample.iid.cA.cY_list$indSample.iid.cA.cY
