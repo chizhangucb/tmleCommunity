@@ -134,7 +134,7 @@ test_that("fit unweighted covariate-based TMLE for bin, community-level A", {
 })
 
 ## Test 1.1.6 Weigh each community equally, using community-level analysis without a pooled Q
-test_that("fit unweighted covariate-based TMLE for bin, community-level A", {
+test_that("fit TMLE for bin, community-level A, while weighing each community equally", {
   tmleCom_res <-tmleCommunity(data = comSample.wmF.bA.bY, Ynode = "Y", Anodes = "A",
                               WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1L, 
                               f_gstar2 = 0L, community.wts = "equal.community",
@@ -204,6 +204,7 @@ get.fullDat.Acont <- function(J, n.ind, rndseed = NULL, truncBD = 5, shift.val =
   return(full.data)
 }
 
+`%+%` <- function(a, b) paste0(a, b)
 J <- 1000
 n.ind <- 100
 rndseed <- 12345
@@ -231,5 +232,145 @@ define_f.gstar <- function(shift.val, truncBD, rndseed = NULL) {
 }
 f.gstar <- define_f.gstar(shift.val = shift.val, truncBD = truncBD)
 
+#*************************************** 
+## Test 2.1 Different analysis methods
+#*************************************** 
+tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", maxNperBin = N)
 
-#***************************************************************************************
+## Test 2.1.1 Community-level analysis without a pooled individual-level regression on outcome
+test_that("fit TMLE for cont, community-level A, with community-level analysis without a pooled Q", {
+  tmleCom_res <-tmleCommunity(data = comSample.wmT.cA.bY, Ynode = "Y", Anodes = "A",
+                              WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = f.gstar, 
+                              community.step = "community_level", communityID = "id", 
+                              pooled.Q = FALSE, rndseed = 12345)
+  estimates <- tmleCom_res$EY_gstar1$estimates  # psi0 = 0.4571258
+  expect_equal(estimates["tmle", ], 0.4519760, tolerance = 0.02)
+  expect_equal(estimates["iptw", ], 0.4498894, tolerance = 0.02)
+  expect_equal(estimates["gcomp", ], 0.4567250, tolerance = 0.02)
+})
+
+## Test 2.1.2 Community-level analysis with a pooled individual-level regression on outcome
+test_that("fit TMLE for cont, community-level A, with community-level analysis with a pooled Q", {
+  tmleCom_res <-tmleCommunity(data = comSample.wmT.cA.bY, Ynode = "Y", Anodes = "A",
+                              WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = f.gstar, 
+                              community.step = "community_level", communityID = "id", 
+                              pooled.Q = TRUE, rndseed = 12345)
+  estimates <- tmleCom_res$EY_gstar1$estimates  # psi0 = 0.4571258
+  expect_equal(estimates["tmle", ], 0.4462443, tolerance = 0.02)
+  expect_equal(estimates["iptw", ], 0.4510168, tolerance = 0.02)
+  expect_equal(estimates["gcomp", ], 0.4494338, tolerance = 0.02)
+})
+
+# Test 2.1.3 Individual-level analysis with both individual-level outcome and treatment mechanisms
+test_that("fit TMLE for cont, community-level A, with individual-level analysis", {
+  tmleCom_res <-tmleCommunity(data = comSample.wmT.cA.bY, Ynode = "Y", Anodes = "A",
+                              WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = f.gstar, 
+                              community.step = "individual_level", communityID = "id",
+                              rndseed = 12345)
+  estimates <- tmleCom_res$EY_gstar1$estimates  # psi0 = 0.4571258
+  expect_equal(estimates["tmle", ], 0.4497872, tolerance = 0.01)
+  expect_equal(estimates["iptw", ], 0.4519750, tolerance = 0.01)
+  expect_equal(estimates["gcomp", ], 0.4525564, tolerance = 0.01)
+})
+
+# Test 2.1.4 Individual-level analysis that assumes no hierarchical structure
+test_that("Treat hierarchical data as non-hierarchical and use usual TMLE", {
+  tmleCom_res <-tmleCommunity(data = comSample.wmT.cA.bY, Ynode = "Y", Anodes = "A",
+                              WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = f.gstar, 
+                              community.step = "NoCommunity", rndseed = 12345)
+  estimates <- tmleCom_res$EY_gstar1$estimates  # psi0 = 0.4571258
+  expect_equal(estimates["tmle", ], 0.4503520, tolerance = 0.01)
+  expect_equal(estimates["iptw", ], 0.4526493, tolerance = 0.01)
+  expect_equal(estimates["gcomp", ], 0.4531318, tolerance = 0.01)
+  
+  expect_message(
+    tmleCom_res2 <-tmleCommunity(data = comSample.wmT.cA.bY, Ynode = "Y", Anodes = "A",
+                                 WEnodes = c("E1", "E2", "W1", "W2", "W3"), 
+                                 f_gstar1 = f.gstar, community.step = "individual_level", 
+                                 communityID = NULL, rndseed = 12345),
+    regexp = "Lack of 'communityID' forces the algorithm to automatically " %+%
+      "pool data over all communities and treat it as non-hierarchical dataset"
+  )
+  estimates2 <- tmleCom_res2$EY_gstar1$estimates  # psi0 = 0.4571258
+  expect_equal(estimates, estimates2, tolerance = 0.01)
+})
+
+#*************************************** 
+## Test 2.2 Different number of bins
+#***************************************
+
+## Test 2.2.1 Community-level analysis without a pooled Q + 10 bins
+test_that("For cont, community-level A, community-level analysis without a pooled Q + 10 bins", {
+  tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", 
+                  maxNperBin = N, nbins = 10)
+  tmleCom_res <-tmleCommunity(data = comSample.wmT.cA.bY, Ynode = "Y", Anodes = "A",
+                              WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = f.gstar, 
+                              community.step = "community_level", communityID = "id", 
+                              pooled.Q = FALSE, rndseed = 12345)
+  estimates <- tmleCom_res$EY_gstar1$estimates  # psi0 = 0.4571258
+  expect_equal(estimates["tmle", ], 0.4504501, tolerance = 0.02)
+  expect_equal(estimates["iptw", ], 0.4513750, tolerance = 0.02)
+  expect_equal(estimates["gcomp", ], 0.4568511, tolerance = 0.02)
+})
+
+## Test 2.2.2 Community-level analysis without a pooled Q + 20 bins
+test_that("For cont, community-level A, community-level analysis without a pooled Q + 20 bins", {
+  tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", 
+                  maxNperBin = N, nbins = 50)
+  tmleCom_res <-tmleCommunity(data = comSample.wmT.cA.bY, Ynode = "Y", Anodes = "A",
+                              WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = f.gstar, 
+                              community.step = "community_level", communityID = "id", 
+                              pooled.Q = FALSE, rndseed = 12345)
+  estimates <- tmleCom_res$EY_gstar1$estimates  # psi0 = 0.4571258
+  expect_equal(estimates["tmle", ], 0.4502626, tolerance = 0.02)
+  expect_equal(estimates["iptw", ], 0.4689095, tolerance = 0.05)
+  expect_equal(estimates["gcomp", ], 0.4563251, tolerance = 0.02)
+})
+
+#*************************************** 
+## Test 2.3 Different binarization methods
+#***************************************
+## Test 2.3.1 Community-level analysis without a pooled Q + equal length
+test_that("For cont, community-level A, community-level analysis without a pooled Q + equal length", {
+  tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", 
+                  maxNperBin = N, bin.method = "equal.len")
+  tmleCom_res <-tmleCommunity(data = comSample.wmT.cA.bY, Ynode = "Y", Anodes = "A",
+                              WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = f.gstar, 
+                              community.step = "community_level", communityID = "id", 
+                              pooled.Q = FALSE, rndseed = 12345)
+  estimates <- tmleCom_res$EY_gstar1$estimates  # psi0 = 0.4571258
+  expect_equal(estimates["tmle", ], 0.4503534, tolerance = 0.02)
+  expect_equal(estimates["iptw", ], 0.4125413, tolerance = 0.02)
+  expect_equal(estimates["gcomp", ], 0.4520120, tolerance = 0.02)
+})
+
+## Test 2.3.2 Community-level analysis without a pooled Q + combination of equal length & mass
+test_that("For cont, community-level A, community-level analysis without a pooled Q + dhist", {
+  tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", 
+                  maxNperBin = N, bin.method = "dhist")
+  tmleCom_res <-tmleCommunity(data = comSample.wmT.cA.bY, Ynode = "Y", Anodes = "A",
+                              WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = f.gstar, 
+                              community.step = "community_level", communityID = "id", 
+                              pooled.Q = FALSE, rndseed = 12345)
+  estimates <- tmleCom_res$EY_gstar1$estimates  # psi0 = 0.4571258
+  expect_equal(estimates["tmle", ], 0.4521775, tolerance = 0.02)
+  expect_equal(estimates["iptw", ], 0.4346268, tolerance = 0.02)
+  expect_equal(estimates["gcomp", ], 0.4577096, tolerance = 0.02)
+})
+
+#*************************************** 
+## Test 2.4 SuperLearner
+#***************************************
+test_that("fit TMLE for cont, community-level A with SL, using SL.glm, SL.bayesglm, SL.gam", {
+  require("SuperLearner")
+  tmleCom_Options(Qestimator = "SuperLearner", gestimator = "SuperLearner", maxNperBin = N,
+                  SL.library = c("SL.glm", "SL.bayesglm", "SL.gam"), nbins = 5)
+  tmleCom_res <- tmleCommunity(data = comSample.wmT.cA.bY, Ynode = "Y", Anodes = "A",
+                               WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = f.gstar, 
+                               community.step = "community_level", communityID = "id", 
+                               pooled.Q = FALSE, rndseed = 12345)
+  estimates <- tmleCom_res$EY_gstar1$estimates  # psi0 = 0.4571258 
+  expect_equal(estimates["tmle", ], 0.4522367, tolerance = 0.02) 
+  expect_equal(estimates["iptw", ], 0.4469491, tolerance = 0.02)  
+  expect_equal(estimates["gcomp", ], 0.4554923, tolerance = 0.02) 
+})
