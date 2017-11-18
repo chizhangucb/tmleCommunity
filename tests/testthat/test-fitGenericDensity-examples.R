@@ -177,8 +177,8 @@ test_that("fit iptw estimator for continuous A with h2o.glm.wrapper & " %+%
             "h2o.randomForest.wrapper algorithms in h2oEnsemble", {
   require(h2oEnsemble)           
   set.seed(12345)
-  test.fitGeneric.density(data = indSample.iid.cA.cY, estimator = "h2o__ensemble", 
-                          h2olearner = c("h2o.glm.wrapper", "h2o.randomForest.wrapper"))
+  iptw_res <- test.fitGeneric.density(data = indSample.iid.cA.cY, estimator = "h2o__ensemble", 
+                                      h2olearner = c("h2o.glm.wrapper", "h2o.randomForest.wrapper"))
   expect_equal(iptw_res$iptw_untrimmed, 3.378611, tolerance = 0.1)
   expect_equal(iptw_res$iptw_trimmed, 3.378611, tolerance = 0.1)
 })
