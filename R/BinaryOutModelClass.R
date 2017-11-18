@@ -118,7 +118,9 @@ fit_single_reg.glmS3 <- function(self) {
     model.fit <- list(coef = rep.int(NA_real_, ncol(Xmat)))
   } else {
     ctrl <- glm.control(trace=FALSE, maxit=1000)
-    model.fit <- stats::glm.fit(x = Xmat, y = Y_vals, weights = wt_vals, family = quasibinomial(), control = ctrl)
+    # scale weights because there were rare problems where large weights caused convergence problems
+    model.fit <- stats::glm.fit(x = Xmat, y = Y_vals, weights = as.vector(scale(wt_vals, center = FALSE)), 
+                                family = quasibinomial(), control = ctrl)
   }
   fit <- list(coef = model.fit$coef, linkfun = "logit_linkinv", fitfunname = "glm")
   if (gvars$verbose) print(fit$coef)
@@ -139,7 +141,10 @@ fit_single_reg.speedglmS3 <- function(self) {
   if (nrow(Xmat) == 0L) { # Xmat has 0 rows: return NA's and avoid throwing exception
     model.fit <- list(coef = rep.int(NA_real_, ncol(Xmat)))
   } else {
-    model.fit <- try(speedglm::speedglm.wfit(X = Xmat, y = Y_vals, weights = wt_vals, family = quasibinomial()), silent = TRUE)
+    model.fit <- try(
+      # scale weights because there were rare problems where large weights caused convergence problems
+      speedglm::speedglm.wfit(X = Xmat, y = Y_vals, weights = as.vector(scale(wt_vals, center = FALSE)), 
+                              family = quasibinomial()), silent = TRUE)
     if (inherits(model.fit, "try-error")) {  # if failed, fall back on stats::glm
       message("speedglm::speedglm.wfit failed, falling back on stats:glm.fit; ", model.fit)
       return(fit_single_reg.glmS3(self))
@@ -258,7 +263,8 @@ fit_single_reg.SLS3 <- function(self) {
     X <- data.frame(Xmat[, colnames(Xmat)[colnames(Xmat) != "Intercept"]])
     model.fit <- try(SuperLearner::SuperLearner( 
       Y = Y_vals, X = X, family = SLFamily, verbose = gvars$verbose, SL.library = SL.library, 
-      obsWeights = wt_vals, cvControl = list(V=CVfolds), control = list(saveFitLibrary=TRUE)))
+      obsWeights = as.vector(scale(wt_vals, center = FALSE)), cvControl = list(V=CVfolds), 
+      control = list(saveFitLibrary=TRUE)))
     
     if (inherits(model.fit, "try-error")) { # if failed, fall back on speedglm::speedglm.wfit
       message("SuperLearner::SuperLearner failed, falling back on speedglm::speedglm.wfit; ", model.fit)
