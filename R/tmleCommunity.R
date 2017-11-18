@@ -821,9 +821,9 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
     } else {
       determ.Q <- (data[, YnodeDet] == 1)
     }
-    if (length(unique(obs.wts)) > 1 && any(unlist(OData.ObsP0$type.sVar[Anodes]) != "binary")) {
-      if (verbose) warning("obs.wts are currently implemented on binary A. The results for non-binary A with weights may be unrealiable.")
-    }
+    #if (length(unique(obs.wts)) > 1 && any(unlist(OData.ObsP0$type.sVar[Anodes]) != "binary")) {
+    #  if (verbose) warning("obs.wts are currently implemented on binary A. The results for non-binary A with weights may be unrealiable.")
+    #}
     
     #----------------------------------------------------------------------------------
     # Defining and estimating outcome mechanism E(Y|A, E, W)
