@@ -1,6 +1,6 @@
-# ---------------------------------------------------------------------------------
-# TEST SET 5. TESTS FOR SAVING RAM SPACE DURING FITTING AND PREDICTING PROCESS
-# ---------------------------------------------------------------------------------
+context("Test for saving RAM during fitting and predicting process")
+
+
 # FOCUS ON using arguments in GenericModelClasses.R
 # Show choices of keeping all data/models during estimation OR wiping them out
 library(testthat)
