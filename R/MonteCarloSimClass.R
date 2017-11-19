@@ -136,6 +136,10 @@ MonteCarloSimClass <- R6Class(classname = "MonteCarloSimClass",
       # predictions P(Y=1) under A^* for non-det Y in OData.ObsP0
       QY.init <- model.Q.init$predict(newdata = OData.gstar)$getprobA1  
       QY.init[OData.ObsP0$det.Y] <- OData.ObsP0$noNA.Ynodevals[OData.ObsP0$det.Y]
+      # taking average over p samples for each of n obs
+      ID <- rep.int(c(1 : self$nobs), self$p)
+      QY.init_mat <- data.table::data.table(ID = ID, QY.init = QY.init)
+      QY.init <- QY.init_mat[, lapply(.SD, mean, na.rm=TRUE), by="ID", .SDcols=c("QY.init") ][["QY.init"]]
       self$QY.init <- QY.init
       invisible(QY.init)
     },
@@ -148,10 +152,15 @@ MonteCarloSimClass <- R6Class(classname = "MonteCarloSimClass",
       if (!is.na(coef(model.Q.star.cov))) {
         self$model.Q.star.cov <- model.Q.star.cov
         off <- qlogis(self$QY.init)
-        self$QY.star.cov <- plogis(off + coef(model.Q.star.cov)*iptw)
+        QY.star.cov <- plogis(off + coef(model.Q.star.cov)*iptw)
       } else {
-        self$QY.star.cov <- self$QY.init
+        QY.star.cov <- self$QY.init
       }
+      # taking average over p samples for each of n obs
+      ID <- rep.int(c(1 : self$nobs), self$p)
+      QY.star.cov_mat <- data.table::data.table(ID = ID, QY.star.cov = QY.star.cov)
+      QY.star.cov <- QY.star.cov_mat[, lapply(.SD, mean, na.rm=TRUE), by="ID", .SDcols=c("QY.star.cov") ][["QY.star.cov"]]
+      self$QY.star.cov <- QY.star.cov
       invisible(self$QY.star.cov)
     },
     
@@ -162,10 +171,15 @@ MonteCarloSimClass <- R6Class(classname = "MonteCarloSimClass",
       if (!is.na(coef(model.Q.star.int))) {
         self$model.Q.star.int <- model.Q.star.int
         off <- qlogis(self$QY.init)
-        self$QY.star.int <- plogis(off + coef(model.Q.star.int))
+        QY.star.int <- plogis(off + coef(model.Q.star.int))
       } else {
-        self$QY.star.int <- self$QY.init
+        QY.star.int <- self$QY.init
       }
+      # taking average over p samples for each of n obs
+      ID <- rep.int(c(1 : self$nobs), self$p)
+      QY.star.int_mat <- data.table::data.table(ID = ID, QY.star.int = QY.star.int)
+      QY.star.int <- QY.star.int_mat[, lapply(.SD, mean, na.rm=TRUE), by="ID", .SDcols=c("QY.star.int") ][["QY.star.int"]]
+      self$QY.star.int <- QY.star.int
       invisible(self$QY.star.int)
     },
     
