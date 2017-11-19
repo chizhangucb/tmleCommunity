@@ -92,7 +92,7 @@ tmleCom_wmT.bA.bY.2_SL <-
                 Qform = NULL, hform.g0 = NULL, hform.gstar = NULL)
 tmleCom_wmT.bA.bY.2_SL$ATE$estimates
 
-# SuperLearner for outcome regressions and glm treatment regressions
+# SuperLearner for outcome regressions and glm for treatment regressions
 # using all regressors in the correctly specified Qform and 
 # all regressors in the misspecified hform.g0 and hform.gstar
 tmleCom_Options(Qestimator = "SuperLearner", gestimator = "glm__glm", 
