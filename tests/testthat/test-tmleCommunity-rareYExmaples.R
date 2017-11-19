@@ -71,6 +71,19 @@ test_that("Using correct observation weights and correctly specified Qform & gfo
   expect_equal(estimates["gcomp", ], 0.01234571, tolerance = 1e-6) 
 })
 
+# The bias is less than the bias when using sample with J=1, since it contains more info
+test_that("Failing to specify obs weights and using correctly specified Qform & gform, with J = 2", {
+  tmleCom_Options()
+  tmleCom_res <-
+    tmleCommunity(data = indSample.iid.bA.bY.rareJ2, Ynode = "Y", Anodes = "A", 
+                  WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = 1, f_gstar2 = 0, 
+                  Qform = Qform.corr, obs.wts = NULL)
+  estimates <- tmleCom_res$ATE$estimates  # psi0 = 0.012662 
+  expect_equal(estimates["tmle", ], 0.2091770, tolerance = 1e-6)  
+  expect_equal(estimates["iptw", ], 0.2197760, tolerance = 1e-6)  
+  expect_equal(estimates["gcomp", ], 0.1944231, tolerance = 1e-6) 
+})
+
 test_that("Using correct obs weights & correctly specified gform & misspecified Qform, with J = 2", {
   tmleCom_Options()
   tmleCom_res <-
