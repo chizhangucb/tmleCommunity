@@ -1,7 +1,7 @@
 # tmleCommunity
-TMLE for community level data
+Targeted Maximum Likelihood Estimation for Hierarchical Data
 
-Installation and Documentation
+## Installation and Documentation
 
 To install the development version (requires the devtools package):
 
