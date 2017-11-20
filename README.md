@@ -28,3 +28,8 @@ If you want to install it, then
 devtools::install()
 
 library(tmleCommunity)
+
+### Generate package document 
+Once you set the working directory to the directory where tmleCommunity pacakge is stored, use 
+
+devtools::document()
