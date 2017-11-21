@@ -20,7 +20,7 @@ tmleCommunity(data, Ynode, Anodes, WEnodes, YnodeDet = NULL,
 \item{data}{Observed data, \code{data.frame} with named columns, containing \code{WEnodes}, \code{Anode}, \code{Ynode} and possibly 
 \code{communityID}, \code{YnodeDet}. See "Details".}
 
-\item{Ynode}{Column names or indices in \code{data} of outcome variable. Outcome can be either binary or continuous (could be beyond 0 and 1). 
+\item{Ynode}{Column name or index in \code{data} of outcome variable. Outcome can be either binary or continuous (could be beyond 0 and 1). 
 If Ynode undefined, the left-side of the regression formula in argument \code{Qform} will be treated as \code{Ynode}.}
 
 \item{Anodes}{Column names or indices in \code{data} of exposure (treatment) variables}
