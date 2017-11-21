@@ -45,7 +45,7 @@ See "Details".
 \code{community.step}: \code{"community_level"}, \code{"individual_level"} and \code{"PerCommunity"} (See details for \code{community.step}).}
 
 \item{community.wts}{Optional choice to provide/ construct a matrix of community-level observation weights (where dimension = \eqn{J\times}2, where 
-J = the number of communities). The first column contains the communities' names (ie., \code{data[, communityID]}) and the second column contains the   
+J = the number of communities). The first column contains the identifiers / names of communities (ie., \code{data[, communityID]}) and the second column contains the   
 corresponding non-negative weights. Currently only support a numeric matrix with 2 columns, "size.community" (Default) and "equal.community". 
 If setting \code{community.wts} = "size.community", treat the number of individuals within each community as its weight, respectively. 
 If \code{community.wts} = "equal.community", assumed weights to be all 1;}
@@ -131,7 +131,7 @@ Each element in the returned \code{tmleCommunity} object is itself a list contai
  \item \code{pval} - matrix, 3\eqn{\times}1, storing 3 p-values. It's based on the Student's T distribution if the number of communities  
    (or the number of individuals if no hierarchical structure) is less than 41, otherwise based on the Z normal distribution.
  \item \code{IC} - data frame, nobs\eqn{\times}3, the first column contains the influence curves (ICs) for \code{TMLE} estimate, the second column
-   contains the ICs for \code{IPTW} estimate, and the third column contains the ICs for \code{GCOMP} estimate (not accurate since it's based on ICs
+   contains the ICs for \code{IPTW} estimate, and the third column contains the ICs for \code{GCOMP} estimate (not accurate since it is based on ICs
    for \code{TMLE} estimate without updating step).  
  \item \code{h.g0_GenericModel} - An object of \code{\link{GenericModel}} \pkg{R6} class, storing the model fits for P(A | W, E) under  
    observed exposure mechanism \code{g0}. This can be used in \code{\link{tmleCommunity}} (See \strong{Arguments}).
@@ -157,7 +157,7 @@ provide corresponding \strong{IPTW} (the inverse-probability-of-treatment or Hor
 The estimates returned by \code{tmleCommunity} are of a treatment-specific mean, \eqn{E[Y_{g^*}]}, the expected community-level outcome if all 
  communities in the target population received the exposures generated under the user-supplied (deterministic or stochastic) intervention \eqn{g^*}. 
  
-\code{data} must be a data frame (no matrix accepted) and doesn't support factor values (considering removing or recording such columns as strings), 
+\code{data} must be a data frame (no matrix accepted) and does not support factor values (considering removing or recording such columns as strings), 
  \code{data} includes the following (optional) columns:
  \itemize{
   \item community-level and individual-level baseline covariate columns (\code{WEnodes}): can be any numeric data. Notice that W represents 
@@ -295,7 +295,7 @@ For simplicity (and without loss of generality), we now suppose \eqn{A} is univa
 
 \item As described above, consider a sequence of \eqn{K+1} values that span the support of \eqn{A} values into \eqn{K} bin intervals \eqn{\Delta} 
   = (\eqn{\delta_1, \delta_2,...,\delta_{K+1}}) so that any observed data point \eqn{a_i} belongs to one interval within R, in other words, 
-  for each possible value \eqn{a \in A} (even if it's not in the observed \eqn{(a_i:i)}), there always exists a \eqn{k \in {1, ...,K}} such  
+  for each possible value \eqn{a \in A} (even if it is not in the observed \eqn{(a_i:i)}), there always exists a \eqn{k \in {1, ...,K}} such  
   that \eqn{\delta_{k}\leq a<\delta_{k+1}}, and the length (bandwidth) of the interval can be defined as \eqn{bw_{k}=[\delta_{k+1}-\delta_{k})}. 
   Then let the mapping \eqn{S(a)\in \{1,2,..,K\}} denote a unique index of the indicator in \eqn{\Lambda} that \eqn{a} falls in, where \eqn{S(a)=k}
   if \eqn{a\in [\delta_{k},\delta_{k+1})}, namely, \eqn{\delta_{S(a)} \leq a < \delta_{S(a)+1}}. Moreover, we use \eqn{b_k} to denote a binary 
@@ -310,7 +310,7 @@ For simplicity (and without loss of generality), we now suppose \eqn{A} is univa
   for each k, the corresponding nonparametric regression model is fit only among observations that are uncensored (i.e., still at risk of  
   getting \eqn{B_{k}=1} with \eqn{B_{k-1}=0}). Note the above conditional probability \eqn{P(B_k=1|B_{k-1}=0,W)} is equivalent to 
   \eqn{P(A\in [\delta_{k}, \delta_{k+1}) | A\geq \delta_{k+1}, W)}, which is the probability of \eqn{A} belongs to the interval 
-  \eqn{[\delta_{k},\delta_{k+1})}, conditional on \eqn{A} doesn't belong to any intervals before \eqn{[\delta_{k}, \delta_{k+1})} and \eqn{W}.
+  \eqn{[\delta_{k},\delta_{k+1})}, conditional on \eqn{A} does not belong to any intervals before \eqn{[\delta_{k}, \delta_{k+1})} and \eqn{W}.
   Then the discrete conditional hazard function for each k is defined as a normalization of the conditional probability using the 
   corresponding interval bandwidth \eqn{bw_{k}}: 
   \eqn{\lambda_k(A,W)=\frac{P(B_k=1|B_{k-1}=0,W)}{bw_k}=\frac{P(A\in[\delta_{k},\delta_{k+1})|A\geq \delta_{k+1},W)}{bw_k}}
@@ -318,7 +318,7 @@ For simplicity (and without loss of generality), we now suppose \eqn{A} is univa
 \item Finally, for any given observation \code{(a,w)}, we first find out the interval index \eqn{k} to which \eqn{a} belongs (i.e., 
   \eqn{k=S(a)\in{1,...,K}}). Then the discretized conditional density of \eqn{P(A=a|W=w)} can be evaluated by 
   \eqn{\lambda_k(A, W){\times}[\prod_{j=1}^{k-1}(1-\lambda_j(A, W))]}, which corresponds to the conditional probability of \eqn{a} 
-  belongs to the interval \eqn{[\delta_{k},\delta_{k+1})} and doesn't belong to any intervals before, given \eqn{W}.
+  belongs to the interval \eqn{[\delta_{k},\delta_{k+1})} and does not belong to any intervals before, given \eqn{W}.
 }
 }
 
@@ -326,7 +326,7 @@ For simplicity (and without loss of generality), we now suppose \eqn{A} is univa
 
 Note that the choice of the values \eqn{\delta_k (k=1,..,K)} implies defining the number and positions of the bins. First, a cross- 
  validation selector can be applied to data-adaptively select the candidate number of bins, which minimizes variance and maximizes precision 
- (Don't recommend too many bins due to easily violating the positivity assumption). Then, we need to choose the most convenient locations 
+ (Do not recommend too many bins due to easily violating the positivity assumption). Then, we need to choose the most convenient locations 
  (cuttoffs) for the bins (for fixed K). There are 3 alternative methods that use the histogram as a graphical descriptive tool to define 
  the bin cutoffs \eqn{\Delta=(\delta_1,...,\delta_K,\delta_{K+1})} for a continuous variable \code{A}. In \pkg{tmleCommunity} package, the 
  choice of methods \code{bin.method} together with the other discretization arguments in function \code{tmleCom_Options()} such as \code{nbins}  
@@ -337,10 +337,10 @@ Note that the choice of the values \eqn{\delta_k (k=1,..,K)} implies defining th
  \item \code{equal.mass}: The default discretization method, equal mass (aka equal area) interval method, set by passing an argument
    \code{bin.method="equal.mass"} to \code{tmleCom_Options()} prior to calling the main function \code{tmleCommunity()}. The interval are 
    defined by spanning the support of \eqn{A} into non-equal length of bins, each containing (approximately) the same number of observations. 
-   It's data-adaptive since it tends to be wide where the population density is small, and narrow where the density is large. If \code{nbins} 
+   It is data-adaptive since it tends to be wide where the population density is small, and narrow where the density is large. If \code{nbins} 
    is \code{NA} (or is smaller than \code{n/maxNperBin}), \code{nbins} will be (re)set to the interger value of \code{n/maxNperBin} where 
    \code{n} is the total number of observations in \eqn{A}, and the default setting of \code{maxNperBin} is 500 observations per interval.
-   This method could identify spikes in the density, but oversmooths in the tails and so couldn't discover outliers. 
+   This method could identify spikes in the density, but oversmooths in the tails and so could not discover outliers. 
    
  \item \code{equal.len}: equal length interval method, set by passing an argument \code{bin.method="equal.len"} to 
    \code{tmleCom_Options()} prior to calling \code{tmleCommunity()}. The intervals are defined by spanning the support of \eqn{A} into 
