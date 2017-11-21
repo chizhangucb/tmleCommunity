@@ -382,8 +382,8 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  If "NoCommunity", claim that no hirerachical structure in data; If "community_level", use community-level TMLE; If "individual_level", use  
 #'  individual-level TMLE cooperating with the assumption of no covariate interference. If "perCommunity", use stratified TMLE. If \code{communityID} =  
 #'  \code{NULL}, then automatically pool over all communities (i.e., treated it as "NoCommunity"). See "Details".
-#' @param communityID Optional column name or index in \code{data} of community identifier variable. If known, it can support the two options within 
-#'  \code{community.step}: community-level or individual-level TMLE (See details for \code{community.step}).
+#' @param communityID Optional column name or index in \code{data} of community identifier variable. If known, it can support the three options within 
+#'  \code{community.step}: "community-level", "individual-level" and "PerCommunity" (See details for \code{community.step}).
 #' @param community.wts Optional choice to provide/ construct a matrix of community-level observation weights (where dimension = \eqn{J\times}2, where 
 #'  J = the number of communities). The first column contains the communities' names (ie., \code{data[, communityID]}) and the second column contains the   
 #'  corresponding non-negative weights. Currently only support a numeric matrix with 2 columns, "size.community" (Default) and "equal.community". 
