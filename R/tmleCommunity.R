@@ -368,7 +368,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'
 #' @param data Observed data, \code{data.frame} with named columns, containing \code{WEnodes}, \code{Anode}, \code{Ynode} and possibly 
 #'  \code{communityID}, \code{YnodeDet}. See "Details".
-#' @param Ynode Column names or indices in \code{data} of outcome variable. Outcome can be either binary or continuous (could be beyond 0 and 1). 
+#' @param Ynode Column name or index in \code{data} of outcome variable. Outcome can be either binary or continuous (could be beyond 0 and 1). 
 #'  If Ynode undefined, the left-side of the regression formula in argument \code{Qform} will be treated as \code{Ynode}.
 #' @param Anodes Column names or indices in \code{data} of exposure (treatment) variables
 #' @param WEnodes Column names or indices in \code{data} of individual-level (and possibly community-level) baseline covariates. Factors are not allowed.
