@@ -48,9 +48,9 @@ print_tmleCom_opts <- function() {
   invisible(gvars$opts)
 }
 
-#' Setting all possible \code{tmleCommunity} options
+#' Setting all possible options for \code{tmleCommunity} 
 #'
-#' Additional options that control \code{tmleCommunity} package
+#' Additional options that control the estimation algorithm in \code{tmleCommunity} package
 #' @param Qestimator A string specifying default estimator for outcome mechanism model fitting. 
 #'  The default estimator is \code{"speedglm__glm"}, which estimates regressions with \code{\link[speedglm]{speedglm.wfit}}; 
 #'  Estimator \code{"glm__glm"} uses \code{\link[stats]{glm.fit}};
