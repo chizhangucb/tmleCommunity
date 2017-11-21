@@ -2,7 +2,7 @@
 % Please edit documentation in R/zzz.R
 \name{tmleCom_Options}
 \alias{tmleCom_Options}
-\title{Setting all possible \code{tmleCommunity} options}
+\title{Setting all possible options for \code{tmleCommunity} }
 \usage{
 tmleCom_Options(Qestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble",
   "SuperLearner"), gestimator = c("speedglm__glm", "glm__glm",
@@ -72,7 +72,7 @@ Additional wrapper functions are available at
 Invisibly returns a list with old option settings.
 }
 \description{
-Additional options that control \code{tmleCommunity} package
+Additional options that control the estimation algorithm in \code{tmleCommunity} package  
 }
 \examples{
 #***************************************************************************************
