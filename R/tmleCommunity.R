@@ -569,7 +569,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #' \item As described above, consider a sequence of \eqn{K+1} values that span the support of \eqn{A} values into \eqn{K} bin intervals \eqn{\Delta} 
 #'   = (\eqn{\delta_1, \delta_2,...,\delta_{K+1}}) so that any observed data point \eqn{a_i} belongs to one interval within R, in other words, 
 #'   for each possible value \eqn{a \in A} (even if it is not in the observed \eqn{(a_i:i)}), there always exists a \eqn{k \in {1, ...,K}} such  
-#'   that \eqn{\delta_{k}\leq a<\delta_{k+1}}, and the length (bandwidth) of the interval can be defined as \eqn{bw_{k}=[\delta_{k+1}-\delta_{k})}. 
+#'   that \eqn{\delta_{k}\leq a<\delta_{k+1}}, and the length (bandwidth) of the interval can be defined as \eqn{bw_{k}=\delta_{k+1}-\delta_{k}}. 
 #'   Then let the mapping \eqn{S(a)\in \{1,2,..,K\}} denote a unique index of the indicator in \eqn{\Lambda} that \eqn{a} falls in, where \eqn{S(a)=k}
 #'   if \eqn{a\in [\delta_{k},\delta_{k+1})}, namely, \eqn{\delta_{S(a)} \leq a < \delta_{S(a)+1}}. Moreover, we use \eqn{b_k} to denote a binary 
 #'   indicator of whether the observed \eqn{a} belongs to bin \eqn{k} (i.e., \eqn{b_k\equiv I(S(a)=k)} for all \eqn{k\leq S(a)}; \eqn{b_k\equiv}
@@ -582,7 +582,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'   which corresponds to the probability of \eqn{B_k} jumping from 0 to 1, given \eqn{B_{k-1}=0} and tbe baseline covariates \eqn{W}. Note tha 
 #'   for each k, the corresponding nonparametric regression model is fit only among observations that are uncensored (i.e., still at risk of  
 #'   getting \eqn{B_{k}=1} with \eqn{B_{k-1}=0}). Note the above conditional probability \eqn{P(B_k=1|B_{k-1}=0,W)} is equivalent to 
-#'   \eqn{P(A\in [\delta_{k}, \delta_{k+1}) | A\geq \delta_{k+1}, W)}, which is the probability of \eqn{A} belongs to the interval 
+#'   \eqn{P(A\in [\delta_{k}, \delta_{k+1}) | A\geq \delta_{k}, W)}, which is the probability of \eqn{A} belongs to the interval 
 #'   \eqn{[\delta_{k},\delta_{k+1})}, conditional on \eqn{A} does not belong to any intervals before \eqn{[\delta_{k}, \delta_{k+1})} and \eqn{W}.
 #'   Then the discrete conditional hazard function for each k is defined as a normalization of the conditional probability using the 
 #'   corresponding interval bandwidth \eqn{bw_{k}}: 
