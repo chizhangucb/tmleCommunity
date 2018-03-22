@@ -71,6 +71,7 @@ panelData_Trans <- function(data, yvar, xvar, effect = "individual", model = "wi
     theta <- NULL
   }
   X <- model.matrix(object = formula, data, model = model, effect = effect, rhs = 1, theta = theta)
+  X <- X[, !apply(X, 2, function(column) {sum(!(column==0)) == 0})]
   if (ncol(X) == 0) stop("empty model")
   if (transY) {
     Y <- plm::pmodel.response(object = formula, data, model = model, effect = effect, theta = theta)
