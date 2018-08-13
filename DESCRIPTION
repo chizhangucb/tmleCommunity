@@ -1,7 +1,6 @@
 Package: tmleCommunity
 Title: Targeted Maximum Likelihood Estimation for Hierarchical Data
 Version: 0.1.0
-Maintainer: Chi Zhang <chi.zhang@berkeley.edu>
 Authors@R: c(person("Chi", "Zhang", role = c("aut", "cre"),  email = "chi.zhang@berkeley.edu"), 
              person("Mark J.", "van der Laan",role = "aut", email = "laan@berkeley.edu"),
              person("Oleg", "Sofrygin", role = "aut", email = "oleg.sofrygin@gmail.com"),
