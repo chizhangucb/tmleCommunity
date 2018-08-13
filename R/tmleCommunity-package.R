@@ -1,7 +1,7 @@
 #' Targeted Maximum Likelihood Estimation for Community-level Data
 #'
-#' Targeted Maximum Likelihood Estimation (TMLE) for the sample average community-based treatment specific means effects (and can be  
-#'  extended to additive treatment effect) in community-independent data structures. In other words, it estimates the marginal treatment  
+#' Targeted Maximum Likelihood Estimation (TMLE) of the average causal effect of community-based intervention(s) at a single time point 
+#'  on an individual-based outcome of interest. (and can be extended to additive treatment effect). In other words, it estimates the marginal treatment  
 #'  effect of single-time point arbitrary interventions on a continuous or binary outcome in community-independent data, adjusting for
 #'  both community-level and individual-level baseline covariates. The package also provides Inverse-Probability-of-Treatment-Weighted 
 #'  estimator (IPTW) and parametric G-computation formula estimator (GCOMP). The statistical inference (Standard errors, t statistc, 
