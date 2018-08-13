@@ -6,14 +6,15 @@
 \usage{
 tmleCommunity(data, Ynode, Anodes, WEnodes, YnodeDet = NULL,
   obs.wts = c("equal.within.pop", "equal.within.community"),
-  community.step = c("NoCommunity", "community_level", "individual_level",
-  "perCommunity"), communityID = NULL, community.wts = c("size.community",
-  "equal.community"), pooled.Q = FALSE, f_g0 = NULL, f_gstar1,
-  f_gstar2 = NULL, Qform = NULL, Qbounds = NULL, alpha = 0.995,
+  community.step = c("NoCommunity", "community_level",
+  "individual_level", "perCommunity"), communityID = NULL,
+  community.wts = c("size.community", "equal.community"),
+  pooled.Q = FALSE, f_g0 = NULL, f_gstar1, f_gstar2 = NULL,
+  Qform = NULL, Qbounds = NULL, alpha = 0.995,
   fluctuation = "logistic", hform.g0 = NULL, hform.gstar = NULL,
-  lbound = 0.005, h.g0_GenericModel = NULL, h.gstar_GenericModel = NULL,
-  TMLE.targetStep = c("tmle.intercept", "tmle.covariate"), n_MCsims = 1,
-  CI_alpha = 0.05, rndseed = NULL,
+  lbound = 0.005, h.g0_GenericModel = NULL,
+  h.gstar_GenericModel = NULL, TMLE.targetStep = c("tmle.intercept",
+  "tmle.covariate"), n_MCsims = 1, CI_alpha = 0.05, rndseed = NULL,
   verbose = getOption("tmleCommunity.verbose"))
 }
 \arguments{
@@ -39,7 +40,7 @@ in the entire dataset equally (weigh to be all 1); If "equal.within.community", 
 and \code{"PerCommunity"}. If \code{"NoCommunity"}, claim that no hirerachical structure in data; If \code{"community_level"}, use community-level TMLE; 
 If \code{"individual_level"}, use individual-level TMLE cooperating with the assumption of no covariate interference. If \code{"perCommunity"}, use 
 stratified TMLE. If \code{communityID} = \code{NULL}, then automatically pool over all communities (i.e., treated it as \code{"NoCommunity"}). 
-See "Details".                      
+See "Details".}
 
 \item{communityID}{Optional column name or index in \code{data} of community identifier variable. If known, it can support the three options within 
 \code{community.step}: \code{"community_level"}, \code{"individual_level"} and \code{"PerCommunity"} (See details for \code{community.step}).}
@@ -296,7 +297,7 @@ For simplicity (and without loss of generality), we now suppose \eqn{A} is univa
 \item As described above, consider a sequence of \eqn{K+1} values that span the support of \eqn{A} values into \eqn{K} bin intervals \eqn{\Delta} 
   = (\eqn{\delta_1, \delta_2,...,\delta_{K+1}}) so that any observed data point \eqn{a_i} belongs to one interval within R, in other words, 
   for each possible value \eqn{a \in A} (even if it is not in the observed \eqn{(a_i:i)}), there always exists a \eqn{k \in {1, ...,K}} such  
-  that \eqn{\delta_{k}\leq a<\delta_{k+1}}, and the length (bandwidth) of the interval can be defined as \eqn{bw_{k}=[\delta_{k+1}-\delta_{k})}. 
+  that \eqn{\delta_{k}\leq a<\delta_{k+1}}, and the length (bandwidth) of the interval can be defined as \eqn{bw_{k}=\delta_{k+1}-\delta_{k}}. 
   Then let the mapping \eqn{S(a)\in \{1,2,..,K\}} denote a unique index of the indicator in \eqn{\Lambda} that \eqn{a} falls in, where \eqn{S(a)=k}
   if \eqn{a\in [\delta_{k},\delta_{k+1})}, namely, \eqn{\delta_{S(a)} \leq a < \delta_{S(a)+1}}. Moreover, we use \eqn{b_k} to denote a binary 
   indicator of whether the observed \eqn{a} belongs to bin \eqn{k} (i.e., \eqn{b_k\equiv I(S(a)=k)} for all \eqn{k\leq S(a)}; \eqn{b_k\equiv}
@@ -309,7 +310,7 @@ For simplicity (and without loss of generality), we now suppose \eqn{A} is univa
   which corresponds to the probability of \eqn{B_k} jumping from 0 to 1, given \eqn{B_{k-1}=0} and tbe baseline covariates \eqn{W}. Note tha 
   for each k, the corresponding nonparametric regression model is fit only among observations that are uncensored (i.e., still at risk of  
   getting \eqn{B_{k}=1} with \eqn{B_{k-1}=0}). Note the above conditional probability \eqn{P(B_k=1|B_{k-1}=0,W)} is equivalent to 
-  \eqn{P(A\in [\delta_{k}, \delta_{k+1}) | A\geq \delta_{k+1}, W)}, which is the probability of \eqn{A} belongs to the interval 
+  \eqn{P(A\in [\delta_{k}, \delta_{k+1}) | A\geq \delta_{k}, W)}, which is the probability of \eqn{A} belongs to the interval 
   \eqn{[\delta_{k},\delta_{k+1})}, conditional on \eqn{A} does not belong to any intervals before \eqn{[\delta_{k}, \delta_{k+1})} and \eqn{W}.
   Then the discrete conditional hazard function for each k is defined as a normalization of the conditional probability using the 
   corresponding interval bandwidth \eqn{bw_{k}}: 

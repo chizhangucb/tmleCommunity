@@ -2,15 +2,17 @@
 % Please edit documentation in R/zzz.R
 \name{tmleCom_Options}
 \alias{tmleCom_Options}
-\title{Setting all possible options for \code{tmleCommunity} }
+\title{Setting all possible options for \code{tmleCommunity}}
 \usage{
-tmleCom_Options(Qestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble",
-  "SuperLearner"), gestimator = c("speedglm__glm", "glm__glm",
-  "h2o__ensemble", "SuperLearner"), bin.method = c("equal.mass", "equal.len",
-  "dhist"), nbins = 5, maxncats = 10, maxNperBin = 500, parfit = FALSE,
+tmleCom_Options(Qestimator = c("speedglm__glm", "glm__glm",
+  "h2o__ensemble", "SuperLearner"), gestimator = c("speedglm__glm",
+  "glm__glm", "h2o__ensemble", "SuperLearner"),
+  bin.method = c("equal.mass", "equal.len", "dhist"), nbins = 5,
+  maxncats = 10, maxNperBin = 500, parfit = FALSE,
   poolContinVar = FALSE, savetime.fit.hbars = TRUE,
   h2ometalearner = "h2o.glm.wrapper", h2olearner = "h2o.glm.wrapper",
-  CVfolds = 5, SL.library = c("SL.glm", "SL.step", "SL.glm.interaction"))
+  CVfolds = 5, SL.library = c("SL.glm", "SL.step",
+  "SL.glm.interaction"))
 }
 \arguments{
 \item{Qestimator}{A string specifying default estimator for outcome mechanism model fitting. 
@@ -72,7 +74,7 @@ Additional wrapper functions are available at
 Invisibly returns a list with old option settings.
 }
 \description{
-Additional options that control the estimation algorithm in \code{tmleCommunity} package  
+Additional options that control the estimation algorithm in \code{tmleCommunity} package
 }
 \examples{
 #***************************************************************************************

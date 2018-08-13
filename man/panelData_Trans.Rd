@@ -4,8 +4,8 @@
 \alias{panelData_Trans}
 \title{Panel Dataset Transformation, Using Individual (and Time) Indexes}
 \usage{
-panelData_Trans(data, yvar, xvar, effect = "individual", model = "within",
-  index = NULL, transY = TRUE)
+panelData_Trans(data, yvar, xvar, effect = "individual",
+  model = "within", index = NULL, transY = TRUE)
 }
 \arguments{
 \item{data}{A data frame (will be automatically transferred to panel data frame) or a panel data frame}

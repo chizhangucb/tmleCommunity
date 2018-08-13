@@ -50,7 +50,7 @@ Suggests: doParallel,
     arm,
     randomForest
 VignetteBuilder: knitr
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 Collate: 
     'GeneralUtilities.R'
     'BinaryOutModelClass.R'
