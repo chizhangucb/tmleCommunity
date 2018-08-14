@@ -138,6 +138,8 @@ van der Laan, Mark J. and Rose, Sherri, "Targeted Learning: Causal Inference for
 ## News 
 
 `tmleCommunity` 0.1.0
-=============
+
+=====================
+2018-08-14
 
 `h2oEnsemble` has been removed from the list of required libraries since it's not in mainstream repositories.
