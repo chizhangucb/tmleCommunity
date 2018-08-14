@@ -1,3 +1,4 @@
+\dontrun{
 #***************************************************************************************
 # Examples of Panel Data Transformation
 data(Grunfeld, package = "plm")
@@ -32,3 +33,4 @@ names(pData.pool)  # Y" "(Intercept)" "E1" "E2" "W1" "W2" "W3" "A"
 # 5. Random effect transformation ("random") where time effect is introduced 
 Grunfeld.RE <- panelData_Trans(yvar = "inv", xvar = c("value", "capital"), data = Grunfeld, 
                                effect = "time", model = "random", index = "year")
+}
