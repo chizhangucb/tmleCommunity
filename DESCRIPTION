@@ -7,7 +7,7 @@ Authors@R: c(person("Chi", "Zhang", email = "chi.zhang@berkeley.edu", role = c("
              person("Mark J.", "van der Laan", email = "laan@berkeley.edu", role = c("aut", "ths")))             
 Author: Chi Zhang  [aut, cre],
      Oleg Sofrygin [aut],
-     Jennifer, Ahern [aut],
+     Jennifer Ahern [aut],
      Mark J. van der Laan [aut, ths]
 Maintainer: Chi Zhang <chi.zhang@berkeley.edu>             
 Description: Targeted minimum loss-based estimation (TMLE) of the average causal effect of 
