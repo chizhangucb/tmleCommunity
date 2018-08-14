@@ -11,10 +11,14 @@ As a double-robust and asymptotically efficient substitution estimator that resp
 
 ## Installation and Documentation
 
-### Install from github
+### Github
 To install the development version of tmleCommunity (requires the devtools package):
 
+```{R install, eval=F}
+# Install devtools if necessary:
+# install.packages("devtools")
 devtools::install_github("chizhangucb/tmleCommunity")
+```
 
 ### Install from local source
 Alternatively, could download the entire packge to the local path (e.g., Desktop) by either clicking the (green) download button on the this page, or cloning the repo through terminal via the following code
