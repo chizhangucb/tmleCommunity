@@ -1,3 +1,4 @@
+\dontrun{
 #***************************************************************************************
 # Example 1: Defining and modeling P(A | W) with continuous A
 data(indSample.iid.cA.cY_list)
@@ -42,3 +43,4 @@ colSums(bin.ind.mat, na.rm = TRUE)   # Each bin has 1000 obs as "equal.mass" wit
 genericmodels.g0.A1$fit(data = OData.g0)
 genericmodels.g0.A1.B2 <- genericmodels.g0.A1$getPsAsW.models()$`P(A|W).2`  # 2nd bin
 genericmodels.g0.A1.B2$getfit$coef
+}
