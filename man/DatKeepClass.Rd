@@ -80,6 +80,7 @@ DatKeepClass
 }
 
 \examples{
+\dontrun{
 #***************************************************************************************
 # Example 1: storing, managing, subsetting and manipulating a data with continuous A
 data(indSample.iid.cA.cY_list)
@@ -154,6 +155,7 @@ dim(OData.gstar_R6$dat.sVar)  # 30000     4
 # Since A* is stochastically generated, each p may produce different values of A*
 head(OData.gstar_R6$dat.sVar[1:10000, ])
 head(OData.gstar_R6$dat.sVar[10001:20000, ])
+}
 }
 \seealso{
 \code{\link{tmleCom_Options}}, \code{\link{tmleCommunity}}

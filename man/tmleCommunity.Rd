@@ -356,6 +356,7 @@ Note that the choice of the values \eqn{\delta_k (k=1,..,K)} implies defining th
 }
 
 \examples{
+\dontrun{
 #***************************************************************************************
 # Example 1: Hierarchical example, with one binary A and bianry Y 
 # True ATE of the community-based treatment is approximately 0.103716
@@ -728,6 +729,7 @@ tmleind_iid.bA.bY_misWT <-
                 Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr,
                 obs.wts = NULL, verbose = TRUE)
 tmleind_iid.bA.bY_misWT$ATE$estimates["tmle", ]  # 0.2466575, bad estimate
+}
 }
 \seealso{
 \code{\link{tmleCommunity-package}} for the general description of the package,

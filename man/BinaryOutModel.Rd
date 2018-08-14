@@ -74,6 +74,7 @@ BinaryOutModel
 }
 
 \examples{
+\dontrun{
 #***************************************************************************************
 # Example 1: Estimate a outcome regression directly through BinaryOutModel
 data(indSample.iid.bA.bY.rareJ2_list)
@@ -150,6 +151,7 @@ set.seed(12345)
 m.Q.init <- BinaryOutModel$new(reg = Qreg)$fit(data = OData_R6, savespace = TRUE)
 m.Q.init$predict(newdata = OData_R6, savespace = TRUE)
 mean(m.Q.init$getprobA1)
+}
 }
 \seealso{
 \code{\link{DatKeepClass}}, \code{\link{RegressionClass}}, \code{\link{tmleCom_Options}}
