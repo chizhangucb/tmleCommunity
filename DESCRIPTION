@@ -53,7 +53,6 @@ Suggests: doParallel,
     gam,
     arm,
     randomForest
-VignetteBuilder: knitr
 RoxygenNote: 6.1.0
 Collate: 
     'GeneralUtilities.R'
