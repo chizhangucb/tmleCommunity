@@ -52,3 +52,21 @@ Once the package is installed, please refer to the help file `?'tmleCommunity-pa
 ?'tmleCommunity-package'
 ?tmleCommunity
 ```
+
+## Authors
+
+Chi Zhang, Oleg Sofrygin, Jennifer Ahern, M. J. van der Laan
+
+## References
+
+Balzer L. B., Zheng W., van der Laan M. J., Petersen M. L. and the SEARCH Collaboration (2017). A New Approach to Hierarchical Data Analysis: Targeted Maximum Likelihood Estimation of Cluster-Based Effects Under Interference. ArXiv e-prints. 1706.02675.
+
+Muoz, I. D. and van der Laan, M. (2012). Population Intervention Causal Effects Based on Stochastic Interventions. Biometrics, 68(2):541-549.
+
+Sofrygin, O. and van der Laan, M. J. (2015). tmlenet: Targeted Maximum Likelihood Estima- tion for Network Data. R package version 0.1.9. https://github.com/osofr/tmlenet
+
+van der Laan, M. (2014). Causal Inference for a Population of Causally Connected Units. Journal of Causal Inference, 2(1)
+
+van der Laan, Mark J. and Gruber, Susan (2011). "Targeted Minimum Loss Based Estimation of an Intervention Specific Mean Outcome". U.C. Berkeley Division of Biostatistics Working Paper Series. Working Paper 290. http://biostats.bepress.com/ucbbiostat/paper290
+
+van der Laan, Mark J. and Rose, Sherri, "Targeted Learning: Causal Inference for Observa- tional and Experimental Data" New York: Springer, 2011.
