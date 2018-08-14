@@ -9,6 +9,8 @@ The `tmleCommuniy` package performs targeted minimum loss-based estimation (TMLE
 
 As a double-robust and asymptotically efficient substitution estimator that respects global constraints of the statistical model, targeted maximum likelihood (or minimum loss-based) estimation (TMLE) provides asymptotically valid statistical inference, with potential reduction in bias and gain in efficiency. The development of the `tmleCommunity` package for R was motivated by the increasing demand of a user-friendly tool to estimate the impact of community-based arbitrary exposures in community-independent data structures with a semi-parametric efficient estimator. Besides, the esimation results of TMLE, IPTW and GCOMP, the statistical inference (Standard errors, t statistc, p-value and confidence intervals) of both TMLE and IPTW are provided based on the corresponding influence curve, respectively. Optional data-adaptive estimation of exposure and outcome mechanisms using the `SuperLearner` package and `h2o` package (latter for a large dataset) is strongly recommended,
 
+`tmleCommuniy` is under active development so please submit any bug reports or feature requests to the [issue queue](https://github.com/chizhangucb/tmleCommunity/issues), or email Chi directly.
+
 ## Installation
 
 ### Github
