@@ -16,15 +16,26 @@ Thus, it is safe to ignore such a message.
 There were 2 NOTEs:
 
 * Possibly mis-spelled words in DESCRIPTION:
+
   GCOMP (17:63)
+  
   IPTW (17:26)
+  
   SuperLearner (22:41)
+  
   TMLE (13:54, 15:90, 16:23, 16:43, 21:41)
+  
   i's (26:28, 28:54)
+  
   inidividual (16:5)
+  
   j's (25:42)
+  
   oEnsemble (22:60)
   
 These are not mis-spelled. I manually checked all of these words.
 They define specific estimators / terms that are known to the intended user.  
-Caution: oEnsemble is not a word, it's supposed to be  h2oEnsemble.
+Caution: oEnsemble is not a word, it's supposed to be h2oEnsemble.
+
+* checking package dependencies ... ERROR
+
