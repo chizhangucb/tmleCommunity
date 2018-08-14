@@ -1,6 +1,6 @@
 Package: tmleCommunity
 Title: Targeted Maximum Likelihood Estimation for Hierarchical Data
-Version: 0.1.9
+Version: 0.1.0
 Authors@R: c(person("Chi", "Zhang", email = "chi.zhang@berkeley.edu", role = c("aut", "cre")), 
              person("Oleg", "Sofrygin", email = "oleg.sofrygin@gmail.com", role = c("aut")), 
              person("Jennifer", "Ahern", email = "jahern@berkeley.edu", role = c("aut")),
@@ -29,7 +29,7 @@ Description: Targeted minimum loss-based estimation (TMLE) of the average causal
     More details can be found in '?tmleCommunity-package' and '?tmleCommunity'.
 URL: https://github.com/chizhangucb/tmleCommunity
 BugReports: https://github.com/chizhangucb/tmleCommunity/issues
-Depends: R (>= 3.3.1)
+Depends: R (>= 3.3.0)
 License: GPL-2
 LazyData: true
 Imports: assertthat,
