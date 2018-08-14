@@ -1,10 +1,7 @@
 Package: tmleCommunity
 Title: Targeted Maximum Likelihood Estimation for Hierarchical Data
 Version: 0.1.0
-Authors@R: c(person("Chi", "Zhang", email = "chi.zhang@berkeley.edu", role = c("aut", "cre")), 
-             person("Mark J.", "van der Laan", email = "laan@berkeley.edu", role = "aut"),
-             person("Oleg", "Sofrygin", email = "oleg.sofrygin@gmail.com", role = "aut"),
-             person("Jennifer", "Ahern", email = "jahern@berkeley.edu", role = "aut"))
+Authors@R: c(person("Chi", "Zhang", email = "chi.zhang@berkeley.edu", role = c("aut", "cre")), person("Mark J.", "van der Laan", email = "laan@berkeley.edu", role = "aut"), person("Oleg", "Sofrygin", email = "oleg.sofrygin@gmail.com", role = "aut"), person("Jennifer", "Ahern", email = "jahern@berkeley.edu", role = "aut"))
 Maintainer: Chi Zhang <chi.zhang@berkeley.edu>             
 Description: Targeted minimum loss-based estimation (TMLE) of the average causal effect of 
     community-based intervention(s) at a single time point on an individual-based outcome of 
