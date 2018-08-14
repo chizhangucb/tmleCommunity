@@ -5,7 +5,7 @@ There were one ERROR:
 
 * Package required but not available: 'h2oEnsemble'
 
-This package provides important additional functionality to `tmleCommunity`. Source code for h2oEnsemble is available from \url{https://github.com/h2oai/h2o-3/tree/master/h2o-r/ensemble} 
+This package provides important additional functionality to `tmleCommunity`. Source code for h2oEnsemble is available from [this repository](https://github.com/h2oai/h2o-3/tree/master/h2o-r/ensemble)
 
 There was one WARNING:
 
