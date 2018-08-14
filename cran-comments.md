@@ -1,6 +1,6 @@
 ## Initial Submission to CRAN:
 
-## R CMD check results
+## R CMD check --as-cran results:
 There were no ERRORs.
 
 There was one WARNING:
