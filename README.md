@@ -20,12 +20,12 @@ To install the development version of tmleCommunity (requires the devtools packa
 devtools::install_github("chizhangucb/tmleCommunity")
 ```
 
-### Install from local source
 Alternatively, you could download the entire packge to the local path (e.g., Desktop) by either clicking the (green) download button on the this page, or cloning the repo through terminal via the following code
 
 ```console
 git clone https://github.com/chizhangucb/tmleCommunity
 ```
+
 Then open RStudio and set the working directory to the directory where tmleCommunity pacakge is stored, via 
 
 ```{R Change dir, eval=F}
