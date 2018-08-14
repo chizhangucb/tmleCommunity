@@ -51,8 +51,7 @@ Suggests: doParallel,
     glmnet,
     gam,
     arm,
-    randomForest,
-    h2oEnsemble    
+    randomForest
 VignetteBuilder: knitr
 RoxygenNote: 6.1.0
 Collate: 
