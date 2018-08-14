@@ -133,3 +133,11 @@ van der Laan, M. (2014). Causal Inference for a Population of Causally Connected
 van der Laan, Mark J. and Gruber, Susan (2011). "Targeted Minimum Loss Based Estimation of an Intervention Specific Mean Outcome". U.C. Berkeley Division of Biostatistics Working Paper Series. Working Paper 290. http://biostats.bepress.com/ucbbiostat/paper290
 
 van der Laan, Mark J. and Rose, Sherri, "Targeted Learning: Causal Inference for Observa- tional and Experimental Data" New York: Springer, 2011.
+
+
+## News 
+
+`tmleCommunity` 0.1.0
+=============
+
+`h2oEnsemble` has been removed from the list of required libraries since it's not in mainstream repositories.
