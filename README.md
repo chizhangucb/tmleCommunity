@@ -100,6 +100,20 @@ tmleCom_wmT.bA.bY.2_sglm$ATE$estimates
 
 If you are uncertain about the model specification of exposure and outcome mechanisms, data-adaptive estimation methods may be a better choice than parametric models. 
 
+```{R Data_adaptive_analysis, eval=F}
+# SuperLearner for both outcome and treatment (clever covariate) regressions
+# using all parent nodes (of Y and A) as regressors (respectively)
+require("SuperLearner")
+tmleCom_Options(Qestimator = "SuperLearner", gestimator = "SuperLearner", 
+                maxNperBin = N, SL.library = c("SL.glm", "SL.step", "SL.bayesglm"))
+tmleCom_wmT.bA.bY.2_SL <- 
+  tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1L, f_gstar2 = 0L,
+                community.step = "community_level", communityID = "id", pooled.Q = TRUE, 
+                Qform = NULL, hform.g0 = NULL, hform.gstar = NULL)
+tmleCom_wmT.bA.bY.2_SL$ATE$estimates
+```
+
 ## Authors
 
 Chi Zhang, Oleg Sofrygin, Jennifer Ahern, M. J. van der Laan
