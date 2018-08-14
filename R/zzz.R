@@ -130,10 +130,13 @@ tmleCom_Options <- function(Qestimator = c("speedglm__glm", "glm__glm", "h2o__en
     stop("bin.method must be one of: " %+% paste0(gvars$opts.allowedVals[["bin.method"]], collapse=", "))
   
   if (any(c(Qestimator, gestimator) %in% "h2o__ensemble")) {
-    #if (!requireNamespace("h2o"))
-    #  stop("h2o package is required if either Qestimator or gestimator is 'h2o__ensemble'")
-    if (!requireNamespace("h2o") || !requireNamespace("h2oEnsemble")) 
-      stop("h2o and h2oEnsemble package are required if either Qestimator or gestimator is 'h2o__ensemble'")
+    if (!requireNamespace("h2o"))
+      stop("h2o package is required if either Qestimator or gestimator is 'h2o__ensemble'")
+    if (!requireNamespace("h2oEnsemble")) 
+      stop("h2oEnsemble package is required if either Qestimator or gestimator is 'h2o__ensemble',
+            Please install it by typing this into R terminal: 
+            library(devtools)
+            install_github("h2oai/h2o-3/h2o-r/ensemble/h2oEnsemble-package")")
   }
   if (any(c(Qestimator, gestimator) %in% "SuperLearner")) {
     if (!requireNamespace("SuperLearner"))  stop("SuperLearner package is required if either Qestimator or gestimator is 'SuperLearner'.")
