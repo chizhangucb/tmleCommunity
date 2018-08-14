@@ -26,15 +26,16 @@ Alternatively, you could download the entire packge to the local path (e.g., Des
 git clone https://github.com/chizhangucb/tmleCommunity
 ```
 
-Then open RStudio and set the working directory to the directory where tmleCommunity pacakge is stored, via 
+Then open RStudio and run the following code 
 
-```{R Change dir, eval=F}
+```{R Load, eval=F}
+# set the working directory to the directory where tmleCommunity pacakge is stored
 setwd("some_path/tmleCommunity")
 
 # 1. If you only want to use the package instead of installing it in R library, use 
 devtools::load_all()
 
-# 2. If you want to install it, then 
+# 2. If you want to install it, then uze
 devtools::install()
 library(tmleCommunity)
 ```
@@ -43,7 +44,10 @@ library(tmleCommunity)
 
 Forthcoming Summer 2018
 
-## Generate package document 
+## Documentation
+
+Once the package is installed, please refer to the help file `?'tmleCommunity-package'` and `tmleCommunity` function documentation for details and examples:
+
 Once you set the working directory to the directory where tmleCommunity pacakge is stored, use 
 
 devtools::document()
