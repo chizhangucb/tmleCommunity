@@ -46,8 +46,9 @@ Forthcoming Summer 2018
 
 ## Documentation
 
-Once the package is installed, please refer to the help file `?'tmleCommunity-package'` and `tmleCommunity` function documentation for details and examples:
+Once the package is installed, please refer to the help file `?'tmleCommunity-package'` and `tmleCommunity` function documentation for details and examples.
 
-Once you set the working directory to the directory where tmleCommunity pacakge is stored, use 
-
-devtools::document()
+```{R Documentation, eval=F}
+?'tmleCommunity-package'
+?tmleCommunity
+```
