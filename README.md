@@ -21,24 +21,28 @@ devtools::install_github("chizhangucb/tmleCommunity")
 ```
 
 ### Install from local source
-Alternatively, could download the entire packge to the local path (e.g., Desktop) by either clicking the (green) download button on the this page, or cloning the repo through terminal via the following code
+Alternatively, you could download the entire packge to the local path (e.g., Desktop) by either clicking the (green) download button on the this page, or cloning the repo through terminal via the following code
 
 ```console
 git clone https://github.com/chizhangucb/tmleCommunity
-setwd("some-path/tmleCommunity")
 ```
-
 Then open RStudio and set the working directory to the directory where tmleCommunity pacakge is stored, via 
+
+```{R Change dir, eval=F}
+setwd("some_path/tmleCommunity")
+```
 
 If you only want to use the package instead of installing it in R library, use 
 
+```{R load, eval=F}
 devtools::load_all()
-
+```
 If you want to install it, then 
 
+```{R install, eval=F}
 devtools::install()
-
 library(tmleCommunity)
+```
 
 ### Generate package document 
 Once you set the working directory to the directory where tmleCommunity pacakge is stored, use 
