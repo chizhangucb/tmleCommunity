@@ -55,13 +55,50 @@ Once the package is installed, please refer to the help file `?'tmleCommunity-pa
 
 ## Example
 
-We will use the sample dataset (`E`=(`E1`, `E2`), `W`=(`W1`,`W2`,`W3`),`A`,`Y`) that come along with the package:
+We will use the sample dataset (`E`=(`E1`,`E2`),`W`=(`W1`,`W2`,`W3`),`A`,`Y`) that come along with the package:
 
 ```{R Data, eval=F}
 data(comSample.wmT.bA.bY_list)  # load the sample data 
 comSample.wmT.bA.bY <- comSample.wmT.bA.bY_list$comSample.wmT.bA.bY
 N <- NROW(comSample.wmT.bA.bY)
 ```
+
+Estimating the additive treatment effect (ATE) for two deterministic interventions (`f_gstar1 = 1` vs `f_gstar2 = 0`) via community-level / individual-level analysis.
+
+```{R GLM_analysis, eval=F}
+# speed.glm using correctly specified Qform, hform.g0 and hform.gstar;
+Qform.corr <- "Y ~ E1 + E2 + W2 + W3 + A" # correct Q form
+gform.corr <- "A ~ E1 + E2 + W1"  # correct g
+
+# Setting global options that may be used in tmleCommunity(), e.g., using speed.glm
+tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "speedglm__glm", maxNperBin = N)
+
+# Community-level analysis without a pooled individual-level regression on outcome
+tmleCom_wmT.bA.bY.1a_sglm <- 
+  tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1L, f_gstar2 = 0L,
+                community.step = "community_level", communityID = "id", pooled.Q = FALSE, 
+                Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
+
+
+# Community-level analysis with a pooled individual-level regression on outcome
+tmleCom_wmT.bA.bY.1b_sglm <- 
+  tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1L, f_gstar2 = 0L,
+                community.step = "community_level", communityID = "id", pooled.Q = TRUE, 
+                Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
+tmleCom_wmT.bA.bY.1b_sglm$ATE$estimates
+
+# Individual-level analysis with both individual-level outcome and treatment mechanisms
+tmleCom_wmT.bA.bY.2_sglm <- 
+  tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1L, f_gstar2 = 0L,
+                community.step = "individual_level", communityID = "id", 
+                Qform = Qform.corr, hform.g0 = gform.corr, hform.gstar = gform.corr)
+tmleCom_wmT.bA.bY.2_sglm$ATE$estimates
+```
+
+If you are uncertain about the model specification of exposure and outcome mechanisms, data-adaptive estimation methods may be a better choice than parametric models. 
 
 ## Authors
 
