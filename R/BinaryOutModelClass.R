@@ -401,7 +401,7 @@ join.Xmat = function(X_mat, sVar_melt_DT, ID) {
 #'   \item{\code{getWeight}}{...}
 #' }
 #' @seealso \code{\link{DatKeepClass}}, \code{\link{RegressionClass}}, \code{\link{tmleCom_Options}}
-#' @example tests/examples/1_BinaryOutModel_examples.R
+#' @example \dontrun{tests/examples/1_BinaryOutModel_examples.R}
 #' @export
 BinaryOutModel  <- R6Class(classname = "BinaryOutModel",
   cloneable = TRUE, # changing to TRUE to make it easy to clone input h_g0/h_gstar model fits
