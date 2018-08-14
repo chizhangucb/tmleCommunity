@@ -1,11 +1,11 @@
-# Initial Submission to CRAN:
+## Initial Submission to CRAN:
 
-## Test environments:
+### Test environments:
 * local OS X install, R 3.5.1
 * win-builder (devel and release)
 
-## R CMD check --as-cran results:
-### There were one ERROR:
+### R CMD check --as-cran results:
+#### There were one ERROR:
 
 * Package required but not available: 'h2oEnsemble'
 
@@ -16,7 +16,7 @@ This package provides important additional functionality to `tmleCommunity`. Sou
  library(devtools) <br>
  install_github("h2oai/h2o-3/h2o-r/ensemble/h2oEnsemble-package")"
  
-### There was one WARNING:
+#### There was one WARNING:
 
 * checking CRAN incoming feasibility ... WARNING
 
@@ -26,7 +26,7 @@ According to CRAN Maintainer Uwe Ligges, *This is just a note that reminds CRAN 
 to check that the submission comes actually from his maintainer and not anybody else.*. 
 Thus, it is safe to ignore such a message.
 
-### There was one NOTE:
+#### There was one NOTE:
 
 * Possibly mis-spelled words in DESCRIPTION:
   GCOMP (17:63)
