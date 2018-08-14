@@ -7,8 +7,8 @@ There were one ERROR:
 
 This package provides important additional functionality to `tmleCommunity`. Source code for h2oEnsemble is available from [this repository](https://github.com/h2oai/h2o-3/tree/master/h2o-r/ensemble). Appropriate error checks and messages have been implemented throughout the package whenever h2oEnsemble is not installed. Currently, the error message instructs the user on how to install it directly from github, i.e., 
 
-"h2oEnsemble package is required if either Qestimator or gestimator is 'h2o__ensemble',
-    Please install it by typing this into R terminal: 
+"h2oEnsemble package is required if either Qestimator or gestimator is 'h2o__ensemble', <br>
+ Please install it by typing this into R terminal: <br>
     library(devtools)
     install_github("h2oai/h2o-3/h2o-r/ensemble/h2oEnsemble-package")
  
