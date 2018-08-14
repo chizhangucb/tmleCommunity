@@ -1,3 +1,4 @@
+\dontrun{
 #***************************************************************************************
 # Example 1: using different estimators in estimation of Q and g mechanisms
 #***************************************************************************************
@@ -81,3 +82,4 @@ tmleCom_Options(bin.method = "dhist", nbins = 10, maxNperBin = 5000)
 
 # 2.3 Default to use equal-mass method with 5 bins, no more than 500 obs in each bin
 tmleCom_Options()
+}
