@@ -11,7 +11,7 @@ iqr <- function(x) { return(diff(quantile(x,c(.25, .75),na.rm=T))) }  # interqua
 #'
 #' \code{panelData_Trans} provides a wide variety of ways of data transformation for panel datasets, such as fixid 
 #'  effect and pooling model. It allows users to only apply transformation on regressors of interests, instead of
-#'  on the entire dataset. See details in \url{https://cran.r-project.org/web/packages/plm/plm.pdf}.
+#'  on the entire dataset. See details in \url{https://CRAN.R-project.org/package=plm}.
 #   and \url{https://github.com/cran/plm/blob/master/R/pFormula.R} & \url{https://github.com/cran/plm/blob/master/R/plm.R}
 #' @param data A data frame (will be automatically transferred to panel data frame) or a panel data frame
 #' @param yvar Column name in \code{data} of outcome variable (Currently only support univariate).    
