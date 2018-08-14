@@ -118,9 +118,9 @@ test_that("fit TMLE estimator for binary A with h2o, using h2o.glm.wrapper and m
     tmleCommunity(data = indSample.iid.bA.cY, Ynode = "Y", Anodes = "A", 
                   WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = 1, f_gstar2 = 0, rndseed = 12345)
   estimates <- tmleCom_res$ATE$estimates  # psi0 = 2.80026 
-  expect_equal(estimates["tmle", ], 2.800851, tolerance = 1e-6) 
-  expect_equal(estimates["iptw", ], 2.874219, tolerance = 1e-6)  
-  expect_equal(estimates["gcomp", ], 2.800498, tolerance = 1e-6) 
+  expect_equal(estimates["tmle", ], 2.800916, tolerance = 1e-6) 
+  expect_equal(estimates["iptw", ], 2.875755, tolerance = 1e-6)  
+  expect_equal(estimates["gcomp", ], 2.800763, tolerance = 1e-6) 
   h2o.removeAll()
 })
 
