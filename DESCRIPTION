@@ -42,8 +42,7 @@ Imports: assertthat,
     Hmisc,
     plm,
     SuperLearner,
-    h2o,
-    h2oEnsemble,
+    h2o
 Suggests: doParallel,
     foreach,
     simcausal,
@@ -52,7 +51,8 @@ Suggests: doParallel,
     glmnet,
     gam,
     arm,
-    randomForest
+    randomForest,
+    h2oEnsemble    
 VignetteBuilder: knitr
 RoxygenNote: 6.1.0
 Collate: 
