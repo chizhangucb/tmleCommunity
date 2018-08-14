@@ -55,7 +55,13 @@ Once the package is installed, please refer to the help file `?'tmleCommunity-pa
 
 ## Example
 
-We will use the sample dataset $(E=(E1, E2), W=(W1,W2,W3),A,Y)$ and the sample network matrix of friend IDs (F) that come along with the package:
+We will use the sample dataset (`E`=(`E1`, `E2`), `W`=(`W1`,`W2`,`W3`),`A`,`Y`) that come along with the package:
+
+```{R Data, eval=F}
+data(comSample.wmT.bA.bY_list)  # load the sample data 
+comSample.wmT.bA.bY <- comSample.wmT.bA.bY_list$comSample.wmT.bA.bY
+N <- NROW(comSample.wmT.bA.bY)
+```
 
 ## Authors
 
