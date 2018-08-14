@@ -53,6 +53,10 @@ Once the package is installed, please refer to the help file `?'tmleCommunity-pa
 ?tmleCommunity
 ```
 
+## Example
+
+We will use the sample dataset $(E=(E1, E2), W=(W1,W2,W3),A,Y)$ and the sample network matrix of friend IDs (F) that come along with the package:
+
 ## Authors
 
 Chi Zhang, Oleg Sofrygin, Jennifer Ahern, M. J. van der Laan
