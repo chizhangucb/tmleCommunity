@@ -324,7 +324,7 @@ binirized.to.DTlong <- function(BinsDat_wide, binID_seq, ID, bin_names, pooled_b
      
 # ------------------------------------------- join.Xmat -------------------------------------
 # Purpose: Prepare predictors (W/X_mat) as data.table, adding row IDs for a join
-# Join with sVar_melt_DT that is already in long format；Check that created IDs match exactly for both datasets
+# Join with sVar_melt_DT that is already in long format; Check that created IDs match exactly for both datasets
 # -------------------------------------------------------------------------------------------
 join.Xmat = function(X_mat, sVar_melt_DT, ID) {
   nIDs <- length(unique(sVar_melt_DT[["ID"]]))
