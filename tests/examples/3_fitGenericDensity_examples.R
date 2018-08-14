@@ -1,3 +1,4 @@
+\dontrun{
 data(indSample.iid.cA.cY_list)
 indSample.iid.cA.cY <- indSample.iid.cA.cY_list$indSample.iid.cA.cY
 tmleCom_Options(gestimator = "speedglm__glm", maxNperBin = nrow(indSample.iid.cA.cY),
@@ -24,3 +25,4 @@ h_gN <- fitGenericDensity(data = indSample.iid.cA.cY, Anodes = "A",
 h_gstar <- fitGenericDensity(data = indSample.iid.cA.cY, Anodes = "A",
                              Wnodes = c("W1", "W2", "W3", "W4"), 
                              f_gstar = f.gstar, lbound = 0)$h_gstar
+}
