@@ -1,5 +1,4 @@
-# tmleCommunity
-Targeted Maximum Likelihood Estimation for Hierarchical Data
+# tmleCommunity - Targeted Maximum Likelihood Estimation for Hierarchical Data
 
 The tmleCommuniy package performs targeted minimum loss-based estimation (TMLE) of the average causal effect of community-based intervention(s) at a single time point on an individual-based outcome of interest. It provides three approaches to analyze hierarchical data: community-level TMLE, inidividual-level TMLE and stratified TMLE. Implementations of the inverse-probability-of- treatment-weighting (IPTW) and the G-computation formula (GCOMP) are also available for each approach. The user-supplied arbitrary intervention can be either binary, categorical or continuous, also supporting univariate and multivariate setting. 
 
