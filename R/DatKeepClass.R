@@ -753,7 +753,7 @@ DatKeepClass <- R6Class(classname = "DatKeepClass",
         for (i in seq_len(p)) { 
           # if Anode is continuous, just call f.gen.probA.star:
           A.gstar <- f.gen.A.star(data = self$dat.sVar, f.g_fun = f.g_fun)
-          # Replace A under g0 in Odata with A^* under g.star： Assigning the (W, E, A.gstar) to one output data matrix 
+          # Replace A under g0 in Odata with A^* under g.star: Assigning the (W, E, A.gstar) to one output data matrix 
           df.sVar[((i - 1) * nobs + 1):(nobs * i), ] <-  cbind(WE_dat, A.gstar)[, ]
         }
         self$obs.wts <- rep(self$obs.wts, p)
