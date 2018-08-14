@@ -6,6 +6,7 @@ There were no ERRORs.
 There was one WARNING:
 
 * checking CRAN incoming feasibility ... WARNING
+
 Maintainer: 'Chi Zhang <chi.zhang@berkeley.edu>'
 
 According to CRAN Maintainer Uwe Ligges, *This is just a note that reminds CRAN maintainers 
