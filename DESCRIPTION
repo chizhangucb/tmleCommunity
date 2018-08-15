@@ -59,6 +59,7 @@ Collate:
     'DatKeepClass.R'
     'GenericModelClasses.R'
     'MonteCarloSimClass.R'
+    'h2oEnsemble.R'
     'hbarDensityModel.R'
     'tmleCommunity-package.R'
     'tmleCommunity.R'
