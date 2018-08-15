@@ -111,7 +111,7 @@ test_that("fit TMLE for binary A with SuperLearner, using SL.glm, SL.step, SL.gl
 #***************************************
 ## Test 1.3.1 h2o.glm.wrapper with only main terms (+ tmle.intercept)
 test_that("fit TMLE estimator for binary A with h2o, using h2o.glm.wrapper and main term formulae", {
-  require("h2oEnsemble")           
+  # require("h2oEnsemble")           
   tmleCom_Options(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble", maxNperBin = N,
                   h2olearner = c("h2o.glm.wrapper"), nbins = 5)
   tmleCom_res <- 
