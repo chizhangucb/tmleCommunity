@@ -2,8 +2,15 @@
 # In order to pass the CRAN submission process, we currently cannot put h2oEnsemble 
 # in the required/ suggested list of libraries. But once it's available in R, we 
 # will add h2oEnsemble back into the list.
+# For details, please visit https://www.stat.berkeley.edu/~ledell/R/h2oEnsemble.pdf
+# https://github.com/h2oai/h2o-3/tree/master/h2o-r/ensemble/h2oEnsemble-package
+# In this R file, all required functions from h2oEnsemble package has been included.
 #----------------------------------------------------------------------------------
 
+#--------------------------------------- h2o.ensemble --------------------------------------
+# Purpose: This function creates a "Super Learner" (stacking) ensemble using the 
+# H2O base learning algorithms specified by the user
+#-------------------------------------------------------------------------------------------
 h2o.ensemble <- function(x, y, training_frame, 
                          model_id = NULL, validation_frame = NULL,
                          family = c("AUTO", "binomial", "gaussian", "quasibinomial", "poisson", "gamma", "tweedie", "laplace", "quantile", "huber"),
@@ -95,20 +102,6 @@ h2o.ensemble <- function(x, y, training_frame,
   if (!exists(metalearner)) {
     stop("'metalearner' function name not found.")
   }
-
-  # This is not working, but we need a way to fail early when Naive Bayes wrappers are attempted to be used in a regression problem.  
-  # # Check that Naive Bayes is not specified for a regression problem
-  # if (family == "gaussian") {
-  #   if (sum(!sapply(learner, function(l) "gaussian" %in% eval(formals(l)$family)))>0) {
-  #     # TO DO: should make this more generic and print specific wrapper name in violation
-  #     stop("The Naive Bayes function does not support regression, please remove this function from your set of base learners.")
-  #   }
-  #   if (!("gaussian" %in% eval(formals(metalearner)$family))) {
-  #     # TO DO: should make this more generic and print specific wrapper name in violation
-  #     stop("The Naive Bayes function does not support regression, please choose a different metalearner.")
-  #   }    
-  # }
-
     
   # Check remaining args
   if (inherits(parallel, "character")) {
@@ -207,9 +200,18 @@ h2o.ensemble <- function(x, y, training_frame,
 }
 
 
-
-# Generate the CV predicted values for all learners
+#----------------------------------------- .make_Z -----------------------------------------
+# Purpose: Generate the CV predicted values for all learners
+#-------------------------------------------------------------------------------------------
 .make_Z <- function(x, y, training_frame, family, learner, parallel, seed, V, L, idxs, metalearner_type = c("h2o", "SuperLearner")) {
+  
+  # Wrapper function for .fitFun to record system.time
+  .fitWrapper <- function(l, y, xcols, training_frame, validation_frame, family, learner, seed, fold_column) {
+    print(sprintf("Cross-validating and training base learner %s: %s", l, learner[l]))
+    fittime <- system.time(fit <- .fitFun(l, y, xcols, training_frame, validation_frame, family, 
+                                          learner, seed, fold_column), gcFirst=FALSE)
+    return(list(fit=fit, fittime=fittime))
+  }
   
   # Do V-fold cross-validation of each learner (in a loop/apply over 1:L)...
   fitlist <- sapply(X = 1:L, FUN = .fitWrapper, y = y, xcols = x, training_frame = training_frame,
@@ -243,7 +245,9 @@ h2o.ensemble <- function(x, y, training_frame,
 }
 
 
-# Train a model using learner l 
+#----------------------------------------- .fitFun -----------------------------------------
+# Purpose: Train a model using learner l 
+#-------------------------------------------------------------------------------------------
 .fitFun <- function(l, y, x, training_frame, validation_frame, family, learner, seed, fold_column) {
   if (!is.null(fold_column)) cv = TRUE
   if (is.numeric(seed)) set.seed(seed)  #If seed given, set seed prior to next step
@@ -258,16 +262,10 @@ h2o.ensemble <- function(x, y, training_frame,
   return(fit)
 }
 
-
-# Wrapper function for .fitFun to record system.time
-.fitWrapper <- function(l, y, xcols, training_frame, validation_frame, family, learner, seed, fold_column) {
-  print(sprintf("Cross-validating and training base learner %s: %s", l, learner[l]))
-  fittime <- system.time(fit <- .fitFun(l, y, xcols, training_frame, validation_frame, family, 
-                                        learner, seed, fold_column), gcFirst=FALSE)
-  return(list(fit=fit, fittime=fittime))
-}
-
-
+                             
+#---------------------------------------- .cv_control --------------------------------------
+# Purpose: Parameters that control the CV process
+#-------------------------------------------------------------------------------------------  
 .cv_control <- function(V = 5L, stratifyCV = TRUE, shuffle = TRUE){
   # Parameters that control the CV process
   # Only part of this being used currently --  
@@ -286,6 +284,9 @@ h2o.ensemble <- function(x, y, training_frame,
 }
 
 
+#----------------------------------- predict.h2o.ensemble ----------------------------------
+# Purpose: Predict method for an ’h2o.ensemble’ object
+#-------------------------------------------------------------------------------------------                             
 predict.h2o.ensemble <- function(object, newdata, ...) {
   
   if (object$family == "binomial") {
@@ -307,9 +308,10 @@ predict.h2o.ensemble <- function(object, newdata, ...) {
   return(out)
 }
 
+                                 
+#-------------------------------------------------------------------------------------------                                                              
 # Set of default wrappers to create a uniform interface for h2o supervised ML functions (H2O 3.0 and above)
 # These wrapper functions should always be compatible with the master branch of: https://github.com/h2oai/h2o-3
-# See the ensemble README for a full wrapper compatibility chart
 
 # Example of a wrapper function:
 h2o.example.wrapper <- function(x, y, training_frame, model_id = NULL, family = c("gaussian", "binomial"), ...) {
@@ -318,15 +320,11 @@ h2o.example.wrapper <- function(x, y, training_frame, model_id = NULL, family = 
   h2o.glm(x = x, y = y, training_frame = training_frame, family = family)
 }
 
-
-
 # H2O Algorithm function wrappers for:
 # h2o.glm
 # h2o.randomForest
 # h2o.gbm
 # h2o.deeplearning
-# h2o.naiveBayes (classification only)
-
 
 h2o.glm.wrapper <- function(x, y, training_frame, 
                             model_id = NULL,
@@ -842,70 +840,4 @@ h2o.deeplearning.wrapper <- function(x, y, training_frame, model_id = NULL,
                    elastic_averaging = elastic_averaging,
                    elastic_averaging_moving_rate = elastic_averaging_moving_rate,
                    elastic_averaging_regularization = elastic_averaging_regularization) 
-}
-
-
-# Note: Naive Bayes is classification only; not available for regression
-h2o.naiveBayes.wrapper <- function(x, y, training_frame, model_id = NULL,
-                                   family = "AUTO",
-                                   nfolds = 0,
-                                   seed = -1,
-                                   fold_assignment = c("AUTO", "Random", "Modulo", "Stratified"),
-                                   fold_column = NULL,
-                                   keep_cross_validation_predictions = TRUE,
-                                   keep_cross_validation_fold_assignment = FALSE,
-                                   validation_frame = NULL,
-                                   ignore_const_cols = TRUE,
-                                   score_each_iteration = FALSE,
-                                   balance_classes = FALSE,
-                                   class_sampling_factors = NULL,
-                                   max_after_balance_size = 5.0,
-                                   max_hit_ratio_k = 0,
-                                   laplace = 0,
-                                   #threshold = 0.001,  #deprecated
-                                   min_sdev = 0.001,
-                                   #eps = 0,  #deprecated
-                                   eps_sdev = 0,
-                                   min_prob = 0.001,
-                                   eps_prob = 0,
-                                   compute_metrics = TRUE,
-                                   max_runtime_secs = 0,
-                                   ...) {
-  
-  # If family is not specified, set it using the datatype of the response column
-  if (family == "AUTO") {
-    if (is.factor(training_frame[,y])) {
-      family <- "binomial"
-    } 
-  }
-  if (family != "binomial") {
-    # TO DO: Add a check in the h2o.stack and h2o.ensemble code so that this will fail early
-    stop("Naive Bayes cannot be used as a base learner for regression problems.\nThe response variable must be categorical and family must be binomial.")
-  }
-  h2o.naiveBayes(x = x, 
-                 y = y, 
-                 training_frame = training_frame, 
-                 model_id = model_id,
-                 nfolds = nfolds,
-                 seed = seed,
-                 fold_assignment = match.arg(fold_assignment),
-                 fold_column = fold_column,
-                 keep_cross_validation_predictions = TRUE,  #must have for stacking
-                 keep_cross_validation_fold_assignment = keep_cross_validation_fold_assignment,
-                 validation_frame = validation_frame,
-                 ignore_const_cols = ignore_const_cols,
-                 score_each_iteration = score_each_iteration,
-                 balance_classes = balance_classes,
-                 class_sampling_factors = class_sampling_factors,
-                 max_after_balance_size = max_after_balance_size,
-                 max_hit_ratio_k = max_hit_ratio_k,
-                 laplace = laplace,
-                 #threshold = threshold,  #deprecated
-                 min_sdev = min_sdev,
-                 #eps = eps,  #deprecated
-                 eps_sdev = eps_sdev,
-                 min_prob = min_prob,
-                 eps_prob = eps_prob,
-                 compute_metrics = compute_metrics,
-                 max_runtime_secs = max_runtime_secs)
 }
