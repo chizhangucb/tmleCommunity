@@ -105,9 +105,8 @@ predict_single_reg.sl3 <- function(self) {
   pAout <- rep.int(gvars$misval, self$n)
   if ( any(class(model.fit) %in% "sl3")) {
     if (sum(self$subset_idx > 0)) {
-      test <- data.frame(Xmat)
       predictions <- model.fit$predict(task)
-      pAout[self$subset_idx] <-  as.vector(predictions$pred)
+      pAout[self$subset_idx] <-  as.vector(predictions)
     }
   }
   return(pAout)
