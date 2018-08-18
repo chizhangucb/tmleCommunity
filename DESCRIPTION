@@ -54,13 +54,15 @@ Suggests: doParallel,
     randomForest
 RoxygenNote: 6.1.0
 Collate: 
+    'wrappers.R'
+    'ensemble.R'
+    'stack.R'
+    'metalearn.R'
     'GeneralUtilities.R'
     'BinaryOutModelClass.R'
     'DatKeepClass.R'
     'GenericModelClasses.R'
     'MonteCarloSimClass.R'
-    'ensemble.R'
-    'wrappers.R'
     'hbarDensityModel.R'
     'tmleCommunity-package.R'
     'tmleCommunity.R'
