@@ -258,7 +258,7 @@ fit_single_reg.sl3S3 <- function(self) {
   metalearner <- getopt("sl3_metalearner")
   if (gvars$verbose) {
     print("calling sl3...")
-    print(length(SL.library) %+% " machine learning algorithm(s): " %+% paste0(names(learner), collapse = '; '))
+    print(length(learner) %+% " machine learning algorithm(s): " %+% paste0(names(learner), collapse = '; '))
     print("number of observations: " %+% nrow(Xmat))
   }    
   
