@@ -18,8 +18,8 @@ The following are two ways that you can install the development version of the `
 * Install directly from GitHub in R using `devtools::install_github()`:
 
 ```{R install, eval=F}
-# Install devtools if necessary:
 # install.packages("devtools")
+library(devtools)
 devtools::install_github("chizhangucb/tmleCommunity")
 ```
 
