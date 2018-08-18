@@ -43,6 +43,7 @@ Imports: assertthat,
     plm,
     SuperLearner,
     h2o
+    h2oEnsemble,
 Suggests: doParallel,
     foreach,
     simcausal,
@@ -54,9 +55,6 @@ Suggests: doParallel,
     randomForest
 RoxygenNote: 6.1.0
 Collate: 
-    'wrappers.R'
-    'ensemble.R'
-    'stack.R'
     'GeneralUtilities.R'
     'BinaryOutModelClass.R'
     'DatKeepClass.R'
