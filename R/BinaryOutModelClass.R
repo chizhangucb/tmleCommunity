@@ -103,7 +103,7 @@ predict_single_reg.sl3 <- function(self) {
   task <- sl3::sl3_Task$new(data, covariates = Wnodes, outcome = Anode)
   assert_that(!is.null(Xmat)); assert_that(!is.null(self$subset_idx))
   pAout <- rep.int(gvars$misval, self$n)
-  if ( any(class(model.fit) %in% "sl3")) {
+  if ( any(class(model.fit) %in% "Lrnr_sl")) {
     if (sum(self$subset_idx > 0)) {
       predictions <- model.fit$predict(task)
       pAout[self$subset_idx] <-  predictions
