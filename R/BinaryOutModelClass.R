@@ -290,7 +290,7 @@ fit_single_reg.sl3S3 <- function(self) {
     task <- sl3::sl3_Task$new(data, covariates = Wnodes, outcome = Anode, weights = "weights")
     
     # define Super Learner
-    binom_sl <- sl3::make_learner(Lrnr_sl, learners, logit_metalearner)
+    binom_sl <- sl3::make_learner(Lrnr_sl, learners, metalearner)
     
     model.fit <- try(binom_sl$train(task))
     
