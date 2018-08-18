@@ -42,7 +42,7 @@ Imports: assertthat,
     Hmisc,
     plm,
     SuperLearner,
-    h2o
+    h2o,
     h2oEnsemble
 Suggests: doParallel,
     foreach,
