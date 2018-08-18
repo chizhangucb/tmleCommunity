@@ -43,7 +43,8 @@ Imports: assertthat,
     plm,
     SuperLearner,
     h2o, 
-    h2oEnsemble
+    h2oEnsemble,
+    sl3
 Suggests: doParallel,
     foreach,
     simcausal,
