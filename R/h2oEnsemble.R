@@ -62,7 +62,9 @@ h2o.ensemble <- function(x, y, training_frame,
   # binomial must be factor/enum and gaussian must be numeric
   if (family %in% c("gaussian", "quasibinomial", "poisson", "gamma", "tweedie", "laplace", "quantile", "huber")) {
     if (!is.numeric(training_frame[,y])) {
-      stop("When `family` is one of {gaussian, quasibinomial, poisson, gamma, tweedie, laplace, quantile, huber}, the repsonse column must be numeric.")
+      # stop("When `family` is one of {gaussian, quasibinomial, poisson, gamma, tweedie, laplace, quantile, huber}, the repsonse column must be numeric.")
+      warning("When `family` is one of {gaussian, quasibinomial, poisson, gamma, tweedie, laplace, quantile, huber}, the repsonse column must be numeric.")
+      training_frame[,y] <- h2o:: as.numeric(training_frame[,y])
     }
     # TO DO: Update this ylim calc when h2o.range method gets implemented for H2OFrame cols
     #ylim <- c(min(training_frame[,y]), max(training_frame[,y]))  #Used to enforce bounds
@@ -74,7 +76,9 @@ h2o.ensemble <- function(x, y, training_frame,
     }
   } else {
     if (!is.factor(training_frame[,y])) {
-      stop("When `family` is binomial, the repsonse column must be a factor.")
+      # stop("When `family` is binomial, the repsonse column must be a factor.")
+      warning("When `family` is binomial, the repsonse column must be a factor.")
+      training_frame[,y] <- h2o:: as.factor(training_frame[,y])
     } else {
       numcats <- length(h2o.levels(training_frame[,y]))
       if (numcats > 2) {
