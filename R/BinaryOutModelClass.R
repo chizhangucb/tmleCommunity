@@ -106,7 +106,7 @@ predict_single_reg.sl3 <- function(self) {
   if ( any(class(model.fit) %in% "sl3")) {
     if (sum(self$subset_idx > 0)) {
       predictions <- model.fit$predict(task)
-      pAout[self$subset_idx] <-  as.vector(predictions)
+      pAout[self$subset_idx] <-  predictions
     }
   }
   return(pAout)
