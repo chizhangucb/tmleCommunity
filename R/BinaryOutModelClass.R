@@ -98,7 +98,7 @@ predict_single_reg.sl3 <- function(self) {
   Xmat <- self$getXmat  
   Y_vals <- self$getY
   data <- cbind(Xmat, Y = Y_vals)
-  Wnodes <- names(X)
+  Wnodes <- names(Xmat)
   Anode <- "Y"
   task <- sl3::sl3_Task$new(data, covariates = Wnodes, outcome = Anode)
   assert_that(!is.null(Xmat)); assert_that(!is.null(self$subset_idx))
