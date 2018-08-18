@@ -97,7 +97,7 @@ predict_single_reg.sl3 <- function(self) {
   model.fit <- self$getfit$model.fit
   Xmat <- self$getXmat  
   Y_vals <- self$getY
-  data <- cbind(Xmat, Y = Y_vals)
+  data <- as.data.frame(cbind(Xmat, Y = Y_vals))
   Wnodes <- names(Xmat)
   Anode <- "Y"
   task <- sl3::sl3_Task$new(data, covariates = Wnodes, outcome = Anode)
@@ -288,7 +288,7 @@ fit_single_reg.sl3S3 <- function(self) {
     
     n <- length(Y_vals)
     X <- data.frame(Xmat[, colnames(Xmat)[colnames(Xmat) != "Intercept"]])
-    data <- cbind(X, Y = Y_vals, weights = wt_vals)
+    data <- as.data.frame(cbind(X, Y = Y_vals, weights = wt_vals))
     Wnodes <- names(X)
     Anode <- "Y"
     task <- sl3::sl3_Task$new(data, covariates = Wnodes, outcome = Anode, weights = "weights")
