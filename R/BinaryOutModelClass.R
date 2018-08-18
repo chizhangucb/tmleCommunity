@@ -276,7 +276,7 @@ fit_single_reg.sl3S3 <- function(self) {
     return(fit_single_reg.speedglmS3(self))
   } else {
     if (all(Y_vals >= 0 & Y_vals <= 1)) {sl3Family <- "binomial" } else { sl3Family <- "gaussian" }
-    if (sl3Family == "binomial") {
+    if (sl3Family == "gaussian") {
       cat("#######################################################################\n")
       cat("Currently we only accept binomial outcome when using sl3_pipelines " %+% self$outvar %+% "\n" %+% "falling back on speedglm::speedglm.wfit;\n")
     }
