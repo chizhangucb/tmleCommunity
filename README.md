@@ -13,8 +13,9 @@ As a double-robust and asymptotically efficient substitution estimator that resp
 
 ## Installation
 
-### Github
-To install the development version of tmleCommunity (requires the devtools package):
+### Install Development Version
+The following are two ways that you can install the development version of the `tmleCommunity` package.
+* Install directly from GitHub in R using `devtools::install_github()`:
 
 ```{R install, eval=F}
 # Install devtools if necessary:
