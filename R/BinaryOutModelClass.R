@@ -8,6 +8,7 @@ predict_single_reg <- function(self) {
   fitfunname <- self$getfit$fitfunname
   if (fitfunname %in% c("speedglm", "glm")) { return(predict_single_reg.glm(self)) }
   if (fitfunname == "h2o.ensemble") { return(predict_single_reg.h2o(self)) }
+  if (fitfunname == "sl3_pipelines") { return(predict_single_reg.sl3(self)) }
   if (fitfunname == "SuperLearner") { return(predict_single_reg.SL(self)) }
 }
 
@@ -92,6 +93,21 @@ predict_single_reg.SL <- function(self) {
   return(pAout)
 }
 
+predict_single_reg.sl3(self) {
+  model.fit <- self$getfit$model.fit
+  Xmat <- self$getXmat  
+  assert_that(!is.null(Xmat)); assert_that(!is.null(self$subset_idx))
+  pAout <- rep.int(gvars$misval, self$n)
+  if ( any(class(model.fit) %in% "sl3")) {
+    if (sum(self$subset_idx > 0)) {
+      test <- data.frame(Xmat)
+      predictions <- model.fit$predict()
+      pAout[self$subset_idx] <-  as.vector(predictions$pred)
+    }
+  }
+  return(pAout)
+}
+
 #----------------------------------------------------------------------------------
 # Classes for fitting regression models with binary outcome Bin ~ Xmat
 #----------------------------------------------------------------------------------
@@ -101,6 +117,7 @@ fit_single_reg <- function(self) {
   if (estimator == "glm__glm") { return(fit_single_reg.glmS3(self)) }
   if (estimator == "speedglm__glm") { return(fit_single_reg.speedglmS3(self)) }
   if (estimator == "h2o__ensemble") { return(fit_single_reg.h2oS3(self)) } 
+  if (estimator == "sl3_pipelines") { return(fit_single_reg.sl3S3(self)) }
   if (estimator == "SuperLearner") { return(fit_single_reg.SLS3(self)) }
 }
       
@@ -228,6 +245,65 @@ fit_single_reg.h2oS3 <- function(self) {
     class(fit) <- c(class(fit), "h2o.ensemble")
     fit$fitfunname <- "h2o.ensemble"
     fit$family <- h2oFamily
+  }
+  return(fit)
+}
+
+# S3 method for sl3 binomial family fit, takes BinaryOutModel objects:
+fit_single_reg.sl3S3 <-  function(self) {
+  Xmat <- self$getXmat
+  Y_vals <- self$getY
+  wt_vals <- self$getWeight
+  learner <- getopt("sl3_learner")
+  metalearner <- getopt("sl3_metalearner")
+  if (gvars$verbose) {
+    print("calling sl3...")
+    print(length(SL.library) %+% " machine learning algorithm(s): " %+% paste0(names(learner), collapse = '; '))
+    print("number of observations: " %+% nrow(Xmat))
+  }    
+  
+  if (nrow(Xmat) == 0L) {  # Xmat has 0 rows or Responses are constant: return NA's and avoid throwing exception
+    model.fit <- list(coef = rep.int(NA_real_, ncol(Xmat)))
+    if (gvars$verbose) {
+      cat("#######################################################################\n")
+      cat("No observations fall into the bin. So NO MODEL FITTED for this stratum " %+% self$outvar %+% "\n")
+    }
+  } else if (nrow(Xmat) != 0L & length(unique(Y_vals)) == 1) {  # Responses are constant
+    if (gvars$verbose) {
+      cat("#######################################################################\n")
+      cat("Responses are constant. So NO MODEL FITTED for this stratum " %+% self$outvar %+% "\n" %+% "falling back on speedglm::speedglm.wfit;\n")
+    }
+    return(fit_single_reg.speedglmS3(self))
+  } else {
+    if (all(Y_vals >= 0 & Y_vals <= 1)) {sl3Family <- "binomial" } else { sl3Family <- "gaussian" }
+    if (sl3Family == "binomial") {
+      cat("#######################################################################\n")
+      cat("Currently we only accept binomial outcome when using sl3_pipelines " %+% self$outvar %+% "\n" %+% "falling back on speedglm::speedglm.wfit;\n")
+    }
+    return(fit_single_reg.speedglmS3(self))
+    
+    n <- length(Y_vals)
+    X <- data.frame(Xmat[, colnames(Xmat)[colnames(Xmat) != "Intercept"]])
+    data <- cbind(X, y = Y_vals, weights = wt_vals)
+    Wnodes <- names(X)
+    Anode <- "y"
+    task <- sl3::sl3_Task$new(data, covariates = Wnodes, outcome = Anode, weights = "weights")
+    
+    # define Super Learner
+    binom_sl <- sl3::make_learner(Lrnr_sl, learners, logit_metalearner)
+    
+    model.fit <- try(binom_sl$train(task))
+    
+    if (inherits(model.fit, "try-error")) { # if failed, fall back on SuperLearner::SuperLearner
+      message(" failed, falling back on SuperLearner::SuperLearner; ", model.fit)
+      return(fit_single_reg.SLS3(self))
+    }
+  }
+  fit <- list(model.fit = model.fit, coef = NULL, SL.library = SL.library, fitfunname = "speedglm")
+  if (any(class(model.fit) == "Lrnr_sl")) {
+    fit$coefficients <- model.fit$coefficients
+    class(fit) <- c(class(fit), "sl3")
+    fit$fitfunname <- "sl3"
   }
   return(fit)
 }
