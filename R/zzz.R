@@ -17,8 +17,8 @@ getopt <- function(optname) {
 
 `%+%` <- function(a, b) paste0(a, b)
   
-gvars$opts.allowedVals <- list(Qestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble", "SuperLearner"),
-                               gestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble", "SuperLearner"),
+gvars$opts.allowedVals <- list(Qestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble", "SuperLearner", "SL3_pipelines"),
+                               gestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble", "SuperLearner", "SL3_pipelines"),
                                # fitclass = c("speedglmS3", "glmS3", "h2oS3", "SLS3"),
                                bin.method = c("equal.mass", "equal.len", "dhist"),
                                nbins = "_positive_integer_",
@@ -100,8 +100,8 @@ print_tmleCom_opts <- function() {
 #' 
 #' @example tests/examples/7_tmleComOptions_examples.R 
 #' @export
-tmleCom_Options <- function(Qestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble", "SuperLearner"),  
-                            gestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble", "SuperLearner"),  
+tmleCom_Options <- function(Qestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble", "SuperLearner", "sl3_pipelines"),  
+                            gestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble", "SuperLearner", "sl3_pipelines"),  
                             bin.method = c("equal.mass", "equal.len", "dhist"),
                             nbins = 5, 
                             maxncats = 10,  
@@ -132,14 +132,20 @@ tmleCom_Options <- function(Qestimator = c("speedglm__glm", "glm__glm", "h2o__en
   if (any(c(Qestimator, gestimator) %in% "h2o__ensemble")) {
     if (!requireNamespace("h2o"))
       stop("h2o package is required if either Qestimator or gestimator is 'h2o__ensemble'")
-    #if (!requireNamespace("h2oEnsemble")) 
-    #  stop("h2oEnsemble package is required if either Qestimator or gestimator is 'h2o__ensemble',
-    #        Please install it by typing this into R terminal: 
-    #        library(devtools)
-    #        install_github('h2oai/h2o-3/h2o-r/ensemble/h2oEnsemble-package')")
+    if (!requireNamespace("h2oEnsemble")) 
+      stop("h2oEnsemble package is required if either Qestimator or gestimator is 'h2o__ensemble', Please install it via:
+            devtools::install_github('h2oai/h2o-3/h2o-r/ensemble/h2oEnsemble-package')")
   }
+  
   if (any(c(Qestimator, gestimator) %in% "SuperLearner")) {
-    if (!requireNamespace("SuperLearner"))  stop("SuperLearner package is required if either Qestimator or gestimator is 'SuperLearner'.")
+    if (!requireNamespace("SuperLearner"))  
+      stop("sl3 package is required if either Qestimator or gestimator is 'sl3'.")
+  }
+  
+  f (any(c(Qestimator, gestimator) %in% "sl3_pipelines")) {
+    if (!requireNamespace("sl3"))  
+      stop("SuperLearner package is required if either Qestimator or gestimator is 'sl3_pipelines', Please install it via:
+            devtools::install_github('jeremyrcoyle/sl3')")
   }
 
   # if (Qestimator == "speedglm__glm") { Qfitclass <- "speedglmS3" }
