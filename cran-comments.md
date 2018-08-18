@@ -45,4 +45,4 @@ Thus, it is safe to ignore such a message.
   
 These are not mis-spelled. I manually checked all of these words.
 They define specific estimators / terms that are known to the intended user.  
-Caution: oEnsemble is not a word, it's supposed to be h2oEnsemble.
+Caution: `oEnsemble` is not a word, it's supposed to be `h2oEnsemble`.
