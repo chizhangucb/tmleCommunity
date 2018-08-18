@@ -302,7 +302,7 @@ fit_single_reg.sl3S3 <- function(self) {
   fit <- list(model.fit = model.fit, coef = NULL, learner = learner, metalearner = metalearner, fitfunname = "speedglm")
   if (any(class(model.fit) == "Lrnr_sl")) {
     fit$coef <- model.fit$coefficients
-    class(fit) <- c(class(fit), class(model.fit), "sl3")
+    class(fit) <- c(class(fit), "sl3")
     fit$fitfunname <- "sl3"
   }
   return(fit)
