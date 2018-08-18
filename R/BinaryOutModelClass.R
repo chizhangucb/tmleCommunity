@@ -210,7 +210,7 @@ fit_single_reg.h2oS3 <- function(self) {
       x = x, y = self$outvar, training_frame = train, family = h2oFamily,  
       learner = h2olearner, metalearner = h2ometalearner, cvControl = list(V=CVfolds)))
     if (inherits(model.fit, "try-error")) {  # if failed, fall back on SuperLearner::SuperLearner
-      message("h2o.ensemble failed, falling back on SuperLearner::SuperLearner; \n", model.fit)
+      message("h2oEnsemble::h2o.ensemble failed, falling back on SuperLearner::SuperLearner; \n", model.fit)
       return(fit_single_reg.SLS3(self)) 
     } 
     if (gvars$verbose) {
