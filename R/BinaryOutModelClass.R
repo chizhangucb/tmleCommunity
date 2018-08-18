@@ -284,9 +284,9 @@ fit_single_reg.sl3S3 <- function(self) {
     
     n <- length(Y_vals)
     X <- data.frame(Xmat[, colnames(Xmat)[colnames(Xmat) != "Intercept"]])
-    data <- cbind(X, y = Y_vals, weights = wt_vals)
+    data <- cbind(X, Y = Y_vals, weights = wt_vals)
     Wnodes <- names(X)
-    Anode <- "y"
+    Anode <- "Y"
     task <- sl3::sl3_Task$new(data, covariates = Wnodes, outcome = Anode, weights = "weights")
     
     # define Super Learner
