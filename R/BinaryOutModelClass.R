@@ -93,7 +93,7 @@ predict_single_reg.SL <- function(self) {
   return(pAout)
 }
 
-predict_single_reg.sl3(self) {
+predict_single_reg.sl3 <- function(self) {
   model.fit <- self$getfit$model.fit
   Xmat <- self$getXmat  
   assert_that(!is.null(Xmat)); assert_that(!is.null(self$subset_idx))
