@@ -17,8 +17,8 @@ getopt <- function(optname) {
 
 `%+%` <- function(a, b) paste0(a, b)
   
-gvars$opts.allowedVals <- list(Qestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble", "SuperLearner", "SL3_pipelines"),
-                               gestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble", "SuperLearner", "SL3_pipelines"),
+gvars$opts.allowedVals <- list(Qestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble", "SuperLearner", "sl3_pipelines"),
+                               gestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble", "SuperLearner", "sl3_pipelines"),
                                # fitclass = c("speedglmS3", "glmS3", "h2oS3", "SLS3"),
                                bin.method = c("equal.mass", "equal.len", "dhist"),
                                nbins = "_positive_integer_",
