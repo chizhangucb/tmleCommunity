@@ -16,6 +16,7 @@ OData.g0 <- DatKeepClass$new(Odata = indSample.iid.cA.cY, nodes = nodes)
 #********************************************** 
 test_that("Using glm when setting Qestimator = 'glm__glm'", {
   # Use glm without pooling of bins
+  # Here Qestimator is actually set for propensity score
   tmleCom_Options(Qestimator = "glm__glm", maxNperBin = N)
   regclass.g0 <- RegressionClass$new(
     outvar = h.g0.sVars$outvars, predvars = h.g0.sVars$predvars,
@@ -39,6 +40,7 @@ test_that("Using glm when setting Qestimator = 'glm__glm'", {
 })
 
 test_that("Using speedglm when setting Qestimator = 'speedglm__glm'", {
+  # Here Qestimator is actually set for propensity score
   tmleCom_Options(Qestimator = "speedglm__glm", maxNperBin = N)
   regclass.g0 <- RegressionClass$new(
     outvar = h.g0.sVars$outvars, predvars = h.g0.sVars$predvars,
@@ -70,8 +72,9 @@ test_that("Using SuperLearner when setting Qestimator = 'SuperLearner'", {
   expect_equal(genericmodels.g0.A1$getPsAsW.models()[[1]]$getfit$fitfunname, "speedglm")
 })
 
-test_that("Using h2o & h2oEnsemble when setting gestimator = 'h2o__ensemble'", {
+test_that("Using h2o & h2oEnsemble when setting Qestimator = 'h2o__ensemble'", {
   require("h2o"); require("h2oEnsemble")
+  # Here Qestimator is actually set for propensity score
   tmleCom_Options(Qestimator = "h2o__ensemble", maxNperBin = N, 
                   h2ometalearner = "h2o.glm.wrapper",
                   h2olearner = c("h2o.glm.wrapper", "h2o.randomForest.wrapper"))
@@ -88,6 +91,25 @@ test_that("Using h2o & h2oEnsemble when setting gestimator = 'h2o__ensemble'", {
   # For the last (& first) bin, no much obs in it, so h2o fails & downgrade to speedglm 
   expect_equal(genericmodels.g0.A1$getPsAsW.models()[[7]]$getfit$fitfunname, "speedglm")
 })
+
+test_that("Using sl3 & SuperLearner when setting Qestimator = 'sl3_pipelines'", {
+  require("sl3"); require("SuperLearner")
+  # Here Qestimator is actually set for propensity score
+  tmleCom_Options(Qestimator = "sl3_pipelines", maxNperBin = N)
+  regclass.g0 <- RegressionClass$new(
+    outvar = h.g0.sVars$outvars, predvars = h.g0.sVars$predvars,
+    subset_vars = subsets_expr, outvar.class = OData.g0$type.sVar[h.g0.sVars$outvars])
+  genericmodels.g0 <- GenericModel$new(reg = regclass.g0, DatKeepClass.g0 = OData.g0)
+  genericmodels.g0$fit(data = OData.g0)
+  h_gN <- genericmodels.g0$predictAeqa(newdata = OData.g0)
+  genericmodels.g0.A1 <- genericmodels.g0$getPsAsW.models()$`P(A|W).1`
+  for (i in 1:length(genericmodels.g0.A1$getPsAsW.models())) {
+    expect_equal(genericmodels.g0.A1$getPsAsW.models()[[i]]$estimator, "sl3_pipelines")
+  }
+  # For the last (& first) bin, no much obs in it, so h2o fails & downgrade to speedglm 
+  expect_equal(genericmodels.g0.A1$getPsAsW.models()[[7]]$getfit$fitfunname, "speedglm")
+})
+
 
 #**********************************************  
 # Test 2 Test for saving RAM 
