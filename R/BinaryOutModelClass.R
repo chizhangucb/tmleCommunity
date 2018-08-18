@@ -250,7 +250,7 @@ fit_single_reg.h2oS3 <- function(self) {
 }
 
 # S3 method for sl3 binomial family fit, takes BinaryOutModel objects:
-fit_single_reg.sl3S3 <-  function(self) {
+fit_single_reg.sl3S3 <- function(self) {
   Xmat <- self$getXmat
   Y_vals <- self$getY
   wt_vals <- self$getWeight
