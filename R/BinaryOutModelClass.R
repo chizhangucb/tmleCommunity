@@ -279,8 +279,8 @@ fit_single_reg.sl3S3 <- function(self) {
     if (sl3Family == "gaussian") {
       cat("#######################################################################\n")
       cat("Currently we only accept binomial outcome when using sl3_pipelines " %+% self$outvar %+% "\n" %+% "falling back on speedglm::speedglm.wfit;\n")
+      return(fit_single_reg.speedglmS3(self))
     }
-    return(fit_single_reg.speedglmS3(self))
     
     n <- length(Y_vals)
     X <- data.frame(Xmat[, colnames(Xmat)[colnames(Xmat) != "Intercept"]])
