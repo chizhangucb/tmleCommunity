@@ -97,7 +97,7 @@ predict_single_reg.sl3 <- function(self) {
   model.fit <- self$getfit$model.fit
   Xmat <- self$getXmat  
   Y_vals <- self$getY
-  data <- cbind(X, Y = Y_vals)
+  data <- cbind(Xmat, Y = Y_vals)
   Wnodes <- names(X)
   Anode <- "Y"
   task <- sl3::sl3_Task$new(data, covariates = Wnodes, outcome = Anode)
