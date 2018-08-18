@@ -96,12 +96,17 @@ predict_single_reg.SL <- function(self) {
 predict_single_reg.sl3 <- function(self) {
   model.fit <- self$getfit$model.fit
   Xmat <- self$getXmat  
+  Y_vals <- self$getY
+  data <- cbind(X, Y = Y_vals, weights = wt_vals)
+  Wnodes <- names(X)
+  Anode <- "Y"
+  task <- sl3::sl3_Task$new(data, covariates = Wnodes, outcome = Anode)
   assert_that(!is.null(Xmat)); assert_that(!is.null(self$subset_idx))
   pAout <- rep.int(gvars$misval, self$n)
   if ( any(class(model.fit) %in% "sl3")) {
     if (sum(self$subset_idx > 0)) {
       test <- data.frame(Xmat)
-      predictions <- model.fit$predict()
+      predictions <- model.fit$predict(task)
       pAout[self$subset_idx] <-  as.vector(predictions$pred)
     }
   }
