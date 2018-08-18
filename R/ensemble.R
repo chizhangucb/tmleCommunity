@@ -47,29 +47,29 @@ h2o.ensemble <- function(x, y, training_frame,
   }
   # Check that if specified, family matches data type for response
   # binomial must be factor/enum and gaussian must be numeric
-  if (family %in% c("gaussian", "quasibinomial", "poisson", "gamma", "tweedie", "laplace", "quantile", "huber")) {
-    if (!is.numeric(training_frame[,y])) {
-      stop("When `family` is one of {gaussian, quasibinomial, poisson, gamma, tweedie, laplace, quantile, huber}, the repsonse column must be numeric.")
-    }
+  #if (family %in% c("gaussian", "quasibinomial", "poisson", "gamma", "tweedie", "laplace", "quantile", "huber")) {
+  #  if (!is.numeric(training_frame[,y])) {
+  #    stop("When `family` is one of {gaussian, quasibinomial, poisson, gamma, tweedie, laplace, quantile, huber}, the repsonse column must be numeric.")
+  #  }
     # TO DO: Update this ylim calc when h2o.range method gets implemented for H2OFrame cols
     #ylim <- c(min(training_frame[,y]), max(training_frame[,y]))  #Used to enforce bounds
-    ylim <- h2o.range(training_frame[,y])
-    if (family == "gamma") {
-      if (ylim[1] <= 0) {
-        stop("family = gamma requires a positive respone")
-      }      
-    }
-  } else {
-    if (!is.factor(training_frame[,y])) {
-      stop("When `family` is binomial, the repsonse column must be a factor.")
-    } else {
-      numcats <- length(h2o.levels(training_frame[,y]))
-      if (numcats > 2) {
-        stop("Multinomial case not yet implemented for h2o.ensemble. Check here for progress: https://0xdata.atlassian.net/browse/PUBDEV-2355")
-      } 
-    }
-    ylim <- NULL
-  }
+  #  ylim <- h2o.range(training_frame[,y])
+  #  if (family == "gamma") {
+  #    if (ylim[1] <= 0) {
+  #      stop("family = gamma requires a positive respone")
+  #    }      
+  #  }
+  #} else {
+  #  if (!is.factor(training_frame[,y])) {
+  #    stop("When `family` is binomial, the repsonse column must be a factor.")
+  #  } else {
+  #    numcats <- length(h2o.levels(training_frame[,y]))
+  #    if (numcats > 2) {
+  #      stop("Multinomial case not yet implemented for h2o.ensemble. Check here for progress: https://0xdata.atlassian.net/browse/PUBDEV-2355")
+  #    } 
+  #  }
+  #  ylim <- NULL
+  #}
   
   # Update control args by filling in missing list elements
   cvControl <- do.call(".cv_control", cvControl)
