@@ -105,7 +105,8 @@ predict_single_reg.sl3 <- function(self) {
   pAout <- rep.int(gvars$misval, self$n)
   if ( any(class(model.fit) %in% "Lrnr_sl")) {
     if (sum(self$subset_idx > 0)) {
-      predictions <- model.fit$predict(task)
+      # predictions <- model.fit$predict(task)
+      predictions <- model.fit$predict()
       pAout[self$subset_idx] <-  predictions
     }
   }
