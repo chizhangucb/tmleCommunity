@@ -290,7 +290,7 @@ fit_single_reg.sl3S3 <- function(self) {
     task <- sl3::sl3_Task$new(data, covariates = Wnodes, outcome = Anode, weights = "weights")
     
     # define Super Learner
-    binom_sl <- sl3::make_learner(Lrnr_sl, learners, metalearner)
+    binom_sl <- sl3::make_learner(Lrnr_sl, learner, metalearner)
     
     model.fit <- try(binom_sl$train(task))
     
@@ -299,10 +299,10 @@ fit_single_reg.sl3S3 <- function(self) {
       return(fit_single_reg.SLS3(self))
     }
   }
-  fit <- list(model.fit = model.fit, coef = NULL, SL.library = SL.library, fitfunname = "speedglm")
+  fit <- list(model.fit = model.fit, coef = NULL, learner = learner, metalearner = metalearner, fitfunname = "speedglm")
   if (any(class(model.fit) == "Lrnr_sl")) {
-    fit$coefficients <- model.fit$coefficients
-    class(fit) <- c(class(fit), "sl3")
+    fit$coef <- model.fit$coefficients
+    class(fit) <- c(class(fit), class(model.fit), "sl3")
     fit$fitfunname <- "sl3"
   }
   return(fit)
