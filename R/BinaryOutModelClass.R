@@ -99,14 +99,17 @@ predict_single_reg.sl3 <- function(self) {
   Y_vals <- self$getY
   data <- as.data.frame(cbind(Xmat, Y = Y_vals))
   Wnodes <- names(Xmat)
-  Anode <- "y"
-  message("Here is predicting")
+  Anode <- "Y"
+  message("Here is predicting ##### 1")
   task <- sl3::sl3_Task$new(data, covariates = Wnodes, outcome = Anode)
+  message("Here is predicting ##### 2")
   assert_that(!is.null(Xmat)); assert_that(!is.null(self$subset_idx))
   pAout <- rep.int(gvars$misval, self$n)
   if ( any(class(model.fit) %in% "Lrnr_sl")) {
     if (sum(self$subset_idx > 0)) {
+      message("Here is predicting ##### 3")
       predictions <- model.fit$predict(task)
+      message("Here is predicting ##### 4")
       # predictions <- model.fit$predict()  # Use the train dataset
       pAout[self$subset_idx] <-  predictions
     }
@@ -292,10 +295,11 @@ fit_single_reg.sl3S3 <- function(self) {
     X <- data.frame(Xmat[, colnames(Xmat)[colnames(Xmat) != "Intercept"]])
     data <- as.data.frame(cbind(X, Y = Y_vals, weights = wt_vals))
     Wnodes <- names(X)
-    Anode <- "y"
-    message("Here is fitting")
+    Anode <- "Y"
+    message("Here is fitting #### 1")
     task <- sl3::sl3_Task$new(data, covariates = Wnodes, outcome = Anode, weights = "weights")
     
+    message("Here is fitting #### 2")
     # define Super Learner
     binom_sl <- sl3::make_learner(Lrnr_sl, learner, metalearner)
     
@@ -312,6 +316,7 @@ fit_single_reg.sl3S3 <- function(self) {
     class(fit) <- c(class(fit), "sl3_pipelines")
     fit$fitfunname <- "sl3_pipelines"
   }
+  message("Here is fitting #### 3")
   return(fit)
 }
 
