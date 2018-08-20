@@ -99,7 +99,7 @@ predict_single_reg.sl3 <- function(self) {
   Y_vals <- self$getY
   data <- as.data.frame(cbind(Xmat, Y = Y_vals))
   Wnodes <- names(Xmat)
-  Anode <- "Y"
+  Anode <- "y"
   task <- sl3::sl3_Task$new(data, covariates = Wnodes, outcome = Anode)
   assert_that(!is.null(Xmat)); assert_that(!is.null(self$subset_idx))
   pAout <- rep.int(gvars$misval, self$n)
@@ -291,7 +291,7 @@ fit_single_reg.sl3S3 <- function(self) {
     X <- data.frame(Xmat[, colnames(Xmat)[colnames(Xmat) != "Intercept"]])
     data <- as.data.frame(cbind(X, Y = Y_vals, weights = wt_vals))
     Wnodes <- names(X)
-    Anode <- "Y"
+    Anode <- "y"
     task <- sl3::sl3_Task$new(data, covariates = Wnodes, outcome = Anode, weights = "weights")
     
     # define Super Learner
