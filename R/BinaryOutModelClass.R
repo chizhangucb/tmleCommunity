@@ -96,12 +96,11 @@ predict_single_reg.SL <- function(self) {
 predict_single_reg.sl3 <- function(self) {
   model.fit <- self$getfit$model.fit
   Xmat <- self$getXmat  
-  Y_vals <- self$getY
-  data <- as.data.frame(cbind(Xmat, Y = Y_vals))
+  data <- as.data.frame(Xmat)
   Wnodes <- names(Xmat)
-  Anode <- "Y"
+  # Anode <- "Y"
   message("Here is predicting ##### 1")
-  task <- sl3::sl3_Task$new(data, covariates = Wnodes, outcome = Anode)
+  task <- sl3::sl3_Task$new(data, covariates = Wnodes, outcome = NULL)
   message("Here is predicting ##### 2")
   assert_that(!is.null(Xmat)); assert_that(!is.null(self$subset_idx))
   pAout <- rep.int(gvars$misval, self$n)
