@@ -100,16 +100,16 @@ predict_single_reg.sl3 <- function(self) {
   # Wnodes <- names(Xmat)
   # Anode <- "Y"
   message("Here is predicting ##### 1")
-  task <- sl3::sl3_Task$new(data, covariates = Wnodes, outcome = NULL)
-  message("Here is predicting ##### 2")
-  assert_that(!is.null(Xmat)); assert_that(!is.null(self$subset_idx))
+  # task <- sl3::sl3_Task$new(data, covariates = Wnodes, outcome = NULL)
+  # assert_that(!is.null(Xmat)); 
+  assert_that(!is.null(self$subset_idx))
   pAout <- rep.int(gvars$misval, self$n)
   if ( any(class(model.fit) %in% "Lrnr_sl")) {
     if (sum(self$subset_idx > 0)) {
-      message("Here is predicting ##### 3")
+      message("Here is predicting ##### 2")
       # predictions <- model.fit$predict(task)
       predictions <- model.fit$predict()  # Use the train dataset
-      message("Here is predicting ##### 4")
+      message("Here is predicting ##### 3")
       pAout[self$subset_idx] <-  predictions
     }
   }
