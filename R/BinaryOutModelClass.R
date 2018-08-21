@@ -95,9 +95,9 @@ predict_single_reg.SL <- function(self) {
 
 predict_single_reg.sl3 <- function(self) {
   model.fit <- self$getfit$model.fit
-  Xmat <- self$getXmat  
-  data <- as.data.frame(Xmat)
-  Wnodes <- names(Xmat)
+  # Xmat <- self$getXmat  
+  # data <- as.data.frame(Xmat)
+  # Wnodes <- names(Xmat)
   # Anode <- "Y"
   message("Here is predicting ##### 1")
   task <- sl3::sl3_Task$new(data, covariates = Wnodes, outcome = NULL)
@@ -107,6 +107,7 @@ predict_single_reg.sl3 <- function(self) {
   if ( any(class(model.fit) %in% "Lrnr_sl")) {
     if (sum(self$subset_idx > 0)) {
       message("Here is predicting ##### 3")
+      # predictions <- model.fit$predict(task)
       predictions <- model.fit$predict(task)
       message("Here is predicting ##### 4")
       # predictions <- model.fit$predict()  # Use the train dataset
