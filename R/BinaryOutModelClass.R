@@ -108,9 +108,8 @@ predict_single_reg.sl3 <- function(self) {
     if (sum(self$subset_idx > 0)) {
       message("Here is predicting ##### 3")
       # predictions <- model.fit$predict(task)
-      predictions <- model.fit$predict(task)
+      predictions <- model.fit$predict()  # Use the train dataset
       message("Here is predicting ##### 4")
-      # predictions <- model.fit$predict()  # Use the train dataset
       pAout[self$subset_idx] <-  predictions
     }
   }
