@@ -1,0 +1,8 @@
+tmleCommunity 0.1.0
+==============
+
+
+
+* Adding `sl3` package into the choice of data-adaptive algorithms soon.
+
+* Seeking better performance via `data.table` package.
