@@ -58,6 +58,7 @@ print_tmleCom_opts <- function() {
 #'  Estimator \code{"glm__glm"} uses \code{\link[stats]{glm.fit}};
 #'  Estimator \code{"h2o__ensemble"} implements the super learner ensemble (stacking) algorithm using the H2O R interface; 
 #'  Estimator \code{"SuperLearner"} implements the super learner prediction methods.
+#'  Estimator \code{"sl3_pipelines"} implements the super learner prediction methods with pipelines.
 #'  Note that if \code{"h2o__ensemble"} fails, it falls back on {"SuperLearner"}. If \code{"SuperLearner"} fails, 
 #'  it falls back on {"speedglm__glm"}. If \code{"speedglm__glm"} fails, it falls back on {"glm__glm"}.
 #' @param gestimator A string specifying default estimator for exposure mechanism fitting. It has the same options as \code{Qestimator}.
