@@ -279,7 +279,7 @@ fit_single_reg.sl3S3 <- function(self) {
   } else {
     if (all(Y_vals >= 0 & Y_vals <= 1)) {sl3Family <- "binomial" } else { sl3Family <- "gaussian" }
     if (sl3Family == "gaussian") {
-      if !all.equal(metalearner$params$learner_function, sl3::metalearner_linear) {
+      if !(all.equal(metalearner$params$learner_function, sl3::metalearner_linear)) {
         metalearner <- sl3::make_learner(sl3::Lrnr_optim, loss_function = sl3::loss_squared_error,
                                          learner_function = sl3::metalearner_linear)
         cat("#######################################################################\n")
@@ -291,7 +291,7 @@ fit_single_reg.sl3S3 <- function(self) {
       cat("Currently we only accept binomial outcome when using sl3_pipelines " %+% self$outvar %+% "\n" %+% "falling back on SuperLearner::SuperLearner;\n")
       return(fit_single_reg.speedglmS3(self))
     } else if (sl3Family == "binomial") {
-      if !all.equal(metalearner$params$learner_function, sl3::metalearner_logistic_binomial) {
+      if !(all.equal(metalearner$params$learner_function, sl3::metalearner_logistic_binomial)) {
         metalearner <- sl3::make_learner(sl3::Lrnr_optim, loss_function = sl3::loss_loglik_binomial,
                                          learner_function = sl3::metalearner_logistic_binomial)
         cat("#######################################################################\n")
