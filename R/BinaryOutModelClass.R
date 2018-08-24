@@ -305,10 +305,8 @@ fit_single_reg.sl3S3 <- function(self) {
     data <- as.data.frame(cbind(X, Y = Y_vals, weights = wt_vals))
     Wnodes <- names(X)
     Anode <- "Y"
-    message("Here is fitting #### 1")
     task <- sl3::sl3_Task$new(data, covariates = Wnodes, outcome = Anode, weights = "weights")
     
-    message("Here is fitting #### 2")
     # define Super Learner
     binom_sl <- sl3::make_learner(Lrnr_sl, learner, metalearner)
     
@@ -325,7 +323,6 @@ fit_single_reg.sl3S3 <- function(self) {
     class(fit) <- c(class(fit), "sl3_pipelines")
     fit$fitfunname <- "sl3_pipelines"
   }
-  message("Here is fitting #### 3")
   return(fit)
 }
 
