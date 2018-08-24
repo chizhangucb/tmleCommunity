@@ -7,7 +7,7 @@ The `tmleCommunity` package performs targeted minimum loss-based estimation (TML
 
 ## Details
 
-As a double-robust and asymptotically efficient substitution estimator that respects global constraints of the statistical model, targeted maximum likelihood (or minimum loss-based) estimation (TMLE) provides asymptotically valid statistical inference, with potential reduction in bias and gain in efficiency. The development of the `tmleCommunity` package for R was motivated by the increasing demand of a user-friendly tool to estimate the impact of community-based arbitrary exposures in community-independent data structures with a semi-parametric efficient estimator. Besides, the esimation results of TMLE, IPTW and GCOMP, the statistical inference (Standard errors, t statistc, p-value and confidence intervals) of both TMLE and IPTW are provided based on the corresponding influence curve, respectively. Optional data-adaptive estimation of exposure and outcome mechanisms using the `SuperLearner` package, `sl3` package (), `h2o` and `h2oEnsemble` packages (optimized for doing 'in memory' processing of distributed, parallel machine learning algorithms on clusters) is strongly recommended.
+As a double-robust and asymptotically efficient substitution estimator that respects global constraints of the statistical model, targeted maximum likelihood (or minimum loss-based) estimation (TMLE) provides asymptotically valid statistical inference, with potential reduction in bias and gain in efficiency. The development of the `tmleCommunity` package for R was motivated by the increasing demand of a user-friendly tool to estimate the impact of community-based arbitrary exposures in community-independent data structures with a semi-parametric efficient estimator. Besides, the esimation results of TMLE, IPTW and GCOMP, the statistical inference (Standard errors, t statistc, p-value and confidence intervals) of both TMLE and IPTW are provided based on the corresponding influence curve, respectively. Optional data-adaptive estimation of exposure and outcome mechanisms using the `SuperLearner` package (stacked regression model), `sl3` package (Super Learner algorithm for ensemble learning and model stacking with pipelines), `h2o` and `h2oEnsemble` packages (optimized for doing 'in memory' processing of distributed, parallel machine learning algorithms on clusters) is strongly recommended.
 
 `tmleCommunity` is under active development so please submit any bug reports or feature requests to the [issue queue](https://github.com/chizhangucb/tmleCommunity/issues), or email Chi directly.
 
@@ -133,7 +133,7 @@ van der Laan, M. (2014). Causal Inference for a Population of Causally Connected
 
 van der Laan, Mark J. and Gruber, Susan (2011). "Targeted Minimum Loss Based Estimation of an Intervention Specific Mean Outcome". U.C. Berkeley Division of Biostatistics Working Paper Series. Working Paper 290. http://biostats.bepress.com/ucbbiostat/paper290
 
-van der Laan, Mark J. and Rose, Sherri, "Targeted Learning: Causal Inference for Observa- tional and Experimental Data" New York: Springer, 2011.
+van der Laan, Mark J. and Rose, Sherri, "Targeted Learning: Causal Inference for Observational and Experimental Data" New York: Springer, 2011.
 
 
 ## News 
