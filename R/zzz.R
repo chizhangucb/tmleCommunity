@@ -59,8 +59,10 @@ print_tmleCom_opts <- function() {
 #'  Estimator \code{"h2o__ensemble"} implements the super learner ensemble (stacking) algorithm using the H2O R interface; 
 #'  Estimator \code{"SuperLearner"} implements the super learner prediction methods.
 #'  Estimator \code{"sl3_pipelines"} implements the super learner prediction methods with pipelines.
-#'  Note that if \code{"h2o__ensemble"} fails, it falls back on {"SuperLearner"}. If \code{"SuperLearner"} fails, 
-#'  it falls back on {"speedglm__glm"}. If \code{"speedglm__glm"} fails, it falls back on {"glm__glm"}.
+#'  Note that if \code{"h2o__ensemble"} fails, it falls back on {"sl3_pipelines"}. 
+#'  If \code{"sl3_pipelines"} fails, it falls back on {"SuperLearner"}.
+#'  If \code{"SuperLearner"} fails, it falls back on {"speedglm__glm"}. 
+#'  If \code{"speedglm__glm"} fails, it falls back on {"glm__glm"}.
 #' @param gestimator A string specifying default estimator for exposure mechanism fitting. It has the same options as \code{Qestimator}.
 #' @param bin.method Specify the method for choosing bins when discretizing the conditional continuous exposure variable \code{A}.
 #'  The default method is \code{"equal.mass"}, which provides a data-adaptive selection of the bins based on equal mass/ area, i.e., 
