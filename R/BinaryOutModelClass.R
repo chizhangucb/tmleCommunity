@@ -228,7 +228,7 @@ fit_single_reg.h2oS3 <- function(self) {
     model.fit <- try(h2oEnsemble::h2o.ensemble(
       x = x, y = self$outvar, training_frame = train, family = h2oFamily,  
       learner = h2olearner, metalearner = h2ometalearner, cvControl = list(V=CVfolds)))
-    if (inherits(model.fit, "try-error")) {  # if failed, fall back on SuperLearner::SuperLearner
+    if (inherits(model.fit, "try-error")) {  # if failed, fall back on sl3_pipelines
       message("h2oEnsemble::h2o.ensemble failed, falling back on sl3_pipelines; \n", model.fit)
       return(fit_single_reg.sl3S3(self)) 
     } 
@@ -280,7 +280,7 @@ fit_single_reg.sl3S3 <- function(self) {
     if (all(Y_vals >= 0 & Y_vals <= 1)) {sl3Family <- "binomial" } else { sl3Family <- "gaussian" }
     if (sl3Family == "gaussian") {
       cat("#######################################################################\n")
-      cat("Currently we only accept binomial outcome when using sl3_pipelines " %+% self$outvar %+% "\n" %+% "falling back on speedglm::speedglm.wfit;\n")
+      cat("Currently we only accept binomial outcome when using sl3_pipelines " %+% self$outvar %+% "\n" %+% "falling back on SuperLearner::SuperLearner;\n")
       return(fit_single_reg.speedglmS3(self))
     }
     
