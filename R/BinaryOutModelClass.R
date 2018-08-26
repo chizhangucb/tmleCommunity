@@ -257,12 +257,12 @@ fit_single_reg.sl3S3 <- function(self) {
   Y_vals <- self$getY
   wt_vals <- self$getWeight
   learner <- getopt("sl3_learner")
-  metalearner <- getopt("sl3_metalearner")
+  metalearner <- getopt("sl3_metalearner")    
   if (gvars$verbose) {
-    print("calling sl3...")
-    print(length(learner) %+% " machine learning algorithm(s): " %+% paste0(names(learner), collapse = '; '))
-    print("number of observations: " %+% nrow(Xmat))
-  }    
+      print("calling sl3...")
+      print(length(learner) %+% " base machine learning algorithm(s): " %+% paste0(names(learner), collapse = '; '))
+      print("number of observations: " %+% nrow(Xmat))
+    }
   
   if (nrow(Xmat) == 0L) {  # Xmat has 0 rows or Responses are constant: return NA's and avoid throwing exception
     model.fit <- list(coef = rep.int(NA_real_, ncol(Xmat)))
@@ -285,6 +285,7 @@ fit_single_reg.sl3S3 <- function(self) {
         cat("#######################################################################\n")
         cat("We have to use sl3::metalearner_linear() as learner_function in sl3 if the outcome is gaussian\n")
         cat("So we change the learner_function to sl3::metalearner_linear().\n")
+        print("metalearner algorithm: metalearner_linear")
       }
       
       cat("#######################################################################\n")
@@ -297,6 +298,7 @@ fit_single_reg.sl3S3 <- function(self) {
         cat("#######################################################################\n")
         cat("We have to use sl3::metalearner_logistic_binomial() as learner_function in sl3 if the outcome is binomial\n")
         cat("So we change the learner_function to sl3::metalearner_logistic_binomial().\n")
+        print("metalearner algorithm: metalearner_logistic_binomial")
       }
     }
     
