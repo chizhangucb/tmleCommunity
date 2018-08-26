@@ -337,7 +337,7 @@ fit_single_reg.SLS3 <- function(self) {
   CVfolds <- getopt("CVfolds")
   if (gvars$verbose) {
     print("calling SuperLearner...")
-    print(length(SL.library) %+% " machine learning algorithm(s): " %+% paste0(SL.library, collapse = '; '))
+    print(length(SL.library) %+% " base machine learning algorithm(s): " %+% paste0(SL.library, collapse = '; '))
     print("number of observations: " %+% nrow(Xmat))
   }    
   
