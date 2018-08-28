@@ -277,7 +277,7 @@ fit_single_reg.sl3S3 <- function(self) {
     }
     return(fit_single_reg.speedglmS3(self))
   } else {
-    if (all(Y_vals >= 0 & Y_vals <= 1)) {sl3Family <- "binomial" } else { sl3Family <- "gaussian" }
+    if (length(unique(Y_vals)) == 2) {sl3Family <- "binomial" } else { sl3Family <- "gaussian" }
     if (sl3Family == "gaussian") {
       if (!all.equal(metalearner$params$learner_function, sl3::metalearner_linear)) {
         metalearner <- sl3::make_learner(sl3::Lrnr_optim, loss_function = sl3::loss_squared_error,
