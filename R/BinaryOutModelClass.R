@@ -251,7 +251,7 @@ fit_single_reg.h2oS3 <- function(self) {
   return(fit)
 }
 
-# S3 method for sl3 binomial family fit, takes BinaryOutModel objects:
+# S3 method for sl3 binomial/ Gaussian family fit, takes BinaryOutModel objects:
 fit_single_reg.sl3S3 <- function(self) {
   Xmat <- self$getXmat
   Y_vals <- self$getY
@@ -285,8 +285,8 @@ fit_single_reg.sl3S3 <- function(self) {
         cat("#######################################################################\n")
         cat("We have to use sl3::metalearner_linear() as learner_function in sl3 if the outcome is gaussian\n")
         cat("So we change the learner_function to sl3::metalearner_linear().\n")
-        print("metalearner algorithm: metalearner_linear")
       }
+      print("metalearner algorithm: metalearner_linear")
       
       cat("#######################################################################\n")
       cat("Currently we only accept binomial outcome when using sl3_pipelines " %+% self$outvar %+% "\n" %+% "falling back on SuperLearner::SuperLearner;\n")
@@ -298,8 +298,8 @@ fit_single_reg.sl3S3 <- function(self) {
         cat("#######################################################################\n")
         cat("We have to use sl3::metalearner_logistic_binomial() as learner_function in sl3 if the outcome is binomial\n")
         cat("So we change the learner_function to sl3::metalearner_logistic_binomial().\n")
-        print("metalearner algorithm: metalearner_logistic_binomial")
       }
+      print("metalearner algorithm: metalearner_logistic_binomial")
     }
     
     n <- length(Y_vals)
