@@ -95,6 +95,7 @@ predict_single_reg.SL <- function(self) {
 
 predict_single_reg.sl3 <- function(self) {
   model.fit <- self$getfit$model.fit
+  # If you want to use new Xmat, you have to set savespace = FALSE, otherwise Xmat will be wiped
   # Xmat <- self$getXmat  
   # data <- as.data.frame(Xmat)
   # task <- sl3::sl3_Task$new(data, covariates = Wnodes, outcome = NULL)
