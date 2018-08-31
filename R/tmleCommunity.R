@@ -831,7 +831,7 @@ tmleCommunity <- function(data, Ynode, Anodes, WEnodes, YnodeDet = NULL, obs.wts
     # Defining and estimating outcome mechanism E(Y|A, E, W)
     #----------------------------------------------------------------------------------
     if (verbose) {
-      message("================================================================")
+      message("\n================================================================")
       message("fitting E(Y|A,W,E):= ", "P(" %+% nodes$Ynode %+% "=1 | " %+% paste(Q.sVars$predvars, collapse = ",") %+% ")")
       message("================================================================")
     }
