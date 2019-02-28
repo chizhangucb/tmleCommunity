@@ -23,6 +23,15 @@ library(devtools)
 devtools::install_github("chizhangucb/tmleCommunity")
 ```
 
+If the installation fails, you may need to install `h2oEnsemble` and `sl3` packages mannually by
+
+```{R install, eval=F}
+# h2oEnsemble 
+install.packages("https://h2o-release.s3.amazonaws.com/h2o-ensemble/R/h2oEnsemble_0.2.1.tar.gz", repos = NULL)
+# sl3
+devtools::install_github("tlverse/sl3")
+```
+
 Alternatively, you could download the entire packge to the local path (e.g., Desktop) by either clicking the (green) download button on the this page, or cloning the repo through terminal via the following code
 
 ```console
