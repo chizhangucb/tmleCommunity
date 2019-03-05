@@ -92,24 +92,23 @@ test_that("Using h2o & h2oEnsemble when setting Qestimator = 'h2o__ensemble'", {
   expect_equal(genericmodels.g0.A1$getPsAsW.models()[[7]]$getfit$fitfunname, "speedglm")
 })
 
-test_that("Using sl3 & SuperLearner when setting Qestimator = 'sl3_pipelines'", {
-  require("sl3"); require("SuperLearner")
-  # Here Qestimator is actually set for propensity score
-  tmleCom_Options(Qestimator = "sl3_pipelines", maxNperBin = N)
-  regclass.g0 <- RegressionClass$new(
-    outvar = h.g0.sVars$outvars, predvars = h.g0.sVars$predvars,
-    subset_vars = subsets_expr, outvar.class = OData.g0$type.sVar[h.g0.sVars$outvars])
-  genericmodels.g0 <- GenericModel$new(reg = regclass.g0, DatKeepClass.g0 = OData.g0)
-  genericmodels.g0$fit(data = OData.g0)
-  h_gN <- genericmodels.g0$predictAeqa(newdata = OData.g0)
-  genericmodels.g0.A1 <- genericmodels.g0$getPsAsW.models()$`P(A|W).1`
-  for (i in 1:length(genericmodels.g0.A1$getPsAsW.models())) {
-    expect_equal(genericmodels.g0.A1$getPsAsW.models()[[i]]$estimator, "sl3_pipelines")
-  }
-  # For the last (& first) bin, no much obs in it, so h2o fails & downgrade to speedglm 
-  expect_equal(genericmodels.g0.A1$getPsAsW.models()[[7]]$getfit$fitfunname, "speedglm")
-})
-
+# test_that("Using sl3 & SuperLearner when setting Qestimator = 'sl3_pipelines'", {
+#   require("sl3"); require("SuperLearner")
+#   # Here Qestimator is set for propensity score
+#   tmleCom_Options(Qestimator = "sl3_pipelines", maxNperBin = N)
+#   regclass.g0 <- RegressionClass$new(
+#     outvar = h.g0.sVars$outvars, predvars = h.g0.sVars$predvars,
+#     subset_vars = subsets_expr, outvar.class = OData.g0$type.sVar[h.g0.sVars$outvars])
+#   genericmodels.g0 <- GenericModel$new(reg = regclass.g0, DatKeepClass.g0 = OData.g0)
+#   genericmodels.g0$fit(data = OData.g0)
+#   h_gN <- genericmodels.g0$predictAeqa(newdata = OData.g0)
+#   genericmodels.g0.A1 <- genericmodels.g0$getPsAsW.models()$`P(A|W).1`
+#   for (i in 1:length(genericmodels.g0.A1$getPsAsW.models())) {
+#     expect_equal(genericmodels.g0.A1$getPsAsW.models()[[i]]$estimator, "sl3_pipelines")
+#   }
+#   # For the last (& first) bin, no much obs in it, so h2o fails & downgrade to speedglm 
+#   expect_equal(genericmodels.g0.A1$getPsAsW.models()[[7]]$getfit$fitfunname, "speedglm")
+# })
 
 #**********************************************  
 # Test 2 Test for saving RAM 
