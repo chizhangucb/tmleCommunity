@@ -64,7 +64,10 @@ print_tmleCom_opts <- function() {
 #  If \code{"sl3_pipelines"} fails, it falls back on {"SuperLearner"}.
 #'  If \code{"SuperLearner"} fails, it falls back on {"speedglm__glm"}. 
 #'  If \code{"speedglm__glm"} fails, it falls back on {"glm__glm"}.
-#' @param gestimator A string specifying default estimator for exposure mechanism fitting. It has the same options as \code{Qestimator}.
+#' @param gestimator A string specifying default estimator for exposure mechanism fitting. It has the same options as \code{Qestimator} 
+#'  except that \code{gestimator} can also be \code{"sl3_pipelines"}, which is a modern implementation of the Super Learner algorithm 
+#'  for ensemble learning and model stacking. In such case, if \code{"h2o__ensemble"} fails, it falls back on {"SuperLearner"}. 
+#'  If \code{"sl3_pipelines"} fails, it falls back on {"SuperLearner"}, and so on. 
 #' @param bin.method Specify the method for choosing bins when discretizing the conditional continuous exposure variable \code{A}.
 #'  The default method is \code{"equal.mass"}, which provides a data-adaptive selection of the bins based on equal mass/ area, i.e., 
 #'  each bin will contain approximately the same number of observations as otheres. Method \code{"equal.len"} partitions the range of 
