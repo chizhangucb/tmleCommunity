@@ -17,7 +17,7 @@ getopt <- function(optname) {
 
 `%+%` <- function(a, b) paste0(a, b)
   
-gvars$opts.allowedVals <- list(Qestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble", "SuperLearner", "sl3_pipelines"),
+gvars$opts.allowedVals <- list(Qestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble", "SuperLearner"), 
                                gestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble", "SuperLearner", "sl3_pipelines"),
                                # fitclass = c("speedglmS3", "glmS3", "h2oS3", "SLS3"),
                                bin.method = c("equal.mass", "equal.len", "dhist"),
@@ -58,10 +58,10 @@ print_tmleCom_opts <- function() {
 #'  Estimator \code{"glm__glm"} uses \code{\link[stats]{glm.fit}};
 #'  Estimator \code{"h2o__ensemble"} implements the super learner ensemble (stacking) algorithm using the H2O R interface; 
 #'  Estimator \code{"SuperLearner"} implements the super learner prediction methods.
-#'  Estimator \code{"sl3_pipelines"} implements the super learner algorithm,
+#  Estimator \code{"sl3_pipelines"} implements the super learner algorithm,
 #'  alongside a framework for general-purpose machine learning with pipelines.
-#'  Note that if \code{"h2o__ensemble"} fails, it falls back on {"sl3_pipelines"}. 
-#'  If \code{"sl3_pipelines"} fails, it falls back on {"SuperLearner"}.
+#'  Note that if \code{"h2o__ensemble"} fails, it falls back on {"SuperLearner"}. 
+#  If \code{"sl3_pipelines"} fails, it falls back on {"SuperLearner"}.
 #'  If \code{"SuperLearner"} fails, it falls back on {"speedglm__glm"}. 
 #'  If \code{"speedglm__glm"} fails, it falls back on {"glm__glm"}.
 #' @param gestimator A string specifying default estimator for exposure mechanism fitting. It has the same options as \code{Qestimator}.
@@ -106,7 +106,7 @@ print_tmleCom_opts <- function() {
 #' 
 #' @example tests/examples/7_tmleComOptions_examples.R 
 #' @export
-tmleCom_Options <- function(Qestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble", "SuperLearner", "sl3_pipelines"),  
+tmleCom_Options <- function(Qestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble", "SuperLearner"),#, "sl3_pipelines"),  
                             gestimator = c("speedglm__glm", "glm__glm", "h2o__ensemble", "SuperLearner", "sl3_pipelines"),  
                             bin.method = c("equal.mass", "equal.len", "dhist"),
                             nbins = 5, 
@@ -153,7 +153,7 @@ tmleCom_Options <- function(Qestimator = c("speedglm__glm", "glm__glm", "h2o__en
   
   if (any(c(Qestimator, gestimator) %in% "sl3_pipelines")) {
     if (!requireNamespace("sl3"))  
-      stop("SuperLearner package is required if either Qestimator or gestimator is 'sl3_pipelines', Please install it via:
+      stop("SuperLearner package is required if gestimator is 'sl3_pipelines', Please install it via:
             devtools::install_github('tlverse/sl3')")
   }
 
