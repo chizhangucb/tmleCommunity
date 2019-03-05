@@ -107,9 +107,28 @@ test_that("fit TMLE for binary A with SuperLearner, using SL.glm, SL.step, SL.gl
 })
 
 #***************************************
-# Test 1.3 h2o
+# Test 1.3 sl3
 #***************************************
-## Test 1.3.1 h2o.glm.wrapper with only main terms (+ tmle.intercept)
+## Test 1.3.1 sl3::Lrnr_glm_fast with only main terms (+ tmle.intercept)
+test_that("fit TMLE estimator for binary A with sl3, using sl3::Lrnr_glm_fast and main term formulae", {
+  require("sl3"); require("SuperLearner")
+  tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "sl3_pipelines", maxNperBin = N, nbins = 5,
+                  sl3_learner = list(glm_fast = sl3::make_learner(sl3::Lrnr_glm_fast)), 
+                  sl3_metalearner = sl3::make_learner(sl3::Lrnr_optim, loss_function = sl3::loss_loglik_binomial,
+                                                      learner_function = sl3::metalearner_logistic_binomial))
+  tmleCom_res <- 
+    tmleCommunity(data = indSample.iid.bA.cY, Ynode = "Y", Anodes = "A", 
+                  WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = 1, f_gstar2 = 0, rndseed = 12345)
+  estimates <- tmleCom_res$ATE$estimates  # psi0 = 2.80026 
+  expect_equal(estimates["tmle", ], 2.799400, tolerance = 1e-6) 
+  expect_equal(estimates["iptw", ], 2.820582, tolerance = 1e-6)  
+  expect_equal(estimates["gcomp", ], 2.779068, tolerance = 1e-6) 
+})
+
+#***************************************
+# Test 1.4 h2o
+#***************************************
+## Test 1.4.1 h2o.glm.wrapper with only main terms (+ tmle.intercept)
 test_that("fit TMLE estimator for binary A with h2o, using h2o.glm.wrapper and main term formulae", {
   # require("h2oEnsemble")           
   tmleCom_Options(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble", maxNperBin = N,
@@ -217,6 +236,26 @@ test_that("fit TMLE for cont A with SuperLearner, using SL.glm, SL.bayesglm, SL.
   expect_equal(estimates["iptw", ], 3.447997, tolerance = 0.005)  
   expect_equal(estimates["gcomp", ], 3.453953, tolerance = 0.005) 
 })
+
+#***************************************
+## Test 2.2 sl3
+#***************************************
+## Test 2.3.1 sl3::Lrnr_glm_fast (+ tmle.intercept + equal.mass + 10 nbins)
+test_that("fit TMLE for cont A with sl3, using sl3::Lrnr_glm_fast", {
+  require("sl3"); require("SuperLearner")
+  tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "sl3_pipelines", maxNperBin = N, nbins = 10,
+                  sl3_learner = list(glm_fast = sl3::make_learner(sl3::Lrnr_glm_fast)), 
+                  sl3_metalearner = sl3::make_learner(sl3::Lrnr_optim, loss_function = sl3::loss_loglik_binomial,
+                                                      learner_function = sl3::metalearner_logistic_binomial))
+  tmleCom_res <- 
+    tmleCommunity(data = indSample.iid.cA.cY, Ynode = "Y", Anodes = "A", 
+                  WEnodes = c("W1", "W2", "W3", "W4"), f_gstar1 = f.gstar, rndseed = 12345)
+  estimates <- tmleCom_res$EY_gstar1$estimates  # psi0 = 3.50856 
+  expect_equal(estimates["tmle", ], 3.458052, tolerance = 0.005) 
+  expect_equal(estimates["iptw", ], 3.494268, tolerance = 0.005)  
+  expect_equal(estimates["gcomp", ], 3.454461, tolerance = 0.005) 
+})
+
 
 #***************************************
 # Test 2.3 f_gstar1 = f_gstar2 = NULL
