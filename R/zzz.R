@@ -154,7 +154,7 @@ tmleCom_Options <- function(Qestimator = c("speedglm__glm", "glm__glm", "h2o__en
   if (any(c(Qestimator, gestimator) %in% "sl3_pipelines")) {
     if (!requireNamespace("sl3"))  
       stop("SuperLearner package is required if either Qestimator or gestimator is 'sl3_pipelines', Please install it via:
-            devtools::install_github('jeremyrcoyle/sl3')")
+            devtools::install_github('tlverse/sl3')")
   }
 
   # if (Qestimator == "speedglm__glm") { Qfitclass <- "speedglmS3" }
