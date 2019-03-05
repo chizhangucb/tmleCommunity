@@ -472,14 +472,17 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  be coerced to class \code{"formula"}. If \code{Qestimator} (an argument in \code{tmleCom_Options}) is \code{"speedglm__glm"} (or  
 #'  \code{"speedglm__glm"}), then \code{speedglm} (or \code{glm}) will be called using the components of \code{Qform}. If \code{Qestimator} 
 #'  is \code{"SuperLearner"}, then \code{SuperLearner} will be called after a data frame is created using \code{Qform}, based on the specified
-#'  algorithms in \code{SL.library} (an argument in \code{tmleCom_Options}); If \code{Qestimator} is \code{"sl3_pipelines"}, then \code{learner$train}
-#'  will be called after a sl3 learner has been created by using \code{make_learner}. If \code{Qestimator} is \code{"h2o__ensemble"}, then \code{h2o}  
-#'  and \code{h2oEnsemble} will be called after a H2OFrame dataset is creating using \code{Qform}, based on specified algorithms in \code{h2olearner}
+#'  algorithms in \code{SL.library} (an argument in \code{tmleCom_Options}); 
+#   If \code{Qestimator} is \code{"sl3_pipelines"}, then \code{learner$train} will be called after a sl3 learner has been created by using \code{make_learner}.
+#'  If \code{Qestimator} is \code{"h2o__ensemble"}, then \code{h2o} and \code{h2oEnsemble} will be called after a H2OFrame dataset is 
+#'  creating using \code{Qform}, based on specified algorithms in \code{h2olearner}
 #'  and \code{h2ometalearner}. See "Arguments" in \code{tmleCom_Options}.
 #' 
 #' \code{hform.g0} and \code{hform.gstar} should also be \code{NULL}, in which cases all parent nodes of A node(s) will be used as regressors, or 
 #'  a character vector that can be coerced to class \code{"formula"}. It follows the same rules applied to \code{Qform} except it's now based on
-#'  \code{gestimator} (an argument in \code{tmleCom_Options}). See "Arguments" in \code{tmleCom_Options}.
+#'  \code{gestimator} (an argument in \code{tmleCom_Options}). Besides, \code{gestimator} can be \code{"sl3_pipelines"}. If \code{gestimator} is 
+#'  \code{"sl3_pipelines"}, then \code{learner$train} will be called after a sl3 learner has been created by using \code{make_learner}. 
+#'  See "Arguments" in \code{tmleCom_Options}.
 #' 
 #' \code{Qbounds} can be used to bound continuous outcomes Y. If \code{Qbounds} not specified (\code{NULL}), it will be set to the range of Y, 
 #'  widened by 10\% of the minimum and maximum. That is, [0.9*\code{min(Y)}, 1.1*\code{max(Y)}]. If specified, then Y will be truncated at the min 
