@@ -110,7 +110,8 @@ tmleCom_wmT.bA.bY.2_SL.glm$ATE$estimates
 # all regressors in the misspecified hform.g0 and hform.gstar  
 tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "sl3_pipelines", maxNperBin = N, 
                 sl3_learner = list(glm_fast = sl3::make_learner(sl3::Lrnr_glm_fast)), 
-                sl3_metalearner = sl3::make_learner(sl3::Lrnr_optim, loss_function = sl3::loss_loglik_binomial,
+                sl3_metalearner = sl3::make_learner(sl3::Lrnr_optim, 
+                                                    loss_function = sl3::loss_loglik_binomial,
                                                     learner_function = sl3::metalearner_logistic_binomial))
 tmleCom_wmT.bA.bY.2_speedglm.sl3 <- 
   tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
