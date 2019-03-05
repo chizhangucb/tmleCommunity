@@ -212,6 +212,7 @@ truncBD <- 5
 shift.val <- 1
 comSample.wmT.cA.bY <- get.fullDat.Acont(J = J, n.ind = n.ind, rndseed = rndseed, 
                                          truncBD = truncBD, shift.val = shift.val)
+N <- NROW(comSample.wmT.cA.bY)
 mean(comSample.wmT.cA.bY$Y)  # 0.3478304
 mean(comSample.wmT.cA.bY$Y.gstar)  # 0.4642384
 
@@ -359,8 +360,10 @@ test_that("For cont, community-level A, community-level analysis without a poole
 })
 
 #*************************************** 
-## Test 2.4 SuperLearner
+## Test 2.4 Different ML packages
 #***************************************
+
+## Test 2.4.1 Super Learner
 test_that("fit TMLE for cont, community-level A with SL, using SL.glm, SL.bayesglm, SL.gam", {
   require("SuperLearner")
   tmleCom_Options(Qestimator = "SuperLearner", gestimator = "SuperLearner", maxNperBin = N,
@@ -372,5 +375,22 @@ test_that("fit TMLE for cont, community-level A with SL, using SL.glm, SL.bayesg
   estimates <- tmleCom_res$EY_gstar1$estimates  # psi0 = 0.4571258 
   expect_equal(estimates["tmle", ], 0.4522367, tolerance = 0.02) 
   expect_equal(estimates["iptw", ], 0.4469491, tolerance = 0.02)  
+  expect_equal(estimates["gcomp", ], 0.4554923, tolerance = 0.02) 
+})
+
+## Test 2.4.2 sl3
+test_that("fit TMLE for cont, community-level A with sl3, using Lrnr_glm_fast", {
+  require("sl3"); require("SuperLearner")
+  tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "sl3_pipelines", maxNperBin = N, nbins = 5,
+                  sl3_learner = list(glm_fast = sl3::make_learner(sl3::Lrnr_glm_fast)), 
+                  sl3_metalearner = sl3::make_learner(sl3::Lrnr_optim, loss_function = sl3::loss_loglik_binomial,
+                                                      learner_function = sl3::metalearner_logistic_binomial))
+  tmleCom_res <- tmleCommunity(data = comSample.wmT.cA.bY, Ynode = "Y", Anodes = "A",
+                               WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = f.gstar, 
+                               community.step = "community_level", communityID = "id", 
+                               pooled.Q = FALSE, rndseed = 12345)
+  estimates <- tmleCom_res$EY_gstar1$estimates  # psi0 = 0.4571258 
+  expect_equal(estimates["tmle", ], 0.4522367, tolerance = 0.02) 
+  #expect_equal(estimates["iptw", ], 0.8559739, tolerance = 0.02)  # Need further investigation
   expect_equal(estimates["gcomp", ], 0.4554923, tolerance = 0.02) 
 })
