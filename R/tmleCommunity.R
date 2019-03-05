@@ -378,7 +378,8 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  Currently supports a non-negative numeric vector, "equal.within.pop" (Default) and equal.within.community. If "equal.within.pop", weigh individuals 
 #'  in the entire dataset equally (weigh to be all 1); If "equal.within.community", weigh individuals within the same community equally 
 #'  (i.e., 1 / (number of individuals in each community)).
-#' @param community.step Methods to deal with hierarchical data, one of \code{"NoCommunity"} (Default), \code{"community_level"}, \code{"individual_level"} 
+#' @param community.step Methods to deal with hierarchical data, one of \code{"NoCommunity"} (Default), 
+#'  \code{"community_level"}, \code{"individual_level"} 
 #'  and \code{"PerCommunity"}. If \code{"NoCommunity"}, claim that no hirerachical structure in data; If \code{"community_level"}, use community-level TMLE; 
 #'  If \code{"individual_level"}, use individual-level TMLE cooperating with the assumption of no covariate interference. If \code{"perCommunity"}, use 
 #'  stratified TMLE. If \code{communityID} = \code{NULL}, then automatically pool over all communities (i.e., treated it as \code{"NoCommunity"}). 
@@ -470,7 +471,7 @@ CalcAllEstimators <- function(OData.ObsP0, est_params_list) {
 #'  
 #' \code{Qform} should be \code{NULL}, in which cases all parent nodes of Y node will be used as regressors, or a character vector that can  
 #'  be coerced to class \code{"formula"}. If \code{Qestimator} (an argument in \code{tmleCom_Options}) is \code{"speedglm__glm"} (or  
-#'  \code{"speedglm__glm"}), then \code{speedglm} (or \code{glm}) will be called using the components of \code{Qform}. If \code{Qestimator} 
+#'  \code{"glm__glm"}), then \code{speedglm} (or \code{glm}) will be called using the components of \code{Qform}. If \code{Qestimator} 
 #'  is \code{"SuperLearner"}, then \code{SuperLearner} will be called after a data frame is created using \code{Qform}, based on the specified
 #'  algorithms in \code{SL.library} (an argument in \code{tmleCom_Options}); 
 #   If \code{Qestimator} is \code{"sl3_pipelines"}, then \code{learner$train} will be called after a sl3 learner has been created by using \code{make_learner}.
