@@ -36,7 +36,8 @@ Currently supports a non-negative numeric vector, "equal.within.pop" (Default) a
 in the entire dataset equally (weigh to be all 1); If "equal.within.community", weigh individuals within the same community equally 
 (i.e., 1 / (number of individuals in each community)).}
 
-\item{community.step}{Methods to deal with hierarchical data, one of \code{"NoCommunity"} (Default), \code{"community_level"}, \code{"individual_level"} 
+\item{community.step}{Methods to deal with hierarchical data, one of \code{"NoCommunity"} (Default), 
+\code{"community_level"}, \code{"individual_level"} 
 and \code{"PerCommunity"}. If \code{"NoCommunity"}, claim that no hirerachical structure in data; If \code{"community_level"}, use community-level TMLE; 
 If \code{"individual_level"}, use individual-level TMLE cooperating with the assumption of no covariate interference. If \code{"perCommunity"}, use 
 stratified TMLE. If \code{communityID} = \code{NULL}, then automatically pool over all communities (i.e., treated it as \code{"NoCommunity"}). 
@@ -193,15 +194,18 @@ The estimates returned by \code{tmleCommunity} are of a treatment-specific mean,
  
 \code{Qform} should be \code{NULL}, in which cases all parent nodes of Y node will be used as regressors, or a character vector that can  
  be coerced to class \code{"formula"}. If \code{Qestimator} (an argument in \code{tmleCom_Options}) is \code{"speedglm__glm"} (or  
- \code{"speedglm__glm"}), then \code{speedglm} (or \code{glm}) will be called using the components of \code{Qform}. If \code{Qestimator} 
+ \code{"glm__glm"}), then \code{speedglm} (or \code{glm}) will be called using the components of \code{Qform}. If \code{Qestimator} 
  is \code{"SuperLearner"}, then \code{SuperLearner} will be called after a data frame is created using \code{Qform}, based on the specified
- algorithms in \code{SL.library} (an argument in \code{tmleCom_Options}); If \code{Qestimator} is \code{"h2o__ensemble"}, then \code{h2o} and 
- \code{h2oEnsemble} will be called after a H2OFrame dataset is creating using \code{Qform}, based on specified algorithms in \code{h2olearner}
+ algorithms in \code{SL.library} (an argument in \code{tmleCom_Options}); 
+ If \code{Qestimator} is \code{"h2o__ensemble"}, then \code{h2o} and \code{h2oEnsemble} will be called after a H2OFrame dataset is 
+ creating using \code{Qform}, based on specified algorithms in \code{h2olearner}
  and \code{h2ometalearner}. See "Arguments" in \code{tmleCom_Options}.
 
 \code{hform.g0} and \code{hform.gstar} should also be \code{NULL}, in which cases all parent nodes of A node(s) will be used as regressors, or 
  a character vector that can be coerced to class \code{"formula"}. It follows the same rules applied to \code{Qform} except it's now based on
- \code{gestimator} (an argument in \code{tmleCom_Options}). See "Arguments" in \code{tmleCom_Options}.
+ \code{gestimator} (an argument in \code{tmleCom_Options}). Besides, \code{gestimator} can be \code{"sl3_pipelines"}. If \code{gestimator} is 
+ \code{"sl3_pipelines"}, then \code{learner$train} will be called after a sl3 learner has been created by using \code{make_learner}. 
+ See "Arguments" in \code{tmleCom_Options}.
 
 \code{Qbounds} can be used to bound continuous outcomes Y. If \code{Qbounds} not specified (\code{NULL}), it will be set to the range of Y, 
  widened by 10\% of the minimum and maximum. That is, [0.9*\code{min(Y)}, 1.1*\code{max(Y)}]. If specified, then Y will be truncated at the min 
@@ -462,6 +466,21 @@ tmleCom_wmT.bA.bY.2_SL.glm <-
                 community.step = "community_level", communityID = "id", pooled.Q = TRUE,
                 Qform = NULL, hform.g0 = "A ~ W1", hform.gstar = "A ~ E1 + W2")
 tmleCom_wmT.bA.bY.2_SL.glm$ATE$estimates
+  
+# Speedglm for outcome regressions and sl3 for treatment regressions
+# using all regressors in the correctly specified Qform and 
+# all regressors in the misspecified hform.g0 and hform.gstar  
+tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "sl3_pipelines", maxNperBin = N, 
+                sl3_learner = list(glm_fast = sl3::make_learner(sl3::Lrnr_glm_fast)), 
+                sl3_metalearner = sl3::make_learner(
+                  sl3::Lrnr_optim, loss_function = sl3::loss_loglik_binomial,
+                  learner_function = sl3::metalearner_logistic_binomial))
+tmleCom_wmT.bA.bY.2_speedglm.sl3 <- 
+  tmleCommunity(data = comSample.wmT.bA.bY, Ynode = "Y", Anodes = "A", 
+                WEnodes = c("E1", "E2", "W1", "W2", "W3"), f_gstar1 = 1L, f_gstar2 = 0L,
+                community.step = "community_level", communityID = "id", pooled.Q = TRUE,
+                Qform = NULL, hform.g0 = "A ~ W1", hform.gstar = "A ~ E1 + W2")
+tmleCom_wmT.bA.bY.2_speedglm.sl3$ATE$estimates  
 
 #***************************************************************************************
 # 1.3 Evaluating mean population outcome under static intervention A = 0

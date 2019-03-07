@@ -6,13 +6,16 @@
 \usage{
 tmleCom_Options(Qestimator = c("speedglm__glm", "glm__glm",
   "h2o__ensemble", "SuperLearner"), gestimator = c("speedglm__glm",
-  "glm__glm", "h2o__ensemble", "SuperLearner"),
+  "glm__glm", "h2o__ensemble", "SuperLearner", "sl3_pipelines"),
   bin.method = c("equal.mass", "equal.len", "dhist"), nbins = 5,
   maxncats = 10, maxNperBin = 500, parfit = FALSE,
   poolContinVar = FALSE, savetime.fit.hbars = TRUE,
   h2ometalearner = "h2o.glm.wrapper", h2olearner = "h2o.glm.wrapper",
-  CVfolds = 5, SL.library = c("SL.glm", "SL.step",
-  "SL.glm.interaction"))
+  sl3_metalearner = sl3::make_learner(sl3::Lrnr_optim, loss_function =
+  sl3::loss_loglik_binomial, learner_function =
+  sl3::metalearner_logistic_binomial), sl3_learners = list(glm_fast =
+  sl3::make_learner(sl3::Lrnr_glm_fast)), CVfolds = 5,
+  SL.library = c("SL.glm", "SL.step", "SL.glm.interaction"))
 }
 \arguments{
 \item{Qestimator}{A string specifying default estimator for outcome mechanism model fitting. 
@@ -20,10 +23,15 @@ The default estimator is \code{"speedglm__glm"}, which estimates regressions wit
 Estimator \code{"glm__glm"} uses \code{\link[stats]{glm.fit}};
 Estimator \code{"h2o__ensemble"} implements the super learner ensemble (stacking) algorithm using the H2O R interface; 
 Estimator \code{"SuperLearner"} implements the super learner prediction methods.
-Note that if \code{"h2o__ensemble"} fails, it falls back on {"SuperLearner"}. If \code{"SuperLearner"} fails, 
-it falls back on {"speedglm__glm"}. If \code{"speedglm__glm"} fails, it falls back on {"glm__glm"}.}
+alongside a framework for general-purpose machine learning with pipelines.
+Note that if \code{"h2o__ensemble"} fails, it falls back on {"SuperLearner"}. 
+If \code{"SuperLearner"} fails, it falls back on {"speedglm__glm"}. 
+If \code{"speedglm__glm"} fails, it falls back on {"glm__glm"}.}
 
-\item{gestimator}{A string specifying default estimator for exposure mechanism fitting. It has the same options as \code{Qestimator}.}
+\item{gestimator}{A string specifying default estimator for exposure mechanism fitting. It has the same options as \code{Qestimator} 
+except that \code{gestimator} can also be \code{"sl3_pipelines"}, which is a modern implementation of the Super Learner algorithm 
+for ensemble learning and model stacking. In such case, if \code{"h2o__ensemble"} fails, it falls back on {"SuperLearner"}. 
+If \code{"sl3_pipelines"} fails, it falls back on {"SuperLearner"}, and so on.}
 
 \item{bin.method}{Specify the method for choosing bins when discretizing the conditional continuous exposure variable \code{A}.
 The default method is \code{"equal.mass"}, which provides a data-adaptive selection of the bins based on equal mass/ area, i.e., 

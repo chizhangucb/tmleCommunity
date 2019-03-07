@@ -54,7 +54,7 @@ Suggests: doParallel,
     gam,
     arm,
     randomForest
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Collate: 
     'GeneralUtilities.R'
     'BinaryOutModelClass.R'

@@ -11,9 +11,9 @@ Targeted Maximum Likelihood Estimation (TMLE) of the average causal effect of co
  both community-level and individual-level baseline covariates. The package also provides Inverse-Probability-of-Treatment-Weighted 
  estimator (IPTW) and parametric G-computation formula estimator (GCOMP). The statistical inference (Standard errors, t statistc, 
  p-value and confidence intervals) of both TMLE and IPTW are based on the corresponding influence curve, respectively. Optional 
- data-adaptive estimation of exposure and outcome mechanisms using the SuperLearner package and h2o package (latter for a large 
- dataset) is strongly recommended, especially when the outcome mechanism and treatment mechnism are unknown. Besides, it allows 
- for panel data transformation, such as with random effects and fixed effects.
+ data-adaptive estimation of exposure and outcome mechanisms using the SuperLearner package, the sl3 package (a modern implementation of 
+ the Super Learner algorithm) and the h2o package (for a large dataset) is strongly recommended, especially when the outcome mechanism 
+ and treatment mechnism are unknown. Besides, it allows for panel data transformation, such as with random effects and fixed effects.
 }
 \details{
 The input dataset should be made up of rows of community-specific and individual-specific observations, for community \eqn{j}, each  
