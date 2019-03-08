@@ -257,7 +257,7 @@ fit_single_reg.sl3S3 <- function(self) {
   Xmat <- self$getXmat
   Y_vals <- self$getY
   wt_vals <- self$getWeight
-  learners <- getopt("sl3_learners")
+  learner <- getopt("sl3_learner")
   metalearner <- getopt("sl3_metalearner")    
   if (gvars$verbose) {
       print("calling sl3...")
@@ -307,7 +307,7 @@ fit_single_reg.sl3S3 <- function(self) {
     task <- sl3::sl3_Task$new(data, covariates = Wnodes, outcome = Anode, weights = "weights")
     
     # define Super Learner
-    binom_sl <- sl3::make_learner(Lrnr_sl, learners, metalearner)
+    binom_sl <- sl3::make_learner(Lrnr_sl, learner, metalearner)
     
     model.fit <- try(binom_sl$train(task))
     
@@ -316,7 +316,7 @@ fit_single_reg.sl3S3 <- function(self) {
       return(fit_single_reg.SLS3(self))
     }
   }
-  fit <- list(model.fit = model.fit, coef = NULL, learners = learners, metalearner = metalearner, fitfunname = "speedglm")
+  fit <- list(model.fit = model.fit, coef = NULL, learner = learner, metalearner = metalearner, fitfunname = "speedglm")
   if (any(class(model.fit) == "Lrnr_sl")) {
     fit$coef <- model.fit$coefficients
     class(fit) <- c(class(fit), "sl3_pipelines")
