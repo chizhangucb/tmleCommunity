@@ -471,7 +471,8 @@ tmleCom_wmT.bA.bY.2_SL.glm$ATE$estimates
 # using all regressors in the correctly specified Qform and 
 # all regressors in the misspecified hform.g0 and hform.gstar  
 tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "sl3_pipelines", maxNperBin = N, 
-                sl3_learner = list(glm_fast = sl3::make_learner(sl3::Lrnr_glm_fast)), 
+                sl3_learners = list(glm_fast = sl3::make_learner(sl3::Lrnr_glm_fast), 
+                                    xgb = sl3::make_learner(sl3::Lrnr_xgboost),), 
                 sl3_metalearner = sl3::make_learner(
                   sl3::Lrnr_optim, loss_function = sl3::loss_loglik_binomial,
                   learner_function = sl3::metalearner_logistic_binomial))
