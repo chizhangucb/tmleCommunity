@@ -55,7 +55,6 @@ Suggests: doParallel,
     arm,
     randomForest
 RoxygenNote: 6.1.1
-Encoding: UTF-8
 Collate: 
     'GeneralUtilities.R'
     'BinaryOutModelClass.R'
