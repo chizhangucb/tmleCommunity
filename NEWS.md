@@ -3,7 +3,8 @@ tmleCommunity 0.1.0
 
 ### 2019-03-28
 
-* Help page GUI is somehow not broken. Have to use command such as `?tmleCommunity` to read rd files. Trying to debug it now.
+* Help page GUI is somehow not broken. Trying to investigate it.
+* To see the function description, users should either use `?tmleCommunity` or `help(tmleCommunity)` or restart R.
 
 ### 2018-08-21
 
