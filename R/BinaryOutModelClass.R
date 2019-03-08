@@ -279,7 +279,7 @@ fit_single_reg.sl3S3 <- function(self) {
     return(fit_single_reg.speedglmS3(self))
   } else {
     if (length(unique(Y_vals)) == 2) { sl3Family <- "binomial" } else { sl3Family <- "gaussian" }
-    if (length(learners > 1) { stacked_learners <- make_learner(Stack, learners) } else { stacked_learners <- learners }
+    if (length(learners > 1)) { stacked_learners <- make_learner(Stack, learners) } else { stacked_learners <- learners }
     if (sl3Family == "gaussian") {
       if (!identical(metalearner$params$learner_function, sl3::metalearner_linear)) {
         metalearner <- sl3::make_learner(sl3::Lrnr_optim, loss_function = sl3::loss_squared_error,
