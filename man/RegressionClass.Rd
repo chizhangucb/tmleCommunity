@@ -35,7 +35,7 @@ RegressionClass
 \item{\code{nbins}} - Number of bins used for estimation of a continuous outvar, defined in ContinModel$new().
 \item{\code{estimator}} - Character, one of "speedglm__glm" (default), "glm__glm", "h2o__ensemble", "SuperLearner". The estimator for which to fit 
   regression model. For "h2o__ensemble" and "SuperLearner", users can specify the data-adaptive algorithms through \code{tmleCom_Options}.
-\item{\code{parfit}} - Logical. If TRUE, use parallel computing on binary regressions. See \code{foreach::foreach}.
+\item{\code{parfit}} - Logical. If TRUE, use parallel computing on binary regressions. See \code{foreach::foreach}.                            
 \item{\code{pool_cont}} - Logical. If TRUE, pool over bins of a continuous outvar and fit one regression, along with bin_ID as an extra variable. 
 \item{\code{outvars_to_pool}} - Character vector of bin names of a continuous outvars, should be identical to \code{bin_nms}.
 \item{\code{intrvls}} - Numeric vector defining the number and positions of the bins or a named list of numeric vectors if 2 or more outvars.
