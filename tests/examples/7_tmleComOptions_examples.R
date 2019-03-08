@@ -77,6 +77,7 @@ screen_and_glm <- Pipeline$new(slscreener, glm_learner)
 sl3_learners <- list(
   rf = make_learner(Lrnr_randomForest),
   xgb = make_learner(Lrnr_xgboost),
+  svm = make_learner(Lrnr_svm),
   glmnet = make_learner(Lrnr_glmnet),
   glm_fast = make_learner(Lrnr_glm_fast),
   screened_glm = screen_and_glm,
@@ -89,7 +90,8 @@ logit_metalearner <- make_learner(
   learner_function = metalearner_logistic_binomial
 )
 
-tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "sl3_pipelines", maxNperBin = N, nbins = 5,
+tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "sl3_pipelines", 
+                maxNperBin = N, nbins = 5, bin.method = "equal.mass",
                 sl3_learners = sl3_learners, sl3_metalearner = logit_metalearner)
   
 #***************************************************************************************
