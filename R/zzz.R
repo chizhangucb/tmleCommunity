@@ -31,7 +31,7 @@ gvars$opts.allowedVals <- list(Qestimator = c("speedglm__glm", "glm__glm", "h2o_
                                h2ometalearner = "_character_",
                                h2olearner = "_character_",
                                # sl3_metalearner = "_character_",
-                               # sl3_learner = "_character_",
+                               # sl3_learners = "_character_",
                                CVfolds = "_positive_integer_",
                                SL.library = "_character_"
                                # panel.effect = c("individual", "time", "twoways"), 
@@ -122,7 +122,7 @@ tmleCom_Options <- function(Qestimator = c("speedglm__glm", "glm__glm", "h2o__en
                             h2olearner = "h2o.glm.wrapper",
                             sl3_metalearner = sl3::make_learner(sl3::Lrnr_optim, loss_function = sl3::loss_loglik_binomial,
                                                                 learner_function = sl3::metalearner_logistic_binomial),
-                            sl3_learner = list(glm_fast = sl3::make_learner(sl3::Lrnr_glm_fast)),
+                            sl3_learners = list(glm_fast = sl3::make_learner(sl3::Lrnr_glm_fast)),
                             CVfolds = 5,
                             SL.library = c("SL.glm", "SL.step", "SL.glm.interaction")
                            ) {
@@ -178,7 +178,7 @@ tmleCom_Options <- function(Qestimator = c("speedglm__glm", "glm__glm", "h2o__en
     h2ometalearner = h2ometalearner,
     h2olearner = h2olearner,
     sl3_metalearner = sl3_metalearner,
-    sl3_learner = sl3_learner,
+    sl3_learners = sl3_learners,
     CVfolds = CVfolds,
     SL.library = SL.library
   )
