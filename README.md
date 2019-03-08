@@ -15,7 +15,7 @@ As a double-robust and asymptotically efficient substitution estimator that resp
 
 ### Install Development Version
 The following are two ways that you can install the development version of the `tmleCommunity` package.
-* Install directly from GitHub in R using `devtools::install_github()`:
+* Install directly from GitHub in R using `remotes::install_github()`:
 
 ```{R install, eval=F}
 # install.packages("remotes")
