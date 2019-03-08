@@ -68,6 +68,30 @@ tmleCom_Options(Qestimator = "h2o__ensemble", gestimator = "h2o__ensemble",
                 SL.library = c("SL.glm", "SL.glmnet", "SL.ridge", "SL.stepAIC"), CVfolds = 5,
                 h2ometalearner = "h2o.deeplearning.wrapper", h2olearner = h2olearner)
 
+# 1.4 using sl3
+library(sl3)
+slscreener <- Lrnr_pkg_SuperLearner_screener$new("screen.glmnet")
+glm_learner <- Lrnr_glm$new()
+screen_and_glm <- Pipeline$new(slscreener, glm_learner)
+
+sl3_learners <- list(
+  rf = make_learner(Lrnr_randomForest),
+  xgb = make_learner(Lrnr_xgboost),
+  glmnet = make_learner(Lrnr_glmnet),
+  glm_fast = make_learner(Lrnr_glm_fast),
+  screened_glm = screen_and_glm,
+  mean = make_learner(Lrnr_mean)
+)
+
+logit_metalearner <- make_learner(
+  Lrnr_optim,
+  loss_function = loss_loglik_binomial,
+  learner_function = metalearner_logistic_binomial
+)
+
+tmleCom_Options(Qestimator = "speedglm__glm", gestimator = "sl3_pipelines", maxNperBin = N, nbins = 5,
+                sl3_learners = sl3_learners, sl3_metalearner = logit_metalearner)
+  
 #***************************************************************************************
 # Example 2: Define the values of bin cutoffs for continuous outcome in different ways
 # through three arguments - bin.method, nbins, maxNperBin 
