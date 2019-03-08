@@ -257,11 +257,11 @@ fit_single_reg.sl3S3 <- function(self) {
   Xmat <- self$getXmat
   Y_vals <- self$getY
   wt_vals <- self$getWeight
-  learner <- getopt("sl3_learner")
+  learners <- getopt("sl3_learners")
   metalearner <- getopt("sl3_metalearner")    
   if (gvars$verbose) {
       print("calling sl3...")
-      print(length(learner) %+% " base machine learning algorithm(s): " %+% paste0(names(learner), collapse = '; '))
+      print(length(learners) %+% " base machine learning algorithm(s): " %+% paste0(names(learners), collapse = '; '))
       print("number of observations: " %+% nrow(Xmat))
     }
   
@@ -279,6 +279,7 @@ fit_single_reg.sl3S3 <- function(self) {
     return(fit_single_reg.speedglmS3(self))
   } else {
     if (length(unique(Y_vals)) == 2) { sl3Family <- "binomial" } else { sl3Family <- "gaussian" }
+    if (length(learners > 1) { stacked_learners <- make_learner(Stack, learners) } else { stacked_learners <- learners }
     if (sl3Family == "gaussian") {
       if (!identical(metalearner$params$learner_function, sl3::metalearner_linear)) {
         metalearner <- sl3::make_learner(sl3::Lrnr_optim, loss_function = sl3::loss_squared_error,
@@ -307,7 +308,7 @@ fit_single_reg.sl3S3 <- function(self) {
     task <- sl3::sl3_Task$new(data, covariates = Wnodes, outcome = Anode, weights = "weights")
     
     # define Super Learner
-    binom_sl <- sl3::make_learner(Lrnr_sl, learner, metalearner)
+    binom_sl <- sl3::make_learner(Lrnr_sl, stacked_learners, metalearner)
     
     model.fit <- try(binom_sl$train(task))
     
